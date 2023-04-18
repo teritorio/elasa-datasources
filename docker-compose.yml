@@ -1,0 +1,6 @@
+version: '3.3'
+services:
+  datasources:
+    build: .
+    volumes:
+      - ./data:/data
