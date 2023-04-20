@@ -38,6 +38,10 @@ class TourismSystem
     JSON.parse(file.read)['data']
   end
 
+  def https(url)
+    url.gsub(%r{^http://}, 'https://')
+  end
+
   def map(raw, attribution)
     raw.collect{ |f|
       # puts f.inspect
@@ -57,20 +61,20 @@ class TourismSystem
             source: attribution,
             name: f.dig('metadata', 'name'),
             description: f.dig('data', 'dublinCore', 'description'),
-            image: jp(f, '.multimedia[*][?(@.type=="03.01.01")].URL'), # 03.01.01 = Image
+            image: jp(f, '.multimedia[*][?(@.type=="03.01.01")].URL').map{ |u| https(u) }, # 03.01.01 = Image
             # contact
-            'contact:street': [ # 04.03.13 = Etab/Lieu/Structure
+            street: [ # 04.03.13 = Etab/Lieu/Structure
               jp(f, '.contacts[*][?(@.type=="04.03.13")]..address1'),
               jp(f, '.contacts[*][?(@.type=="04.03.13")]..address2'),
               jp(f, '.contacts[*][?(@.type=="04.03.13")]..address3'),
             ].compact_blank.join(', '),
-            'contact:postcode': jp(f, '.contacts[*][?(@.type=="04.03.13")]..zipCode').first,
-            'contact:city': [
+            postcode: jp(f, '.contacts[*][?(@.type=="04.03.13")]..zipCode').first,
+            city: [
               jp(f, '.contacts[*][?(@.type=="04.03.13")]..commune'),
               # jp(f, '.contacts[*][?(@.type=="04.03.13")]..bureauDistrib'), # FIXME, not sure about property name
               # jp(f, '.contacts[*][?(@.type=="04.03.13")]..cedex'), # FIXME, not sure about property name
             ].compact_blank.join(', '),
-            'contact:country': [
+            country: [
               # jp(f, '.contacts[*][?(@.type=="04.03.13")]..state'), # FIXME, not sure about property name
               jp(f, '.contacts[*][?(@.type=="04.03.13")]..country'),
             ].compact_blank.join(', '),
