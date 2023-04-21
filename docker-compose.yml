@@ -3,4 +3,5 @@ services:
   datasources:
     build: .
     volumes:
+      - ./config.yaml:/config.yaml
       - ./data:/data
