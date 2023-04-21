@@ -73,7 +73,7 @@ class Geotrek
             website: website,
             "route:#{practice_slug}:difficulty": r['difficulty'] && difficulties[r['difficulty']] && difficulties[r['difficulty']]['label'] || nil,
             "route:#{practice_slug}:duration": (r['duration'].to_f * 60).to_i,
-            "route:#{practice_slug}:length": r['length_2d'].to_f,
+            "route:#{practice_slug}:length": r['length_2d'].to_f / 1000,
             gpx: r['gpx'],
             image: r['attachments']&.filter{ |a|
               a['filetype'] && a['filetype']['type'] == 'Photographie'
