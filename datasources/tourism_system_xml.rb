@@ -55,18 +55,18 @@ class TourismSystem
             description: f.xpath('DublinCore/description').to_h{ |d| [d['lang'], d.text] },
             image: f.xpath('Multimedia/DetailMultimedia[@libelle="Image"]/URL').collect(&:text),
             # contact
-            street: [
+            'addr:street': [
               f.xpath('Contacts/DetailContact[@libelle="Etab/Lieu/Structure"]//Adr1').text,
               f.xpath('Contacts/DetailContact[@libelle="Etab/Lieu/Structure"]//Adr2').text,
               f.xpath('Contacts/DetailContact[@libelle="Etab/Lieu/Structure"]//Adr3').text,
             ].compact_blank.join(', '),
-            postcode: f.xpath('Contacts/DetailContact[@libelle="Etab/Lieu/Structure"]//CodePostal').text,
-            city: [
+            'addr:postcode': f.xpath('Contacts/DetailContact[@libelle="Etab/Lieu/Structure"]//CodePostal').text,
+            'addr:city': [
               f.xpath('Contacts/DetailContact[@libelle="Etab/Lieu/Structure"]//Commune').text,
               f.xpath('Contacts/DetailContact[@libelle="Etab/Lieu/Structure"]//BureauDistrib').text,
               f.xpath('Contacts/DetailContact[@libelle="Etab/Lieu/Structure"]//Cedex').text,
             ].compact_blank.join(', '),
-            country: [
+            'addr:country': [
               f.xpath('Contacts/DetailContact[@libelle="Etab/Lieu/Structure"]//ProvinceEtat').text,
               f.xpath('Contacts/DetailContact[@libelle="Etab/Lieu/Structure"]//Pays').text,
             ].compact_blank.join(', '),

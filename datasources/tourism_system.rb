@@ -63,18 +63,18 @@ class TourismSystem
             description: f.dig('data', 'dublinCore', 'description'),
             image: jp(f, '.multimedia[*][?(@.type=="03.01.01")].URL').map{ |u| https(u) }, # 03.01.01 = Image
             # contact
-            street: [ # 04.03.13 = Etab/Lieu/Structure
+            'addr:street': [ # 04.03.13 = Etab/Lieu/Structure
               jp(f, '.contacts[*][?(@.type=="04.03.13")]..address1'),
               jp(f, '.contacts[*][?(@.type=="04.03.13")]..address2'),
               jp(f, '.contacts[*][?(@.type=="04.03.13")]..address3'),
             ].compact_blank.join(', '),
-            postcode: jp(f, '.contacts[*][?(@.type=="04.03.13")]..zipCode').first,
-            city: [
+            'addr:postcode': jp(f, '.contacts[*][?(@.type=="04.03.13")]..zipCode').first,
+            'addr:city': [
               jp(f, '.contacts[*][?(@.type=="04.03.13")]..commune'),
               # jp(f, '.contacts[*][?(@.type=="04.03.13")]..bureauDistrib'), # FIXME, not sure about property name
               # jp(f, '.contacts[*][?(@.type=="04.03.13")]..cedex'), # FIXME, not sure about property name
             ].compact_blank.join(', '),
-            country: [
+            'addr:country': [
               # jp(f, '.contacts[*][?(@.type=="04.03.13")]..state'), # FIXME, not sure about property name
               jp(f, '.contacts[*][?(@.type=="04.03.13")]..country'),
             ].compact_blank.join(', '),
