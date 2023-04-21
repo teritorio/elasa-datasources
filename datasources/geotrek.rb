@@ -67,7 +67,7 @@ class Geotrek
           tags: {
             source: attribution,
             name: name,
-            descriptsion: r['description_teaser'].reject { |_, v| v == '' },
+            description: r['description_teaser'].reject { |_, v| v == '' },
             website: website,
             practice: practice,
             difficulty: r['difficulty'] && difficulties[r['difficulty']] && difficulties[r['difficulty']]['label'] || nil,

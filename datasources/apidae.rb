@@ -80,7 +80,7 @@ class Apidae
           tags: {
             source: attribution,
             name: i18n_keys(r['nom']),
-            descriptsion: i18n_keys(r.dig('presentation', 'descriptifCourt')),
+            description: i18n_keys(r.dig('presentation', 'descriptifCourt')),
             website: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Site web (URL)")].coordonnees.fr'),
             phone: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Téléphone")].coordonnees.fr'),
             email: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Mél")].coordonnees.fr'),
