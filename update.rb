@@ -8,15 +8,21 @@ require './datasources/geotrek'
 require './datasources/tourism_system'
 require './datasources/apidae'
 
-@config = YAML.safe_load(File.read(ARGV[0] || 'config.yaml'))
+@config = YAML.safe_load(File.read('config.yaml'))
+@project = ARGV[0]
+@datasource = ARGV[1]
 
-@config['datasources'].each { |project, datasources|
+@config['datasources'].to_a.select { |project, _datasources|
+  !@project || project == @project
+}.each { |project, datasources|
   puts project
   dir = "data/#{project}"
   FileUtils.rm_rf(dir)
   FileUtils.makedirs(dir)
 
-  datasources&.each { |id, datasource|
+  datasources&.to_a&.select{ |id, _datasource|
+    !@datasource || id == @datasource
+  }&.each { |id, datasource|
     puts "#{project} : #{id}, #{datasource['type']}..."
 
     objects = (

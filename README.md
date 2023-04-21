@@ -19,6 +19,9 @@ bundle exec rubocop -c .rubocop.yml --autocorrect
 
 ```
 ruby update.rb
+
+# Or partial update
+ruby update.rb demo
 ```
 
 ## Docker
@@ -26,4 +29,5 @@ ruby update.rb
 ```
 docker-compose build
 docker-compose run --rm datasources ruby update.rb
+docker-compose run --rm datasources ruby update.rb demo
 ```
