@@ -51,9 +51,11 @@ class Geotrek
   def map(raw_json_treks, practices, difficulties, attribution, url_web)
     raw_json_treks.map{ |r|
       name = r['name']&.compact_blank
-      practice = practices[r['practice']] && practices[r['practice']]['name'] || nil
-      website = practice && name.collect{ |lang, _n|
-        practice[lang] && name[lang] && [lang, "#{url_web}/#{practice[lang].parameterize}/#{name[lang].parameterize}/"] || nil
+      practice = practices[r['practice']]
+      practice_slug = (practice&.dig('name', 'en') || practice&.dig('name', 'fr'))&.parameterize
+      practice_name = practice&.dig('name')
+      website = practice_name && name.collect{ |lang, _n|
+        practice_name[lang] && name[lang] && [lang, "#{url_web}/#{practice_name[lang].parameterize}/#{name[lang].parameterize}/"] || nil
       }.compact.to_h || nil
       {
         type: 'Feature',
@@ -69,13 +71,14 @@ class Geotrek
             name: name,
             description: r['description_teaser'].reject { |_, v| v == '' },
             website: website,
-            practice: practice,
-            difficulty: r['difficulty'] && difficulties[r['difficulty']] && difficulties[r['difficulty']]['label'] || nil,
-            duration: (r['duration'].to_f * 60).to_i,
+            "route:#{practice_slug}:difficulty": r['difficulty'] && difficulties[r['difficulty']] && difficulties[r['difficulty']]['label'] || nil,
+            "route:#{practice_slug}:duration": (r['duration'].to_f * 60).to_i,
+            "route:#{practice_slug}:length": r['length_2d'].to_f,
             gpx: r['gpx'],
             image: r['attachments']&.filter{ |a|
               a['filetype'] && a['filetype']['type'] == 'Photographie'
             }&.pluck('thumbnail')&.compact_blank,
+            'route:pdf': r['pdf']&.compact_blank
           }.compact_blank
         }.compact_blank
       }
