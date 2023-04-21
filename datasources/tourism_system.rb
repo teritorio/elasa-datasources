@@ -13,7 +13,9 @@ end
 
 # module TourismSystem
 class TourismSystem
-  def process(url, attribution)
+  def process(id, basic_auth, attribution)
+    # thesaurus_fr = fetch("https://#{basic_auth}@api.tourism-system.com/thesaurus/ts/#{id}/tree/fr")
+    url = "https://#{basic_auth}@api.tourism-system.com/content/ts/#{id}"
     fetch(url).collect { |playlist|
       [playlist['metadata']['name'], playlist['metadata']['id']]
     }.select{ |name, _id|
@@ -78,6 +80,7 @@ class TourismSystem
               # jp(f, '.contacts[*][?(@.type=="04.03.13")]..state'), # FIXME, not sure about property name
               jp(f, '.contacts[*][?(@.type=="04.03.13")]..country'),
             ].compact_blank.join(', '),
+            cuisine: f.dig('data', 'dublinCore', 'criteria')&.pluck('criterion')&.select{ |v| v.start_with?('02.01.13.03.') || v.include?('.00.02.01.13.03.') },
           }.compact_blank,
         }.compact_blank,
       }

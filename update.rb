@@ -30,7 +30,7 @@ require './datasources/apidae'
       when 'geotrek'
         Geotrek.new.process(datasource['url'], datasource['url_web'], datasource['attribution'])
       when 'tourism_system'
-        TourismSystem.new.process(datasource['url'], datasource['attribution'])
+        TourismSystem.new.process(datasource['id'], datasource['basic_auth'], datasource['attribution'])
       when 'apidae'
         Apidae.new.process(datasource['territoireIds'], datasource['projetId'], datasource['apiKey'], datasource['attribution'])
       end
