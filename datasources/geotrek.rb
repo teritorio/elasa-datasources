@@ -47,6 +47,19 @@ class Geotrek
     fetch_json_pages("#{base_url}/trek/?omit=geometry")
   end
 
+  def difficulty(difficulties, difficulty)
+    difficulty_level = difficulty && difficulties[difficulty] && difficulties[difficulty]['cirkwi_level'] || nil
+    if difficulty_level.nil?
+      nil
+    elsif difficulty_level < 3
+      'easy'
+    elsif difficulty_level < 5
+      'normal'
+    else
+      'hard'
+    end
+  end
+
   def map(raw_json_treks, practices, difficulties, attribution, url_web)
     raw_json_treks.map{ |r|
       name = r['name']&.compact_blank
@@ -73,7 +86,7 @@ class Geotrek
             name: name,
             description: r['description_teaser'].reject { |_, v| v == '' },
             website: website,
-            "route:#{practice_slug}:difficulty": r['difficulty'] && difficulties[r['difficulty']] && difficulties[r['difficulty']]['label'] || nil,
+            "route:#{practice_slug}:difficulty": difficulty(difficulties, r['difficulty']),
             "route:#{practice_slug}:duration": (r['duration'].to_f * 60).to_i,
             "route:#{practice_slug}:length": r['length_2d'].to_f / 1000,
             'route:gpx_trace': r['gpx'],
