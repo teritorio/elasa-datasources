@@ -14,15 +14,17 @@ end
 # module TourismSystem
 class TourismSystem
   def process(id, basic_auth, attribution)
-    # thesaurus_fr = fetch("https://#{basic_auth}@api.tourism-system.com/thesaurus/ts/#{id}/tree/fr")
+    thesaurus_fr = fetch("https://#{basic_auth}@api.tourism-system.com/thesaurus/ts/#{id}/tree/fr")
+    thesaurus = parse_thesaurus(thesaurus_fr).to_h
+
     url = "https://#{basic_auth}@api.tourism-system.com/content/ts/#{id}"
-    fetch(url).collect { |playlist|
+    fetch_data(url).collect { |playlist|
       [playlist['metadata']['name'], playlist['metadata']['id']]
     }.select{ |name, _id|
       name.include?('Teritorio')
     }.to_h.transform_values{ |id|
-      raw = fetch("#{url}/#{id}")
-      map(raw, attribution)
+      raw = fetch_data("#{url}/#{id}")
+      map(raw, attribution, thesaurus)
     }
   end
 
@@ -37,14 +39,26 @@ class TourismSystem
     end
     file = OpenURI.open_uri(uri, uri_options)
 
-    JSON.parse(file.read)['data']
+    JSON.parse(file.read)
+  end
+
+  def fetch_data(url)
+    fetch(url)['data']
+  end
+
+  def parse_thesaurus(thesaurus)
+    thesaurus.collect{ |sub|
+      [[sub['key'], sub['label']]] + (
+         sub.key?('children') ? parse_thesaurus(sub['children']) : []
+       )
+    }.flatten(1)
   end
 
   def https(url)
     url.gsub(%r{^http://}, 'https://')
   end
 
-  def map(raw, attribution)
+  def map(raw, attribution, thesaurus)
     raw.collect{ |f|
       # puts f.inspect
       {
@@ -84,7 +98,12 @@ class TourismSystem
               # jp(f, '.contacts[*][?(@.type=="04.03.13")]..state'), # FIXME, not sure about property name
               jp(f, '.contacts[*][?(@.type=="04.03.13")]..country'),
             ].compact_blank.join(', '),
-            cuisine: f.dig('data', 'dublinCore', 'criteria')&.pluck('criterion')&.select{ |v| v.start_with?('02.01.13.03.') || v.include?('.00.02.01.13.03.') },
+            cuisine: (
+              f.dig('data', 'dublinCore', 'criteria')&.pluck('criterion')&.select{ |v|
+                v.start_with?('02.01.13.03.') || v.include?('.00.02.01.13.03.')
+              }&.map{ |v|
+                thesaurus[v] || v
+              }),
           }.compact_blank,
         }.compact_blank,
       }
