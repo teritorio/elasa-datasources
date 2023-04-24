@@ -13,8 +13,7 @@ class Geotrek
     difficulties = fetch_difficulties(base_url)
     practices = fetch_practices(base_url)
     raw_json_treks = fetch(base_url)
-    objects = map(raw_json_treks, practices, difficulties, attribution, url_web)
-    { geotrek: objects }
+    map(raw_json_treks, practices, difficulties, attribution, url_web)
   end
 
   def fetch_json_pages(url)
@@ -57,7 +56,10 @@ class Geotrek
       website = practice_name && name.collect{ |lang, _n|
         practice_name[lang] && name[lang] && [lang, "#{url_web}/#{practice_name[lang].parameterize}/#{name[lang].parameterize}/"] || nil
       }.compact.to_h || nil
+      next if !practice_slug
+
       {
+        practice_slug: practice_slug,
         type: 'Feature',
         geometry: {
           type: 'Point',
@@ -81,6 +83,12 @@ class Geotrek
             'route:pdf': r['pdf']&.compact_blank
           }.compact_blank
         }.compact_blank
+      }
+    }.compact_blank.group_by { |f|
+      f[:practice_slug]
+    }.transform_values{ |group|
+      group.each{ |f|
+        f.delete(:practice_slug)
       }
     }
   end
