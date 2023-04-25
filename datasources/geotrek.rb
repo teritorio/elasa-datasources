@@ -64,7 +64,12 @@ class Geotrek
     raw_json_treks.map{ |r|
       name = r['name']&.compact_blank
       practice = practices[r['practice']]
-      practice_slug = (practice&.dig('name', 'en') || practice&.dig('name', 'fr'))&.parameterize
+      practice_slug = {
+        'cycling' => 'bicycle',
+        'horse' => 'horse',
+        'mountain-bike' => 'mtb',
+        'pedestre' => 'hiking',
+      }[(practice&.dig('name', 'en') || practice&.dig('name', 'fr'))&.parameterize]
       practice_name = practice&.dig('name')
       website = practice_name && name.collect{ |lang, _n|
         practice_name[lang] && name[lang] && [lang, "#{url_web}/#{practice_name[lang].parameterize}/#{name[lang].parameterize}/"] || nil
