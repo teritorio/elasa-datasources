@@ -58,6 +58,18 @@ class TourismSystem
     url.gsub(%r{^http://}, 'https://')
   end
 
+  def stars(s)
+    {
+      # Hotels
+      '06.04.01.03.01' => '1',
+      '06.04.01.03.02' => '2',
+      '06.04.01.03.03' => '3',
+      '06.04.01.03.04' => '4',
+      '06.04.01.03.05' => '4S',
+      '99.06.04.01.03.01' => '5',
+    }[s]
+  end
+
   def map(raw, attribution, thesaurus)
     raw.collect{ |f|
       # puts f.inspect
@@ -104,6 +116,7 @@ class TourismSystem
               }&.map{ |v|
                 thesaurus[v] || v
               }),
+            stars: stars(jp(f, '.ratings.officials..ratingLevel').select{ |s| s.include?('06.04.01.03.') }.first),
           }.compact_blank,
         }.compact_blank,
       }
