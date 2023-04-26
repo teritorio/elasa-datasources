@@ -96,8 +96,8 @@ class Geotrek
             "route:#{practice_slug}:length": r['length_2d'].to_f / 1000,
             'route:gpx_trace': r['gpx'],
             image: r['attachments']&.filter{ |a|
-              a['filetype'] && a['filetype']['type'] == 'Photographie'
-            }&.pluck('thumbnail')&.compact_blank,
+              a['type'] == 'image'
+            }&.pluck('url')&.compact_blank,
             'route:pdf': r['pdf']&.compact_blank
           }.compact_blank
         }.compact_blank
