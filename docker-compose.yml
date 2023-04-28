@@ -5,3 +5,4 @@ services:
     volumes:
       - ./config.yaml:/config.yaml
       - ./data:/data
+    # restart: unless-stopped
