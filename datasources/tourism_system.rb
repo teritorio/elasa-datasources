@@ -43,7 +43,19 @@ class TourismSystem
   end
 
   def fetch_data(url)
-    fetch(url)['data']
+    results = T.let([], T::Array[T.untyped])
+    start = 0
+    size = 1000
+
+    data = []
+    while start == 0 || data.size == size - 1
+      next_url = url + "?start=#{start}&size=#{size}"
+      puts "Fetch... #{next_url}"
+      data = fetch(next_url)['data']
+      results += data
+      start += size
+    end
+    results
   end
 
   def parse_thesaurus(thesaurus)
