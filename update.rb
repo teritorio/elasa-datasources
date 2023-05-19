@@ -7,6 +7,7 @@ require 'sorbet-runtime'
 require './datasources/geotrek'
 require './datasources/tourism_system'
 require './datasources/apidae'
+require './datasources/csv'
 
 @config = YAML.safe_load(File.read('config.yaml'))
 @project = ARGV[0]
@@ -33,6 +34,8 @@ require './datasources/apidae'
         TourismSystem.new.process(datasource['id'], datasource['basic_auth'], datasource['attribution'])
       when 'apidae'
         Apidae.new.process(datasource['territoireIds'], datasource['projetId'], datasource['apiKey'], datasource['attribution'])
+      when 'csv'
+        CSVSource.new.process(id, datasource['url'], datasource['col_sep'], datasource['id'], datasource['lon'], datasource['lat'], datasource['timestamp'], datasource['attribution'])
       end
     )
     objects.each{ |k, os|
