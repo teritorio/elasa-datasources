@@ -7,6 +7,8 @@ require 'active_support/all'
 
 require 'sorbet-runtime'
 
+require_relative 'libs/map_osm'
+
 
 # module CSVSource
 class CSVSource
@@ -25,8 +27,6 @@ class CSVSource
     CSV.parse(resp.body.to_s, headers: true, col_sep: col_sep, quote_char: nil).each(&:to_h)
   end
 
-  @@multiple = %w[route_ref image phone mobile]
-
   def map(raw, id, lon, lat, timestamp, attribution)
     raw.select{ |r|
       r[id].present? && r[lon].present? && r[lat].present?
@@ -38,12 +38,10 @@ class CSVSource
           coordinates: [r[lon].to_f, r[lat].to_f],
         },
         properties: {
-          id: r[id].to_f,
+          id: r[id].to_i,
           timestamp: r[timestamp],
           source: attribution,
-          tags: r.to_h.except(id, lon, lat, timestamp).compact_blank.to_h{ |k, v|
-            [k, @@multiple.include?(k) ? v.split(';').collect(&:strip) : v]
-          }
+          tags: MapOSM.map(r.to_h.except(id, lon, lat, timestamp).compact_blank, %w[route_ref])
         }.compact_blank
       }
     }
