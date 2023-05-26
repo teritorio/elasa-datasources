@@ -5,11 +5,16 @@ require 'json'
 require 'http'
 require 'active_support/all'
 require 'sorbet-runtime'
+require_relative 'datasource'
 
 
-# module Geotrek
-class Geotrek
-  def process(base_url, url_web, attribution)
+# module Datasources
+class Geotrek < Datasource
+  def process(_source_id, settings, _dir)
+    base_url = settings['url']
+    url_web = settings['url_web']
+    attribution = settings['attribution']
+
     difficulties = fetch_difficulties(base_url)
     practices = fetch_practices(base_url)
     raw_json_treks = fetch(base_url)

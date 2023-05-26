@@ -5,15 +5,20 @@ require 'jsonpath'
 require 'open-uri'
 require 'cgi'
 require 'sorbet-runtime'
+require_relative 'datasource'
 
 
 def jp(object, path)
   JsonPath.on(object, "$.#{path}")
 end
 
-# module TourismSystem
-class TourismSystem
-  def process(id, basic_auth, attribution)
+# module Datasources
+class TourismSystem < Datasource
+  def process(_source_id, settings, _dir)
+    id = settings['id']
+    basic_auth = settings['basic_auth']
+    attribution = settings['attribution']
+
     thesaurus_fr = fetch("https://#{basic_auth}@api.tourism-system.com/thesaurus/ts/#{id}/tree/fr")
     thesaurus = parse_thesaurus(thesaurus_fr).to_h
 

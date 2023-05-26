@@ -8,11 +8,20 @@ require 'active_support/all'
 require 'sorbet-runtime'
 
 require_relative 'libs/map_osm'
+require_relative 'datasource'
 
 
-# module CSVSource
-class CSVSource
-  def process(source_id, url, col_sep, id, lon, lat, timestamp, attribution)
+# module Datasources
+class CSVSource < Datasource
+  def process(source_id, settings, _dir)
+    url = settings['url']
+    col_sep = settings['col_sep']
+    id = settings['id']
+    lon = settings['lon']
+    lat = settings['lat']
+    timestamp = settings['timestamp']
+    attribution = settings['attribution']
+
     raw = fetch(url, col_sep)
     objects = map(raw, id, lon, lat, timestamp, attribution)
     { source_id => objects }

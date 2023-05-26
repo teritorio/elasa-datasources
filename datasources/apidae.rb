@@ -9,15 +9,20 @@ require 'jsonpath'
 require 'open-uri'
 require 'cgi'
 require 'sorbet-runtime'
+require_relative 'datasource'
 
 
 def jp(object, path)
   JsonPath.on(object, "$.#{path}")
 end
 
-# module Apidae
-class Apidae
-  def process(territoire_ids, projet_id, api_key, attribution)
+# module Datasources
+class Apidae < Datasource
+  def process(_source_id, settings, _dir)
+    territoire_ids = settings['territoireIds']
+    projet_id = settings['projetId']
+    api_key = settings['apiKey']
+    attribution = settings['attribution']
     raw_json = fetch(territoire_ids, projet_id, api_key)
     objects = map(raw_json, attribution)
     { apidae: objects }

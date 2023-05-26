@@ -8,14 +8,21 @@ require 'active_support/all'
 require 'sorbet-runtime'
 
 require_relative 'libs/map_osm'
+require_relative 'datasource'
 
 
-# module Overpass
-class Overpass
-  def process(relation_id, configs, attribution, generated_config)
+# module Datasources
+class Overpass < Datasource
+  def process(_source_id, settings, dir)
+    relation_id = settings['relation_id']
+    configs = settings['configs']
+    attribution = settings['attribution']
+
     config = configs.inject({}){ |sum, config_path|
       sum.merge(YAML.safe_load(File.read(config_path)))
     }
+    FileUtils.makedirs("#{dir}/config")
+    generated_config = "#{dir}/config/osm_tags.json"
     File.write(generated_config, JSON.dump(config))
 
     config.transform_values{ |cat|

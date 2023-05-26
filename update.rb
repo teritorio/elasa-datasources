@@ -26,22 +26,8 @@ require './datasources/overpass'
   }&.each { |id, datasource|
     puts "#{project} : #{id}, #{datasource['type']}..."
 
-    objects = (
-      case datasource['type']
-      when 'geotrek'
-        Geotrek.new.process(datasource['url'], datasource['url_web'], datasource['attribution'])
-      when 'tourism_system'
-        TourismSystem.new.process(datasource['id'], datasource['basic_auth'], datasource['attribution'])
-      when 'apidae'
-        Apidae.new.process(datasource['territoireIds'], datasource['projetId'], datasource['apiKey'], datasource['attribution'])
-      when 'csv'
-        CSVSource.new.process(id, datasource['url'], datasource['col_sep'], datasource['id'], datasource['lon'], datasource['lat'], datasource['timestamp'], datasource['attribution'])
-      when 'overpass'
-        FileUtils.makedirs("#{dir}/config")
-        config = "#{dir}/config/osm_tags.json"
-        Overpass.new.process(datasource['relation_id'], datasource['configs'], datasource['attribution'], config)
-      end
-    )
+    processor = Object.const_get(datasource['type']).new
+    objects = processor.process(id, datasource, dir)
     objects.each{ |k, os|
       os = {
         type: 'FeatureCollection',

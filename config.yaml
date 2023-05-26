@@ -1,7 +1,7 @@
 datasources:
   demo:
     geotrek:
-      type: geotrek
+      type: Geotrek
       url: https://demo-admin.geotrek.fr/api/v2
       url_web: https://exmaple.com
       attribution: Geotrek

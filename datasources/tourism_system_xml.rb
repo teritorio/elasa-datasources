@@ -4,11 +4,14 @@
 require 'nokogiri'
 require 'open-uri'
 require 'sorbet-runtime'
+require_relative 'datasource'
 
 
-# module TourismSystem
-class TourismSystem
-  def process(url, attribution)
+# module Datasources
+class TourismSystemXml < Datasource
+  def process(_source_id, _settings, _dir)
+    url, attribution =
+
     raw = fetch(url)
     objects = map(raw, attribution)
     objects = objects.collect{ |o|
