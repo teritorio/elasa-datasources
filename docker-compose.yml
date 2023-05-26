@@ -6,3 +6,12 @@ services:
       - ./config.yaml:/config.yaml
       - ./data:/data
     # restart: unless-stopped
+
+  nginx:
+    image: nginx
+    ports:
+      - 1400:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./data:/data
+#    restart: unless-stopped

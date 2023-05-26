@@ -31,3 +31,8 @@ docker-compose build
 docker-compose run --rm datasources ruby update.rb
 docker-compose run --rm datasources ruby update.rb demo
 ```
+
+Run NGINX http server
+```
+docker-compose up -d nginx
+```
