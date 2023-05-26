@@ -97,8 +97,8 @@ class TourismSystem
         properties: {
           id: f.dig('metadata', 'id'),
           timestamp: f.dig('data', 'dublinCore', 'modified'),
+          source: attribution,
           tags: {
-            source: attribution,
             name: f.dig('metadata', 'name'),
             description: f.dig('data', 'dublinCore', 'description'),
             phone: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="04.02.01")]')&.pluck('particular')&.compact_blank,

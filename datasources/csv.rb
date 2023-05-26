@@ -27,7 +27,7 @@ class CSVSource
 
   @@multiple = %w[route_ref image phone mobile]
 
-  def map(raw, id, lon, lat, timestamp, _attribution)
+  def map(raw, id, lon, lat, timestamp, attribution)
     raw.select{ |r|
       r[id].present? && r[lon].present? && r[lat].present?
     }.map{ |r|
@@ -40,6 +40,7 @@ class CSVSource
         properties: {
           id: r[id].to_f,
           timestamp: r[timestamp],
+          source: attribution,
           tags: r.to_h.except(id, lon, lat, timestamp).compact_blank.to_h{ |k, v|
             [k, @@multiple.include?(k) ? v.split(';').collect(&:strip) : v]
           }

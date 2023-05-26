@@ -86,8 +86,8 @@ class Geotrek
         properties: {
           id: r['id'],
           timestamp: r['update_datetime'],
+          source: attribution,
           tags: {
-            source: attribution,
             name: name,
             description: r['description_teaser'].reject { |_, v| v == '' },
             website: website,

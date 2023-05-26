@@ -49,8 +49,8 @@ class TourismSystem
         properties: {
           id: f.xpath('DublinCore/identifier').text,
           timestamp: f.xpath('DublinCore/modified').text,
+          source: attribution,
           tags: {
-            source: attribution,
             name: f.xpath('DublinCore/title').text,
             description: f.xpath('DublinCore/description').to_h{ |d| [d['lang'], d.text] },
             image: f.xpath('Multimedia/DetailMultimedia[@libelle="Image"]/URL').collect(&:text),

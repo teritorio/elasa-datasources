@@ -77,8 +77,8 @@ class Apidae
         properties: {
           id: r['identifier'],
           timestamp: r['update_datetime'],
+          source: attribution,
           tags: {
-            source: attribution,
             name: i18n_keys(r['nom']),
             description: i18n_keys(r.dig('presentation', 'descriptifCourt')),
             website: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Site web (URL)")].coordonnees.fr'),
