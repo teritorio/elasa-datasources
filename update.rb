@@ -18,7 +18,6 @@ require './datasources/csv'
 }.each { |project, datasources|
   puts project
   dir = "data/#{project}"
-  FileUtils.rm_rf(dir)
   FileUtils.makedirs(dir)
 
   datasources&.to_a&.select{ |id, _datasource|
