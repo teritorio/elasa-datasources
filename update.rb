@@ -8,6 +8,7 @@ require './datasources/geotrek'
 require './datasources/tourism_system'
 require './datasources/apidae'
 require './datasources/csv'
+require './datasources/overpass'
 
 @config = YAML.safe_load(File.read('config.yaml'))
 @project = ARGV[0]
@@ -35,6 +36,10 @@ require './datasources/csv'
         Apidae.new.process(datasource['territoireIds'], datasource['projetId'], datasource['apiKey'], datasource['attribution'])
       when 'csv'
         CSVSource.new.process(id, datasource['url'], datasource['col_sep'], datasource['id'], datasource['lon'], datasource['lat'], datasource['timestamp'], datasource['attribution'])
+      when 'overpass'
+        FileUtils.makedirs("#{dir}/config")
+        config = "#{dir}/config/osm_tags.json"
+        Overpass.new.process(datasource['relation_id'], datasource['configs'], datasource['attribution'], config)
       end
     )
     objects.each{ |k, os|
@@ -43,7 +48,7 @@ require './datasources/csv'
         features: os,
       }
       puts "#{project} : #{id}, #{datasource['type']} -> #{k}"
-      File.write("#{"data/#{project}"}/#{k.to_s.gsub('/', '_')}.geojson", JSON.pretty_generate(os))
+      File.write("#{dir}/#{k.to_s.gsub('/', '_')}.geojson", JSON.pretty_generate(os))
     }
   }
 }

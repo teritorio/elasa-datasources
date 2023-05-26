@@ -4,6 +4,7 @@ services:
     build: .
     volumes:
       - ./config.yaml:/config.yaml
+      - ./config:/config
       - ./data:/data
     # restart: unless-stopped
 
