@@ -81,7 +81,7 @@ class Apidae < Datasource
         geometry: r['localisation']['geolocalisation']['geoJson'],
         properties: {
           id: r['identifier'],
-          timestamp: r['update_datetime'],
+          updated_at: r['update_datetime'],
           source: attribution,
           tags: {
             name: i18n_keys(r['nom']),

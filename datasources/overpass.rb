@@ -74,8 +74,8 @@ out center meta;
           coordinates: !r['lon'].nil? ? [r['lon'], r['lat']] : [r['center']['lon'], r['center']['lat']],
         },
         properties: {
-          id: r['id'],
-          timestamp: r['timestamp'],
+          id: r['type'][0] + r['id'].to_s,
+          updated_at: r['timestamp'],
           source: attribution,
           tags: MapOSM.map(r['tags']),
         }

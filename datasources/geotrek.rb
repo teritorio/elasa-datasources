@@ -90,7 +90,7 @@ class Geotrek < Datasource
         },
         properties: {
           id: r['id'],
-          timestamp: r['update_datetime'],
+          updated_at: r['update_datetime'],
           source: attribution,
           tags: {
             name: name,

@@ -101,7 +101,7 @@ class TourismSystem < Datasource
         },
         properties: {
           id: f.dig('metadata', 'id'),
-          timestamp: f.dig('data', 'dublinCore', 'modified'),
+          updated_at: f.dig('data', 'dublinCore', 'modified'),
           source: attribution,
           tags: {
             name: f.dig('metadata', 'name'),

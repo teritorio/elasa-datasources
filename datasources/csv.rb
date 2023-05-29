@@ -48,7 +48,7 @@ class CSVSource < Datasource
         },
         properties: {
           id: r[id].to_i,
-          timestamp: r[timestamp],
+          updated_at: r[timestamp],
           source: attribution,
           tags: MapOSM.map(r.to_h.except(id, lon, lat, timestamp).compact_blank, %w[route_ref])
         }.compact_blank

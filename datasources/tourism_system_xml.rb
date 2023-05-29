@@ -51,7 +51,7 @@ class TourismSystemXml < Datasource
         },
         properties: {
           id: f.xpath('DublinCore/identifier').text,
-          timestamp: f.xpath('DublinCore/modified').text,
+          updated_at: f.xpath('DublinCore/modified').text,
           source: attribution,
           tags: {
             name: f.xpath('DublinCore/title').text,
