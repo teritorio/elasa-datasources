@@ -71,7 +71,7 @@ out center meta;
         type: 'Feature',
         geometry: {
           type: 'Point',
-          coordinates: !r['lon'].nil? ? [r['lon'], r['lat']] : [r['center']['lon'], r['center']['lat']],
+          coordinates: r['lon'].nil? ? [r['center']['lon'], r['center']['lat']] : [r['lon'], r['lat']],
         },
         properties: {
           id: r['type'][0] + r['id'].to_s,
