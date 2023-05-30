@@ -44,7 +44,6 @@ class TourismSystemSource < Source
     data = []
     while start == 0 || data.size == size - 1
       next_path = path + "?start=#{start}&size=#{size}"
-      puts "Fetch... #{next_path}"
       data = fetch(basic_auth, next_path)['data']
       results += data
       start += size
@@ -70,6 +69,8 @@ class TourismSystemSource < Source
 
   def each
     raw = self.class.fetch_data(@basic_auth, "/content/ts/#{@id}/#{@playlist_id}")
+    puts "#{self.class.name}: #{raw.size}"
+
     raw.each{ |f|
       yield ({
         type: 'Feature',

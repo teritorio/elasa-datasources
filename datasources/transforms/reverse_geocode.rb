@@ -15,6 +15,8 @@ class ReverseGeocode
   end
 
   def close
+    puts "#{self.class.name}: #{@rows.size}"
+
     lon_lats = @rows.collect{ |f| f[:geometry][:coordinates] }
     addrs = reverse_query(lon_lats)
     @rows.zip(addrs).each { |f, addr|

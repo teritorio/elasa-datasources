@@ -17,6 +17,8 @@ class GeoJson
   end
 
   def close
+    puts "#{self.class.name}: #{@destination_id} #{@rows.size}"
+
     fc = {
       type: 'FeatureCollection',
       features: @rows,

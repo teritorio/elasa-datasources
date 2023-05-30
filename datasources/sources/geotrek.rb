@@ -19,7 +19,6 @@ class GeotrekSource < Source
     next_url = url
     results = T.let([], T::Array[T.untyped])
     while next_url
-      puts "Fetch... #{next_url}"
       resp = HTTP.follow.get(next_url)
       if !resp.status.success?
         raise [url, resp].inspect
@@ -62,9 +61,10 @@ class GeotrekSource < Source
   def each
     difficulties = fetch_difficulties(@base_url)
     practices = fetch_practices(@base_url)
-    raw_json_treks = fetch(@base_url)
+    raw = fetch(@base_url)
+    puts "#{self.class.name}: #{raw.size}"
 
-    raw_json_treks.each{ |r|
+    raw.each{ |r|
       name = r['name']&.compact_blank
       practice = practices[r['practice']]
       practice_slug = {

@@ -32,6 +32,8 @@ class CsvSource < Source
 
   def each
     raw = fetch(@url, @col_sep)
+    puts "#{self.class.name}: #{raw.size}"
+
     raw.select{ |r|
       r[@id].present? && r[@lon].present? && r[@lat].present?
     }.each{ |r|

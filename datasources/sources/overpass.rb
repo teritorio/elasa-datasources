@@ -54,6 +54,8 @@ out center meta;
 
   def each
     raw = overpass(@relation_id, @select)
+    puts "#{self.class.name}: #{raw.size}"
+
     raw.each{ |r|
       yield ({
         type: 'Feature',

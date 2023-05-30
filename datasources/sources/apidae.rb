@@ -45,7 +45,6 @@ class ApidaeSource < Source
     )
     results = T.let([], T::Array[T.untyped])
     while next_url
-      puts "Fetch... #{first} #{next_url}"
       resp = HTTP.follow.get(next_url)
       if !resp.status.success?
         raise [next_url, resp].inspect
@@ -69,8 +68,10 @@ class ApidaeSource < Source
   end
 
   def each
-    raw_json = fetch(@territoire_ids, @projet_id, @api_key)
-    raw_json.select{ |r|
+    raw = fetch(@territoire_ids, @projet_id, @api_key)
+    puts "#{self.class.name}: #{raw.size}"
+
+    raw.select{ |r|
       r['localisation']['geolocalisation']['geoJson']
     }.each{ |r|
       yield ({
