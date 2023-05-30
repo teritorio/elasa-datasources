@@ -8,6 +8,7 @@ require 'active_support/all'
 require 'sorbet-runtime'
 
 require_relative 'libs/map_osm'
+require_relative 'libs/geocode'
 require_relative 'datasource'
 
 
@@ -27,7 +28,9 @@ class Overpass < Datasource
 
     config.transform_values{ |cat|
       raw = overpass(relation_id, cat['select'])
-      map(raw, attribution)
+      ret = map(raw, attribution)
+      ret = Geocode.reverse(ret) if cat['georeverse']
+      ret
     }
   end
 
