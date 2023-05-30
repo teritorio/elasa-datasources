@@ -13,7 +13,8 @@ class GeoJsonBy
   end
 
   def write(row)
-    raise "Missing destination_id field" if !row[:destination_id]
+    raise 'Missing destination_id field' if !row[:destination_id]
+
     @destinations[row[:destination_id]].write(row.except(:destination_id))
   end
 
