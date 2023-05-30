@@ -18,13 +18,11 @@ class OsmTags
     contact:website
   ]
 
-  def process(row)
-    tags = row[:properties][:tags]
-
+  def process_tags(tags)
     # There is an adresse defined by addr:* ?
     has_flat_addr = tags.keys.find{ |k| k.start_with?('addr:') }
 
-    row[:properties][:tags] = tags.collect{ |k, v|
+    tags.collect{ |k, v|
       # Remove contact prefixes
       if k.start_with?('contact:')
         kk = k[('contact:'.size)..]
@@ -48,7 +46,10 @@ class OsmTags
       # Split multi-values fields
       [k, @multiple.include?(k) ? v.split(';').collect(&:strip) : v]
     }.select{ |k, _v| !k.nil? }.to_h
+  end
 
+  def process(row)
+    row[:properties][:tags] = process_tags(row[:properties][:tags])
     row
   end
 

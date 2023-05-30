@@ -15,6 +15,12 @@ bundle exec rubocop -c .rubocop.yml --autocorrect
 # bundle exec rake test
 ```
 
+### Tests
+
+```
+bundle exec rake test
+```
+
 ## Run
 
 ```
