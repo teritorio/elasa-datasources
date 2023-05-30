@@ -4,11 +4,20 @@
 require 'http'
 require 'csv'
 
-module Geocode
-  def self.reverse(features)
-    lon_lats = features.collect{ |f| f[:geometry][:coordinates] }
-    addr = reverse_query(lon_lats)
-    features.zip(addr).collect { |f, addr|
+class ReverseGeocode
+  def initialize
+    @rows = []
+  end
+
+  def process(row)
+    @rows << row
+    nil
+  end
+
+  def close
+    lon_lats = @rows.collect{ |f| f[:geometry][:coordinates] }
+    addrs = reverse_query(lon_lats)
+    @rows.zip(addrs).each { |f, addr|
       # There is an adresse defined by addr:* ?
       has_addr = f[:properties][:tags].keys.find{ |k| k.start_with?('addr:') }
 
@@ -21,13 +30,13 @@ module Geocode
         f[:properties][:tags]['source:addr:city'] = 'BAN - ETALAB-2.0'
       end
 
-      f
+      yield f
     }
   end
 
-  def self.reverse_query(lon_lats)
-    csv_data = CSV.generate  { |csv|
-      csv << ['lon', 'lat']
+  def reverse_query(lon_lats)
+    csv_data = CSV.generate { |csv|
+      csv << %w[lon lat]
       lon_lats.each{ |ll| csv << ll }
     }
     resp = HTTP.post('https://api-adresse.data.gouv.fr/reverse/csv/', form: {
@@ -37,7 +46,6 @@ module Geocode
     })
 
     if !resp.status.success?
-      puts resp.inspect
       raise 'Fails reverse geocoding', resp.body
     end
 

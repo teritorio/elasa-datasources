@@ -33,6 +33,7 @@ GEM
     json (2.6.3)
     jsonpath (1.1.2)
       multi_json
+    kiba (4.0.0)
     llhttp-ffi (0.4.0)
       ffi-compiler (~> 1.0)
       rake (~> 13.0)
@@ -145,6 +146,7 @@ DEPENDENCIES
   http
   json
   jsonpath
+  kiba
   nokogiri
   psych
   racc

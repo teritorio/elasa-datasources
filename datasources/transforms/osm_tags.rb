@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 # typed: true
 
-module MapOSM
-  @@multiple = %w[
+class OsmTags
+  def initialize(extra_multiple = [])
+    @multiple = @@multiple_base + extra_multiple
+  end
+
+  @@multiple_base = %w[
     image
     email
     phone
@@ -14,16 +18,16 @@ module MapOSM
     contact:website
   ]
 
-  def self.map(tags, extra_multiple = [])
-    m = @@multiple + extra_multiple
+  def process(row)
+    tags = row[:properties][:tags]
 
     # There is an adresse defined by addr:* ?
     has_flat_addr = tags.keys.find{ |k| k.start_with?('addr:') }
 
-    tags.collect{ |k, v|
+    row[:properties][:tags] = tags.collect{ |k, v|
       # Remove contact prefixes
       if k.start_with?('contact:')
-        kk = k['contact:'.size..]
+        kk = k[('contact:'.size)..]
         # Do no overwrite existing tags
         # Do no remove contact: for adresse if an adress already exists
         if tags.include?(kk)
@@ -42,8 +46,10 @@ module MapOSM
       end
 
       # Split multi-values fields
-      [k, m.include?(k) ? v.split(';').collect(&:strip) : v]
+      [k, @multiple.include?(k) ? v.split(';').collect(&:strip) : v]
     }.select{ |k, _v| !k.nil? }.to_h
+
+    row
   end
 
   # Part off addr:*, that could also be used in contact:*

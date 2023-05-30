@@ -5,20 +5,14 @@ require 'json'
 require 'http'
 require 'active_support/all'
 require 'sorbet-runtime'
-require_relative 'datasource'
+require_relative 'source'
 
 
-# module Datasources
-class Geotrek < Datasource
-  def process(_source_id, settings, _dir)
-    base_url = settings['url']
-    url_web = settings['url_web']
-    attribution = settings['attribution']
-
-    difficulties = fetch_difficulties(base_url)
-    practices = fetch_practices(base_url)
-    raw_json_treks = fetch(base_url)
-    map(raw_json_treks, practices, difficulties, attribution, url_web)
+class GeotrekSource < Source
+  def initialize(source_id, attribution, settings, path)
+    super(source_id, attribution, settings, path)
+    @base_url = settings['url']
+    @url_web = settings['url_web']
   end
 
   def fetch_json_pages(url)
@@ -65,8 +59,12 @@ class Geotrek < Datasource
     end
   end
 
-  def map(raw_json_treks, practices, difficulties, attribution, url_web)
-    raw_json_treks.map{ |r|
+  def each
+    difficulties = fetch_difficulties(@base_url)
+    practices = fetch_practices(@base_url)
+    raw_json_treks = fetch(@base_url)
+
+    raw_json_treks.each{ |r|
       name = r['name']&.compact_blank
       practice = practices[r['practice']]
       practice_slug = {
@@ -77,12 +75,12 @@ class Geotrek < Datasource
       }[(practice&.dig('name', 'en') || practice&.dig('name', 'fr'))&.parameterize]
       practice_name = practice&.dig('name')
       website = practice_name && name.collect{ |lang, _n|
-        practice_name[lang] && name[lang] && [lang, "#{url_web}/#{practice_name[lang].parameterize}/#{name[lang].parameterize}/"] || nil
+        practice_name[lang] && name[lang] && [lang, "#{@url_web}/#{practice_name[lang].parameterize}/#{name[lang].parameterize}/"] || nil
       }.compact.to_h || nil
       next if !practice_slug
 
-      {
-        practice_slug: practice_slug,
+      yield ({
+        destination_id: practice_slug,
         type: 'Feature',
         geometry: {
           type: 'Point',
@@ -91,7 +89,7 @@ class Geotrek < Datasource
         properties: {
           id: r['id'],
           updated_at: r['update_datetime'],
-          source: attribution,
+          source: @attribution,
           tags: {
             name: name,
             description: r['description_teaser'].reject { |_, v| v == '' },
@@ -106,14 +104,7 @@ class Geotrek < Datasource
             'route:pdf': r['pdf']&.compact_blank
           }.compact_blank
         }.compact_blank
-      }
-    }.compact_blank.group_by { |f|
-      f[:practice_slug]
-    }.transform_values{ |group|
-      group.each{ |f|
-        f.delete(:practice_slug)
-      }
+      })
     }
   end
 end
-# end

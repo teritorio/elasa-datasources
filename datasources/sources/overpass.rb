@@ -1,37 +1,21 @@
 # frozen_string_literal: true
 # typed: true
 
-require 'yaml'
+# require 'yaml'
 require 'http'
-require 'active_support/all'
+# require 'active_support/all'
 
 require 'sorbet-runtime'
 
-require_relative 'libs/map_osm'
-require_relative 'libs/geocode'
-require_relative 'datasource'
+require_relative 'source'
 
+class OverpassSource < Source
+  attr_reader :input_file
 
-# module Datasources
-class Overpass < Datasource
-  def process(_source_id, settings, dir)
-    relation_id = settings['relation_id']
-    configs = settings['configs']
-    attribution = settings['attribution']
-
-    config = configs.inject({}){ |sum, config_path|
-      sum.merge(YAML.safe_load(File.read(config_path)))
-    }
-    FileUtils.makedirs("#{dir}/config")
-    generated_config = "#{dir}/config/osm_tags.json"
-    File.write(generated_config, JSON.dump(config))
-
-    config.transform_values{ |cat|
-      raw = overpass(relation_id, cat['select'])
-      ret = map(raw, attribution)
-      ret = Geocode.reverse(ret) if cat['georeverse']
-      ret
-    }
+  def initialize(source_id, attribution, settings, path)
+    super(source_id, attribution, settings, path)
+    @relation_id = settings[:relation_id]
+    @select = settings[:select]
   end
 
   def fetch(url)
@@ -68,9 +52,10 @@ out center meta;
     JSON.parse(fetch(url))['elements']
   end
 
-  def map(raw, attribution)
-    raw.map{ |r|
-      {
+  def each
+    raw = overpass(@relation_id, @select)
+    raw.each{ |r|
+      yield ({
         type: 'Feature',
         geometry: {
           type: 'Point',
@@ -79,11 +64,10 @@ out center meta;
         properties: {
           id: r['type'][0] + r['id'].to_s,
           updated_at: r['timestamp'],
-          source: attribution,
-          tags: MapOSM.map(r['tags']),
+          source: @attribution,
+          tags: r['tags'],
         }
-      }
+      })
     }
   end
 end
-# end

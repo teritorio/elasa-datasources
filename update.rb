@@ -4,11 +4,13 @@
 
 require 'yaml'
 require 'sorbet-runtime'
-require './datasources/geotrek'
-require './datasources/tourism_system'
-require './datasources/apidae'
-require './datasources/csv'
-require './datasources/overpass'
+
+require './datasources/jobs/apidae'
+require './datasources/jobs/csv'
+require './datasources/jobs/geotrek'
+require './datasources/jobs/overpass'
+require './datasources/jobs/tourism_system'
+
 
 @config = YAML.safe_load(File.read('config.yaml'))
 @project = ARGV[0]
@@ -23,18 +25,13 @@ require './datasources/overpass'
 
   datasources&.to_a&.select{ |id, _datasource|
     !@datasource || id == @datasource
-  }&.each { |id, datasource|
-    puts "#{project} : #{id}, #{datasource['type']}..."
-
-    processor = Object.const_get(datasource['type']).new
-    objects = processor.process(id, datasource, dir)
-    objects.each{ |k, os|
-      os = {
-        type: 'FeatureCollection',
-        features: os,
-      }
-      puts "#{project} : #{id}, #{datasource['type']} -> #{k}"
-      File.write("#{dir}/#{k.to_s.gsub('/', '_')}.geojson", JSON.pretty_generate(os))
-    }
+  }&.each { |multi_source_id, settings|
+    puts "#{project} : #{multi_source_id}, #{settings['type']}..."
+    Object.const_get(settings['type']).new(
+      multi_source_id,
+      settings['attribution'],
+      settings.except('attribution', 'type'),
+      dir
+    )
   }
 }

@@ -5,36 +5,25 @@ require 'jsonpath'
 require 'open-uri'
 require 'cgi'
 require 'sorbet-runtime'
-require_relative 'datasource'
+require_relative 'source'
 
 
 def jp(object, path)
   JsonPath.on(object, "$.#{path}")
 end
 
-# module Datasources
-class TourismSystem < Datasource
-  def process(_source_id, settings, _dir)
-    id = settings['id']
-    basic_auth = settings['basic_auth']
-    attribution = settings['attribution']
-
-    thesaurus_fr = fetch("https://#{basic_auth}@api.tourism-system.com/thesaurus/ts/#{id}/tree/fr")
-    thesaurus = parse_thesaurus(thesaurus_fr).to_h
-
-    url = "https://#{basic_auth}@api.tourism-system.com/content/ts/#{id}"
-    fetch_data(url).collect { |playlist|
-      [playlist['metadata']['name'], playlist['metadata']['id']]
-    }.select{ |name, _id|
-      name.include?('Teritorio')
-    }.to_h.transform_values{ |id|
-      raw = fetch_data("#{url}/#{id}")
-      map(raw, attribution, thesaurus)
-    }
+class TourismSystemSource < Source
+  def initialize(source_id, attribution, settings, path)
+    super(source_id, attribution, settings, path)
+    @basic_auth = settings[:basic_auth]
+    @id = settings[:id]
+    @playlist_id = settings[:playlist_id]
+    @thesaurus = settings[:thesaurus]
   end
 
-  def fetch(url)
-    uri = url.starts_with?('file://') ? File.open(url.gsub('file://', ''), 'r') : URI.parse(url)
+  def self.fetch(basic_auth, path)
+    url = "https://#{basic_auth}@api.tourism-system.com#{path}"
+    uri = URI.parse(url)
 
     uri_options = {}
     if !uri.userinfo.nil?
@@ -47,35 +36,27 @@ class TourismSystem < Datasource
     JSON.parse(file.read)
   end
 
-  def fetch_data(url)
+  def self.fetch_data(basic_auth, path)
     results = T.let([], T::Array[T.untyped])
     start = 0
     size = 1000
 
     data = []
     while start == 0 || data.size == size - 1
-      next_url = url + "?start=#{start}&size=#{size}"
-      puts "Fetch... #{next_url}"
-      data = fetch(next_url)['data']
+      next_path = path + "?start=#{start}&size=#{size}"
+      puts "Fetch... #{next_path}"
+      data = fetch(basic_auth, next_path)['data']
       results += data
       start += size
     end
     results
   end
 
-  def parse_thesaurus(thesaurus)
-    thesaurus.collect{ |sub|
-      [[sub['key'], sub['label']]] + (
-         sub.key?('children') ? parse_thesaurus(sub['children']) : []
-       )
-    }.flatten(1)
-  end
-
   def https(url)
     url.gsub(%r{^http://}, 'https://')
   end
 
-  def stars(s)
+  def stars(code)
     {
       # Hotels
       '06.04.01.03.01' => '1',
@@ -84,13 +65,13 @@ class TourismSystem < Datasource
       '06.04.01.03.04' => '4',
       '06.04.01.03.05' => '4S',
       '99.06.04.01.03.01' => '5',
-    }[s]
+    }[code]
   end
 
-  def map(raw, attribution, thesaurus)
-    raw.collect{ |f|
-      # puts f.inspect
-      {
+  def each
+    raw = self.class.fetch_data(@basic_auth, "/content/ts/#{@id}/#{@playlist_id}")
+    raw.each{ |f|
+      yield ({
         type: 'Feature',
         geometry: {
           type: 'Point',
@@ -102,7 +83,7 @@ class TourismSystem < Datasource
         properties: {
           id: f.dig('metadata', 'id'),
           updated_at: f.dig('data', 'dublinCore', 'modified'),
-          source: attribution,
+          source: @attribution,
           tags: {
             name: f.dig('metadata', 'name'),
             description: f.dig('data', 'dublinCore', 'description'),
@@ -131,13 +112,12 @@ class TourismSystem < Datasource
               f.dig('data', 'dublinCore', 'criteria')&.pluck('criterion')&.select{ |v|
                 v.start_with?('02.01.13.03.') || v.include?('.00.02.01.13.03.')
               }&.map{ |v|
-                thesaurus[v] || v
+                @thesaurus[v] || v
               }),
             stars: stars(jp(f, '.ratings.officials..ratingLevel').select{ |s| s.include?('06.04.01.03.') }.first),
           }.compact_blank,
         }.compact_blank,
-      }
+      })
     }
   end
 end
-# end

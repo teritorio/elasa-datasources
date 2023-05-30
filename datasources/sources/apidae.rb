@@ -9,23 +9,19 @@ require 'jsonpath'
 require 'open-uri'
 require 'cgi'
 require 'sorbet-runtime'
-require_relative 'datasource'
+require_relative 'source'
 
 
 def jp(object, path)
   JsonPath.on(object, "$.#{path}")
 end
 
-# module Datasources
-class Apidae < Datasource
-  def process(_source_id, settings, _dir)
-    territoire_ids = settings['territoireIds']
-    projet_id = settings['projetId']
-    api_key = settings['apiKey']
-    attribution = settings['attribution']
-    raw_json = fetch(territoire_ids, projet_id, api_key)
-    objects = map(raw_json, attribution)
-    { apidae: objects }
+class ApidaeSource < Source
+  def initialize(source_id, attribution, settings, path)
+    super(source_id, attribution, settings, path)
+    @territoire_ids = settings['territoireIds']
+    @projet_id = settings['projetId']
+    @api_key = settings['apiKey']
   end
 
   def build_url(territoire_ids, projet_id, api_key, first, count)
@@ -72,17 +68,18 @@ class Apidae < Datasource
     object&.transform_keys{ |key| key.gsub('libelle', '').downcase }
   end
 
-  def map(raw_json, attribution)
+  def each
+    raw_json = fetch(@territoire_ids, @projet_id, @api_key)
     raw_json.select{ |r|
       r['localisation']['geolocalisation']['geoJson']
-    }.map{ |r|
-      {
+    }.each{ |r|
+      yield ({
         type: 'Feature',
         geometry: r['localisation']['geolocalisation']['geoJson'],
         properties: {
           id: r['identifier'],
           updated_at: r['update_datetime'],
-          source: attribution,
+          source: @attribution,
           tags: {
             name: i18n_keys(r['nom']),
             description: i18n_keys(r.dig('presentation', 'descriptifCourt')),
@@ -101,8 +98,7 @@ class Apidae < Datasource
             'addr:country': r.dig('localisation', 'adresse', 'commune', 'pays', 'libelleFr'),
           }.compact_blank
         }.compact_blank
-      }
+      })
     }
   end
 end
-# end
