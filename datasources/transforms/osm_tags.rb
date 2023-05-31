@@ -1,16 +1,12 @@
 # frozen_string_literal: true
 # typed: true
 
-require_relative './mixins/addr_tags'
-
 class OsmTags
-  include HasArrdTags
-
   def initialize(extra_multiple = [])
     @multiple = @@multiple_base + extra_multiple
   end
 
-  @@multiple_base = %w[
+  @@multiple_base = %i[
     image
     email
     phone
@@ -22,13 +18,22 @@ class OsmTags
     contact:website
   ]
 
-  def process_tags(tags)
-    has_flat_addr = addr_tags?(tags)
+  def group_addr(tags)
+    g = tags.to_a.group_by{ |k, _v|
+      /^addr:.*/.match?(k)
+    }.transform_values(&:to_h)
+    [g[true] || {}, g[false] || {}]
+  end
 
-    tags.collect{ |k, v|
+  def process_tags(tags)
+    # There is an adresse defined by addr:* ?
+    has_flat_addr = tags.keys.find{ |k| k.start_with?('addr:') }
+
+    tags = tags.collect{ |k, v|
+      k = k.to_sym
       # Remove contact prefixes
       if k.start_with?('contact:')
-        kk = k[('contact:'.size)..]
+        kk = k[('contact:'.size)..].to_sym
         # Do no overwrite existing tags
         # Do no remove contact: for adresse if an adress already exists
         if tags.include?(kk)
@@ -49,6 +54,13 @@ class OsmTags
       # Split multi-values fields
       [k, @multiple.include?(k) ? v.split(';').collect(&:strip) : v]
     }.select{ |k, _v| !k.nil? }.to_h
+
+    # Group addr
+    addr, tags = group_addr(tags)
+    if !addr.empty?
+      tags[:addr] = addr.transform_keys{ |key| /^addr:(.*)/.match(key)[1].to_s }
+    end
+    tags
   end
 
   def process(row)
@@ -57,7 +69,7 @@ class OsmTags
   end
 
   # Part off addr:*, that could also be used in contact:*
-  @@contact_addr = %(
+  @@contact_addr = %i[
     housenumber
     street
     city
@@ -91,5 +103,5 @@ class OsmTags
     block
     quarter
     block_number
-  )
+  ]
 end

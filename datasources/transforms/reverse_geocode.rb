@@ -3,11 +3,8 @@
 
 require 'http'
 require 'csv'
-require_relative './mixins/addr_tags'
 
 class ReverseGeocode
-  include HasArrdTags
-
   def initialize
     @rows = []
   end
@@ -20,19 +17,20 @@ class ReverseGeocode
   def close
     puts "#{self.class.name}: #{@rows.size}"
 
+    # TODO: geocoder uniquement ceux qui ont besoin d'un adresse
+
+    # TODO: supporter tous les type de geom
+
     lon_lats = @rows.collect{ |f| f[:geometry][:coordinates] }
     addrs = reverse_query(lon_lats)
     @rows.zip(addrs).each { |f, addr|
-      # There is an adresse defined by addr:* ?
-      has_addr = addr_tags?(f[:properties][:tags].keys)
-
-      if !has_addr && addr['result_city']
-        f[:properties][:tags]['addr:street'] = addr['result_name']
-        f[:properties][:tags]['addr:postcode'] = addr['result_postcode']
-        f[:properties][:tags]['addr:city'] = addr['result_city']
-        f[:properties][:tags]['source:addr:street'] = 'BAN - ETALAB-2.0'
-        f[:properties][:tags]['source:addr:postcode'] = 'BAN - ETALAB-2.0'
-        f[:properties][:tags]['source:addr:city'] = 'BAN - ETALAB-2.0'
+      if !f[:properties][:tags].key?(:addr) && addr['result_city']
+        f[:properties][:tags][:addr] = {
+          street: addr['result_name'],
+          postcode: addr['result_postcode'],
+          city: addr['result_city'],
+        }
+        f[:properties][:tags]['source:addr'] = 'BAN - ETALAB-2.0'
       end
 
       yield f

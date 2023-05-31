@@ -15,27 +15,27 @@ class JoinTransformerTags < Test::Unit::TestCase
 
   def test_other
     assert_equal(
-      { 'ref' => 'a', 'phone' => '1' },
+      { ref: 'a', phone: '1' },
       join(
-        { 'ref' => 'a', 'phone' => '1' },
-        { 'ref' => 'a', 'phone' => '2' }
+        { ref: 'a', phone: '1' },
+        { ref: 'a', phone: '2' }
       )
     )
   end
 
   def test_addr
     assert_equal(
-      { 'ref' => 'a', 'addr:street' => 'a' },
+      { ref: 'a', addr: { street: 'a' } },
       join(
-        { 'ref' => 'a', 'addr:street' => 'a' },
-        { 'ref' => 'a', 'addr:street' => 'b' }
+        { ref: 'a', addr: { street: 'a' } },
+        { ref: 'a', addr: { street: 'b' } }
       )
     )
     assert_equal(
-      { 'ref' => 'a', 'addr:street' => 'a', 'addr:city' => 'b' },
+      { ref: 'a', addr: { street: 'a', city: 'b' } },
       join(
-        { 'ref' => 'a', 'addr:street' => 'a', 'addr:city' => 'b' },
-        { 'ref' => 'a', 'addr:housenumber' => '666' }
+        { ref: 'a', addr: { street: 'a', city: 'b' } },
+        { ref: 'a', addr: { housenumber: '666' } }
       )
     )
   end

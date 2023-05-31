@@ -89,14 +89,16 @@ class ApidaeSource < Source
             email: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Mél")].coordonnees.fr'),
             facebook: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Page facebook")].coordonnees.fr'),
             image: jp(r, 'illustrations[*].traductionFichiers[0][?(@.locale=="fr")].urlDiaporama'),
-            'addr:street': [
-              r.dig('localisation', 'adresse', 'adresse1'),
-              r.dig('localisation', 'adresse', 'adresse2'),
-              r.dig('localisation', 'adresse', 'adresse3'),
-            ].compact_blank.join(', '),
-            'addr:postcode': r.dig('localisation', 'adresse', 'codePostal'),
-            'addr:city': r.dig('localisation', 'adresse', 'commune', 'nom'),
-            'addr:country': r.dig('localisation', 'adresse', 'commune', 'pays', 'libelleFr'),
+            addr: {
+              street: [
+                r.dig('localisation', 'adresse', 'adresse1'),
+                r.dig('localisation', 'adresse', 'adresse2'),
+                r.dig('localisation', 'adresse', 'adresse3'),
+              ].compact_blank.join(', '),
+              postcode: r.dig('localisation', 'adresse', 'codePostal'),
+              city: r.dig('localisation', 'adresse', 'commune', 'nom'),
+              country: r.dig('localisation', 'adresse', 'commune', 'pays', 'libelleFr'),
+            },
           }.compact_blank
         }.compact_blank
       })

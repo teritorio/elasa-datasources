@@ -93,22 +93,23 @@ class TourismSystemSource < Source
             website: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="04.02.05")]')&.pluck('particular')&.compact_blank,
             facebook: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="99.04.02.01")]')&.pluck('particular')&.compact_blank,
             image: jp(f, '.multimedia[*][?(@.type=="03.01.01")].URL').map{ |u| https(u) }, # 03.01.01 = Image
-            # contact
-            'addr:street': [ # 04.03.13 = Etab/Lieu/Structure
-              jp(f, '.contacts[*][?(@.type=="04.03.13")]..address1'),
-              jp(f, '.contacts[*][?(@.type=="04.03.13")]..address2'),
-              jp(f, '.contacts[*][?(@.type=="04.03.13")]..address3'),
-            ].compact_blank.join(', '),
-            'addr:postcode': jp(f, '.contacts[*][?(@.type=="04.03.13")]..zipCode').first,
-            'addr:city': [
-              jp(f, '.contacts[*][?(@.type=="04.03.13")]..commune'),
-              # jp(f, '.contacts[*][?(@.type=="04.03.13")]..bureauDistrib'), # FIXME, not sure about property name
-              # jp(f, '.contacts[*][?(@.type=="04.03.13")]..cedex'), # FIXME, not sure about property name
-            ].compact_blank.join(', '),
-            'addr:country': [
-              # jp(f, '.contacts[*][?(@.type=="04.03.13")]..state'), # FIXME, not sure about property name
-              jp(f, '.contacts[*][?(@.type=="04.03.13")]..country'),
-            ].compact_blank.join(', '),
+            addr: {
+                street: [ # 04.03.13 = Etab/Lieu/Structure
+                jp(f, '.contacts[*][?(@.type=="04.03.13")]..address1'),
+                jp(f, '.contacts[*][?(@.type=="04.03.13")]..address2'),
+                jp(f, '.contacts[*][?(@.type=="04.03.13")]..address3'),
+              ].compact_blank.join(', '),
+                postcode: jp(f, '.contacts[*][?(@.type=="04.03.13")]..zipCode').first,
+                city: [
+                jp(f, '.contacts[*][?(@.type=="04.03.13")]..commune'),
+                # jp(f, '.contacts[*][?(@.type=="04.03.13")]..bureauDistrib'), # FIXME, not sure about property name
+                # jp(f, '.contacts[*][?(@.type=="04.03.13")]..cedex'), # FIXME, not sure about property name
+              ].compact_blank.join(', '),
+                country: [
+                # jp(f, '.contacts[*][?(@.type=="04.03.13")]..state'), # FIXME, not sure about property name
+                jp(f, '.contacts[*][?(@.type=="04.03.13")]..country'),
+              ].compact_blank.join(', '),
+            },
             cuisine: (
               f.dig('data', 'dublinCore', 'criteria')&.pluck('criterion')&.select{ |v|
                 v.start_with?('02.01.13.03.') || v.include?('.00.02.01.13.03.')

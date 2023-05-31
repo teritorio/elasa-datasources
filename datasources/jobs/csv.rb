@@ -15,7 +15,7 @@ class CsvJob < Job
 
     job = Kiba.parse do
       source(CsvSource, multi_source_id, attribution, settings, path)
-      transform(OsmTags, %w[route_ref])
+      transform(OsmTags, %i[route_ref])
       destination(GeoJson, multi_source_id, path)
     end
     Kiba.run(job)

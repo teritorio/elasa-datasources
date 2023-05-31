@@ -17,7 +17,7 @@ class Join < Job
       settings['sources'].each{ |source_url|
         source(GeoJsonSource, multi_source_id, attribution, { source_url: source_url }, path)
       }
-      transform(JoinTransformer, settings['key'], settings['key_required'])
+      transform(JoinTransformer, settings['key'])
       destination(GeoJson, multi_source_id, path)
     end
     Kiba.run(job)
