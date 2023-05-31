@@ -94,14 +94,16 @@ class GeotrekSource < Source
             name: name,
             description: r['description_teaser'].reject { |_, v| v == '' },
             website: website,
-            "route:#{practice_slug}:difficulty": difficulty(difficulties, r['difficulty']),
-            "route:#{practice_slug}:duration": (r['duration'].to_f * 60).to_i,
-            "route:#{practice_slug}:length": r['length_2d'].to_f / 1000,
-            'route:gpx_trace': r['gpx'],
+            route: {
+              "#{practice_slug}:difficulty": difficulty(difficulties, r['difficulty']),
+              "#{practice_slug}:duration": (r['duration'].to_f * 60).to_i,
+              "#{practice_slug}:length": r['length_2d'].to_f / 1000,
+              gpx_trace: r['gpx'],
+              pdf: r['pdf']&.compact_blank,
+            },
             image: r['attachments']&.filter{ |a|
               a['type'] == 'image'
             }&.pluck('url')&.compact_blank,
-            'route:pdf': r['pdf']&.compact_blank
           }.compact_blank
         }.compact_blank
       })
