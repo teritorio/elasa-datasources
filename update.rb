@@ -8,6 +8,7 @@ require 'sorbet-runtime'
 require './datasources/jobs/apidae'
 require './datasources/jobs/csv'
 require './datasources/jobs/geotrek'
+require './datasources/jobs/join'
 require './datasources/jobs/overpass'
 require './datasources/jobs/tourism_system'
 
