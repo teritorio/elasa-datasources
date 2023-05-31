@@ -12,10 +12,21 @@ class Apidae < Job
   def initialize(multi_source_id, attribution, settings, path)
     super(multi_source_id, attribution, settings, path)
 
-    job = Kiba.parse do
-      source(ApidaeSource, multi_source_id, attribution, settings, path)
-      destination(GeoJson, multi_source_id, path)
-    end
-    Kiba.run(job)
+    projet_id = settings['projetId']
+    api_key = settings['apiKey']
+    selections = ApidaeSource.fetch('referentiel/selections', { apiKey: api_key, projetId: projet_id })
+
+    selections.each{ |selection|
+      job = Kiba.parse do
+        apidea_settings = {
+          'projetId' => settings['projetId'],
+          'apiKey' => settings['apiKey'],
+          'selection_id' => selection['id'],
+        }
+        source(ApidaeSource, selection['nom'], attribution, apidea_settings, path)
+        destination(GeoJson, selection['nom'], path)
+      end
+      Kiba.run(job)
+    }
   end
 end

@@ -19,28 +19,33 @@ end
 class ApidaeSource < Source
   def initialize(source_id, attribution, settings, path)
     super(source_id, attribution, settings, path)
-    @territoire_ids = settings['territoireIds']
     @projet_id = settings['projetId']
     @api_key = settings['apiKey']
+    @selection_id = settings['selection_id']
   end
 
-  def build_url(territoire_ids, projet_id, api_key, first, count)
-    query = CGI.escape({
-      territoireIds: territoire_ids,
-      projetId: projet_id,
-      apiKey: api_key,
-      first: first,
-      count: count,
-    }.to_json)
-    "https://api.apidae-tourisme.com/api/v002/recherche/list-objets-touristiques/?query=#{query}"
+  def self.build_url(path, query)
+    query = CGI.escape(query.to_json)
+    "https://api.apidae-tourisme.com/api/v002/#{path}/?query=#{query}"
   end
 
-  def fetch(territoire_ids, projet_id, api_key)
+  def self.fetch(path, query)
+    url = build_url(path, query)
+    resp = HTTP.follow.get(url)
+    if !resp.status.success?
+      raise [url, resp].inspect
+    end
+
+    JSON.parse(resp.body)
+  end
+
+  def self.fetch_paged(path, query)
     first = 0
     count = 200 # Remore API max is 200
 
+    query = query.merge({ first: first, count: count })
     next_url = T.let(
-      build_url(territoire_ids, projet_id, api_key, first, count),
+      build_url(path, query),
       T.nilable(String)
     )
     results = T.let([], T::Array[T.untyped])
@@ -54,10 +59,9 @@ class ApidaeSource < Source
       json = JSON.parse(resp.body)
       if json['objetsTouristiques']
         results += json['objetsTouristiques']
-        next_url = (
-            first += count
-            build_url(territoire_ids, projet_id, api_key, first, count)
-          )
+        first += count
+        query = query.merge({ first: first, count: count })
+        next_url = build_url(path, query)
       end
     end
     results
@@ -68,7 +72,11 @@ class ApidaeSource < Source
   end
 
   def each
-    raw = fetch(@territoire_ids, @projet_id, @api_key)
+    raw = self.class.fetch_paged('recherche/list-objets-touristiques', {
+      projetId: @projet_id,
+      apiKey: @api_key,
+      selectionIds: [@selection_id],
+    })
     puts "#{self.class.name}: #{raw.size}"
 
     raw.select{ |r|
