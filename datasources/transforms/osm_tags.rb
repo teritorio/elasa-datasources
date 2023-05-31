@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 # typed: true
 
+require_relative './mixins/addr_tags'
+
 class OsmTags
+  include HasArrdTags
+
   def initialize(extra_multiple = [])
     @multiple = @@multiple_base + extra_multiple
   end
@@ -19,8 +23,7 @@ class OsmTags
   ]
 
   def process_tags(tags)
-    # There is an adresse defined by addr:* ?
-    has_flat_addr = tags.keys.find{ |k| k.start_with?('addr:') }
+    has_flat_addr = addr_tags?(tags)
 
     tags.collect{ |k, v|
       # Remove contact prefixes

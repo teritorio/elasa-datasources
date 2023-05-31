@@ -3,8 +3,11 @@
 
 require 'http'
 require 'csv'
+require_relative './mixins/addr_tags'
 
 class ReverseGeocode
+  include HasArrdTags
+
   def initialize
     @rows = []
   end
@@ -21,7 +24,7 @@ class ReverseGeocode
     addrs = reverse_query(lon_lats)
     @rows.zip(addrs).each { |f, addr|
       # There is an adresse defined by addr:* ?
-      has_addr = f[:properties][:tags].keys.find{ |k| k.start_with?('addr:') }
+      has_addr = addr_tags?(f[:properties][:tags].keys)
 
       if !has_addr && addr['result_city']
         f[:properties][:tags]['addr:street'] = addr['result_name']
