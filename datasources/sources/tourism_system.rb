@@ -42,7 +42,8 @@ class TourismSystemSource < Source
     size = 1000
 
     data = []
-    while start == 0 || data.size == size - 1
+    # Deals with stange remote paging API
+    while start == 0 || data.size >= size - 1
       next_path = path + "?start=#{start}&size=#{size}"
       data = fetch(basic_auth, next_path)['data']
       results += data
