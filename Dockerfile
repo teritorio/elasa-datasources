@@ -10,5 +10,5 @@ RUN bundle config --global silence_root_warning 1
 RUN bundle install
 
 ADD config.yaml .
-ADD *.rb .
+ADD *.rb ./
 ADD datasources datasources
