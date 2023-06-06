@@ -19,6 +19,7 @@ class TourismSystemSource < Source
     @id = settings[:id]
     @playlist_id = settings[:playlist_id]
     @thesaurus = settings[:thesaurus]
+    @website_details_url = settings[:website_details_url]
   end
 
   def self.fetch(basic_auth, path)
@@ -73,6 +74,9 @@ class TourismSystemSource < Source
     puts "#{self.class.name}: #{raw.size}"
 
     raw.each{ |f|
+      id = f.dig('data', 'dublinCore', 'externalReference')
+      website_details = @website_details_url.gsub('#{id}', id)
+
       yield ({
         type: 'Feature',
         geometry: {
@@ -83,7 +87,7 @@ class TourismSystemSource < Source
           ],
         },
         properties: {
-          id: f.dig('metadata', 'id'),
+          id: id,
           updated_at: f.dig('data', 'dublinCore', 'modified'),
           source: @attribution,
           tags: {
@@ -92,6 +96,7 @@ class TourismSystemSource < Source
             phone: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="04.02.01")]')&.pluck('particular')&.compact_blank,
             email: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="04.02.04")]')&.pluck('particular')&.compact_blank,
             website: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="04.02.05")]')&.pluck('particular')&.compact_blank,
+            'website:details': website_details,
             facebook: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="99.04.02.01")]')&.pluck('particular')&.compact_blank,
             image: jp(f, '.multimedia[*][?(@.type=="03.01.01")].URL').map{ |u| https(u) }, # 03.01.01 = Image
             addr: {

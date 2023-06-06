@@ -3,5 +3,5 @@ datasources:
     geotrek:
       type: Geotrek
       url: https://demo-admin.geotrek.fr/api/v2
-      url_web: https://exmaple.com
       attribution: Geotrek
+      website_details_url: https://exmaple.com/#{practice}/#{name}/

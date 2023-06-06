@@ -14,6 +14,7 @@ class TourismSystem < Job
 
     id = settings['id']
     basic_auth = settings['basic_auth']
+    website_details_url = settings['website_details_url']
 
     thesaurus_fr = TourismSystemSource.fetch(basic_auth, "/thesaurus/ts/#{id}/tree/fr")
     thesaurus = parse_thesaurus(thesaurus_fr).to_h
@@ -24,7 +25,13 @@ class TourismSystem < Job
       name.include?('Teritorio')
     }.each{ |source_id, playlist_id|
       job = Kiba.parse do
-        tourism_system_settings = { basic_auth: settings['basic_auth'], id: id, playlist_id: playlist_id, thesaurus: thesaurus }
+        tourism_system_settings = {
+          basic_auth: settings['basic_auth'],
+          id: id,
+          playlist_id: playlist_id,
+          thesaurus: thesaurus,
+          website_details_url: website_details_url
+        }
         source(TourismSystemSource, source_id, attribution, tourism_system_settings, path)
         destination(GeoJson, source_id, path)
       end

@@ -12,7 +12,7 @@ class GeotrekSource < Source
   def initialize(source_id, attribution, settings, path)
     super(source_id, attribution, settings, path)
     @base_url = settings['url']
-    @url_web = settings['url_web']
+    @website_details_url = settings['website_details_url']
   end
 
   def fetch_json_pages(url)
@@ -74,8 +74,8 @@ class GeotrekSource < Source
         'pedestre' => 'hiking',
       }[(practice&.dig('name', 'en') || practice&.dig('name', 'fr'))&.parameterize]
       practice_name = practice&.dig('name')
-      website = practice_name && name.collect{ |lang, _n|
-        practice_name[lang] && name[lang] && [lang, "#{@url_web}/#{practice_name[lang].parameterize}/#{name[lang].parameterize}/"] || nil
+      website_details = practice_name && name.collect{ |lang, _n|
+        practice_name[lang] && name[lang] && [lang, @website_details_url.gsub('#{practice}', practice_name[lang].parameterize).gsub('#{name}', name[lang].parameterize)] || nil
       }.compact.to_h || nil
       next if !practice_slug
 
@@ -93,7 +93,7 @@ class GeotrekSource < Source
           tags: {
             name: name,
             description: r['description_teaser'].reject { |_, v| v == '' },
-            website: website,
+            'website:details': website_details,
             route: {
               "#{practice_slug}:difficulty": difficulty(difficulties, r['difficulty']),
               "#{practice_slug}:duration": (r['duration'].to_f * 60).to_i,
