@@ -218,6 +218,7 @@ class ApidaeSource < Source
               country: r.dig('localisation', 'adresse', 'commune', 'pays', 'libelleFr'),
             },
             opening_hours: !r.dig('ouverture', 'periodesOuvertures').nil? && self.class.openning(r['ouverture']),
+            stars: r.dig('informationsHotellerie', 'classement', 'ordre')&.to_s,
           }.compact_blank
         }.compact_blank
       })
