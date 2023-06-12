@@ -41,7 +41,7 @@ class ApidaeSource < Source
 
   def self.fetch_paged(path, query)
     first = 0
-    count = 200 # Remore API max is 200
+    count = 200 # Remote API max is 200
 
     query = query.merge({ first: first, count: count })
     next_url = T.let(
@@ -71,16 +71,126 @@ class ApidaeSource < Source
     object&.transform_keys{ |key| key.gsub('libelle', '').downcase }
   end
 
+  @@month = %w[Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec]
+
+  def self.date(date)
+    month = @@month[date[5..6].to_i - 1]
+    day = date[8..9]
+    [month, day].join(' ')
+  end
+
+  @@days = {
+    'LUNDI' => 'Mo',
+    'MARDI' => 'Tu',
+    'MERCREDI' => 'We',
+    'JEUDI' => 'Th',
+    'VENDREDI' => 'Fr',
+    'SAMEDI' => 'Sa',
+    'DIMANCHE' => 'Su',
+  }
+
+  @@day_month = {
+    'D_1ER' => 1,
+    'D_2EME' => 2,
+    'D_3EME' => 3,
+    'D_4EME' => 4,
+    'D_DERNIER' => -1,
+  }
+
+  def self.openning_days(ojs)
+    ojs.collect{ |oj|
+      @@days[oj['jour']] + (oj['jourDuMois'].nil? ? '' : "[#{@@day_month[oj['jourDuMois']]}]")
+    }
+  end
+
+  @@exceptional_day = {
+    'PREMIER_JANVIER' => 'Jan 1',
+    'BERCHTOLDSTAG' => 'Jan 2', # Suisse
+    'SAINT_JOSEPH' => 'Mar 19', # Suisse
+    'VENDREDI_SAINT' => 'easter -2 day',
+    'LUNDI_PAQUES' => 'easter +1 day',
+    # 'ASCENSION' => '',
+    # 'LUNDI_PENTECOTE' => '',
+    'PREMIER_MAI' => 'May 1',
+    'HUIT_MAI' => 'May 8',
+    'QUATORZE_JUILLET' => 'Jul 14',
+    # 'FETE_DIEU' => '', # Suisse
+    'FETE_NATIONALE_SUISSE' => 'Aug 1', # Suisse
+    'QUINZE_AOUT' => 'Aug 15',
+    'LUNDI_DU_JEUNE_FEDERAL' => '', # Suisse
+    'PREMIER_NOVEMBRE' => 'Nov 1',
+    'ONZE_NOVEMBRE' => 'Nov 11',
+    'IMMACULEE_CONCEPTION' => 'Dec 8', # Suisse
+    'VINGT_CINQ_DECEMBRE' => 'Dec 25',
+  }
+
+  def self.exception_day(raw_date, day)
+    if raw_date.nil?
+      oed = @@exceptional_day[day]
+      if oed.nil?
+        puts "Missing #{day}"
+      else
+        oed
+      end
+    else
+      date(raw_date)
+    end
+  end
+
+  def self.openning_hour(hour)
+    hour[0..4]
+  end
+
+  def self.openning(ouverture)
+    (ouverture['periodesOuvertures'].collect { |po|
+      date_on = po['dateDebut'] && date(po['dateDebut'])
+      date_off = po['dateFin'] && date(po['dateFin'])
+      date_off = nil if date_on == date_off
+      date = [date_on, date_off].join('-')
+
+      days = (
+        case po['type']
+        when 'OUVERTURE_TOUS_LES_JOURS' then nil
+        when 'OUVERTURE_SAUF' then (@@days.values - openning_days(po['ouverturesJournalieres'])).join(',')
+        when 'OUVERTURE_SEMAINE' then openning_days(po['ouverturesJournalieres']).join(',')
+        when 'OUVERTURE_MOIS' then openning_days(po['ouverturesJourDuMois']).join(',')
+        else raise po['type']
+        end
+      )
+
+      hour = (
+        if po['horaireOuverture']
+          openning_hour(po['horaireOuverture']) + (po['horaireFermeture'] ? "-#{openning_hour(po['horaireFermeture'])}" : '+')
+        elsif po['horaireFermeture']
+          "#{openning_hour(po['horaireFermeture'])}+"
+        end
+      )
+
+      [[date, days, hour].compact.join(' ')] +
+        (po['ouverturesExceptionnelles'] || {}).collect { |oe|
+          exception_day(oe['dateOuverture'], oe['dateSpeciale'])
+        }.compact.collect{ |day|
+          [day, hour].compact.join(' ')
+        }
+    } + (ouverture['fermeturesExceptionnelles'] || {}).collect { |fe|
+      exception_day(fe['dateFermeture'], fe['dateSpeciale'])
+    }.compact.collect{ |day|
+      "#{day} off"
+    }).join(';')
+  end
+
   def each
     raw = self.class.fetch_paged('recherche/list-objets-touristiques', {
       projetId: @projet_id,
       apiKey: @api_key,
       selectionIds: [@selection_id],
+      responseFields: ['@default', 'ouverture'], # '@all' for debug with all fields
     })
     puts "#{self.class.name}: #{raw.size}"
 
     raw.select{ |r|
-      r['localisation']['geolocalisation']['geoJson']
+      r['localisation']['geolocalisation']['geoJson'] &&
+        r['ouverture']['fermeTemporairement'] != 'FERME_TEMPORAIREMENT'
     }.each{ |r|
       yield ({
         type: 'Feature',
@@ -107,6 +217,7 @@ class ApidaeSource < Source
               city: r.dig('localisation', 'adresse', 'commune', 'nom'),
               country: r.dig('localisation', 'adresse', 'commune', 'pays', 'libelleFr'),
             },
+            opening_hours: !r.dig('ouverture', 'periodesOuvertures').nil? && self.class.openning(r['ouverture']),
           }.compact_blank
         }.compact_blank
       })
