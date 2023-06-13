@@ -151,7 +151,7 @@ class ApidaeSource < Source
       date_on = po['dateDebut'] && date(po['dateDebut'])
       date_off = po['dateFin'] && date(po['dateFin'])
       date_off = nil if date_on == date_off
-      date = [date_on, date_off].join('-')
+      date = [date_on, date_off].compact.join('-')
 
       days = (
         case po['type']
