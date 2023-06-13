@@ -142,7 +142,12 @@ class ApidaeSource < Source
   end
 
   def self.openning(ouverture)
-    (ouverture['periodesOuvertures'].collect { |po|
+    min_date_on = nil
+    max_date_off = nil
+    osm_openning_hours = (ouverture['periodesOuvertures'].collect { |po|
+      min_date_on = [min_date_on, po['dateDebut']].compact.min
+      max_date_off = po['tousLesAns'] ? nil : [max_date_off, po['dateFin']].compact.max
+
       date_on = po['dateDebut'] && date(po['dateDebut'])
       date_off = po['dateFin'] && date(po['dateFin'])
       date_off = nil if date_on == date_off
@@ -177,6 +182,8 @@ class ApidaeSource < Source
     }.compact.collect{ |day|
       "#{day} off"
     }).join(';')
+
+    [min_date_on, max_date_off, osm_openning_hours]
   end
 
   def each
@@ -192,6 +199,7 @@ class ApidaeSource < Source
       r['localisation']['geolocalisation']['geoJson'] &&
         r['ouverture']['fermeTemporairement'] != 'FERME_TEMPORAIREMENT'
     }.each{ |r|
+      date_on, date_off, osm_openning_hours = !r.dig('ouverture', 'periodesOuvertures').nil? && self.class.openning(r['ouverture'])
       yield ({
         type: 'Feature',
         geometry: r['localisation']['geolocalisation']['geoJson'],
@@ -217,7 +225,9 @@ class ApidaeSource < Source
               city: r.dig('localisation', 'adresse', 'commune', 'nom'),
               country: r.dig('localisation', 'adresse', 'commune', 'pays', 'libelleFr'),
             },
-            opening_hours: !r.dig('ouverture', 'periodesOuvertures').nil? && self.class.openning(r['ouverture']),
+            opening_hours: osm_openning_hours,
+            start_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_on : nil,
+            end_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_off : nil,
             stars: r.dig('informationsHotellerie', 'classement', 'ordre')&.to_s,
           }.compact_blank
         }.compact_blank
