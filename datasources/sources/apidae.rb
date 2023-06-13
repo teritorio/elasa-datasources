@@ -186,6 +186,71 @@ class ApidaeSource < Source
     [min_date_on, max_date_off, osm_openning_hours]
   end
 
+  # https://www.datatourisme.fr/ontology/core/#EntertainmentAndEvent
+  @@event_type = {
+    # SaleEvent
+    'Manifestations commerciales' => 'SaleEvent', # Generic
+    # '' => 'BricABrac',
+    # '' => 'FairOrShow',
+    # '' => 'Market',
+    # '' => 'OpenDay',
+    # '' => 'GarageSale',
+    # BusinessEvent
+    # '' => 'TrainingWorkshop',
+    # '' => 'ExecutiveBoardMeeting',
+    # '' => 'Congress',
+    # '' => 'BoardMeeting',
+    # '' => 'WorkMeeting',
+    # '' => 'Seminar',
+    # SocialEvent
+    'Distractions et loisirs' => 'SocialEvent', # Generic
+    # '' => 'LocalAnimation',
+    # '' => 'Carnival',
+    # '' => 'Parade',
+    'Traditions et folklore' => 'TraditionalCelebration',
+    # '' => 'PilgrimageAndProcession',
+    # '' => 'ReligiousEvent',
+    # CulturalEvent
+    'Culture' => 'CulturalEvent', # Generic
+    # '' => 'Concert',
+    # '' => 'Conference',
+    # '' => 'ArtistSigning',
+    # '' => 'ChildrensEvent',
+    # '' => 'Exhibition',
+    # '' => 'Festival',
+    # '' => 'Reading',
+    # '' => 'Opera',
+    # '' => 'TheaterEvent',
+    # '' => 'ScreeningEvent',
+    # '' => 'Recital',
+    # '' => 'VisualArtsEvent',
+    # '' => 'ShowEvent',
+    # '' => 'CircusEvent',
+    # '' => 'DanceEvent',
+    # '' => 'Harvest',
+    # SportsEvent
+    'Sports' => 'SportsEvent', # Generic
+    # '' => 'SportsCompetition',
+    # '' => 'SportsDemonstration',
+    # '' => 'Game',
+    # '' => 'Rally',
+    # '' => 'Rambling',
+
+    # Other
+    'Nature et détente' => 'Other', # Not part of datatourisme ontology
+  }
+
+  def self.event(events)
+    events.collect{ |tm|
+      t = @@event_type[tm['libelleFr']]
+      if t.nil?
+        puts raise("Missing #{tm['libelleFr']}")
+      else
+        t
+      end
+    }.compact
+  end
+
   def each
     raw = self.class.fetch_paged('recherche/list-objets-touristiques', {
       projetId: @projet_id,
@@ -229,6 +294,7 @@ class ApidaeSource < Source
             start_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_on : nil,
             end_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_off : nil,
             stars: r.dig('informationsHotellerie', 'classement', 'ordre')&.to_s,
+            event: r.dig('informationsFeteEtManifestation', 'typesManifestation').nil? ? nil : self.class.event(r.dig('informationsFeteEtManifestation', 'typesManifestation'))
           }.compact_blank
         }.compact_blank
       })
