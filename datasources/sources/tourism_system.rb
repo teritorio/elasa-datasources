@@ -69,6 +69,77 @@ class TourismSystemSource < Source
     }[code]
   end
 
+  @@month = %w[Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec]
+
+  def self.date(date)
+    month = @@month[date[5..6].to_i - 1]
+    day = date[8..9]
+    [month, day].join(' ')
+  end
+
+  @@days = {
+    '09.02.01' => 'Su', # Dimanche
+    '09.02.02' => 'Mo', # Lundi
+    '09.02.03' => 'Tu', # Mardi
+    '09.02.04' => 'We', # Mercredi
+    '09.02.05' => 'Th', # Jeudi
+    '09.02.06' => 'Fr', # Vendredi
+    '09.02.07' => 'Sa', # Samedi
+    '09.02.08' => nil, # Tous les jours
+  }
+
+  def self.openning_day(day)
+    d = @@days[day['day']]
+    hours = day['schedules'].select{ |s| s['startTime'] }.collect{ |s|
+      hours_start = s['startTime'][0..4]
+      hours_end = s['endTime'].nil? ? nil : s['endTime'][0..4]
+      hours_start + (hours_end.nil? ? '+' : "-#{hours_end}")
+    }.join(',')
+    [d, hours]
+  end
+
+  def self.openning(periods)
+    min_date_on = nil
+    max_date_off = nil
+
+    osm_openning_hours = periods.select{ |p|
+      if ['09.01.01', '09.01.05', '09.01.06', '09.01.07', nil].exclude?(p['type'])
+        raise p['type'].inspect
+      end
+
+      ['09.01.01', '09.01.05', '09.01.06', '09.01.07'].include?(p['type']) # Accueil, Manifestation, Ouverture, Réservation
+    }.collect{ |p|
+      min_date_on = [min_date_on, p['startDate'][0..9]].compact.min
+      max_date_off = [max_date_off, p['endDate'][0..9]].compact.max
+
+      start_date = date(p['startDate'])
+      end_date = date(p['endDate'])
+      end_date = nil if start_date == end_date
+      date = [start_date, end_date].compact.join('-')
+
+      day_by_types = (p['days'] || []).group_by{ |day|
+        day['type']
+      }
+
+      day_hour = (((day_by_types['09.03.02'] || []) + (day_by_types['09.03.04'] || [])).pluck('days').flatten(1).collect{ |day|
+        # Ouverture, Visite
+        openning_day(day)
+      } + ((day_by_types['09.03.01'] || []) + (day_by_types['09.03.03'] || [])).pluck('days').flatten(1).collect{ |day|
+        # Fermeture, Relache
+        openning_day(day) + ['off']
+      }).group_by{ |od|
+        od[1..]
+      }.collect{ |key, vs|
+        days = vs.collect(&:first).join(',')
+        ([days.empty? ? nil : days] + key).compact.join(' ')
+      }
+
+      ([date] + day_hour).compact.join(' ')
+    }.join(';')
+
+    [min_date_on, max_date_off, osm_openning_hours == '' ? nil : osm_openning_hours]
+  end
+
   def each
     raw = self.class.fetch_data(@basic_auth, "/content/ts/#{@id}/#{@playlist_id}")
     puts "#{self.class.name}: #{raw.size}"
@@ -76,7 +147,7 @@ class TourismSystemSource < Source
     raw.each{ |f|
       id = f.dig('data', 'dublinCore', 'externalReference')
       website_details = @website_details_url.gsub('#{id}', id)
-
+      date_on, date_off, osm_openning_hours = !f.dig('data', 'periods').nil? && self.class.openning(f['data']['periods'])
       yield ({
         type: 'Feature',
         geometry: {
@@ -122,6 +193,9 @@ class TourismSystemSource < Source
               }&.map{ |v|
                 @thesaurus[v] || v
               }),
+            opening_hours: osm_openning_hours,
+            start_date: date_on,
+            end_date: date_off,
             stars: stars(jp(f, '.ratings.officials..ratingLevel').select{ |s| s.include?('06.04.01.03.') }.first),
           }.compact_blank,
         }.compact_blank,
