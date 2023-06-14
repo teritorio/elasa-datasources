@@ -236,8 +236,8 @@ class ApidaeSource < Source
     # '' => 'Rally',
     # '' => 'Rambling',
 
-    # Other
-    'Nature et détente' => 'Other', # Not part of datatourisme ontology
+    # Other. Not part of datatourisme ontology
+    'Nature et détente' => 'Other',
   }
 
   def self.event(events)
