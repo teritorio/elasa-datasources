@@ -115,7 +115,7 @@ class TourismSystemSource < Source
                 # jp(f, '.contacts[*][?(@.type=="04.03.13")]..state'), # FIXME, not sure about property name
                 jp(f, '.contacts[*][?(@.type=="04.03.13")]..country'),
               ].compact_blank.join(', '),
-            },
+            }.compact_blank,
             cuisine: (
               f.dig('data', 'dublinCore', 'criteria')&.pluck('criterion')&.select{ |v|
                 v.start_with?('02.01.13.03.') || v.include?('.00.02.01.13.03.')

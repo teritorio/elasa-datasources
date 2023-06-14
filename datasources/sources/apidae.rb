@@ -289,7 +289,7 @@ class ApidaeSource < Source
               postcode: r.dig('localisation', 'adresse', 'codePostal'),
               city: r.dig('localisation', 'adresse', 'commune', 'nom'),
               country: r.dig('localisation', 'adresse', 'commune', 'pays', 'libelleFr'),
-            },
+            }.compact_blank,
             opening_hours: osm_openning_hours,
             start_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_on : nil,
             end_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_off : nil,

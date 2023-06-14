@@ -100,7 +100,7 @@ class GeotrekSource < Source
               "#{practice_slug}:length": r['length_2d'].to_f / 1000,
               gpx_trace: r['gpx'],
               pdf: r['pdf']&.compact_blank,
-            },
+            }.compact_blank,
             image: r['attachments']&.filter{ |a|
               a['type'] == 'image'
             }&.pluck('url')&.compact_blank,

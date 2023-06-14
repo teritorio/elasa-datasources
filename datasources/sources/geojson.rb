@@ -46,7 +46,7 @@ class GeoJsonSource < Source
           id: r['properties']['id'],
           updated_at: r['properties']['updated_at'],
           source: r['properties']['source'],
-          tags: r['properties']['tags'],
+          tags: r['properties']['tags'].compact_blank,
         }
     })
     }
