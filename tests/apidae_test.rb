@@ -4,15 +4,7 @@
 require 'test/unit'
 require './datasources/sources/apidae'
 
-class JoinTransformerTags < Test::Unit::TestCase
-  def setup
-    @join = JoinTransformer.new('ref')
-  end
-
-  def join(current, update)
-    @join.process_tags(current, update)
-  end
-
+class TestApideaSource < Test::Unit::TestCase
   def test_day_hour
     assert_equal(
       ['2023-06-12', '2023-07-02', 'Jun 12-Jul 02 Tu,We'],
