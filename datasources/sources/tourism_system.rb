@@ -140,6 +140,75 @@ class TourismSystemSource < Source
     [min_date_on, max_date_off, osm_openning_hours == '' ? nil : osm_openning_hours]
   end
 
+  # https://www.datatourisme.fr/ontology/core/#EntertainmentAndEvent
+  @@event_type = {
+    # SaleEvent
+    '02.01.03.04.04' => 'SaleEvent', # Manifestation commerciale, Generic
+    # '' => 'BricABrac',
+    # '' => 'FairOrShow',
+    # '' => 'Market',
+    # '' => 'OpenDay',
+    # '' => 'GarageSale',
+    # BusinessEvent
+    # '' => 'TrainingWorkshop',
+    # '' => 'ExecutiveBoardMeeting',
+    # '' => 'Congress',
+    # '' => 'BoardMeeting',
+    # '' => 'WorkMeeting',
+    # '' => 'Seminar',
+    # SocialEvent
+    # '' => 'SocialEvent', # Generic
+    # '' => 'LocalAnimation',
+    # '' => 'Carnival',
+    # '' => 'Parade',
+    '02.01.03.04.10' => 'TraditionalCelebration', # Traditions et folklore
+    # '' => 'PilgrimageAndProcession',
+    '02.01.03.04.07' => 'ReligiousEvent', # Religieuse
+    # CulturalEvent
+    '02.01.03.04.01' => 'CulturalEvent', # Culturelle, Generic
+    '02.01.03.04.05' => 'Concert', # Musique
+    # '' => 'Conference',
+    # '' => 'ArtistSigning',
+    # '' => 'ChildrensEvent',
+    # '' => 'Exhibition',
+    # '' => 'Festival',
+    # '' => 'Reading',
+    # '' => 'Opera',
+    # '' => 'TheaterEvent',
+    # '' => 'ScreeningEvent',
+    # '' => 'Recital',
+    '02.01.03.04.08' => 'VisualArtsEvent', # Son et Lumière
+    # '' => 'ShowEvent',
+    # '' => 'CircusEvent',
+    '02.01.03.04.02' => 'DanceEvent', # Danse
+    # '' => 'Harvest',
+    # SportsEvent
+    '02.01.03.04.09' => 'SportsEvent', # Sports et loisirs, Generic
+    # '' => 'SportsCompetition',
+    # '' => 'SportsDemonstration',
+    # '' => 'Game',
+    # '' => 'Rally',
+    # '' => 'Rambling',
+
+    # Other. Not part of datatourisme ontology
+    '02.01.03.04.03' => 'Other', # Insolite
+    '02.01.03.04.06' => 'Other', # Nature et détente
+  }
+
+  def self.events(events)
+    events&.pluck('criterion')&.select{ |c|
+      # Fêtes et Manifestations - Types
+      c.start_with?('02.01.03.04')
+    }&.collect{ |c|
+      t = @@event_type[c]
+      if t.nil?
+        puts raise("Missing #{tm['libelleFr']}")
+      else
+        t
+      end
+    }&.compact
+  end
+
   def each
     raw = self.class.fetch_data(@basic_auth, "/content/ts/#{@id}/#{@playlist_id}")
     puts "#{self.class.name}: #{raw.size}"
@@ -147,6 +216,7 @@ class TourismSystemSource < Source
     raw.each{ |f|
       id = f.dig('data', 'dublinCore', 'externalReference')
       website_details = @website_details_url.gsub('#{id}', id)
+      event = f.dig('data', 'dublinCore', 'classifications')&.pluck('classification')&.include?('02.01.03') # Fêtes et Manifestations
       date_on, date_off, osm_openning_hours = !f.dig('data', 'periods').nil? && self.class.openning(f['data']['periods'])
       yield ({
         type: 'Feature',
@@ -194,9 +264,10 @@ class TourismSystemSource < Source
                 @thesaurus[v] || v
               }),
             opening_hours: osm_openning_hours,
-            start_date: date_on,
-            end_date: date_off,
+            start_date: event && date_on,
+            end_date: event && date_off,
             stars: stars(jp(f, '.ratings.officials..ratingLevel').select{ |s| s.include?('06.04.01.03.') }.first),
+            event: self.class.events(f.dig('data', 'dublinCore', 'criteria')),
           }.compact_blank,
         }.compact_blank,
       })
