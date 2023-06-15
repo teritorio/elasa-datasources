@@ -16,15 +16,20 @@ class Apidae < Job
     api_key = settings['apiKey']
     selections = ApidaeSource.fetch('referentiel/selections', { apiKey: api_key, projetId: projet_id })
 
-    selections.each{ |selection|
+    selections.group_by{ |selection|
+      selection['nom']
+    }.each{ |name, selections|
       job = Kiba.parse do
-        apidea_settings = {
-          'projetId' => settings['projetId'],
-          'apiKey' => settings['apiKey'],
-          'selection_id' => selection['id'],
+        selections.each{ |selection|
+          apidea_settings = {
+            'projetId' => settings['projetId'],
+            'apiKey' => settings['apiKey'],
+            'selection_id' => selection['id'],
+          }
+          source(ApidaeSource, name, attribution, apidea_settings, path)
         }
-        source(ApidaeSource, selection['nom'], attribution, apidea_settings, path)
-        destination(GeoJson, selection['nom'], path)
+
+        destination(GeoJson, name, path)
       end
       Kiba.run(job)
     }

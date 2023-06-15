@@ -251,6 +251,41 @@ class ApidaeSource < Source
     }.compact
   end
 
+  @@practice = {
+    # bicycle
+    'Sports cyclistes' => nil, # Generic for bicycle and mtb
+    'Itinéraire cyclo' => 'bicycle',
+    'Itinéraire de VTT à Assistance Électrique' => 'bicycle',
+    'Véloroute et voie verte' => 'bicycle',
+    'Itinéraire de Vélo à Assistance Electrique' => 'bicycle',
+    # mtb
+    'Itinéraire VTT' => 'mtb',
+    'Espace VTT' => 'mtb',
+    # horse
+    'Sports équestres' => 'horse', # Generic
+    'Itinéraire de randonnée équestre' => 'horse',
+    # hiking
+    'Sports pédestres' => 'hiking', # Generic
+    'Parcours d\'orientation' => 'hiking',
+    'Itinéraire de randonnée pédestre' => 'hiking',
+    'Parcours / sentier thématique' => 'hiking',
+    'Itinéraire de Trail' => 'hiking',
+    'Pôle trail' => 'hiking',
+    # other random data
+    'Sports d\'adresse' => nil,
+    'Paintball' => nil,
+    'Golf' => nil,
+    'Golf 18 trous' => nil,
+  }
+
+  def self.practices(activites)
+    activites.collect{ |activite|
+      raise activite['libelleFr'] if !@@practice.key?(activite['libelleFr'])
+
+      @@practice[activite['libelleFr']]
+    }.compact.uniq
+  end
+
   def each
     raw = self.class.fetch_paged('recherche/list-objets-touristiques', {
       projetId: @projet_id,
@@ -264,6 +299,7 @@ class ApidaeSource < Source
       r['localisation']['geolocalisation']['geoJson'] &&
         r['ouverture']['fermeTemporairement'] != 'FERME_TEMPORAIREMENT'
     }.each{ |r|
+      practices = self.class.practices(jp(r, 'informationsEquipement.activites[*]')) if jp(r, 'informationsEquipement.itineraire')&.compact_blank.present?
       date_on, date_off, osm_openning_hours = !r.dig('ouverture', 'periodesOuvertures').nil? && self.class.openning(r['ouverture'])
       yield ({
         type: 'Feature',
@@ -290,6 +326,15 @@ class ApidaeSource < Source
               city: r.dig('localisation', 'adresse', 'commune', 'nom'),
               country: r.dig('localisation', 'adresse', 'commune', 'pays', 'libelleFr'),
             }.compact_blank,
+            route: practices&.collect{ |practice_slug|
+              {
+                # "#{practice_slug}:difficulty":
+                "#{practice_slug}:duration": jp(r, 'informationsEquipement.itineraire.dureeJournaliere').first,
+                "#{practice_slug}:length": jp(r, 'informationsEquipement.itineraire.distance').first,
+                gpx_trace: jp(r, 'multimedias[*].traductionFichiers[*][?(@.extension=="gpx")].url').first,
+                pdf: jp(r, 'multimedias[*].traductionFichiers[*][?(@.extension=="pdf")]').to_h{ |t| [t['locale'], t['url']] },
+              }
+            }&.inject(:merge)&.compact_blank,
             opening_hours: osm_openning_hours,
             start_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_on : nil,
             end_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_off : nil,
