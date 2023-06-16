@@ -18,9 +18,9 @@ class Apidae < Job
 
     selections.group_by{ |selection|
       selection['nom']
-    }.each{ |name, selections|
+    }.each{ |name, selection_by_name|
       job = Kiba.parse do
-        selections.each{ |selection|
+        selection_by_name.each{ |selection|
           apidea_settings = {
             'projetId' => settings['projetId'],
             'apiKey' => settings['apiKey'],

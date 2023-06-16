@@ -268,7 +268,7 @@ class TourismSystemSource < Source
 
     raw.each{ |f|
       id = f.dig('data', 'dublinCore', 'externalReference')
-      website_details = @website_details_url.gsub('#{id}', id)
+      website_details = @website_details_url.gsub('{{id}}', id)
       event = f.dig('data', 'dublinCore', 'classifications')&.pluck('classification')&.include?('02.01.03') # Fêtes et Manifestations
       date_on, date_off, osm_openning_hours = !f.dig('data', 'periods').nil? && self.class.openning(f['data']['periods'])
       yield ({

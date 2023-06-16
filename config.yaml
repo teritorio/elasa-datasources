@@ -4,4 +4,4 @@ datasources:
       type: Geotrek
       url: https://demo-admin.geotrek.fr/api/v2
       attribution: Geotrek
-      website_details_url: https://exmaple.com/#{practice}/#{name}/
+      website_details_url: https://exmaple.com/{{practice}}/{{name}}/

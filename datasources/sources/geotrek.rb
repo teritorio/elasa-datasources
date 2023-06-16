@@ -75,7 +75,7 @@ class GeotrekSource < Source
       }[(practice&.dig('name', 'en') || practice&.dig('name', 'fr'))&.parameterize]
       practice_name = practice&.dig('name')
       website_details = practice_name && name.collect{ |lang, _n|
-        practice_name[lang] && name[lang] && [lang, @website_details_url.gsub('#{practice}', practice_name[lang].parameterize).gsub('#{name}', name[lang].parameterize)] || nil
+        practice_name[lang] && name[lang] && [lang, @website_details_url.gsub('{{practice}}', practice_name[lang].parameterize).gsub('{{name}}', name[lang].parameterize)] || nil
       }.compact.to_h || nil
       next if !practice_slug
 

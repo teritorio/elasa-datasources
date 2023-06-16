@@ -43,9 +43,7 @@ class OsmTags
           if is_addr_key && has_flat_addr
             k = nil
           else
-            if is_addr_key
-              kk = "addr:#{kk}"
-            end
+            kk = "addr:#{kk}" if is_addr_key
             k = kk
           end
         end
