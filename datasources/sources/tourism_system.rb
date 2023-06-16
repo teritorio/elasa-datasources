@@ -209,6 +209,36 @@ class TourismSystemSource < Source
     }&.compact
   end
 
+  @@capacities = {
+    '14.01.01' => nil, # Appartements # No OSM tags for that
+    '14.01.02' => 'rooms', # Chambres
+    '14.01.03' => nil, # Hébergements # No OSM tags for that
+    '14.01.04' => 'pitches', # Emplacements
+    '14.01.05' => 'tents', # Tentes
+    '14.01.06' => 'rooms', # Salles # FIXME Not sure about this mapping
+    '14.01.07' => 'persons', # Personnes
+    '99.14.01.07' => 'persons', # Groupes (Capacité max.)"
+    # Other OSM avaiables tags
+    # caravans
+    # beds
+  }
+
+  def self.capacities(global_capacities)
+    (global_capacities || {}).collect{ |global_capacity|
+      [global_capacity['type'], global_capacity['capacity']]
+    }.select{ |type, capacity|
+      if !type.start_with?('14.01.') && !type.start_with?('99.14.01.')
+        false
+      elsif !@@capacities.key?(type)
+        raise type
+      else
+        !@@capacities[type].nil? && !capacity.nil?
+      end
+    }.to_h{ |type, capacity|
+      ["capacity:#{@@capacities[type]}", capacity]
+    }
+  end
+
   def each
     raw = self.class.fetch_data(@basic_auth, "/content/ts/#{@id}/#{@playlist_id}")
     puts "#{self.class.name}: #{raw.size}"
@@ -268,7 +298,9 @@ class TourismSystemSource < Source
             end_date: event && date_off,
             stars: stars(jp(f, '.ratings.officials..ratingLevel').select{ |s| s.include?('06.04.01.03.') }.first),
             event: self.class.events(f.dig('data', 'dublinCore', 'criteria')),
-          }.compact_blank,
+          }.merge(
+            self.class.capacities(jp(f, '.capacities[*].globalCapacities',).flatten(1)),
+          ).compact_blank,
         }.compact_blank,
       })
     }
