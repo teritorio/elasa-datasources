@@ -57,16 +57,39 @@ class TourismSystemSource < Source
     url.gsub(%r{^http://}, 'https://')
   end
 
-  def stars(code)
-    {
-      # Hotels
-      '06.04.01.03.01' => '1',
-      '06.04.01.03.02' => '2',
-      '06.04.01.03.03' => '3',
-      '06.04.01.03.04' => '4',
-      '06.04.01.03.05' => '4S',
-      '99.06.04.01.03.01' => '5',
-    }[code]
+  @@awards = {
+    tournesol: %w[tournesol tournesols],
+    soleil: %w[soleil soleils],
+    epi: %(épi épis),
+    cle: %(clé clés),
+    toque: %(toque toques),
+    fleurs: %(fleur fleurs),
+    cheminee: %(cheminée cheminées),
+    lutin_bleu: ['Lutin bleu (simple)', 'Lutins bleus (variés)'],
+    lutin_blanc: ['Lutin blanc (simple)', 'Lutins blancs (variés)'],
+    lutin_rouge: ['Lutin rouge (simple et complets)', 'Lutins rouges (trés bon et complets)'],
+  }
+
+  def ratings(ratings)
+    ((jp(ratings, '.officials..ratingLevel') || []) + (jp(ratings, '.labels..ratingLevel') || [])).collect{ |level|
+      raise level if !@thesaurus.key?(level)
+
+
+      @thesaurus[level].split(' ', 2)
+    }.collect{ |level, award|
+      if level.to_i.to_s == level
+        if award.start_with?('étoile')
+          ['stars', award == 'étoiles Luxe' ? '4S' : level]
+        else
+          symb_award = @@awards.find{ |_symb, matches| matches.include?(award) }
+          if symb_award.nil?
+            raise [level, award].inspect
+          end
+
+          ["award:#{symb_award[0]}", level]
+        end
+      end
+    }.compact.uniq.to_h
   end
 
   @@month = %w[Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec]
@@ -296,10 +319,10 @@ class TourismSystemSource < Source
             opening_hours: osm_openning_hours,
             start_date: event && date_on,
             end_date: event && date_off,
-            stars: stars(jp(f, '.ratings.officials..ratingLevel').select{ |s| s.include?('06.04.01.03.') }.first),
             event: self.class.events(f.dig('data', 'dublinCore', 'criteria')),
           }.merge(
             self.class.capacities(jp(f, '.capacities[*].globalCapacities',).flatten(1)),
+            ratings(jp(f, '.ratings')),
           ).compact_blank,
         }.compact_blank,
       })
