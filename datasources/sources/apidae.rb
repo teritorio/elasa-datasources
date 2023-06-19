@@ -291,7 +291,7 @@ class ApidaeSource < Source
       projetId: @projet_id,
       apiKey: @api_key,
       selectionIds: [@selection_id],
-      responseFields: ['@default', 'ouverture'], # '@all' for debug with all fields
+      responseFields: ['@default', 'ouverture', 'multimedias'], # '@all' for debug with all fields
     })
     puts "#{self.class.name}: #{raw.size}"
 
