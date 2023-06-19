@@ -262,6 +262,24 @@ class TourismSystemSource < Source
     }
   end
 
+
+  @@tags = {
+    # Patrimoine naturel
+    '193.02.01.12.01.01' => { 'boundary' => 'protected_area', 'leisure' => 'nature_reserve' }, # Découverte faune et flore
+    '193.02.01.12.01.02' => { 'water' => 'lake' }, # Lacs
+    '193.02.01.12.01.04' => { 'boundary' => 'protected_area', 'protect_class' => 4 }, # Parcs Naturels Régionaux
+    '193.02.01.12.01.05' => { 'tourism' => 'viewpoint' }, # Point de vue / Panorama
+    '317.02.01.12.01.01' => { 'tourism' => 'viewpoint' }, # Panoramas
+    '317.02.01.12.01.03' => { 'natural' => 'mountain_range' }, # Massifs et montagnes
+    '317.02.01.12.01.04' => { 'natural' => 'bay' }, # Baie
+  }
+
+  def main_tags(classifications)
+    classifications&.collect{ |classification|
+      @@tags[classification]
+    }&.compact&.inject(:merge) || {}
+  end
+
   def each
     raw = self.class.fetch_data(@basic_auth, "/content/ts/#{@id}/#{@playlist_id}")
     puts "#{self.class.name}: #{raw.size}"
@@ -321,6 +339,7 @@ class TourismSystemSource < Source
             end_date: event && date_off,
             event: self.class.events(f.dig('data', 'dublinCore', 'criteria')),
           }.merge(
+            main_tags(f.dig('data', 'dublinCore', 'criteria')&.pluck('criterion')),
             self.class.capacities(jp(f, '.capacities[*].globalCapacities',).flatten(1)),
             ratings(jp(f, '.ratings')),
           ).compact_blank,
