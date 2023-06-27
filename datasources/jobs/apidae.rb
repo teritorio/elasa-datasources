@@ -25,6 +25,7 @@ class Apidae < Job
             'projetId' => settings['projetId'],
             'apiKey' => settings['apiKey'],
             'selection_id' => selection['id'],
+            'website_details_url' => settings['website_details_url']
           }
           source(ApidaeSource, name, attribution, apidea_settings, path)
         }

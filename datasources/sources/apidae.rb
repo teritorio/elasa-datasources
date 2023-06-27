@@ -22,6 +22,7 @@ class ApidaeSource < Source
     @projet_id = settings['projetId']
     @api_key = settings['apiKey']
     @selection_id = settings['selection_id']
+    @website_details_url = settings['website_details_url']
   end
 
   def self.build_url(path, query)
@@ -312,6 +313,7 @@ class ApidaeSource < Source
             name: i18n_keys(r['nom']),
             description: i18n_keys(r.dig('presentation', 'descriptifCourt')),
             website: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Site web (URL)")].coordonnees.fr'),
+            'website:details': @website_details_url&.gsub('{{id}}', r['id'].to_s),
             phone: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Téléphone")].coordonnees.fr'),
             email: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Mél")].coordonnees.fr'),
             facebook: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Page facebook")].coordonnees.fr'),
