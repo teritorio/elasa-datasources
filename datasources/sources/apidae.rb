@@ -99,7 +99,7 @@ class ApidaeSource < Source
   }
 
   def self.openning_days(ojs)
-    ojs.collect{ |oj|
+    (ojs || []).collect{ |oj|
       @@days[oj['jour']] + (oj['jourDuMois'].nil? ? '' : "[#{@@day_month[oj['jourDuMois']]}]")
     }
   end
