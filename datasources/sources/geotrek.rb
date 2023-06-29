@@ -64,7 +64,9 @@ class GeotrekSource < Source
     raw = fetch(@base_url)
     puts "#{self.class.name}: #{raw.size}"
 
-    raw.each{ |r|
+    raw.select{ |r|
+      r['practice']
+    }.each{ |r|
       name = r['name']&.compact_blank
       practice = practices[r['practice']]
       practice_slug = HashExcep[{
@@ -77,7 +79,6 @@ class GeotrekSource < Source
       website_details = practice_name && name.collect{ |lang, _n|
         practice_name[lang] && name[lang] && [lang, @website_details_url.gsub('{{practice}}', practice_name[lang].parameterize).gsub('{{name}}', name[lang].parameterize)] || nil
       }.compact.to_h || nil
-      next if !practice_slug
 
       yield ({
         destination_id: practice_slug,
