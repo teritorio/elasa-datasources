@@ -67,12 +67,12 @@ class GeotrekSource < Source
     raw.each{ |r|
       name = r['name']&.compact_blank
       practice = practices[r['practice']]
-      practice_slug = {
+      practice_slug = HashExcep[{
         'cycling' => 'bicycle',
         'horse' => 'horse',
         'mountain-bike' => 'mtb',
         'pedestre' => 'hiking',
-      }[(practice&.dig('name', 'en') || practice&.dig('name', 'fr'))&.parameterize]
+      }][(practice&.dig('name', 'en') || practice&.dig('name', 'fr'))&.parameterize]
       practice_name = practice&.dig('name')
       website_details = practice_name && name.collect{ |lang, _n|
         practice_name[lang] && name[lang] && [lang, @website_details_url.gsub('{{practice}}', practice_name[lang].parameterize).gsub('{{name}}', name[lang].parameterize)] || nil

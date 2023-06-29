@@ -17,7 +17,7 @@ class TourismSystem < Job
     website_details_url = settings['website_details_url']
 
     thesaurus_fr = TourismSystemSource.fetch(basic_auth, "/thesaurus/ts/#{id}/tree/fr")
-    thesaurus = parse_thesaurus(thesaurus_fr).to_h
+    thesaurus = HashExcep[parse_thesaurus(thesaurus_fr).to_h]
 
     TourismSystemSource.fetch_data(basic_auth, "/content/ts/#{id}").collect { |playlist|
       [playlist['metadata']['name'], playlist['metadata']['id']]

@@ -188,7 +188,7 @@ class ApidaeSource < Source
   end
 
   # https://www.datatourisme.fr/ontology/core/#EntertainmentAndEvent
-  @@event_type = {
+  @@event_type = HashExcep[{
     # SaleEvent
     'Manifestations commerciales' => 'SaleEvent', # Generic
     # '' => 'BricABrac',
@@ -239,20 +239,15 @@ class ApidaeSource < Source
 
     # Other. Not part of datatourisme ontology
     'Nature et détente' => 'Other',
-  }
+  }]
 
   def self.event(events)
     events.collect{ |tm|
-      t = @@event_type[tm['libelleFr']]
-      if t.nil?
-        puts raise("Missing #{tm['libelleFr']}")
-      else
-        t
-      end
+      @@event_type[tm['libelleFr']]
     }.compact
   end
 
-  @@practice = {
+  @@practice = HashExcep[{
     # bicycle
     'Sports cyclistes' => nil, # Generic for bicycle and mtb
     'Itinéraire cyclo' => 'bicycle',
@@ -277,12 +272,10 @@ class ApidaeSource < Source
     'Paintball' => nil,
     'Golf' => nil,
     'Golf 18 trous' => nil,
-  }
+  }]
 
   def self.practices(activites)
     activites.collect{ |activite|
-      raise activite['libelleFr'] if !@@practice.key?(activite['libelleFr'])
-
       @@practice[activite['libelleFr']]
     }.compact.uniq
   end

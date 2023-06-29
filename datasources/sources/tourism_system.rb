@@ -72,9 +72,6 @@ class TourismSystemSource < Source
 
   def ratings(ratings)
     ((jp(ratings, '.officials..ratingLevel') || []) + (jp(ratings, '.labels..ratingLevel') || [])).collect{ |level|
-      raise level if !@thesaurus.key?(level)
-
-
       @thesaurus[level].split(' ', 2)
     }.collect{ |level, award|
       if level.to_i.to_s == level
@@ -232,7 +229,7 @@ class TourismSystemSource < Source
     }&.compact
   end
 
-  @@capacities = {
+  @@capacities = HashExcep[{
     '14.01.01' => nil, # Appartements # No OSM tags for that
     '14.01.02' => 'rooms', # Chambres
     '14.01.03' => nil, # Hébergements # No OSM tags for that
@@ -244,7 +241,7 @@ class TourismSystemSource < Source
     # Other OSM avaiables tags
     # caravans
     # beds
-  }
+  }]
 
   def self.capacities(global_capacities)
     (global_capacities || {}).collect{ |global_capacity|
@@ -252,8 +249,6 @@ class TourismSystemSource < Source
     }.select{ |type, capacity|
       if !type.start_with?('14.01.') && !type.start_with?('99.14.01.')
         false
-      elsif !@@capacities.key?(type)
-        raise type
       else
         !@@capacities[type].nil? && !capacity.nil?
       end

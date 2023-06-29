@@ -3,6 +3,14 @@
 
 require 'sorbet-runtime'
 
+class HashExcep < Hash
+  def [](key)
+    raise "Missing key \"#{key}\" in Hash" if !key?(key)
+
+    super(key)
+  end
+end
+
 class Source
   def initialize(source_id, attribution, _settings, path)
     @source_id = source_id
