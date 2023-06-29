@@ -281,63 +281,62 @@ class ApidaeSource < Source
   end
 
   def each
-    raw = self.class.fetch_paged('recherche/list-objets-touristiques', {
+    super(self.class.fetch_paged('recherche/list-objets-touristiques', {
       projetId: @projet_id,
       apiKey: @api_key,
       selectionIds: [@selection_id],
       responseFields: ['@default', 'ouverture', 'multimedias'], # '@all' for debug with all fields
-    })
-    puts "#{self.class.name}: #{raw.size}"
+    }))
+  end
 
-    raw.select{ |r|
-      r['localisation']['geolocalisation']['geoJson'] &&
-        r['ouverture']['fermeTemporairement'] != 'FERME_TEMPORAIREMENT'
-    }.each{ |r|
-      practices = self.class.practices(jp(r, 'informationsEquipement.activites[*]')) if jp(r, 'informationsEquipement.itineraire')&.compact_blank.present?
-      date_on, date_off, osm_openning_hours = !r.dig('ouverture', 'periodesOuvertures').nil? && self.class.openning(r['ouverture'])
-      yield ({
-        type: 'Feature',
-        geometry: r['localisation']['geolocalisation']['geoJson'],
-        properties: {
-          id: r['identifier'],
-          updated_at: r['update_datetime'],
-          source: @attribution,
-          tags: {
-            name: i18n_keys(r['nom']),
-            description: i18n_keys(r.dig('presentation', 'descriptifCourt')),
-            website: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Site web (URL)")].coordonnees.fr'),
-            'website:details': @website_details_url&.gsub('{{id}}', r['id'].to_s),
-            phone: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Téléphone")].coordonnees.fr'),
-            email: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Mél")].coordonnees.fr'),
-            facebook: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Page facebook")].coordonnees.fr'),
-            image: jp(r, 'illustrations[*].traductionFichiers[0][?(@.locale=="fr")].urlDiaporama'),
-            addr: {
-              street: [
-                r.dig('localisation', 'adresse', 'adresse1'),
-                r.dig('localisation', 'adresse', 'adresse2'),
-                r.dig('localisation', 'adresse', 'adresse3'),
-              ].compact_blank.join(', '),
-              postcode: r.dig('localisation', 'adresse', 'codePostal'),
-              city: r.dig('localisation', 'adresse', 'commune', 'nom'),
-              country: r.dig('localisation', 'adresse', 'commune', 'pays', 'libelleFr'),
-            }.compact_blank,
-            route: practices&.collect{ |practice_slug|
-              {
-                # "#{practice_slug}:difficulty":
-                "#{practice_slug}:duration": jp(r, 'informationsEquipement.itineraire.dureeJournaliere').first,
-                "#{practice_slug}:length": jp(r, 'informationsEquipement.itineraire.distance').first,
-                gpx_trace: jp(r, 'multimedias[*].traductionFichiers[*][?(@.extension=="gpx")].url').first,
-                pdf: jp(r, 'multimedias[*].traductionFichiers[*][?(@.extension=="pdf")]').to_h{ |t| [t['locale'], t['url']] },
-              }
-            }&.inject(:merge)&.compact_blank,
-            opening_hours: osm_openning_hours,
-            start_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_on : nil,
-            end_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_off : nil,
-            stars: r.dig('informationsHotellerie', 'classement', 'ordre')&.to_s,
-            event: r.dig('informationsFeteEtManifestation', 'typesManifestation').nil? ? nil : self.class.event(r.dig('informationsFeteEtManifestation', 'typesManifestation'))
-          }.compact_blank
+  def map(feat)
+    r = feat
+    return nil if !r['localisation']['geolocalisation']['geoJson'] || r['ouverture']['fermeTemporairement'] == 'FERME_TEMPORAIREMENT'
+
+    practices = self.class.practices(jp(r, 'informationsEquipement.activites[*]')) if jp(r, 'informationsEquipement.itineraire')&.compact_blank.present?
+    date_on, date_off, osm_openning_hours = !r.dig('ouverture', 'periodesOuvertures').nil? && self.class.openning(r['ouverture'])
+    {
+      type: 'Feature',
+      geometry: r['localisation']['geolocalisation']['geoJson'],
+      properties: {
+        id: r['identifier'],
+        updated_at: r['update_datetime'],
+        source: @attribution,
+        tags: {
+          name: i18n_keys(r['nom']),
+          description: i18n_keys(r.dig('presentation', 'descriptifCourt')),
+          website: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Site web (URL)")].coordonnees.fr'),
+          'website:details': @website_details_url&.gsub('{{id}}', r['id'].to_s),
+          phone: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Téléphone")].coordonnees.fr'),
+          email: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Mél")].coordonnees.fr'),
+          facebook: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Page facebook")].coordonnees.fr'),
+          image: jp(r, 'illustrations[*].traductionFichiers[0][?(@.locale=="fr")].urlDiaporama'),
+          addr: {
+            street: [
+              r.dig('localisation', 'adresse', 'adresse1'),
+              r.dig('localisation', 'adresse', 'adresse2'),
+              r.dig('localisation', 'adresse', 'adresse3'),
+            ].compact_blank.join(', '),
+            postcode: r.dig('localisation', 'adresse', 'codePostal'),
+            city: r.dig('localisation', 'adresse', 'commune', 'nom'),
+            country: r.dig('localisation', 'adresse', 'commune', 'pays', 'libelleFr'),
+          }.compact_blank,
+          route: practices&.collect{ |practice_slug|
+            {
+              # "#{practice_slug}:difficulty":
+              "#{practice_slug}:duration": jp(r, 'informationsEquipement.itineraire.dureeJournaliere').first,
+              "#{practice_slug}:length": jp(r, 'informationsEquipement.itineraire.distance').first,
+              gpx_trace: jp(r, 'multimedias[*].traductionFichiers[*][?(@.extension=="gpx")].url').first,
+              pdf: jp(r, 'multimedias[*].traductionFichiers[*][?(@.extension=="pdf")]').to_h{ |t| [t['locale'], t['url']] },
+            }
+          }&.inject(:merge)&.compact_blank,
+          opening_hours: osm_openning_hours,
+          start_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_on : nil,
+          end_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_off : nil,
+          stars: r.dig('informationsHotellerie', 'classement', 'ordre')&.to_s,
+          event: r.dig('informationsFeteEtManifestation', 'typesManifestation').nil? ? nil : self.class.event(r.dig('informationsFeteEtManifestation', 'typesManifestation'))
         }.compact_blank
-      })
+      }.compact_blank
     }
   end
 end

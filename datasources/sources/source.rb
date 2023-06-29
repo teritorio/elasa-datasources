@@ -17,4 +17,21 @@ class Source
     @attribution = attribution
     @path = path
   end
+
+  def each(raw)
+    puts "#{self.class.name}: #{raw.size}"
+
+    raw.each{ |r|
+      begin
+        osm = map(r)
+        if !osm.nil?
+          yield osm
+        end
+      rescue StandardError => e
+        puts 'Native', JSON.dump(r)
+        puts 'OSM', JSON.dump(osm)
+        raise e
+      end
+    }
+  end
 end

@@ -31,25 +31,25 @@ class CsvSource < Source
   end
 
   def each
-    raw = fetch(@url, @col_sep)
-    puts "#{self.class.name}: #{raw.size}"
+    super(fetch(@url, @col_sep))
+  end
 
-    raw.select{ |r|
-      r[@id].present? && r[@lon].present? && r[@lat].present?
-    }.each{ |r|
-      yield ({
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: [r[@lon].to_f, r[@lat].to_f],
-        },
-        properties: {
-          id: r[@id].to_i,
-          updated_at: r[@timestamp],
-          source: @attribution,
-          tags: r.to_h.except(@id, @lon, @lat, @timestamp).compact_blank
-        }.compact_blank
-      })
+  def map(feat)
+    r = feat
+    return nil if r[@id].blank? || r[@lon].blank? || r[@lat].blank?
+
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [r[@lon].to_f, r[@lat].to_f],
+      },
+      properties: {
+        id: r[@id].to_i,
+        updated_at: r[@timestamp],
+        source: @attribution,
+        tags: r.to_h.except(@id, @lon, @lat, @timestamp).compact_blank
+      }.compact_blank
     }
   end
 end

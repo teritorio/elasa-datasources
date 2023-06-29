@@ -53,23 +53,23 @@ out center meta;
   end
 
   def each
-    raw = overpass(@relation_id, @select)
-    puts "#{self.class.name}: #{raw.size}"
+    super(overpass(@relation_id, @select))
+  end
 
-    raw.each{ |r|
-      yield ({
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: r['lon'].nil? ? [r['center']['lon'], r['center']['lat']] : [r['lon'], r['lat']],
-        },
-        properties: {
-          id: r['type'][0] + r['id'].to_s,
-          updated_at: r['timestamp'],
-          source: @attribution,
-          tags: r['tags'],
-        }
-      })
+  def map(feat)
+    r = feat
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: r['lon'].nil? ? [r['center']['lon'], r['center']['lat']] : [r['lon'], r['lat']],
+      },
+      properties: {
+        id: r['type'][0] + r['id'].to_s,
+        updated_at: r['timestamp'],
+        source: @attribution,
+        tags: r['tags'],
+      }
     }
   end
 end

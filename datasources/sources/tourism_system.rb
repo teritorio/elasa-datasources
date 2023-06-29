@@ -276,70 +276,70 @@ class TourismSystemSource < Source
   end
 
   def each
-    raw = self.class.fetch_data(@basic_auth, "/content/ts/#{@id}/#{@playlist_id}")
-    puts "#{self.class.name}: #{raw.size}"
+    super(self.class.fetch_data(@basic_auth, "/content/ts/#{@id}/#{@playlist_id}"))
+  end
 
-    raw.each{ |f|
-      id = f.dig('data', 'dublinCore', 'externalReference')
-      website_details = @website_details_url.gsub('{{id}}', id)
-      event = f.dig('data', 'dublinCore', 'classifications')&.pluck('classification')&.include?('02.01.03') # Fêtes et Manifestations
-      date_on, date_off, osm_openning_hours = !f.dig('data', 'periods').nil? && self.class.openning(f['data']['periods'])
-      yield ({
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: [
-            jp(f, '.geolocations..longitude').first.to_f,
-            jp(f, '.geolocations..latitude').first.to_f,
-          ],
-        },
-        properties: {
-          id: id,
-          updated_at: f.dig('data', 'dublinCore', 'modified'),
-          source: @attribution,
-          tags: {
-            name: f.dig('metadata', 'name'),
-            description: f.dig('data', 'dublinCore', 'description'),
-            phone: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="04.02.01")]')&.pluck('particular')&.compact_blank,
-            email: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="04.02.04")]')&.pluck('particular')&.compact_blank,
-            website: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="04.02.05")]')&.pluck('particular')&.compact_blank,
-            'website:details': website_details,
-            facebook: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="99.04.02.01")]')&.pluck('particular')&.compact_blank,
-            image: jp(f, '.multimedia[*][?(@.type=="03.01.01")].URL').map{ |u| https(u) }, # 03.01.01 = Image
-            addr: {
-                street: [ # 04.03.13 = Etab/Lieu/Structure
-                jp(f, '.contacts[*][?(@.type=="04.03.13")]..address1'),
-                jp(f, '.contacts[*][?(@.type=="04.03.13")]..address2'),
-                jp(f, '.contacts[*][?(@.type=="04.03.13")]..address3'),
-              ].compact_blank.join(', '),
-                postcode: jp(f, '.contacts[*][?(@.type=="04.03.13")]..zipCode').first,
-                city: [
-                jp(f, '.contacts[*][?(@.type=="04.03.13")]..commune'),
-                # jp(f, '.contacts[*][?(@.type=="04.03.13")]..bureauDistrib'), # FIXME, not sure about property name
-                # jp(f, '.contacts[*][?(@.type=="04.03.13")]..cedex'), # FIXME, not sure about property name
-              ].compact_blank.join(', '),
-                country: [
-                # jp(f, '.contacts[*][?(@.type=="04.03.13")]..state'), # FIXME, not sure about property name
-                jp(f, '.contacts[*][?(@.type=="04.03.13")]..country'),
-              ].compact_blank.join(', '),
-            }.compact_blank,
-            cuisine: (
-              f.dig('data', 'dublinCore', 'criteria')&.pluck('criterion')&.select{ |v|
-                v.start_with?('02.01.13.03.') || v.include?('.00.02.01.13.03.')
-              }&.map{ |v|
-                @thesaurus[v] || v
-              }),
-            opening_hours: osm_openning_hours,
-            start_date: event && date_on,
-            end_date: event && date_off,
-            event: self.class.events(f.dig('data', 'dublinCore', 'criteria')),
-          }.merge(
-            main_tags(f.dig('data', 'dublinCore', 'criteria')&.pluck('criterion')),
-            self.class.capacities(jp(f, '.capacities[*].globalCapacities',).flatten(1)),
-            ratings(jp(f, '.ratings')),
-          ).compact_blank,
-        }.compact_blank,
-      })
+  def map(feat)
+    f = feat
+    id = f.dig('data', 'dublinCore', 'externalReference')
+    website_details = @website_details_url.gsub('{{id}}', id)
+    event = f.dig('data', 'dublinCore', 'classifications')&.pluck('classification')&.include?('02.01.03') # Fêtes et Manifestations
+    date_on, date_off, osm_openning_hours = !f.dig('data', 'periods').nil? && self.class.openning(f['data']['periods'])
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [
+          jp(f, '.geolocations..longitude').first.to_f,
+          jp(f, '.geolocations..latitude').first.to_f,
+        ],
+      },
+      properties: {
+        id: id,
+        updated_at: f.dig('data', 'dublinCore', 'modified'),
+        source: @attribution,
+        tags: {
+          name: f.dig('metadata', 'name'),
+          description: f.dig('data', 'dublinCore', 'description'),
+          phone: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="04.02.01")]')&.pluck('particular')&.compact_blank,
+          email: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="04.02.04")]')&.pluck('particular')&.compact_blank,
+          website: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="04.02.05")]')&.pluck('particular')&.compact_blank,
+          'website:details': website_details,
+          facebook: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="99.04.02.01")]')&.pluck('particular')&.compact_blank,
+          image: jp(f, '.multimedia[*][?(@.type=="03.01.01")].URL').map{ |u| https(u) }, # 03.01.01 = Image
+          addr: {
+              street: [ # 04.03.13 = Etab/Lieu/Structure
+              jp(f, '.contacts[*][?(@.type=="04.03.13")]..address1'),
+              jp(f, '.contacts[*][?(@.type=="04.03.13")]..address2'),
+              jp(f, '.contacts[*][?(@.type=="04.03.13")]..address3'),
+            ].compact_blank.join(', '),
+              postcode: jp(f, '.contacts[*][?(@.type=="04.03.13")]..zipCode').first,
+              city: [
+              jp(f, '.contacts[*][?(@.type=="04.03.13")]..commune'),
+              # jp(f, '.contacts[*][?(@.type=="04.03.13")]..bureauDistrib'), # FIXME, not sure about property name
+              # jp(f, '.contacts[*][?(@.type=="04.03.13")]..cedex'), # FIXME, not sure about property name
+            ].compact_blank.join(', '),
+              country: [
+              # jp(f, '.contacts[*][?(@.type=="04.03.13")]..state'), # FIXME, not sure about property name
+              jp(f, '.contacts[*][?(@.type=="04.03.13")]..country'),
+            ].compact_blank.join(', '),
+          }.compact_blank,
+          cuisine: (
+            f.dig('data', 'dublinCore', 'criteria')&.pluck('criterion')&.select{ |v|
+              v.start_with?('02.01.13.03.') || v.include?('.00.02.01.13.03.')
+            }&.map{ |v|
+              @thesaurus[v] || v
+            }),
+          opening_hours: osm_openning_hours,
+          start_date: event && date_on,
+          end_date: event && date_off,
+          event: self.class.events(f.dig('data', 'dublinCore', 'criteria')),
+        }.merge(
+          main_tags(f.dig('data', 'dublinCore', 'criteria')&.pluck('criterion')),
+          self.class.capacities(jp(f, '.capacities[*].globalCapacities',).flatten(1)),
+          ratings(jp(f, '.ratings')),
+        ).compact_blank,
+      }.compact_blank,
     }
   end
 end

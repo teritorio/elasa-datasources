@@ -35,20 +35,20 @@ class GeoJsonSource < Source
   end
 
   def each
-    raw = fetch(@source_url)
-    puts "#{self.class.name}: #{raw.size}"
+    super(fetch(@source_url))
+  end
 
-    raw.each { |r|
-      yield ({
-        type: 'Feature',
-        geometry: r['geometry'],
-        properties: {
-          id: r['properties']['id'],
-          updated_at: r['properties']['updated_at'],
-          source: r['properties']['source'],
-          tags: r['properties']['tags'].compact_blank,
-        }
-    })
+  def map(feat)
+    r = feat
+    {
+      type: 'Feature',
+      geometry: r['geometry'],
+      properties: {
+        id: r['properties']['id'],
+        updated_at: r['properties']['updated_at'],
+        source: r['properties']['source'],
+        tags: r['properties']['tags'].compact_blank,
+      }
     }
   end
 end
