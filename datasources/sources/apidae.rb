@@ -294,7 +294,9 @@ class ApidaeSource < Source
     return nil if !r['localisation']['geolocalisation']['geoJson'] || r['ouverture']['fermeTemporairement'] == 'FERME_TEMPORAIREMENT'
 
     practices = self.class.practices(jp(r, 'informationsEquipement.activites[*]')) if jp(r, 'informationsEquipement.itineraire')&.compact_blank.present?
-    date_on, date_off, osm_openning_hours = !r.dig('ouverture', 'periodesOuvertures').nil? && self.class.openning(r['ouverture'])
+    date_on, date_off, osm_openning_hours = r.dig('ouverture', 'periodesOuvertures').nil? ? [] : self.class.openning(r['ouverture'])
+    return nil if r['type'] == 'FETE_ET_MANIFESTATION' && date_on.nil? && date_off.nil?
+
     {
       type: 'Feature',
       geometry: r['localisation']['geolocalisation']['geoJson'],
