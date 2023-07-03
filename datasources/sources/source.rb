@@ -12,9 +12,10 @@ class HashExcep < Hash
 end
 
 class Source
-  def initialize(source_id, attribution, _settings, path)
+  def initialize(source_id, attribution, settings, path)
     @source_id = source_id
     @attribution = attribution
+    @settings = settings
     @path = path
   end
 
@@ -24,6 +25,10 @@ class Source
 
   def map_source(_feat)
     @attribution
+  end
+
+  def map_native_properties(_feat)
+    nil
   end
 
   def each(raw)
@@ -52,6 +57,7 @@ class Source
             updated_at: updated_at,
             source: map_source(r),
             tags: tags.compact_blank,
+            natives: map_native_properties(r, @settings['native_properties']).compact_blank,
           }.compact_blank,
         }.compact_blank)
       rescue StandardError => e

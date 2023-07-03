@@ -31,14 +31,24 @@ class TourinsoftSource < Source
     JSON.parse(resp.body)['value']
   end
 
-  def multiple_split(row, fields, sub_part = nil)
-    values = fields.collect{ |i| row[i] }.compact.collect{ |n| n.split('#') }.flatten(1).compact_blank.uniq
+  def split(string, sub_part = nil)
+    parts = string.split('#').compact_blank.uniq
     if !sub_part.nil?
-      values = values.collect{ |value|
+      parts = parts.collect{ |part|
+        part.split('|')[sub_part]
+      }.compact_blank.uniq
+    end
+    parts
+  end
+
+  def multiple_split(row, fields, sub_part = nil)
+    parts = fields.collect{ |i| row[i] }.compact.collect{ |n| n.split('#') }.flatten(1).compact_blank.uniq
+    if !sub_part.nil?
+      parts = parts.collect{ |value|
         value.split('|')[sub_part]
       }.compact_blank.uniq
     end
-    values
+    parts
   end
 
   def each
