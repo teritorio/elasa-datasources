@@ -10,8 +10,8 @@ require_relative '../destinations/geojson'
 
 
 class Join < Job
-  def initialize(multi_source_id, attribution, settings, path)
-    super(multi_source_id, attribution, settings, path)
+  def initialize(multi_source_id, attribution, settings, source_filter, path)
+    super(multi_source_id, attribution, settings, source_filter, path)
 
     job = Kiba.parse do
       settings['sources'].each{ |source_url|

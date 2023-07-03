@@ -16,6 +16,7 @@ require './datasources/jobs/tourism_system'
 @config = YAML.safe_load(File.read('config.yaml'))
 @project = ARGV[0]
 @datasource = ARGV[1]
+@source = ARGV[2]
 
 @config['datasources'].to_a.select { |project, _datasources|
   !@project || project == @project
@@ -32,6 +33,7 @@ require './datasources/jobs/tourism_system'
       multi_source_id,
       settings['attribution'],
       settings.except('attribution', 'type'),
+      @source,
       dir
     )
   }

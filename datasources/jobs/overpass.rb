@@ -14,8 +14,8 @@ require_relative '../destinations/geojson'
 
 
 class Overpass < Job
-  def initialize(multi_source_id, attribution, settings, path)
-    super(multi_source_id, attribution, settings, path)
+  def initialize(multi_source_id, attribution, settings, source_filter, path)
+    super(multi_source_id, attribution, settings, source_filter, path)
 
     configs = settings['configs']
     config = configs.inject({}){ |sum, config_path|

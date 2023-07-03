@@ -9,8 +9,8 @@ require_relative '../destinations/geojson_by'
 
 
 class Geotrek < Job
-  def initialize(multi_source_id, attribution, settings, path)
-    super(multi_source_id, attribution, settings, path)
+  def initialize(multi_source_id, attribution, settings, source_filter, path)
+    super(multi_source_id, attribution, settings, source_filter, path)
 
     job = Kiba.parse do
       source(GeotrekSource, multi_source_id, attribution, settings, path)

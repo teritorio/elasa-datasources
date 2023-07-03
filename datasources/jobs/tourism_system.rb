@@ -9,8 +9,8 @@ require_relative '../destinations/geojson'
 
 
 class TourismSystem < Job
-  def initialize(multi_source_id, attribution, settings, path)
-    super(multi_source_id, attribution, settings, path)
+  def initialize(multi_source_id, attribution, settings, source_filter, path)
+    super(multi_source_id, attribution, settings, source_filter, path)
 
     id = settings['id']
     basic_auth = settings['basic_auth']
@@ -22,7 +22,11 @@ class TourismSystem < Job
     TourismSystemSource.fetch_data(basic_auth, "/content/ts/#{id}").collect { |playlist|
       [playlist['metadata']['name'], playlist['metadata']['id']]
     }.select{ |name, _id|
-      name.include?('Teritorio')
+      if source_filter.nil?
+        name.start_with?('Teritorio')
+      else
+        name.start_with?("Teritorio - #{source_filter}")
+      end
     }.each{ |source_id, playlist_id|
       job = Kiba.parse do
         tourism_system_settings = {
