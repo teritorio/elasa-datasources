@@ -10,6 +10,8 @@ require './datasources/jobs/csv'
 require './datasources/jobs/geotrek'
 require './datasources/jobs/join'
 require './datasources/jobs/overpass'
+require './datasources/jobs/tourinsoft_cdt50'
+require './datasources/jobs/tourinsoft_sirtaqui'
 require './datasources/jobs/tourism_system'
 
 
