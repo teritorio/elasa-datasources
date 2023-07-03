@@ -285,7 +285,7 @@ class ApidaeSource < Source
       projetId: @projet_id,
       apiKey: @api_key,
       selectionIds: [@selection_id],
-      responseFields: ['@default', 'ouverture', 'multimedias'], # '@all' for debug with all fields
+      responseFields: ['@default', 'gestion', 'ouverture', 'multimedias'], # '@all' for debug with all fields
     }))
   end
 
@@ -296,7 +296,7 @@ class ApidaeSource < Source
   end
 
   def map_updated_at(feat)
-    feat['update_datetime']
+    feat['gestion']['dateModification']
   end
 
   def map_geometry(feat)
