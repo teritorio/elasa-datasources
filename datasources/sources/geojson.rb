@@ -38,17 +38,23 @@ class GeoJsonSource < Source
     super(fetch(@source_url))
   end
 
-  def map(feat)
-    r = feat
-    {
-      type: 'Feature',
-      geometry: r['geometry'],
-      properties: {
-        id: r['properties']['id'],
-        updated_at: r['properties']['updated_at'],
-        source: r['properties']['source'],
-        tags: r['properties']['tags'].compact_blank,
-      }
-    }
+  def map_id(feat)
+    feat['properties']['id']
+  end
+
+  def map_updated_at(feat)
+    feat['properties']['updated_at']
+  end
+
+  def map_source(feat)
+    feat['properties']['source']
+  end
+
+  def map_geometry(feat)
+    feat['geometry']
+  end
+
+  def map_tags(feat)
+    feat['properties']['tags']
   end
 end

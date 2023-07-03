@@ -34,22 +34,25 @@ class CsvSource < Source
     super(fetch(@url, @col_sep))
   end
 
-  def map(feat)
-    r = feat
-    return nil if r[@id].blank? || r[@lon].blank? || r[@lat].blank?
+  def map_id(feat)
+    feat[@id].to_i
+  end
 
+  def map_updated_at(feat)
+    feat[@timestamp]
+  end
+
+  def map_geometry(feat)
     {
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: [r[@lon].to_f, r[@lat].to_f],
-      },
-      properties: {
-        id: r[@id].to_i,
-        updated_at: r[@timestamp],
-        source: @attribution,
-        tags: r.to_h.except(@id, @lon, @lat, @timestamp).compact_blank
-      }.compact_blank
+      type: 'Point',
+      coordinates: [
+        feat[@lon].to_f,
+        feat[@lat].to_f
+      ]
     }
+  end
+
+  def map_tags(feat)
+    feat.to_h.except(@id, @lon, @lat, @timestamp)
   end
 end

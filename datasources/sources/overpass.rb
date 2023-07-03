@@ -56,20 +56,28 @@ out center meta;
     super(overpass(@relation_id, @select))
   end
 
-  def map(feat)
-    r = feat
+  def map_id(feat)
+    feat['type'][0] + feat['id'].to_s
+  end
+
+  def map_updated_at(feat)
+    feat['timestamp']
+  end
+
+  def map_geometry(_feat)
     {
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: r['lon'].nil? ? [r['center']['lon'], r['center']['lat']] : [r['lon'], r['lat']],
-      },
-      properties: {
-        id: r['type'][0] + r['id'].to_s,
-        updated_at: r['timestamp'],
-        source: @attribution,
-        tags: r['tags'],
-      }
+      type: 'Point',
+      coordinates: (
+        if r['lon'].nil?
+          [r['center']['lon'], r['center']['lat']]
+        else
+          [r['lon'], r['lat']]
+        end
+      )
     }
+  end
+
+  def map_tags(feat)
+    feat['tags']
   end
 end
