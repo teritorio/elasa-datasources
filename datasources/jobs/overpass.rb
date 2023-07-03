@@ -27,8 +27,7 @@ class Overpass < Job
 
     config.each{ |source_id, c|
       job = Kiba.parse do
-        overpass_seting = { relation_id: settings['relation_id'], select: c['select'] }
-        source(OverpassSource, source_id, attribution, overpass_seting, path)
+        source(OverpassSource, source_id, attribution, settings.merge({ 'select' => c['select'] }), path)
 
         transform(OsmTags)
         if c['georeverse']

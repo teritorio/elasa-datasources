@@ -15,11 +15,11 @@ end
 class TourismSystemSource < Source
   def initialize(source_id, attribution, settings, path)
     super(source_id, attribution, settings, path)
-    @basic_auth = settings[:basic_auth]
-    @id = settings[:id]
-    @playlist_id = settings[:playlist_id]
-    @thesaurus = settings[:thesaurus]
-    @website_details_url = settings[:website_details_url]
+    @basic_auth = settings['basic_auth']
+    @id = settings['id']
+    @playlist_id = settings['playlist_id']
+    @thesaurus = settings['thesaurus']
+    @website_details_url = settings['website_details_url']
   end
 
   def self.fetch(basic_auth, path)

@@ -21,7 +21,7 @@ class ApidaeSource < Source
     super(source_id, attribution, settings, path)
     @projet_id = settings['projetId']
     @api_key = settings['apiKey']
-    @selection_id = settings['selection_id']
+    @selection_id = settings['id']
     @website_details_url = settings['website_details_url']
   end
 

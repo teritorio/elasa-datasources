@@ -14,8 +14,8 @@ class OverpassSource < Source
 
   def initialize(source_id, attribution, settings, path)
     super(source_id, attribution, settings, path)
-    @relation_id = settings[:relation_id]
-    @select = settings[:select]
+    @relation_id = settings['relation_id']
+    @select = settings['select']
   end
 
   def fetch(url)

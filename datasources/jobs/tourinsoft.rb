@@ -16,13 +16,7 @@ class Tourinsoft < Job
       source_filter.nil? || name.start_with?(source_filter)
     }.each{ |name, syndication|
       job = Kiba.parse do
-        tourinsoft_settings = {
-          client: settings['client'],
-          syndication: syndication,
-          website_details_url: settings['website_details_url'],
-          photo_base_url: settings['photo_base_url'],
-        }
-        source(source_class, name, attribution, tourinsoft_settings, path)
+        source(source_class, name, attribution, settings.merge({ 'syndication' => syndication }), path)
 
         destination(GeoJson, name, path)
       end

@@ -21,13 +21,7 @@ class Apidae < Job
     }.each{ |selection|
       name = "#{selection['id']}-#{selection['nom']}"
       job = Kiba.parse do
-        apidea_settings = {
-          'projetId' => settings['projetId'],
-          'apiKey' => settings['apiKey'],
-          'selection_id' => selection['id'],
-          'website_details_url' => settings['website_details_url']
-        }
-        source(ApidaeSource, name, attribution, apidea_settings, path)
+        source(ApidaeSource, name, attribution, settings, path)
 
         destination(GeoJson, name, path)
       end
