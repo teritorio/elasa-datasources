@@ -128,16 +128,17 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       off = [@@month[date_off.split('-')[1].to_i - 1], date_off.split('-')[2]].join(' ') if !date_off.nil? && date_on != date_off
       dates = [on, off].compact.join('-')
 
-      open1, close1, open2, close2, days = (parts[2..] || []).collect{ |t| t == '' ? nil : t }
+      open1, close1, open2, close2, close_days = (parts[2..] || []).collect{ |t| t == '' ? nil : t }
 
-      days = days&.split('-')&.collect{ |d| @@days[d] }&.join(',')
+      close_days = close_days&.split('-')&.collect{ |d| @@days[d] }
+      open_days = close_days.nil? ? nil : (%w[Mo Tu We Th Fr Sa Su] - close_days)&.join(',')
 
       hours = [
         open1 && (open1 + (close1.nil? ? '+' : "-#{close1}")),
         open2 && (open2 + (close2.nil? ? '+' : "-#{close2}")),
       ].compact.join(',').presence
 
-      [date_on, date_off, [dates, days, hours].compact.join(' ')]
+      [date_on, date_off, [dates, open_days, hours].compact.join(' ')]
     }
 
     z = opennings.transpose
