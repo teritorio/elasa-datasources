@@ -27,7 +27,7 @@ class Source
     @attribution
   end
 
-  def map_native_properties(_feat)
+  def map_native_properties(_feat, _properties)
     nil
   end
 
@@ -57,7 +57,7 @@ class Source
             updated_at: updated_at,
             source: map_source(r),
             tags: tags.compact_blank,
-            natives: map_native_properties(r, @settings['native_properties']).compact_blank,
+            natives: map_native_properties(r, @settings['native_properties'])&.compact_blank,
           }.compact_blank,
         }.compact_blank)
       rescue StandardError => e
