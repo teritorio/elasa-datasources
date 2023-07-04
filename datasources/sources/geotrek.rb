@@ -79,7 +79,7 @@ class GeotrekSource < Source
   end
 
   def map_id(feat)
-    return nil if !feat['practice']
+    return nil if !feat['portal'].include?(@settings['portal_id']) || !feat['practice'] || !feat['published']['fr']
 
     feat['id']
   end
@@ -95,12 +95,30 @@ class GeotrekSource < Source
     }
   end
 
+  @@diacritics = [*0x1DC0..0x1DFF, *0x0300..0x036F, *0xFE20..0xFE2F].pack('U*')
+
+  def slug(str)
+    # How to make the slug from the name
+    # https://github.com/GeotrekCE/Geotrek-rando-v3/issues/59#issuecomment-1086055798
+    # https://github.com/GeotrekCE/Geotrek-rando-v3/blob/main/frontend/src/components/pages/search/utils.ts#L99
+    str.unicode_normalize(:nfd).tr(@@diacritics, '').unicode_normalize(:nfc).tr('°«»/\'"’><®,', '').downcase.gsub(/[^a-z0-9\\-_]+/, '-').gsub(/^-/, '').gsub(/-$/, '')
+  end
+
   def map_tags(feat)
     r = feat
     name = r['name']&.compact_blank
     practice_name = @practices[r['practice']]&.dig('name')
     website_details = practice_name && name.collect{ |lang, _n|
-      practice_name[lang] && name[lang] && [lang, @website_details_url.gsub('{{practice}}', practice_name[lang].parameterize).gsub('{{name}}', name[lang].parameterize)] || nil
+      practice_name[lang] && name[lang] && [
+        lang,
+        @website_details_url.gsub(
+          '{{practice}}',
+          slug(practice_name[lang])
+        ).gsub(
+          '{{name}}',
+          slug(name[lang])
+        )
+      ] || nil
     }.compact.to_h || nil
 
     practice = practice_slug(r)
