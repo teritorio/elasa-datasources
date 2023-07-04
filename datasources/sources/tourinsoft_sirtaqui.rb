@@ -112,38 +112,74 @@ class TourinsoftSirtaquiSource < TourinsoftSource
 
   @@month = %w[Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec]
 
-  def self.openning(ouvertures)
+  def self.format_days_hours(open_days, open1, close1, open2, close2)
+    hours = [
+      if open1.nil?
+        nil
+      else
+        (open1 + (close1.nil? ? '+' : "-#{close1}"))
+      end,
+      if open2.nil?
+        nil
+      else
+        (open2 + (close2.nil? ? '+' : "-#{close2}"))
+      end,
+    ].compact.join(',').presence
+    [[open_days, hours].compact.join(' ')].compact_blank if hours
+  end
+
+  def self.openning_one_days(parts)
+    open1, close1, open2, close2, close_days = parts
+
+    close_days = close_days&.split('-')&.collect{ |d| @@days[d] }
+    open_days = close_days.nil? ? nil : (%w[Mo Tu We Th Fr Sa Su] - close_days)&.join(',')
+
+    format_days_hours(open_days, open1, close1, open2, close2)
+  end
+
+  def self.openning_seven_days(parts)
+    _close_days = parts.pop
+    parts.each_slice(4).with_index.group_by{ |open_close, _day_index| open_close }.collect{ |open_close, f|
+      days = f.collect{ |ff| %w[Mo Tu We Th Fr Sa Su][ff[1]] }.join(',')
+      open1, close1, open2, close2 = open_close
+      format_days_hours(days, open1, close1, open2, close2)
+    }.compact_blank
+  end
+
+  def self.format_month_range(date_on, date_off)
+    on = [@@month[date_on.split('-')[1].to_i - 1], date_on.split('-')[2]].compact.join(' ') if !date_on.nil?
+    off = [@@month[date_off.split('-')[1].to_i - 1], date_off.split('-')[2]].compact.join(' ') if !date_off.nil? && date_on != date_off
+    [on, off].compact.join('-')
+  end
+
+  def self.openning(ouvertures, openning_days)
+    date_ons = []
+    date_offs = []
     opennings = ouvertures.split('#').collect{ |ouverture|
       parts = ouverture.split('|')
-      date_on, date_off = parts[0..1]
+      date_on, date_off = parts[0..1].collect(&:presence)
       date_on, date_off = (
-        if date_on[0..5] == '01/01' && date_off[0..5] == '31/12'
+        if date_on && date_on[0..5] == '01/01' && date_off && date_off[0..5] == '31/12'
           [nil, nil]
         else
           [date_on, date_off].collect{ |d| d && d.split('/').reverse.join('-') }
         end
       )
+      date_ons << date_on
+      date_offs << date_off
 
-      on = [@@month[date_on.split('-')[1].to_i - 1], date_on.split('-')[2]].join(' ') if !date_on.nil?
-      off = [@@month[date_off.split('-')[1].to_i - 1], date_off.split('-')[2]].join(' ') if !date_off.nil? && date_on != date_off
-      dates = [on, off].compact.join('-')
+      dates = format_month_range(date_on, date_off)
 
-      open1, close1, open2, close2, close_days = (parts[2..] || []).collect{ |t| t == '' ? nil : t }
-
-      close_days = close_days&.split('-')&.collect{ |d| @@days[d] }
-      open_days = close_days.nil? ? nil : (%w[Mo Tu We Th Fr Sa Su] - close_days)&.join(',')
-
-      hours = [
-        open1 && (open1 + (close1.nil? ? '+' : "-#{close1}")),
-        open2 && (open2 + (close2.nil? ? '+' : "-#{close2}")),
-      ].compact.join(',').presence
-
-      [date_on, date_off, [dates, open_days, hours].compact.join(' ')]
-    }
-
-    z = opennings.transpose
-    o = z[2]&.join(';')
-    [z[0].min, z[1].max, o == '' ? nil : o]
+      days_hours = method(openning_days).call(parts[2..]&.collect(&:presence) || [])
+      days_hours&.collect{ |days_hour|
+        [dates, days_hour].compact.join(' ')
+      }
+    }.flatten(1)
+    hours = opennings.join(';').presence
+    if hours.nil?
+      hours = format_month_range(date_ons.compact.min, date_offs.compact.max)
+    end
+    [date_ons.compact.min, date_offs.compact.max, hours]
   end
 
   @@practices = HashExcep[{
@@ -258,8 +294,16 @@ class TourinsoftSirtaquiSource < TourinsoftSource
   def map_tags(feat)
     r = feat
 
-    if r['OUVERTURE'] || r['DATESCOMPLET']
-      date_on, date_off, osm_openning_hours = self.class.openning(r['OUVERTURE'] || r['DATESCOMPLET'])
+    if r['OUVERTURECOMPLET']
+      date_on, date_off, osm_openning_hours = self.class.openning(
+        r['OUVERTURECOMPLET'],
+        :openning_seven_days
+      )
+    elsif r['OUVERTURE'] || r['DATESCOMPLET']
+      date_on, date_off, osm_openning_hours = self.class.openning(
+        r['OUVERTURE'] || r['DATESCOMPLET'],
+        :openning_one_days
+      )
     end
 
     pdfs = (
