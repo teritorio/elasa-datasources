@@ -21,7 +21,7 @@ class Apidae < Job
     }.each{ |selection|
       name = "#{selection['id']}-#{selection['nom']}"
       job = Kiba.parse do
-        source(ApidaeSource, name, attribution, settings, path)
+        source(ApidaeSource, name, attribution, settings.merge({ 'selection_id' => selection['id'] }), path)
 
         destination(GeoJson, name, path)
       end
