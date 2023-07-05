@@ -9,10 +9,10 @@ require_relative 'source'
 
 
 class GeotrekSource < Source
-  def initialize(source_id, attribution, settings)
-    super(source_id, attribution, settings)
-    @base_url = settings['url']
-    @website_details_url = settings['website_details_url']
+  def initialize(settings)
+    super(settings)
+    @base_url = @settings['url']
+    @website_details_url = @settings['website_details_url']
   end
 
   def fetch_json_pages(url)

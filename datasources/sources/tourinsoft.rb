@@ -12,13 +12,12 @@ require_relative 'source'
 
 
 class TourinsoftSource < Source
-  def initialize(name, attribution, settings)
-    super(name, attribution, settings)
-    @name = name
-    @client = settings['client']
-    @syndication = settings['syndication']
-    @website_details_url = settings['website_details_url']
-    @photo_base_url = settings['photo_base_url']
+  def initialize(settings)
+    super(settings)
+    @client = @settings['client']
+    @syndication = @settings['syndication']
+    @website_details_url = @settings['website_details_url']
+    @photo_base_url = @settings['photo_base_url']
   end
 
   def self.fetch(client, syndication)

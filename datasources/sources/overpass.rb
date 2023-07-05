@@ -12,10 +12,10 @@ require_relative 'source'
 class OverpassSource < Source
   attr_reader :input_file
 
-  def initialize(source_id, attribution, settings)
-    super(source_id, attribution, settings)
-    @relation_id = settings['relation_id']
-    @select = settings['select']
+  def initialize(settings)
+    super(settings)
+    @relation_id = @settings['relation_id']
+    @select = @settings['select']
   end
 
   def fetch(url)

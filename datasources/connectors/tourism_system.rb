@@ -8,8 +8,8 @@ require_relative '../sources/tourism_system'
 
 
 class TourismSystem < Connector
-  def initialize(multi_source_id, attribution, settings, source_filter, path)
-    super(multi_source_id, attribution, settings, source_filter, path)
+  def initialize(multi_source_id, settings, source_filter, path)
+    super(multi_source_id, settings, source_filter, path)
 
     id = settings['id']
     basic_auth = settings['basic_auth']
@@ -33,7 +33,7 @@ class TourismSystem < Connector
       yield [
         self,
         source_id,
-        [TourismSystemSource, source_id, attribution, tourism_system_settings]
+        [TourismSystemSource, tourism_system_settings]
       ]
     }
   end

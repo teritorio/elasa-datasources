@@ -11,14 +11,14 @@ require_relative 'source'
 
 
 class CsvSource < Source
-  def initialize(source_id, attribution, settings)
-    super(source_id, attribution, settings)
-    @url = settings['url']
-    @col_sep = settings['col_sep']
-    @id = settings['id']
-    @lon = settings['lon']
-    @lat = settings['lat']
-    @timestamp = settings['timestamp']
+  def initialize(settings)
+    super(settings)
+    @url = @settings['url']
+    @col_sep = @settings['col_sep']
+    @id = @settings['id']
+    @lon = @settings['lon']
+    @lat = @settings['lat']
+    @timestamp = @settings['timestamp']
   end
 
   def fetch(url, col_sep)

@@ -8,8 +8,8 @@ require_relative '../sources/tourinsoft'
 
 
 class Tourinsoft < Connector
-  def initialize(source_class, multi_source_id, attribution, settings, source_filter, path)
-    super(multi_source_id, attribution, settings, source_filter, path)
+  def initialize(source_class, multi_source_id, settings, source_filter, path)
+    super(multi_source_id, settings, source_filter, path)
 
     settings['syndications'].select{ |name, _syndication|
       source_filter.nil? || name.start_with?(source_filter)
@@ -17,7 +17,7 @@ class Tourinsoft < Connector
       yield [
         self,
         name,
-        [source_class, name, attribution, settings.merge({ 'syndication' => syndication })]
+        [source_class, settings.merge({ 'syndication' => syndication })]
       ]
     }
   end

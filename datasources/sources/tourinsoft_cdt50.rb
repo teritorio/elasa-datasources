@@ -10,9 +10,9 @@ require_relative 'tourinsoft'
 
 
 class TourinsoftCdt50Source < TourinsoftSource
-  def initialize(name, attribution, settings)
-    super(name, attribution, settings)
-    @photo_base_url = settings[:photo_base_url]
+  def initialize(settings)
+    super(settings)
+    @photo_base_url = @settings['photo_base_url']
   end
 
   @@cuisines = HashExcep[{

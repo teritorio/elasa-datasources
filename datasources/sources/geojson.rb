@@ -12,9 +12,9 @@ require_relative 'source'
 
 
 class GeoJsonSource < Source
-  def initialize(source_id, attribution, settings)
-    super(source_id, attribution, settings)
-    @source_url = settings[:source_url]
+  def initialize(settings)
+    super(settings)
+    @url = @settings['url']
   end
 
   def fetch(url)
@@ -35,7 +35,7 @@ class GeoJsonSource < Source
   end
 
   def each
-    super(fetch(@source_url))
+    super(fetch(@url))
   end
 
   def map_id(feat)

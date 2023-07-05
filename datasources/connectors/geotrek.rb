@@ -8,12 +8,12 @@ require_relative '../sources/geotrek'
 
 
 class Geotrek < Connector
-  def initialize(multi_source_id, attribution, settings, source_filter, path)
-    super(multi_source_id, attribution, settings, source_filter, path)
+  def initialize(multi_source_id, settings, source_filter, path)
+    super(multi_source_id, settings, source_filter, path)
     yield [
       self,
-      @multi_source_id,
-      [GeotrekSource, @multi_source_id, @attribution, @settings]
+      multi_source_id,
+      [GeotrekSource, settings]
     ]
   end
 end

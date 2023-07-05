@@ -8,8 +8,8 @@ require_relative '../sources/apidae'
 
 
 class Apidae < Connector
-  def initialize(multi_source_id, attribution, settings, source_filter, path)
-    super(multi_source_id, attribution, settings, source_filter, path)
+  def initialize(multi_source_id, settings, source_filter, path)
+    super(multi_source_id, settings, source_filter, path)
 
     projet_id = settings['projetId']
     api_key = settings['apiKey']
@@ -22,7 +22,7 @@ class Apidae < Connector
       yield [
         self,
         name,
-        [ApidaeSource, name, attribution, settings.merge({ 'selection_id' => selection['id'] })]
+        [ApidaeSource, settings.merge({ 'selection_id' => selection['id'] })]
       ]
     }
   end

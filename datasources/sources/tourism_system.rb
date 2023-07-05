@@ -13,13 +13,13 @@ def jp(object, path)
 end
 
 class TourismSystemSource < Source
-  def initialize(source_id, attribution, settings)
-    super(source_id, attribution, settings)
-    @basic_auth = settings['basic_auth']
-    @id = settings['id']
-    @playlist_id = settings['playlist_id']
-    @thesaurus = settings['thesaurus']
-    @website_details_url = settings['website_details_url']
+  def initialize(settings)
+    super(settings)
+    @basic_auth = @settings['basic_auth']
+    @id = @settings['id']
+    @playlist_id = @settings['playlist_id']
+    @thesaurus = @settings['thesaurus']
+    @website_details_url = @settings['website_details_url']
   end
 
   def self.fetch(basic_auth, path)

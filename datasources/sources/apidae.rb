@@ -17,12 +17,12 @@ def jp(object, path)
 end
 
 class ApidaeSource < Source
-  def initialize(source_id, attribution, settings)
-    super(source_id, attribution, settings)
-    @projet_id = settings['projetId']
-    @api_key = settings['apiKey']
-    @selection_id = settings['selection_id']
-    @website_details_url = settings['website_details_url']
+  def initialize(settings)
+    super(settings)
+    @projet_id = @settings['projetId']
+    @api_key = @settings['apiKey']
+    @selection_id = @settings['selection_id']
+    @website_details_url = @settings['website_details_url']
   end
 
   def self.build_url(path, query)

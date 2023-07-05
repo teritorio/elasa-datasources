@@ -13,8 +13,8 @@ require_relative '../transforms/reverse_geocode'
 
 
 class Overpass < Connector
-  def initialize(multi_source_id, attribution, settings, source_filter, path)
-    super(multi_source_id, attribution, settings, source_filter, path)
+  def initialize(multi_source_id, settings, source_filter, path)
+    super(multi_source_id, settings, source_filter, path)
 
     configs = settings['configs']
     config = configs.inject({}){ |sum, config_path|
@@ -28,7 +28,7 @@ class Overpass < Connector
       yield [
         self,
         source_id,
-        [OverpassSource, source_id, attribution, settings.merge({ 'select' => c['select'] })],
+        [OverpassSource, settings.merge({ 'select' => c['select'] })],
         c
       ]
     }
