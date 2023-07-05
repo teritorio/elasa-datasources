@@ -3,12 +3,12 @@
 
 require 'json'
 
-class GeoJson
+class GeoJson < Destination
   attr_reader :output_file
 
   def initialize(destination_id, path)
+    super(path)
     @destination_id = destination_id
-    @path = path
     @rows = []
   end
 

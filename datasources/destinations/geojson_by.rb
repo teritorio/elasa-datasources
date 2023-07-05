@@ -4,11 +4,11 @@
 require 'json'
 require_relative 'geojson'
 
-class GeoJsonBy
+class GeoJsonBy < Destination
   attr_reader :output_file
 
   def initialize(path)
-    @path = path
+    super(path)
     @destinations = Hash.new { |h, k| h[k] = GeoJson.new(k, path) }
   end
 
