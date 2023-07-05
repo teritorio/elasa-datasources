@@ -56,7 +56,7 @@ class Source
             updated_at: updated_at,
             source: map_source(r),
             tags: tags.compact_blank,
-            natives: map_native_properties(r, @settings['native_properties'])&.compact_blank,
+            natives: @settings['native_properties'] && map_native_properties(r, @settings['native_properties'])&.compact_blank,
           }.compact_blank,
         }.compact_blank)
       rescue StandardError => e
