@@ -22,35 +22,48 @@ class Job
     tasks = job.values
     puts "#{job_id}: #{tasks[0]['type']}"
     tasks = tasks.collect{ |task| [Object.const_get(task['type']), task.except('type')] }
-    connector = tasks[0]
-    tasks = tasks[1..]
 
-    c = connector[0].new(
-      job_id,
-      c = connector[1]['attribution'],
-      c = connector[1].except('attribution', 'type'),
-      source_filter,
-      path,
-    ) { |connector, destination_id, source, *args|
-      job = Kiba.parse do
-        # Define source()
-        # self as Kiba context
-        connector.setup(self, source, *args)
-
-        dest = tasks.pop if tasks.size > 0 && tasks[-1][0] <= Destination
-
-        tasks.each{ |classs, settings|
-          transform(classs, settings)
-        }
-
-        puts path.inspect
-        if dest.nil?
-          destination(GeoJson, path, destination_id)
-        else
-          destination(dest[0], path, dest[1])
+    if tasks[0][0] <= Connector
+      connector = tasks[0]
+      tasks = tasks[1..]
+      connector[0].new(
+        job_id,
+        connector[1],
+        source_filter,
+        path,
+      ) { |connector, destination_id, args|
+        job = Kiba.parse do
+          # Define source()
+          # self as Kiba context
+          connector.setup(self, args)
+          Job.content(self, tasks, destination_id, path)
         end
+        Kiba.run(job)
+      }
+    else
+      job = Kiba.parse do
+        sources, tasks = tasks.partition{ |task| task[0] <= Source }
+        sources.each{ |src|
+          source(src[0], **src[1])
+        }
+        # self as Kiba context
+        Job.content(self, tasks, job_id, path)
       end
       Kiba.run(job)
+    end
+  end
+
+  def self.content(kiba, tasks, destination_id, path)
+    dest = tasks.pop if tasks.size > 0 && tasks[-1][0] <= Destination
+
+    tasks.each{ |classs, settings|
+      kiba.transform(classs, settings)
     }
+
+    if dest.nil?
+      kiba.destination(GeoJson, path, destination_id)
+    else
+      kiba.destination(dest[0], path)
+    end
   end
 end
