@@ -16,13 +16,13 @@ class Join < Connector
       yield [
         self,
         multi_source_id,
-        [source(GeoJsonSource, multi_source_id, attribution, { source_url: source_url })]
+        [GeoJsonSource, multi_source_id, attribution, { source_url: source_url }]
       ]
     }
   end
 
   def setup(kiba, params)
     super(kiba, params)
-    kiba.transform(JoinTransformer, settings['key'])
+    kiba.transform(JoinTransformer, @settings['key'])
   end
 end

@@ -9,7 +9,7 @@ class GeoJsonBy < Destination
 
   def initialize(path)
     super(path)
-    @destinations = Hash.new { |h, k| h[k] = GeoJson.new(k, path) }
+    @destinations = Hash.new { |h, k| h[k] = GeoJson.new(path, k) }
   end
 
   def write(row)
