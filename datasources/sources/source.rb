@@ -31,38 +31,72 @@ class Source
 
   def each(raw)
     puts "#{self.class.name}: #{raw.size}"
+    bad = {
+      missing_id: 0,
+      missing_updated_at: 0,
+      missing_geometry: 0,
+      null_island_geometry: 0,
+      missing_tags: 0,
+      pass: 0,
+    }
 
     raw.each{ |r|
       begin
+        check = !@settings['allow_partial_source']
         id = map_id(r)
-        next if id.blank?
+        if check && id.blank?
+          bad[:missing_id] += 1
+          next
+        end
 
         updated_at = map_updated_at(r)
-        next if updated_at.blank?
+        if check && updated_at.blank?
+          bad[:missing_updated_at] += 1
+          next
+        end
 
         geometry = map_geometry(r)
-        next if geometry.blank? || (geometry[:type] == 'Point' && geometry[:coordinates] == [0.0, 0.0])
+        if check && geometry.blank?
+          bad[:missing_geometry] += 1
+          next
+        end
+
+        geometry = map_geometry(r)
+        if check && geometry[:type] == 'Point' && geometry[:coordinates] == [0.0, 0.0]
+          bad[:null_island_geometry] += 1
+          next
+        end
 
         tags = map_tags(r)
-        next if tags.blank?
+        if check && tags.blank?
+          bad[:missing_tags] += 1
+          next
+        end
 
-        yield ({
+        properties = {
           destination_id: map_destination_id(r),
           type: 'Feature',
           geometry: geometry,
-          properties: {
+          properties: { tags: {} }.merge({
             id: id,
             updated_at: updated_at,
             source: map_source(r),
-            tags: tags.compact_blank,
+            tags: tags&.compact_blank,
             natives: @settings['native_properties'] && map_native_properties(r, @settings['native_properties'])&.compact_blank,
-          }.compact_blank,
-        }.compact_blank)
+          }.compact_blank),
+        }.compact_blank
+        yield properties
+
+        bad[:pass] += 1
       rescue StandardError => e
         puts 'Native', JSON.dump(r)
         puts 'OSM Tags', JSON.dump(tags) if tags
         raise e
       end
     }
+    bad = bad.select{ |_k, v| v != 0 }.to_h.compact_blank
+    return unless bad.size > 0 && bad[:pass] != raw.size
+
+    puts bad.inspect
   end
 end
