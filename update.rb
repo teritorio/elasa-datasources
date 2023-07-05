@@ -5,38 +5,25 @@
 require 'yaml'
 require 'sorbet-runtime'
 
-require './datasources/jobs/apidae'
-require './datasources/jobs/csv'
-require './datasources/jobs/geotrek'
-require './datasources/jobs/join'
-require './datasources/jobs/overpass'
-require './datasources/jobs/tourinsoft_cdt50'
-require './datasources/jobs/tourinsoft_sirtaqui'
-require './datasources/jobs/tourism_system'
+require './datasources/jobs/job'
 
 
 @config = YAML.safe_load(File.read('config.yaml'))
 @project = ARGV[0]
 @datasource = ARGV[1]
-@source = ARGV[2]
+@source_filter = ARGV[2]
 
-@config['datasources'].to_a.select { |project, _datasources|
+@config['datasources'].to_a.select { |project, _jobs|
   !@project || project == @project
-}.each { |project, datasources|
+}.each { |project, jobs|
+  # datasources|
   puts project
   dir = "data/#{project}"
   FileUtils.makedirs(dir)
 
-  datasources&.to_a&.select{ |id, _datasource|
+  jobs&.to_a&.select{ |id, _job|
     !@datasource || id == @datasource
-  }&.each { |multi_source_id, settings|
-    puts "#{project} : #{multi_source_id}, #{settings['type']}..."
-    Object.const_get(settings['type']).new(
-      multi_source_id,
-      settings['attribution'],
-      settings.except('attribution', 'type'),
-      @source,
-      dir
-    )
+  }&.each { |job_id, job|
+    Job.new(job_id, job, @source_filter, dir)
   }
 }

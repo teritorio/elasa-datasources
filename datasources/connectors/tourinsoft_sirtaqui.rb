@@ -5,7 +5,6 @@ require 'sorbet-runtime'
 
 require_relative 'tourinsoft'
 require_relative '../sources/tourinsoft_sirtaqui'
-require_relative '../destinations/geojson'
 
 
 class TourinsoftSirtaqui < Tourinsoft

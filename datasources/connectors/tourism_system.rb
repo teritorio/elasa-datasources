@@ -3,12 +3,11 @@
 
 require 'sorbet-runtime'
 
-require_relative 'job'
+require_relative 'connector'
 require_relative '../sources/tourism_system'
-require_relative '../destinations/geojson'
 
 
-class TourismSystem < Job
+class TourismSystem < Connector
   def initialize(multi_source_id, attribution, settings, source_filter, path)
     super(multi_source_id, attribution, settings, source_filter, path)
 
@@ -27,15 +26,14 @@ class TourismSystem < Job
         name.start_with?("Teritorio - #{source_filter}")
       end
     }.each{ |source_id, playlist_id|
-      job = Kiba.parse do
-        tourism_system_settings = settings.merge({
-          'playlist_id' => playlist_id,
-          'thesaurus' => thesaurus,
-        })
-        source(TourismSystemSource, source_id, attribution, tourism_system_settings, path)
-        destination(GeoJson, source_id, path)
-      end
-      Kiba.run(job)
+      tourism_system_settings = settings.merge({
+        'playlist_id' => playlist_id,
+        'thesaurus' => thesaurus,
+      })
+      yield [
+        self,
+        [TourismSystemSource, source_id, attribution, tourism_system_settings]
+      ]
     }
   end
 

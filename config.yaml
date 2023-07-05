@@ -1,8 +1,11 @@
 datasources:
   demo:
     geotrek:
-      type: Geotrek
-      url: https://demo-admin.geotrek.fr/api/v2
-      attribution: Geotrek
-      portal_id: 2
-      website_details_url: https://exmaple.com/{{practice}}/{{name}}/
+      connector:
+        type: Geotrek
+        url: https://demo-admin.geotrek.fr/api/v2
+        attribution: Geotrek
+        portal_id: 2
+        website_details_url: https://exmaple.com/{{practice}}/{{name}}/
+      destination:
+        type: GeoJsonBy

@@ -6,14 +6,13 @@ require 'kiba'
 
 require 'sorbet-runtime'
 
-require_relative 'job'
+require_relative 'connector'
 require_relative '../sources/overpass'
 require_relative '../transforms/osm_tags'
 require_relative '../transforms/reverse_geocode'
-require_relative '../destinations/geojson'
 
 
-class Overpass < Job
+class Overpass < Connector
   def initialize(multi_source_id, attribution, settings, source_filter, path)
     super(multi_source_id, attribution, settings, source_filter, path)
 
@@ -26,17 +25,19 @@ class Overpass < Job
     File.write(generated_config, JSON.dump(config))
 
     config.each{ |source_id, c|
-      job = Kiba.parse do
-        source(OverpassSource, source_id, attribution, settings.merge({ 'select' => c['select'] }), path)
-
-        transform(OsmTags)
-        if c['georeverse']
-          transform(ReverseGeocode)
-        end
-
-        destination(GeoJson, source_id, path)
-      end
-      Kiba.run(job)
+      yield [
+        self,
+        [OverpassSource, source_id, attribution, settings.merge({ 'select' => c['select'] })],
+        c
+      ]
     }
+  end
+
+  def setup(kiba, params, c)
+    super(kiba, params)
+    kiba.transform(OsmTags)
+    return unless c['georeverse']
+
+    kiba.transform(ReverseGeocode)
   end
 end

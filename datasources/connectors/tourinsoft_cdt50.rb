@@ -5,7 +5,6 @@ require 'sorbet-runtime'
 
 require_relative 'tourinsoft'
 require_relative '../sources/tourinsoft_cdt50'
-require_relative '../destinations/geojson'
 
 
 class TourinsoftCdt50 < Tourinsoft

@@ -3,12 +3,11 @@
 
 require 'sorbet-runtime'
 
-require_relative 'job'
+require_relative 'connector'
 require_relative '../sources/apidae'
-require_relative '../destinations/geojson'
 
 
-class Apidae < Job
+class Apidae < Connector
   def initialize(multi_source_id, attribution, settings, source_filter, path)
     super(multi_source_id, attribution, settings, source_filter, path)
 
@@ -20,12 +19,10 @@ class Apidae < Job
       source_filter.nil? || selection['nom'].start_with?(source_filter)
     }.each{ |selection|
       name = "#{selection['id']}-#{selection['nom']}"
-      job = Kiba.parse do
-        source(ApidaeSource, name, attribution, settings.merge({ 'selection_id' => selection['id'] }), path)
-
-        destination(GeoJson, name, path)
-      end
-      Kiba.run(job)
+      yield [
+        self,
+        [ApidaeSource, name, attribution, settings.merge({ 'selection_id' => selection['id'] })]
+      ]
     }
   end
 end
