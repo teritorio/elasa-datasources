@@ -16,6 +16,7 @@ class Tourinsoft < Connector
     }.each{ |name, syndication|
       yield [
         self,
+        name,
         [source_class, name, attribution, settings.merge({ 'syndication' => syndication })]
       ]
     }

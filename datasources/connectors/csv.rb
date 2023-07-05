@@ -13,6 +13,7 @@ class CsvJob < Connector
     super(multi_source_id, attribution, settings, source_filter, path)
     yield [
       self,
+      multi_source_id,
       [CsvSource, multi_source_id, attribution, settings]
     ]
   end

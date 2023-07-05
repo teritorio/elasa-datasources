@@ -15,6 +15,7 @@ class Join < Connector
     settings['sources'].each{ |source_url|
       yield [
         self,
+        multi_source_id,
         [source(GeoJsonSource, multi_source_id, attribution, { source_url: source_url })]
       ]
     }

@@ -21,6 +21,7 @@ class Apidae < Connector
       name = "#{selection['id']}-#{selection['nom']}"
       yield [
         self,
+        name,
         [ApidaeSource, name, attribution, settings.merge({ 'selection_id' => selection['id'] })]
       ]
     }

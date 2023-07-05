@@ -27,6 +27,7 @@ class Overpass < Connector
     config.each{ |source_id, c|
       yield [
         self,
+        source_id,
         [OverpassSource, source_id, attribution, settings.merge({ 'select' => c['select'] })],
         c
       ]

@@ -32,6 +32,7 @@ class TourismSystem < Connector
       })
       yield [
         self,
+        source_id,
         [TourismSystemSource, source_id, attribution, tourism_system_settings]
       ]
     }
