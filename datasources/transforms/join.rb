@@ -2,8 +2,8 @@
 # typed: true
 
 class JoinTransformer
-  def initialize(key)
-    @key = key
+  def initialize(settings)
+    @key = settings['key']
 
     @rows = {}
   end

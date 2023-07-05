@@ -6,15 +6,16 @@ require 'sorbet-runtime'
 require './datasources/connectors/apidae'
 require './datasources/connectors/csv'
 require './datasources/connectors/geotrek'
-require './datasources/connectors/join'
 require './datasources/connectors/overpass'
 require './datasources/connectors/tourinsoft_cdt50'
 require './datasources/connectors/tourinsoft_sirtaqui'
 require './datasources/connectors/tourism_system'
+require './datasources/sources/geojson'
 require './datasources/destinations/destination'
 require './datasources/destinations/geojson_by'
 require './datasources/destinations/geojson'
 require './datasources/transforms/derivated_tag'
+require './datasources/transforms/join'
 
 
 class Job

@@ -9,17 +9,17 @@ require_relative '../transforms/osm_tags'
 
 
 class CsvJob < Connector
-  def initialize(multi_source_id, attribution, settings, source_filter, path)
-    super(multi_source_id, attribution, settings, source_filter, path)
+  def initialize(multi_source_id, settings, source_filter, path)
+    super(multi_source_id, settings, source_filter, path)
     yield [
       self,
       multi_source_id,
-      [CsvSource, multi_source_id, attribution, settings]
+      [CsvSource, settings]
     ]
   end
 
   def setup(kiba, params, *_args)
     super(kiba, params)
-    kiba.transform(OsmTags, %i[route_ref])
+    kiba.transform(OsmTags, params[1].merge({ 'extra_multiple' => %i[route_ref] }))
   end
 end

@@ -2,8 +2,8 @@
 # typed: true
 
 class OsmTags
-  def initialize(extra_multiple = [])
-    @multiple = @@multiple_base + extra_multiple
+  def initialize(settings)
+    @multiple = @@multiple_base + (settings['extra_multiple'] || [])
   end
 
   @@multiple_base = %i[
