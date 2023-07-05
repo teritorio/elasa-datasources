@@ -17,6 +17,10 @@ class Source
     @attribution = settings['attribution']
   end
 
+  def select(feat)
+    true
+  end
+
   def map_destination_id(_feat)
     nil
   end
@@ -32,6 +36,7 @@ class Source
   def each(raw)
     puts "#{self.class.name}: #{raw.size}"
     bad = {
+      filtered_out: 0,
       missing_id: 0,
       missing_updated_at: 0,
       missing_geometry: 0,
@@ -42,7 +47,13 @@ class Source
 
     raw.each{ |r|
       begin
+        if !select(r)
+          bad[:filtered_out] += 1
+          next
+        end
+
         check = !@settings['allow_partial_source']
+
         id = map_id(r)
         if check && id.blank?
           bad[:missing_id] += 1

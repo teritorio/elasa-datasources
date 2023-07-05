@@ -78,9 +78,11 @@ class GeotrekSource < Source
     practice_slug(feat)
   end
 
-  def map_id(feat)
-    return nil if !feat['portal'].include?(@settings['portal_id']) || !feat['practice'] || !feat['published']['fr']
+  def select(feat)
+    feat['portal'].include?(@settings['portal_id']) && feat['practice'] && feat['published']['fr']
+  end
 
+  def map_id(feat)
     feat['id']
   end
 

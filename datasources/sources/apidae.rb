@@ -289,9 +289,11 @@ class ApidaeSource < Source
     }))
   end
 
-  def map_id(feat)
-    return nil if feat['ouverture']['fermeTemporairement'] == 'FERME_TEMPORAIREMENT'
+  def select(feat)
+    feat['ouverture']['fermeTemporairement'] != 'FERME_TEMPORAIREMENT'
+  end
 
+  def map_id(feat)
     feat['identifier']
   end
 
