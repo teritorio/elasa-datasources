@@ -12,11 +12,10 @@ class HashExcep < Hash
 end
 
 class Source
-  def initialize(source_id, attribution, settings, path)
+  def initialize(source_id, attribution, settings)
     @source_id = source_id
     @attribution = attribution
     @settings = settings
-    @path = path
   end
 
   def map_destination_id(_feat)

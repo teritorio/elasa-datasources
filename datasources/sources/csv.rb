@@ -11,8 +11,8 @@ require_relative 'source'
 
 
 class CsvSource < Source
-  def initialize(source_id, attribution, settings, path)
-    super(source_id, attribution, settings, path)
+  def initialize(source_id, attribution, settings)
+    super(source_id, attribution, settings)
     @url = settings['url']
     @col_sep = settings['col_sep']
     @id = settings['id']

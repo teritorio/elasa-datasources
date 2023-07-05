@@ -12,8 +12,8 @@ require_relative 'source'
 class OverpassSource < Source
   attr_reader :input_file
 
-  def initialize(source_id, attribution, settings, path)
-    super(source_id, attribution, settings, path)
+  def initialize(source_id, attribution, settings)
+    super(source_id, attribution, settings)
     @relation_id = settings['relation_id']
     @select = settings['select']
   end

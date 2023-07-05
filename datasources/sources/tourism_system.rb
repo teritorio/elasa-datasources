@@ -13,8 +13,8 @@ def jp(object, path)
 end
 
 class TourismSystemSource < Source
-  def initialize(source_id, attribution, settings, path)
-    super(source_id, attribution, settings, path)
+  def initialize(source_id, attribution, settings)
+    super(source_id, attribution, settings)
     @basic_auth = settings['basic_auth']
     @id = settings['id']
     @playlist_id = settings['playlist_id']

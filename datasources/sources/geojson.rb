@@ -12,8 +12,8 @@ require_relative 'source'
 
 
 class GeoJsonSource < Source
-  def initialize(source_id, attribution, settings, path)
-    super(source_id, attribution, settings, path)
+  def initialize(source_id, attribution, settings)
+    super(source_id, attribution, settings)
     @source_url = settings[:source_url]
   end
 
