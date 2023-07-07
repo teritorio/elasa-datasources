@@ -8,7 +8,7 @@ require_relative '../sources/tourinsoft_sirtaqui'
 
 
 class TourinsoftSirtaqui < Tourinsoft
-  def initialize(multi_source_id, settings, source_filter, path)
-    super(TourinsoftSirtaquiSource, multi_source_id, settings, source_filter, path)
+  def self.source_class
+    TourinsoftSirtaquiSource
   end
 end

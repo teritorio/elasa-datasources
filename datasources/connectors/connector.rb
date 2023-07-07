@@ -12,6 +12,14 @@ class Connector
     @path = path
   end
 
+  def each
+    yield [
+      self,
+      @multi_source_id,
+      [@@source_class, @settings]
+    ]
+  end
+
   def setup(kiba, params)
     kiba.source(*params)
   end

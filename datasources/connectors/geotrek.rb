@@ -8,11 +8,7 @@ require_relative '../sources/geotrek'
 
 
 class Geotrek < Connector
-  def each
-    yield [
-      self,
-      @multi_source_id,
-      [GeotrekSource, @settings]
-    ]
+  def self.source_class
+    GeotrekSource
   end
 end

@@ -8,7 +8,7 @@ require_relative '../sources/tourinsoft_cdt50'
 
 
 class TourinsoftCdt50 < Tourinsoft
-  def initialize(multi_source_id, settings, source_filter, path)
-    super(TourinsoftCdt50Source, multi_source_id, settings, source_filter, path)
+  def self.source_class
+    TourinsoftCdt50Source
   end
 end

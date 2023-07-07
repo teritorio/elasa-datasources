@@ -8,13 +8,9 @@ require_relative '../sources/csv'
 require_relative '../transforms/osm_tags'
 
 
-class CsvJob < Connector
-  def each
-    yield [
-      self,
-      @multi_source_id,
-      [CsvSource, @settings]
-    ]
+class CsvConnector < Connector
+  def self.source_class
+    CsvSource
   end
 
   def setup(kiba, params, *_args)
