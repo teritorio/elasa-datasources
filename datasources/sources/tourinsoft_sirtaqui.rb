@@ -316,6 +316,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     )
 
     {
+      'ref:FR:CRTA': map_id(r),
       name: { fr: r['NOMOFFRE'] }.compact_blank,
       description: { fr: r['DESCRIPTIF'] }.compact_blank,
       website: { fr: multiple_split(r, %w[URL URLCOMPLET], 0) }.compact_blank,
