@@ -8,8 +8,10 @@ class JoinTransformer < Transformer
   def initialize(settings)
     super(settings)
     @key = settings['key']
+    @full_join= settings['full_join']
 
     @rows = {}
+    @rows_without_key = []
   end
 
   def process_tags(current_tags, update_tags)
@@ -19,22 +21,28 @@ class JoinTransformer < Transformer
 
   def process(row)
     key = row[:properties][:tags][@key]
-    if @rows.key?(key)
-      @rows[key][:properties][:tags] = process_tags(
-        @rows[key][:properties][:tags],
-        row[:properties][:tags],
-      )
-    else
-      @rows[key] = row
+    if !key.nil?
+      if @rows.key?(key)
+        @rows[key][:properties][:tags] = process_tags(
+          @rows[key][:properties][:tags],
+          row[:properties][:tags],
+        )
+      else
+        @rows[key] = row
+      end
+      @rows[key][:destination_id] = @settings['destination_id']
+    elsif @full_join
+      row[:destination_id] = @settings['destination_id']
+      @rows_without_key << row
     end
-    @rows[key][:destination_id] = @settings['destination_id']
 
     nil
   end
 
   def close(&block)
-    puts "#{self.class.name}: #{@rows.size}"
+    puts "#{self.class.name}: #{@rows.size + @rows_without_key.size}"
 
     @rows.values.each(&block)
+    @rows_without_key.each(&block)
   end
 end
