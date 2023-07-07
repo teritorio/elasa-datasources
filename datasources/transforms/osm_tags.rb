@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 # typed: true
 
-class OsmTags
+require_relative 'transformer'
+
+
+class OsmTags < Transformer
   def initialize(settings)
+    super(settings)
     @multiple = @@multiple_base + (settings['extra_multiple'] || [])
   end
 

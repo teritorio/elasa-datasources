@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 # typed: true
 
-class DerivatedTagTransformer
+require_relative 'transformer'
+
+
+class DerivatedTagTransformer < Transformer
   def initialize(settings)
+    super(settings)
     @key = settings['key'].to_sym
     @lambda_value = eval(settings['value'])
   end

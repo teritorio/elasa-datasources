@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 # typed: true
 
-class JoinTransformer
+require_relative 'transformer'
+
+
+class JoinTransformer < Transformer
   def initialize(settings)
+    super(settings)
     @key = settings['key']
 
     @rows = {}

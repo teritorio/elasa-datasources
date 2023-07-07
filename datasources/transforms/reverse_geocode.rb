@@ -4,8 +4,12 @@
 require 'http'
 require 'csv'
 
+require_relative 'transformer'
+
+
 class ReverseGeocode
-  def initialize
+  def initialize(settings)
+    super(settings)
     @rows = []
   end
 
