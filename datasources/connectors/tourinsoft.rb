@@ -10,12 +10,12 @@ require_relative '../sources/tourinsoft'
 class Tourinsoft < Connector
   def each
     @settings['syndications'].select{ |name, _syndication|
-      source_filter.nil? || name.start_with?(source_filter)
+      @source_filter.nil? || name.start_with?(@source_filter)
     }.each{ |name, syndication|
       yield [
         self,
         name,
-        [@@source_class, @settings.merge({ 'syndication' => syndication })]
+        [self.class.source_class, @settings.merge({ 'syndication' => syndication })]
       ]
     }
   end

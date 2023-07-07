@@ -18,10 +18,10 @@ class TourismSystem < Connector
     TourismSystemSource.fetch_data(basic_auth, "/content/ts/#{id}").collect { |playlist|
       [playlist['metadata']['name'], playlist['metadata']['id']]
     }.select{ |name, _id|
-      if source_filter.nil?
+      if @source_filter.nil?
         name.start_with?('Teritorio')
       else
-        name.start_with?("Teritorio - #{source_filter}")
+        name.start_with?("Teritorio - #{@source_filter}")
       end
     }.each{ |source_id, playlist_id|
       tourism_system_settings = @settings.merge({

@@ -16,7 +16,7 @@ class Connector
     yield [
       self,
       @multi_source_id,
-      [@@source_class, @settings]
+      [self.class.source_class, @settings]
     ]
   end
 

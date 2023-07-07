@@ -14,7 +14,7 @@ class Apidae < Connector
     selections = ApidaeSource.fetch('referentiel/selections', { apiKey: api_key, projetId: projet_id })
 
     selections.select{ |selection|
-      source_filter.nil? || selection['nom'].start_with?(source_filter)
+      @source_filter.nil? || selection['nom'].start_with?(@source_filter)
     }.each{ |selection|
       name = "#{selection['id']}-#{selection['nom']}"
       yield [
