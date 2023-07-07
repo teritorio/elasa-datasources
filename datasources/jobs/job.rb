@@ -25,11 +25,11 @@ class Job
     tasks = tasks.collect{ |task| [Object.const_get(task['type']), task.except('type')] }
 
     if tasks[0][0] <= Connector
-      connector = tasks[0]
+      connector_settings = tasks[0]
       tasks = tasks[1..]
-      connector[0].new(
+      connector_settings[0].new(
         job_id,
-        connector[1],
+        connector_settings[1],
         source_filter,
         path,
       ).each { |connector, destination_id, args|
@@ -55,7 +55,7 @@ class Job
   end
 
   def self.content(kiba, tasks, destination_id, path)
-    dest = tasks.pop if tasks.size > 0 && tasks[-1][0] <= Destination
+    dest = tasks.pop if !tasks.empty? && tasks[-1][0] <= Destination
 
     tasks.each{ |classs, settings|
       kiba.transform(classs, settings)

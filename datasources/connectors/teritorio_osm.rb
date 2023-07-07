@@ -22,20 +22,20 @@ class TeritorioOsm < Connector
     generated_config = "#{@path}/config/osm_tags.json"
     File.write(generated_config, JSON.dump(config))
 
-    config.each{ |source_id, c|
+    config.each{ |source_id, extra|
       yield [
         self,
         source_id,
         [TeritorioOsmSource, @settings.merge({ 'select' => c['select'] })],
-        c
+        extra
       ]
     }
   end
 
-  def setup(kiba, params, c)
+  def setup(kiba, params, extra)
     super(kiba, params)
     kiba.transform(OsmTags)
-    return unless c['georeverse']
+    return unless extra['georeverse']
 
     kiba.transform(ReverseGeocode)
   end

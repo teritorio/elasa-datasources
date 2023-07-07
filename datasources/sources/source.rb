@@ -17,7 +17,7 @@ class Source
     @attribution = settings['attribution']
   end
 
-  def select(feat)
+  def select(_feat)
     true
   end
 
@@ -106,7 +106,7 @@ class Source
       end
     }
     bad = bad.select{ |_k, v| v != 0 }.to_h.compact_blank
-    return unless bad.size > 0 && bad[:pass] != raw.size
+    return unless !bad.empty? && bad[:pass] != raw.size
 
     puts bad.inspect
   end
