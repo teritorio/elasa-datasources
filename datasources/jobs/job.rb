@@ -32,7 +32,7 @@ class Job
         connector[1],
         source_filter,
         path,
-      ) { |connector, destination_id, args|
+      ).each { |connector, destination_id, args|
         job = Kiba.parse do
           # Define source()
           # self as Kiba context

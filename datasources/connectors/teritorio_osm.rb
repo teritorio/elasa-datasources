@@ -13,22 +13,20 @@ require_relative '../transforms/reverse_geocode'
 
 
 class TeritorioOsm < Connector
-  def initialize(multi_source_id, settings, source_filter, path)
-    super(multi_source_id, settings, source_filter, path)
-
-    configs = settings['configs']
+  def each
+    configs = @settings['configs']
     config = configs.inject({}){ |sum, config_path|
       sum.merge(YAML.safe_load(File.read(config_path)))
     }
-    FileUtils.makedirs("#{path}/config")
-    generated_config = "#{path}/config/osm_tags.json"
+    FileUtils.makedirs("#{@path}/config")
+    generated_config = "#{@path}/config/osm_tags.json"
     File.write(generated_config, JSON.dump(config))
 
     config.each{ |source_id, c|
       yield [
         self,
         source_id,
-        [TeritorioOsmSource, settings.merge({ 'select' => c['select'] })],
+        [TeritorioOsmSource, @settings.merge({ 'select' => c['select'] })],
         c
       ]
     }

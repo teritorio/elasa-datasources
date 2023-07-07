@@ -8,11 +8,9 @@ require_relative '../sources/tourism_system'
 
 
 class TourismSystem < Connector
-  def initialize(multi_source_id, settings, source_filter, path)
-    super(multi_source_id, settings, source_filter, path)
-
-    id = settings['id']
-    basic_auth = settings['basic_auth']
+  def each
+    id = @settings['id']
+    basic_auth = @settings['basic_auth']
 
     thesaurus_fr = TourismSystemSource.fetch(basic_auth, "/thesaurus/ts/#{id}/tree/fr")
     thesaurus = HashExcep[parse_thesaurus(thesaurus_fr).to_h]
@@ -26,7 +24,7 @@ class TourismSystem < Connector
         name.start_with?("Teritorio - #{source_filter}")
       end
     }.each{ |source_id, playlist_id|
-      tourism_system_settings = settings.merge({
+      tourism_system_settings = @settings.merge({
         'playlist_id' => playlist_id,
         'thesaurus' => thesaurus,
       })

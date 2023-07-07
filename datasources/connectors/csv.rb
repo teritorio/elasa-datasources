@@ -9,12 +9,11 @@ require_relative '../transforms/osm_tags'
 
 
 class CsvJob < Connector
-  def initialize(multi_source_id, settings, source_filter, path)
-    super(multi_source_id, settings, source_filter, path)
+  def each
     yield [
       self,
-      multi_source_id,
-      [CsvSource, settings]
+      @multi_source_id,
+      [CsvSource, @settings]
     ]
   end
 
