@@ -27,6 +27,7 @@ class JoinTransformer < Transformer
     else
       @rows[key] = row
     end
+    @rows[key][:destination_id] = @settings['destination_id']
 
     nil
   end
