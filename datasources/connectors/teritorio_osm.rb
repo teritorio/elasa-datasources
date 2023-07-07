@@ -7,12 +7,12 @@ require 'kiba'
 require 'sorbet-runtime'
 
 require_relative 'connector'
-require_relative '../sources/overpass'
+require_relative '../sources/teritorio_osm'
 require_relative '../transforms/osm_tags'
 require_relative '../transforms/reverse_geocode'
 
 
-class Overpass < Connector
+class TeritorioOsm < Connector
   def initialize(multi_source_id, settings, source_filter, path)
     super(multi_source_id, settings, source_filter, path)
 
@@ -28,7 +28,7 @@ class Overpass < Connector
       yield [
         self,
         source_id,
-        [OverpassSource, settings.merge({ 'select' => c['select'] })],
+        [TeritorioOsmSource, settings.merge({ 'select' => c['select'] })],
         c
       ]
     }

@@ -9,7 +9,7 @@ require 'sorbet-runtime'
 
 require_relative 'source'
 
-class OverpassSource < Source
+class TeritorioOsmSource < Source
   attr_reader :input_file
 
   def initialize(settings)
