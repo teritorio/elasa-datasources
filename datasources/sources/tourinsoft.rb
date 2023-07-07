@@ -12,8 +12,8 @@ require_relative 'source'
 
 
 class TourinsoftSource < Source
-  def initialize(settings)
-    super(settings)
+  def initialize(destination_id, settings)
+    super(destination_id, settings)
     @client = @settings['client']
     @syndication = @settings['syndication']
     @website_details_url = @settings['website_details_url']

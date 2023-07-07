@@ -13,8 +13,8 @@ class CsvConnector < Connector
     CsvSource
   end
 
-  def setup(kiba, params, *_args)
+  def setup(kiba, params)
     super(kiba, params)
-    kiba.transform(OsmTags, params[1].merge({ 'extra_multiple' => %i[route_ref] }))
+    kiba.transform(OsmTags, params[2].merge({ 'extra_multiple' => %i[route_ref] }))
   end
 end

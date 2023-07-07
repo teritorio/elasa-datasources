@@ -9,8 +9,8 @@ require_relative 'source'
 
 
 class GeotrekSource < Source
-  def initialize(settings)
-    super(settings)
+  def initialize(destination_id, settings)
+    super(destination_id, settings)
     @base_url = @settings['url']
     @website_details_url = @settings['website_details_url']
   end

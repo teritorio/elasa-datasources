@@ -10,8 +10,8 @@ require_relative 'tourinsoft'
 
 
 class TourinsoftCdt50Source < TourinsoftSource
-  def initialize(settings)
-    super(settings)
+  def initialize(destination_id, settings)
+    super(destination_id, settings)
     @photo_base_url = @settings['photo_base_url']
   end
 

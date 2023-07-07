@@ -18,9 +18,9 @@ class Apidae < Connector
     }.each{ |selection|
       name = "#{selection['id']}-#{selection['nom']}"
       yield [
-        self,
+        ApidaeSource,
         name,
-        [ApidaeSource, @settings.merge({ 'selection_id' => selection['id'] })]
+        @settings.merge({ 'selection_id' => selection['id'] }),
       ]
     }
   end

@@ -12,7 +12,8 @@ class HashExcep < Hash
 end
 
 class Source
-  def initialize(settings)
+  def initialize(destination_id, settings)
+    @destination_id = destination_id
     @settings = settings
     @attribution = settings['attribution']
   end
@@ -22,7 +23,7 @@ class Source
   end
 
   def map_destination_id(_feat)
-    nil
+    @destination_id
   end
 
   def map_source(_feat)
@@ -34,7 +35,7 @@ class Source
   end
 
   def each(raw)
-    puts "#{self.class.name}: #{raw.size}"
+    puts "#{self.class.name}, #{@destination_id}: #{raw.size}"
     bad = {
       filtered_out: 0,
       missing_id: 0,

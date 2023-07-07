@@ -29,9 +29,9 @@ class TourismSystem < Connector
         'thesaurus' => thesaurus,
       })
       yield [
-        self,
+        TourismSystemSource,
         source_id,
-        [TourismSystemSource, tourism_system_settings]
+        tourism_system_settings,
       ]
     }
   end

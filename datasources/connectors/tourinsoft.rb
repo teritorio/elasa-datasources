@@ -13,9 +13,9 @@ class Tourinsoft < Connector
       @source_filter.nil? || name.start_with?(@source_filter)
     }.each{ |name, syndication|
       yield [
-        self,
+        self.class.source_class,
         name,
-        [self.class.source_class, @settings.merge({ 'syndication' => syndication })]
+        @settings.merge({ 'syndication' => syndication }),
       ]
     }
   end

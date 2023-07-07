@@ -6,23 +6,26 @@ require 'json'
 class GeoJson < Destination
   attr_reader :output_file
 
-  def initialize(path, destination_id)
+  def initialize(path)
     super(path)
-    @destination_id = destination_id
-    @rows = []
+    @destinations = Hash.new { |h, k|
+      h[k] = []
+    }
   end
 
   def write(row)
-    @rows << row
+    @destinations[row[:destination_id]] << row.except(:destination_id)
   end
 
   def close
-    puts "#{self.class.name}: #{@destination_id} #{@rows.size}"
+    @destinations.each{ |destination_id, rows|
+      puts "#{self.class.name}: #{destination_id} #{rows.size}"
 
-    fc = {
-      type: 'FeatureCollection',
-      features: @rows,
+      fc = {
+        type: 'FeatureCollection',
+        features: rows,
+      }
+      File.write("#{@path}/#{destination_id.gsub('/', '_')}.geojson", JSON.pretty_generate(fc))
     }
-    File.write("#{@path}/#{@destination_id.gsub('/', '_')}.geojson", JSON.pretty_generate(fc))
   end
 end

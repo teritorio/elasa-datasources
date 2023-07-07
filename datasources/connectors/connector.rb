@@ -14,9 +14,9 @@ class Connector
 
   def each
     yield [
-      self,
+      self.class.source_class,
       @multi_source_id,
-      [self.class.source_class, @settings]
+      @settings,
     ]
   end
 

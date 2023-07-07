@@ -17,8 +17,8 @@ def jp(object, path)
 end
 
 class ApidaeSource < Source
-  def initialize(settings)
-    super(settings)
+  def initialize(destination_id, settings)
+    super(destination_id, settings)
     @projet_id = @settings['projetId']
     @api_key = @settings['apiKey']
     @selection_id = @settings['selection_id']

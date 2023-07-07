@@ -12,59 +12,49 @@ require './datasources/connectors/tourinsoft_sirtaqui'
 require './datasources/connectors/tourism_system'
 require './datasources/sources/geojson'
 require './datasources/destinations/destination'
-require './datasources/destinations/geojson_by'
 require './datasources/destinations/geojson'
 require './datasources/transforms/derivated_tag'
 require './datasources/transforms/join'
 
 
 class Job
-  def initialize(job_id, job, source_filter, path)
-    tasks = job.values
-    puts "#{job_id}: #{tasks[0]['type']}"
-    tasks = tasks.collect{ |task| [Object.const_get(task['type']), task.except('type')] }
+  def initialize(job_id, tasks, source_filter, path)
+    tasks = tasks.collect{ |taks_id, task|
+      {
+          id: taks_id,
+          class: Object.const_get(task['type']),
+          settings: task.except('type'),
+        }
+    }
+    puts "#{job_id}: #{tasks[0][:class].name}"
 
-    if tasks[0][0] <= Connector
-      connector_settings = tasks[0]
-      tasks = tasks[1..]
-      connector_settings[0].new(
-        job_id,
-        connector_settings[1],
-        source_filter,
-        path,
-      ).each { |connector, destination_id, args|
-        job = Kiba.parse do
+    job = Kiba.parse do
+      if tasks[0][:class] <= Connector
+        connector = tasks[0]
+        tasks = tasks[1..]
+        connector = connector[:class].new(
+          job_id,
+          connector[:settings],
+          source_filter,
+          path,
+        )
+        connector.each { |args|
           # Define source()
           # self as Kiba context
           connector.setup(self, args)
-          Job.content(self, tasks, destination_id, path)
-        end
-        Kiba.run(job)
-      }
-    else
-      job = Kiba.parse do
-        sources, tasks = tasks.partition{ |task| task[0] <= Source }
-        sources.each{ |src|
-          source(src[0], **src[1])
         }
-        # self as Kiba context
-        Job.content(self, tasks, job_id, path)
+      else
+        sources, tasks = tasks.partition{ |task| task[:class] <= Source }
+        sources.each{ |src|
+          source(src[:class], src[:id], src[:settings])
+        }
       end
-      Kiba.run(job)
+
+      tasks.each{ |task|
+        transform(task[:class], task[:settings])
+      }
+      destination(GeoJson, path)
     end
-  end
-
-  def self.content(kiba, tasks, destination_id, path)
-    dest = tasks.pop if !tasks.empty? && tasks[-1][0] <= Destination
-
-    tasks.each{ |classs, settings|
-      kiba.transform(classs, settings)
-    }
-
-    if dest.nil?
-      kiba.destination(GeoJson, path, destination_id)
-    else
-      kiba.destination(dest[0], path)
-    end
+    Kiba.run(job)
   end
 end

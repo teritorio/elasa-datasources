@@ -24,9 +24,9 @@ class TeritorioOsm < Connector
 
     config.each{ |source_id, extra|
       yield [
-        self,
+        TeritorioOsmSource,
         source_id,
-        [TeritorioOsmSource, @settings.merge({ 'select' => c['select'] })],
+        @settings.merge({ 'select' => c['select'] }),
         extra
       ]
     }
