@@ -16,6 +16,7 @@ require './datasources/destinations/destination'
 require './datasources/destinations/geojson'
 require './datasources/transforms/derivated_tag'
 require './datasources/transforms/join'
+require './datasources/transforms/validate'
 
 
 class Job
@@ -54,6 +55,7 @@ class Job
       tasks.each{ |task|
         transform(task[:class], task[:settings])
       }
+      transform(ValidateTransformer, {})
       destination(GeoJson, path)
     end
     Kiba.run(job)
