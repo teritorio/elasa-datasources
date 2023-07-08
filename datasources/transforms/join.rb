@@ -8,15 +8,35 @@ class JoinTransformer < Transformer
   def initialize(settings)
     super(settings)
     @key = settings['key']
-    @full_join= settings['full_join']
+    @full_join = settings['full_join']
 
     @rows = {}
     @rows_without_key = []
   end
 
-  def process_tags(current_tags, update_tags)
+  def process_tags(current_tags, update_tags, current_source, update_source)
     # Set non already existing tags
-    update_tags.update(current_tags)
+    out = {}
+    source = {}
+    update = false
+    (current_tags.keys + update_tags.keys).each{ |key|
+      if current_tags.key?(key)
+        out[key] = current_tags[key]
+        source[key] = current_source if current_source
+      elsif update_tags.key?(key)
+        out[key] = update_tags[key]
+        source[key] = update_source if update_source
+        update = true
+      end
+    }
+
+    if update
+      source.each{ |key, value|
+        out["source:#{key}"] = value
+      }
+    end
+
+    out
   end
 
   def process(row)
@@ -26,6 +46,8 @@ class JoinTransformer < Transformer
         @rows[key][:properties][:tags] = process_tags(
           @rows[key][:properties][:tags],
           row[:properties][:tags],
+          @rows[key][:properties][:source],
+          row[:properties][:source],
         )
       else
         @rows[key] = row
