@@ -18,6 +18,10 @@ class Source
     @attribution = settings['attribution']
   end
 
+  def i18n
+    {}
+  end
+
   def select(_feat)
     true
   end
@@ -35,7 +39,9 @@ class Source
   end
 
   def each(raw)
-    puts "#{self.class.name}, #{@destination_id}: #{raw.size}"
+    yield [:i18n, i18n]
+
+    puts "    > #{self.class.name}, #{@destination_id}: #{raw.size}"
     bad = {
       filtered_out: 0,
       missing_id: 0,
@@ -97,7 +103,7 @@ class Source
             natives: @settings['native_properties'] && map_native_properties(r, @settings['native_properties'])&.compact_blank,
           }.compact_blank),
         }.compact_blank
-        yield properties
+        yield [:data, properties]
 
         bad[:pass] += 1
       rescue StandardError => e
@@ -109,6 +115,6 @@ class Source
     bad = bad.select{ |_k, v| v != 0 }.to_h.compact_blank
     return unless !bad.empty? && bad[:pass] != raw.size
 
-    puts bad.inspect
+    puts "    ! #{bad.inspect}"
   end
 end

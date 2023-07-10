@@ -28,7 +28,7 @@ class Job
           settings: task.except('type'),
         }
     }
-    puts "#{job_id}: #{tasks[0][:class].name}"
+    puts "  - #{job_id}: #{tasks[0][:class].name}"
 
     job = Kiba.parse do
       if tasks[0][:class] <= Connector

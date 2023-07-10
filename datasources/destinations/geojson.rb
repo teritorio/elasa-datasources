@@ -2,6 +2,7 @@
 # typed: true
 
 require 'json'
+require_relative 'destination'
 
 class GeoJson < Destination
   attr_reader :output_file
@@ -13,13 +14,13 @@ class GeoJson < Destination
     }
   end
 
-  def write(row)
+  def write_data(row)
     @destinations[row[:destination_id]] << row.except(:destination_id)
   end
 
   def close
     @destinations.each{ |destination_id, rows|
-      puts "#{self.class.name}: #{destination_id} #{rows.size}"
+      puts "    < #{self.class.name}: #{destination_id}: #{rows.size}"
 
       fc = {
         type: 'FeatureCollection',

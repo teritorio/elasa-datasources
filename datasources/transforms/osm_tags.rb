@@ -65,7 +65,7 @@ class OsmTags < Transformer
     tags
   end
 
-  def process(row)
+  def process_data(row)
     row[:properties][:tags] = process_tags(row[:properties][:tags])
     row
   end

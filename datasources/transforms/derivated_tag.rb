@@ -11,7 +11,7 @@ class DerivatedTagTransformer < Transformer
     @lambda_value = eval(settings['value'])
   end
 
-  def process(row)
+  def process_data(row)
     row[:properties][:tags][@key] = @lambda_value.call(row[:properties])
     row
   end

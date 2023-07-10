@@ -19,7 +19,7 @@ class ValidateTransformer < Transformer
     }
   end
 
-  def process(row)
+  def process_data(row)
     @count += 1
 
     if row[:properties][:id].blank?
@@ -46,10 +46,10 @@ class ValidateTransformer < Transformer
     row
   end
 
-  def close
+  def close_data
     bad = @bad.select{ |_k, v| v != 0 }.to_h.compact_blank
     return unless !bad.empty? && bad[:pass] != @count
 
-    puts bad.inspect
+    puts "      ! #{bad.inspect}"
   end
 end

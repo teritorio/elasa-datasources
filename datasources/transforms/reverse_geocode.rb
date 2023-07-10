@@ -13,12 +13,12 @@ class ReverseGeocode
     @rows = []
   end
 
-  def process(row)
+  def process_data(row)
     @rows << row
     nil
   end
 
-  def close
+  def close_data
     puts "#{self.class.name}: #{@rows.size}"
 
     # TODO: geocoder uniquement ceux qui ont besoin d'un adresse

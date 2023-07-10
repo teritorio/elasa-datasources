@@ -10,8 +10,13 @@ class JoinTransformer < Transformer
     @key = settings['key']
     @full_join = settings['full_join']
 
+    @i18n = {}
     @rows = {}
     @rows_without_key = []
+  end
+
+  def process_i18n(data)
+    @i18n = @i18n.merge(data)
   end
 
   def process_tags(current_tags, update_tags, current_source, update_source)
@@ -39,7 +44,7 @@ class JoinTransformer < Transformer
     out
   end
 
-  def process(row)
+  def process_data(row)
     key = row[:properties][:tags][@key]
     if !key.nil?
       if @rows.key?(key)
@@ -61,8 +66,12 @@ class JoinTransformer < Transformer
     nil
   end
 
-  def close(&block)
-    puts "#{self.class.name}: #{@rows.size + @rows_without_key.size}"
+  def close_i18n
+    yield @i18n
+  end
+
+  def close_data(&block)
+    puts "    ~ #{self.class.name}: #{@rows.size + @rows_without_key.size}"
 
     @rows.values.each(&block)
     @rows_without_key.each(&block)
