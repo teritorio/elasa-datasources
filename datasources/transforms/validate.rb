@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 # typed: true
 
+require 'json'
+require 'json-schema'
+
 require_relative 'transformer'
 
 
@@ -17,6 +20,8 @@ class ValidateTransformer < Transformer
       missing_tags: 0,
       pass: 0,
     }
+
+    @tags_schema = JSON.parse(File.new('tags.schema.json').read)
   end
 
   def process_data(row)
@@ -41,6 +46,8 @@ class ValidateTransformer < Transformer
       @bad[:null_island_geometry] += 1
       return
     end
+
+    JSON::Validator.validate!(@tags_schema, row[:properties][:tags])
 
     @bad[:pass] += 1
     row

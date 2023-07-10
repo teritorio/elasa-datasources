@@ -315,10 +315,10 @@ class ApidaeSource < Source
       name: i18n_keys(r['nom']),
       description: i18n_keys(r.dig('presentation', 'descriptifCourt')),
       website: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Site web (URL)")].coordonnees.fr'),
-      'website:details': @website_details_url&.gsub('{{id}}', r['id'].to_s),
+      'website:details': { fr: @website_details_url&.gsub('{{id}}', r['id'].to_s) }.compact_blank,
       phone: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Téléphone")].coordonnees.fr'),
       email: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Mél")].coordonnees.fr'),
-      facebook: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Page facebook")].coordonnees.fr'),
+      facebook: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Page facebook")].coordonnees.fr').first,
       image: jp(r, 'illustrations[*].traductionFichiers[0][?(@.locale=="fr")].urlDiaporama'),
       addr: {
         street: [

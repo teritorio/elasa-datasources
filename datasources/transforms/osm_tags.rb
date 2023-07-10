@@ -20,13 +20,16 @@ class OsmTags < Transformer
     contact:mobile
     contact:email
     contact:website
+    cuisine
   ]
 
-  def group_addr(tags)
-    g = tags.to_a.group_by{ |k, _v|
-      /^addr:.*/.match?(k)
-    }.transform_values(&:to_h)
-    [g[true] || {}, g[false] || {}]
+  def group(prefix, tags)
+    match, not_match = tags.to_a.partition{ |k, _v|
+      k.start_with?("#{prefix}:")
+    }.collect(&:to_h)
+
+    not_match[prefix] = match.transform_keys{ |key| key[(prefix.size + 1)..] }
+    not_match.compact_blank
   end
 
   def process_tags(tags)
@@ -57,11 +60,16 @@ class OsmTags < Transformer
       [k, @multiple.include?(k) ? v.split(';').collect(&:strip) : v]
     }.select{ |k, _v| !k.nil? }.to_h
 
-    # Group addr
-    addr, tags = group_addr(tags)
-    if !addr.empty?
-      tags[:addr] = addr.transform_keys{ |key| /^addr:(.*)/.match(key)[1].to_s }
+    name = tags.delete(:name)
+    %i[addr ref name].each{ |key|
+      tags = group(key, tags)
+    }
+    tags = tags.transform_keys(&:to_sym)
+
+    if !tags.dig(:name, 'fr') && name
+      tags[:name] = (tags[:name] || {}).merge({ 'fr' => name })
     end
+
     tags
   end
 

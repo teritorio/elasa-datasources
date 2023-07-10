@@ -49,7 +49,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     'Triperies' => { amenity: 'restaurant' }, # FIXME: add specific tags
     'Viandes' => { amenity: 'restaurant', cuisine: ['meat'] },
     # Non Restaurant
-    'Glaces' => { amenity: 'ice cream', cuisine: ['ice_cream'] },
+    'Glaces' => { amenity: 'ice_cream', cuisine: ['ice_cream'] },
     'Fromagerie' => { shop: 'cheese' },
   }]
 
@@ -332,32 +332,34 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     )
 
     {
-      'ref:FR:CRTA': map_id(r),
+      ref: {
+        'FR:CRTA': map_id(r),
+      },
       name: { fr: r['NOMOFFRE'] }.compact_blank,
       description: { fr: r['DESCRIPTIF'] }.compact_blank,
-      website: { fr: multiple_split(r, %w[URL URLCOMPLET], 0) }.compact_blank,
-      'website:details': @website_details_url&.gsub('{{id}}', r['SyndicObjectID']),
+      website: multiple_split(r, %w[URL URLCOMPLET], 0),
+      'website:details': { fr: @website_details_url&.gsub('{{id}}', r['SyndicObjectID']) }.compact_blank,
       phone: multiple_split(r, %w[TEL TELCOMPLET TELMOB TELMOBCOMPLET], 0),
       email: multiple_split(r, %w[MAIL MAILCOMPLET], 0),
       facebook: r['FACEBOOK'],
       twitter: r['TWITTER'],
       instagram: r['INSTAGRAM'],
       image: multiple_split(r, %w[PHOTO PHOTOCOMPLET PROPPRESENTATIONPHOTO PHOTO_DIAPO], 0)&.collect{ |p| "#{@photo_base_url}#{p}" },
-      addr: {
+      addr: r['COMMUNE'] && {
         street: [r['AD1'], r['AD1SUITE'], r['AD2'], r['AD3']].compact_blank.join(', '),
         postcode: r['CP'],
         city: r['COMMUNE'],
-      }.compact_blank,
+      }.compact_blank || nil,
       route: route(r['ITITEMPSDIF'], r['DISTANCE'])&.inject({
         gpx_trace: r['DOCGPX'] && "#{@photo_base_url}#{r['DOCGPX']}",
         pdf: pdfs,
       }, :merge)&.compact_blank,
-      'capacity:beds': r['NBRELITS'],
-      'capacity:rooms': r['NBRECHAMB'],
-      'capacity:persons': r['CAPA'],
-      'capacity:caravans': r['NBRECARAVANES'],
-      'capacity:cabins': r['NBREMHOME'],
-      'capacity:pitches': r['NBREEMP'],
+      'capacity:beds': r['NBRELITS'].to_i,
+      'capacity:rooms': r['NBRECHAMB'].to_i,
+      'capacity:persons': r['CAPA'].to_i,
+      'capacity:caravans': r['NBRECARAVANES'].to_i,
+      'capacity:cabins': r['NBREMHOME'].to_i,
+      'capacity:pitches': r['NBREEMP'].to_i,
       opening_hours: osm_openning_hours,
       start_date: date_on,
       end_date: date_off,

@@ -122,8 +122,8 @@ class TourinsoftCdt50Source < TourinsoftSource
     r = feat
     {
       name: { fr: r['NomOffre'] }.compact_blank,
-      website: { fr: multiple_split(r, %w[SiteWeb], 0) }.compact_blank,
-      'website:details': @website_details_url&.gsub('{{id}}', r['SyndicObjectID']),
+      website: multiple_split(r, %w[SiteWeb], 0),
+      'website:details': { fr: @website_details_url&.gsub('{{id}}', r['SyndicObjectID']) }.compact_blank,
       phone: multiple_split(r, %w[TelephoneFilaire TelephoneMobile], 0),
       image: multiple_split(r, %w[Photo], 0)&.collect{ |p| "#{@photo_base_url}#{p}" },
       addr: {

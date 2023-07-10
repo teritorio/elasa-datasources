@@ -253,7 +253,7 @@ class TourismSystemSource < Source
         !@@capacities[type].nil? && !capacity.nil?
       end
     }.to_h{ |type, capacity|
-      ["capacity:#{@@capacities[type]}", capacity]
+      ["capacity:#{@@capacities[type]}", capacity.to_i]
     }
   end
 
@@ -303,13 +303,13 @@ class TourismSystemSource < Source
     event = f.dig('data', 'dublinCore', 'classifications')&.pluck('classification')&.include?('02.01.03') # Fêtes et Manifestations
     date_on, date_off, osm_openning_hours = !f.dig('data', 'periods').nil? && self.class.openning(f['data']['periods'])
     {
-      name: f.dig('metadata', 'name'),
+      name: f['data']['businessNames'],
       description: f.dig('data', 'dublinCore', 'description'),
       phone: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="04.02.01")]')&.pluck('particular')&.compact_blank,
       email: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="04.02.04")]')&.pluck('particular')&.compact_blank,
       website: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="04.02.05")]')&.pluck('particular')&.compact_blank,
-      'website:details': website_details,
-      facebook: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="99.04.02.01")]')&.pluck('particular')&.compact_blank,
+      'website:details': { fr: website_details }.compact_blank,
+      facebook: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="99.04.02.01")]')&.pluck('particular')&.first,
       image: jp(f, '.multimedia[*][?(@.type=="03.01.01")].URL').map{ |u| https(u) }, # 03.01.01 = Image
       addr: {
           street: [ # 04.03.13 = Etab/Lieu/Structure
@@ -328,12 +328,12 @@ class TourismSystemSource < Source
           jp(f, '.contacts[*][?(@.type=="04.03.13")]..country'),
         ].compact_blank.join(', '),
       }.compact_blank,
-      cuisine: (
-        f.dig('data', 'dublinCore', 'criteria')&.pluck('criterion')&.select{ |v|
-          v.start_with?('02.01.13.03.') || v.include?('.00.02.01.13.03.')
-        }&.map{ |v|
-          @thesaurus[v] || v
-        }),
+      # cuisine: (
+      #   f.dig('data', 'dublinCore', 'criteria')&.pluck('criterion')&.select{ |v|
+      #     v.start_with?('02.01.13.03.') || v.include?('.00.02.01.13.03.')
+      #   }&.map{ |v|
+      #     @thesaurus[v] || v
+      #   }),
       opening_hours: osm_openning_hours,
       start_date: event && date_on,
       end_date: event && date_off,

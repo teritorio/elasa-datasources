@@ -31,6 +31,8 @@ GEM
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     json (2.6.3)
+    json-schema (4.0.0)
+      addressable (>= 2.8)
     jsonpath (1.1.2)
       multi_json
     kiba (4.0.0)
@@ -145,6 +147,7 @@ DEPENDENCIES
   activesupport
   http
   json
+  json-schema
   jsonpath
   kiba
   nokogiri
