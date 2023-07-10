@@ -15,6 +15,7 @@ require './datasources/sources/geojson'
 require './datasources/destinations/destination'
 require './datasources/destinations/geojson'
 require './datasources/transforms/derivated_tag'
+require './datasources/transforms/end_date'
 require './datasources/transforms/join'
 require './datasources/transforms/validate'
 
@@ -55,6 +56,7 @@ class Job
       tasks.each{ |task|
         transform(task[:class], task[:settings])
       }
+      transform(EndDateTransformer, {})
       transform(ValidateTransformer, {})
       destination(GeoJson, path)
     end
