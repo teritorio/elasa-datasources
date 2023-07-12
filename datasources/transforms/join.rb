@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 # typed: true
 
+require 'jsonpath'
+
 require_relative 'transformer'
 
 
 class JoinTransformer < Transformer
   def initialize(settings)
     super(settings)
-    @key = settings['key']
+    @path = "$.#{settings['key']}"
     @full_join = settings['full_join']
 
     @i18n = {}
@@ -36,16 +38,14 @@ class JoinTransformer < Transformer
     }
 
     if update
-      source.each{ |key, value|
-        out["source:#{key}"] = value
-      }
+      out[:source] = (out[:source] || {}).merge(source)
     end
 
     out
   end
 
   def process_data(row)
-    key = row[:properties][:tags][@key]
+    key = JsonPath.on(row[:properties][:tags], @path)
     if !key.nil?
       if @rows.key?(key)
         @rows[key][:properties][:tags] = process_tags(
