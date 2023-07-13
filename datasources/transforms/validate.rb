@@ -21,7 +21,7 @@ class ValidateTransformer < Transformer
       pass: 0,
     }
 
-    @tags_schema = JSON.parse(File.new('tags.schema.json').read)
+    @tags_schema = JSON.parse(File.new('datasources/transforms/validate-tags.schema.json').read)
   end
 
   def process_data(row)
