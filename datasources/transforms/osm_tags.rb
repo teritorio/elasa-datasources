@@ -65,12 +65,14 @@ class OsmTags < Transformer
       tags = group(key, tags)
       tags = tags.transform_keys(&:to_sym)
 
-      if key == :name
-        if !tags.dig(:name, 'fr') && value
-          tags[:name] = (tags[:name] || {}).merge({ 'fr' => value })
+      if !value.nil?
+        if key == :name
+          if !tags.dig(:name, 'fr')
+            tags[:name] = (tags[:name] || {}).merge({ 'fr' => value })
+          end
+        else
+          tags[key] = (tags[key] || {}).merge({ '' => value })
         end
-      else
-        tags[:key] = (tags[:key] || {}).merge({ '' => value })
       end
     }
 
