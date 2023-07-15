@@ -324,7 +324,7 @@
                 },
                 "protect_class": {
                     "enum": [
-                        4
+                        "4"
                     ]
                 },
                 "tourism": {
