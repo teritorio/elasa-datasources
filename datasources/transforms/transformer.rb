@@ -17,8 +17,13 @@ class Transformer
       d = process_i18n(data)
       d.nil? ? nil : [type, d]
     when :data
-      d = process_data(data)
-      d.nil? ? nil : [type, d]
+      begin
+        d = process_data(data)
+        d.nil? ? nil : [type, d]
+      rescue StandardError => e
+        puts "#{e}\n\n"
+        nil
+      end
     else Raise "Not support stream item #{type}"
     end
   end
