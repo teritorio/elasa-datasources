@@ -86,26 +86,26 @@
                 },
                 "pdf": {
                     "$ref": "#/$defs/multilingual"
-                },
-                "additionalProperties": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                        "difficulty": {
-                            "enum": [
-                                "easy",
-                                "normal",
-                                "hard"
-                            ]
-                        },
-                        "duration": {
-                            "title": "Duration in minutes",
-                            "type": "integer"
-                        },
-                        "length": {
-                            "title": "Length in meters",
-                            "type": "integer"
-                        }
+                }
+            },
+            "additionalProperties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "difficulty": {
+                        "enum": [
+                            "easy",
+                            "normal",
+                            "hard"
+                        ]
+                    },
+                    "duration": {
+                        "title": "Duration in minutes",
+                        "type": "number"
+                    },
+                    "length": {
+                        "title": "Length in meters",
+                        "type": "number"
                     }
                 }
             }

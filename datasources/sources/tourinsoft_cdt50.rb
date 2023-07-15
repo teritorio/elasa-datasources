@@ -47,7 +47,9 @@ class TourinsoftCdt50Source < TourinsoftSource
   def self.route(route)
     practice_slug = @@practices[route]
     {
-      "#{practice_slug}:lenght": 0, # FIXME
+      "#{practice_slug}": {
+        length: 0, # FIXME
+      }
     }
   end
 

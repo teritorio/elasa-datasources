@@ -129,9 +129,11 @@ class GeotrekSource < Source
       description: r['description_teaser'].reject { |_, v| v == '' },
       'website:details': website_details,
       route: {
-        "#{practice}:difficulty": difficulty(@difficulties, r['difficulty']),
-        "#{practice}:duration": (r['duration'].to_f * 60).to_i,
-        "#{practice}:length": r['length_2d'].to_f / 1000,
+        "#{practice}": {
+          difficulty: difficulty(@difficulties, r['difficulty']),
+          duration: (r['duration'].to_f * 60).to_i,
+          length: r['length_2d'].to_f / 1000,
+        },
         gpx_trace: r['gpx'],
         pdf: r['pdf']&.compact_blank,
       }.compact_blank,

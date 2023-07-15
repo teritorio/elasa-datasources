@@ -214,10 +214,12 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       duration = (duration_matches[0] * 24 + duration_matches[1]) * 60 + duration_matches[2]
 
       {
-        "#{practice_slug}:difficulty": @@difficulties[difficulty],
-        "#{practice_slug}:duration": duration,
-        "#{practice_slug}:length": distance,
-      }
+        "#{practice_slug}": {
+          difficulty: @@difficulties[difficulty],
+          duration: duration,
+          length: distance,
+        }.compact_blank
+      }.compact_blank
     }
   end
 

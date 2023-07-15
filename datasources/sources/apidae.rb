@@ -330,15 +330,19 @@ class ApidaeSource < Source
         city: r.dig('localisation', 'adresse', 'commune', 'nom'),
         country: r.dig('localisation', 'adresse', 'commune', 'pays', 'libelleFr'),
       }.compact_blank,
-      route: practices&.collect{ |practice_slug|
-        {
-          # "#{practice_slug}:difficulty":
-          "#{practice_slug}:duration": jp(r, 'informationsEquipement.itineraire.dureeJournaliere').first,
-          "#{practice_slug}:length": jp(r, 'informationsEquipement.itineraire.distance').first,
-          gpx_trace: jp(r, 'multimedias[*].traductionFichiers[*][?(@.extension=="gpx")].url').first,
-          pdf: jp(r, 'multimedias[*].traductionFichiers[*][?(@.extension=="pdf")]').to_h{ |t| [t['locale'], t['url']] },
-        }
-      }&.inject(:merge)&.compact_blank,
+      route: {
+        gpx_trace: jp(r, 'multimedias[*].traductionFichiers[*][?(@.extension=="gpx")].url').first,
+        pdf: jp(r, 'multimedias[*].traductionFichiers[*][?(@.extension=="pdf")]').to_h{ |t| [t['locale'], t['url']] },
+      }.merge(practices&.to_h{ |practice_slug|
+        [
+          practice_slug,
+          {
+            # "difficulty":
+            duration: jp(r, 'informationsEquipement.itineraire.dureeJournaliere').first,
+            length: jp(r, 'informationsEquipement.itineraire.distance').first,
+          }.compact_blank
+        ]
+      } || {})&.compact_blank,
       opening_hours: osm_openning_hours,
       start_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_on : nil,
       end_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_off : nil,
