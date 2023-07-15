@@ -166,7 +166,7 @@
         },
         "cuisine": {
             "type": "array",
-            "item": {
+            "items": {
                 "enum": [
                     "african",
                     "american",
@@ -191,15 +191,44 @@
                     "sandwich",
                     "seafood",
                     "south_american",
-                    "sush",
-                    "tapas"
+                    "sushi",
+                    "tapas",
+                    "italian",
+                    "ice_cream",
+                    "spanish",
+                    "crepe",
+                    "international",
+                    "steak_house",
+                    "western",
+                    "arab",
+                    "latin_american",
+                    "chicken",
+                    "friture",
+                    "waffle",
+                    "greek",
+                    "kebab",
+                    "thai",
+                    "vietnamese",
+                    "fish_and_chips",
+                    "chinese",
+                    "argentinian",
+                    "coffee_shop",
+                    "hawaiian",
+                    "portuguese",
+                    "tex-mex",
+                    "barbecue",
+                    "brunch",
+                    "breakfast",
+                    "indonesian",
+                    "pasta",
+                    "oriental"
                 ]
             }
         },
         "event": {
             "title": "Non OSM",
             "type": "array",
-            "item": {
+            "items": {
                 "enum": [
                     "SaleEvent",
                     "BricABrac",
@@ -356,7 +385,7 @@
         },
         "route_ref": {
             "type": "array",
-            "item": {
+            "items": {
                 "type": "string"
             }
         },
