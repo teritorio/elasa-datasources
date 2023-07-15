@@ -18,9 +18,16 @@ class ValidateTransformer < Transformer
       pass: 0,
     }
 
+    @i18n_schema = JSON.parse(File.new('datasources/transforms/validate-i18n.schema.json').read)
+
     # Schema from https://geojson.org/schema/Feature.json
     @geojson_schema = JSON.parse(File.new('datasources/transforms/validate-geojson-feature.schema.json').read)
     @properties_schema = JSON.parse(File.new('datasources/transforms/validate-properties.schema.json').read)
+  end
+
+  def process_i18n(i18n)
+    JSON::Validator.validate!(@i18n_schema, i18n)
+    i18n
   end
 
   def process_data(row)
