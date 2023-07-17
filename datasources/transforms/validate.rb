@@ -10,6 +10,7 @@ require_relative 'transformer'
 class ValidateTransformer < Transformer
   def initialize(settings)
     super(settings)
+    additional_tags = settings['additional_tags'] || false
 
     @count = 0
     @bad = {
@@ -22,8 +23,12 @@ class ValidateTransformer < Transformer
 
     # Schema from https://geojson.org/schema/Feature.json
     @geojson_schema = JSON.parse(File.new('datasources/transforms/validate-geojson-feature.schema.json').read)
-    @properties_schema = JSON.parse(File.new('datasources/transforms/validate-properties.schema.json').read)
     @properties_tags_schema = JSON.parse(File.new('datasources/transforms/validate-properties-tags.schema.json').read)
+    @properties_schema = JSON.parse(File.new('datasources/transforms/validate-properties.schema.json').read)
+    @properties_schema['properties']['tags'] = @properties_tags_schema
+    @properties_schema['$defs'] = (@properties_schema['$defs'] || {}).merge(@properties_tags_schema['$defs'])
+
+    @properties_schema['properties']['tags']['additionalProperties'] = additional_tags
   end
 
   def validate_i18n_key(base, properties, i18n)
