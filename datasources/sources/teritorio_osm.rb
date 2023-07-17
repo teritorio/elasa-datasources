@@ -64,14 +64,14 @@ out center meta;
     feat['timestamp']
   end
 
-  def map_geometry(_feat)
+  def map_geometry(feat)
     {
       type: 'Point',
       coordinates: (
-        if r['lon'].nil?
-          [r['center']['lon'], r['center']['lat']]
+        if feat['lon'].nil?
+          [feat['center']['lon'], feat['center']['lat']]
         else
-          [r['lon'], r['lat']]
+          [feat['lon'], feat['lat']]
         end
       )
     }
