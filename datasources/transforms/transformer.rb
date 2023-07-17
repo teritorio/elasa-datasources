@@ -4,6 +4,9 @@
 class Transformer
   def initialize(settings)
     @settings = settings
+    @has_i18n = false
+    @count_input_row = 0
+    @count_output_row = 0
   end
 
   def process_i18n(data)
@@ -15,11 +18,18 @@ class Transformer
     case type
     when :i18n
       d = process_i18n(data)
-      d.nil? ? nil : [type, d]
+      if d.present?
+        @has_i18n = true
+        [type, d]
+      end
     when :data
+      @count_input_row += 1
       begin
         d = process_data(data)
-        d.nil? ? nil : [type, d]
+        if !d.nil?
+          @count_output_row += 1
+          [type, d]
+        end
       rescue StandardError => e
         puts "#{e}\n\n"
         nil
@@ -34,15 +44,20 @@ class Transformer
 
   def close
     close_i18n { |data|
-      if !data.nil?
+      if data.present?
+        @has_i18n = true
         yield [:i18n, data]
       end
     }
 
     close_data { |data|
       if !data.nil?
+        @count_output_row += 1
         yield [:data, data]
       end
     }
+
+    count = @count_output_row == @count_input_row ? @count_input_row.to_s : "#{@count_input_row} -> #{@count_output_row}"
+    puts "    ~ #{self.class.name}: #{count}#{@has_i18n ? ' +i18n' : ''}"
   end
 end

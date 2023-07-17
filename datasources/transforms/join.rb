@@ -71,8 +71,6 @@ class JoinTransformer < Transformer
   end
 
   def close_data(&block)
-    puts "    ~ #{self.class.name}: #{@rows.size + @rows_without_key.size}"
-
     @rows.values.each(&block)
     @rows_without_key.each(&block)
   end
