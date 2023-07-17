@@ -34,11 +34,15 @@ class Transformer
 
   def close
     close_i18n { |data|
-      yield [:i18n, data]
+      if !data.nil?
+        yield [:i18n, data]
+      end
     }
 
     close_data { |data|
-      yield [:data, data]
+      if !data.nil?
+        yield [:data, data]
+      end
     }
   end
 end
