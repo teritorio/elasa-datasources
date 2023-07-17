@@ -680,6 +680,11 @@
             "fr": "adresse"
         }
     },
+    "addr:housenumber": {
+        "@default": {
+            "fr": "numéro"
+        }
+    },
     "addr:street": {
         "@default": {
             "fr": "rue"

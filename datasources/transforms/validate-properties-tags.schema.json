@@ -64,6 +64,9 @@
             ],
             "additionalProperties": false,
             "properties": {
+                "housenumber": {
+                    "type": "string"
+                },
                 "street": {
                     "type": "string"
                 },
