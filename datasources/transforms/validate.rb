@@ -23,10 +23,65 @@ class ValidateTransformer < Transformer
     # Schema from https://geojson.org/schema/Feature.json
     @geojson_schema = JSON.parse(File.new('datasources/transforms/validate-geojson-feature.schema.json').read)
     @properties_schema = JSON.parse(File.new('datasources/transforms/validate-properties.schema.json').read)
+    @properties_tags_schema = JSON.parse(File.new('datasources/transforms/validate-properties-tags.schema.json').read)
+  end
+
+  def validate_i18n_key(base, properties, i18n)
+    keys = properties.keys.collect{ |key| Regexp.new((base + [Regexp.quote(key)]).join(':')) }
+    keys_without_i18n = keys.select{ |key| !i18n.keys.find{ |i18n_key| key.match(i18n_key) } }
+    raise "Tags Keys without i18n : #{keys_without_i18n.inspect}" if !keys_without_i18n.empty?
+
+    # i18n_without_keys = i18n.keys.select{ |i18n_key| !keys.find{ |key| key.match(i18n_key) } }
+    # raise "Tags Key pending in i18n : #{i18n_without_keys.inspect}" if !i18n_without_keys.empty?
+  end
+
+  def validate_i18n_enum(base, properties, i18n)
+    enums = properties.select{ |_key, value|
+      value['type'] == 'array' && !value['items']['enum'].nil?
+    }.collect{ |key, value|
+      [key, value['items']['enum']]
+    } + properties.select{ |_key, value|
+      !value['enum'].nil?
+    }.collect{ |key, value|
+      [key, value['enum']]
+    }
+
+    enums.collect{ |key, enum|
+      key_match = Regexp.new((base + [Regexp.quote(key)]).join(':'))
+      i18n_key = i18n.keys.find{ |k| key_match.match(k) }
+      i18n_missing_values = enum - (i18n[i18n_key]['values'] || {}).keys
+      puts "Tags Key values without i18n : #{key}=#{i18n_missing_values.join('|')}" if !i18n_missing_values.empty?
+
+      i18n_pending_values = (i18n[i18n_key]['values'] || {}).keys - enum
+      puts "Tags Key values pending i18n : #{key}=#{i18n_pending_values.join('|')}" if !i18n_pending_values.empty?
+
+      !i18n_missing_values.empty? || !i18n_pending_values.empty?
+    }.find.first && raise('Tags value i18n Error')
+  end
+
+  def validate_i18n_object(base, properties, i18n)
+    properties.select{ |_key, value|
+      value['type'] == 'object' && !value['properties'].nil?
+    }.collect{ |key, value|
+      validate_i18n(base + [Regexp.quote(key)], value['properties'], i18n)
+    }
+
+    properties.select{ |_key, value|
+      value['type'] == 'object' && value['additionalProperties'] && value['additionalProperties']['type'] == 'object'
+    }.collect{ |key, value|
+      validate_i18n(base + [Regexp.quote(key), '[^:]+'], value['additionalProperties']['properties'], i18n)
+    }
+  end
+
+  def validate_i18n(base, properties, i18n)
+    validate_i18n_key(base, properties, i18n)
+    validate_i18n_enum(base, properties, i18n)
+    validate_i18n_object(base, properties, i18n)
   end
 
   def process_i18n(i18n)
     JSON::Validator.validate!(@i18n_schema, i18n)
+    validate_i18n([], @properties_tags_schema['properties'], i18n)
     i18n
   end
 
@@ -60,5 +115,7 @@ class ValidateTransformer < Transformer
     return unless !bad.empty? && bad[:pass] != @count
 
     puts "      ! #{bad.inspect}"
+
+    # TODO: check for additionalProperties translation
   end
 end
