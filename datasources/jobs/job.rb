@@ -52,12 +52,13 @@ class Job
         }
       end
 
-      tasks.each{ |task|
+      tasks_by_class = tasks.to_h{ |task| [task[:class], task[:settings]] }
+      tasks.select{ |task| ![ValidateTransformer].include?(task[:class]) }.each{ |task|
         transform(task[:class], task[:settings])
       }
       transform(EndDateTransformer, {})
       transform(I18nDefaultTransformer, {})
-      transform(ValidateTransformer, {})
+      transform(ValidateTransformer, tasks_by_class[ValidateTransformer] || {})
       destination(GeoJson, path)
     end
     Kiba.run(job)
