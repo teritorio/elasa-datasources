@@ -13,7 +13,7 @@ require_relative '../transforms/reverse_geocode'
 
 
 class TeritorioOsm < Connector
-  def each
+  def setup(kiba)
     configs = @settings['configs']
     config = configs.inject({}){ |sum, config_path|
       sum.merge(YAML.safe_load(File.read(config_path)))
@@ -22,19 +22,14 @@ class TeritorioOsm < Connector
     generated_config = "#{@path}/config/osm_tags.json"
     File.write(generated_config, JSON.dump(config))
 
-    config.each{ |source_id, extra|
-      yield [
+    config.each{ |source_id, _extra|
+      kiba.source(
         TeritorioOsmSource,
         source_id,
         @settings.merge({ 'select' => c['select'] }),
-        extra
-      ]
+      )
     }
-  end
 
-  def setup(kiba, params, extra)
-    super(kiba, params)
-    kiba.transform(OsmTags)
     return unless extra['georeverse']
 
     kiba.transform(ReverseGeocode)

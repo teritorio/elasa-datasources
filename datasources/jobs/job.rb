@@ -42,11 +42,9 @@ class Job
           source_filter,
           path,
         )
-        connector.each { |args|
-          # Define source()
-          # self as Kiba context
-          connector.setup(self, args)
-        }
+        # Define source()
+        # self as Kiba context
+        connector.setup(self)
       else
         sources, tasks = tasks.partition{ |task| task[:class] <= Source }
         sources.each{ |src|

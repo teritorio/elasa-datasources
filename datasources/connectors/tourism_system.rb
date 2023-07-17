@@ -8,7 +8,7 @@ require_relative '../sources/tourism_system'
 
 
 class TourismSystem < Connector
-  def each
+  def setup(kiba)
     id = @settings['id']
     basic_auth = @settings['basic_auth']
 
@@ -28,11 +28,11 @@ class TourismSystem < Connector
         'playlist_id' => playlist_id,
         'thesaurus' => thesaurus,
       })
-      yield [
+      kiba.source(
         TourismSystemSource,
         source_id,
         tourism_system_settings,
-      ]
+      )
     }
   end
 

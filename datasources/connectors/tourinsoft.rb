@@ -8,15 +8,15 @@ require_relative '../sources/tourinsoft'
 
 
 class Tourinsoft < Connector
-  def each
+  def setup(kiba)
     @settings['syndications'].select{ |name, _syndication|
       @source_filter.nil? || name.start_with?(@source_filter)
     }.each{ |name, syndication|
-      yield [
+      kiba.source(
         self.class.source_class,
         name,
         @settings.merge({ 'syndication' => syndication }),
-      ]
+      )
     }
   end
 end
