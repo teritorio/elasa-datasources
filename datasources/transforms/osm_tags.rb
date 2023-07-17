@@ -60,15 +60,15 @@ class OsmTags < Transformer
       [k, @multiple.include?(k) ? v.split(';').collect(&:strip) : v]
     }.select{ |k, _v| !k.nil? }.to_h
 
-    %i[addr ref name source].each{ |key|
+    %i[addr ref name description source].each{ |key|
       value = tags.delete(key)
       tags = group(key, tags)
       tags = tags.transform_keys(&:to_sym)
 
       if !value.nil?
-        if key == :name
-          if !tags.dig(:name, 'fr')
-            tags[:name] = (tags[:name] || {}).merge({ 'fr' => value })
+        if %i[name description].include?(key)
+          if !tags.dig(key, 'fr')
+            tags[key] = (tags[key] || {}).merge({ 'fr' => value })
           end
         else
           tags[key] = (tags[key] || {}).merge({ '' => value })
