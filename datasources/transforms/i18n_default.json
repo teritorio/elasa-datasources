@@ -477,6 +477,188 @@
             }
         }
     },
+    "route:hiking:difficulty": {
+        "@default": {
+            "fr": "difficulté"
+        },
+        "values": {
+            "easy": {
+                "@default:full": {
+                    "fr": "facile"
+                }
+            },
+            "normal": {
+                "@default:full": {
+                    "fr": "normal"
+                }
+            },
+            "hard": {
+                "@default:full": {
+                    "fr": "difficile"
+                }
+            }
+        }
+    },
+    "route:mtb:difficulty": {
+        "@default": {
+            "fr": "difficulté"
+        },
+        "values": {
+            "easy": {
+                "@default:full": {
+                    "fr": "facile"
+                }
+            },
+            "normal": {
+                "@default:full": {
+                    "fr": "normal"
+                }
+            },
+            "hard": {
+                "@default:full": {
+                    "fr": "difficile"
+                }
+            }
+        }
+    },
+    "route:bicycle:difficulty": {
+        "@default": {
+            "fr": "difficulté"
+        },
+        "values": {
+            "easy": {
+                "@default:full": {
+                    "fr": "facile"
+                }
+            },
+            "normal": {
+                "@default:full": {
+                    "fr": "normal"
+                }
+            },
+            "hard": {
+                "@default:full": {
+                    "fr": "difficile"
+                }
+            }
+        }
+    },
+    "route:road:difficulty": {
+        "@default": {
+            "fr": "difficulté"
+        },
+        "values": {
+            "easy": {
+                "@default:full": {
+                    "fr": "facile"
+                }
+            },
+            "normal": {
+                "@default:full": {
+                    "fr": "normal"
+                }
+            },
+            "hard": {
+                "@default:full": {
+                    "fr": "difficile"
+                }
+            }
+        }
+    },
+    "route:canoe:difficulty": {
+        "@default": {
+            "fr": "difficulté"
+        },
+        "values": {
+            "easy": {
+                "@default:full": {
+                    "fr": "facile"
+                }
+            },
+            "normal": {
+                "@default:full": {
+                    "fr": "normal"
+                }
+            },
+            "hard": {
+                "@default:full": {
+                    "fr": "difficile"
+                }
+            }
+        }
+    },
+    "route:horse:difficulty": {
+        "@default": {
+            "fr": "difficulté"
+        },
+        "values": {
+            "easy": {
+                "@default:full": {
+                    "fr": "facile"
+                }
+            },
+            "normal": {
+                "@default:full": {
+                    "fr": "normal"
+                }
+            },
+            "hard": {
+                "@default:full": {
+                    "fr": "difficile"
+                }
+            }
+        }
+    },
+    "route:hiking:duration": {
+        "@default": {
+            "fr": "durée"
+        }
+    },
+    "route:mtb:duration": {
+        "@default": {
+            "fr": "durée"
+        }
+    },
+    "route:bicycle:duration": {
+        "@default": {
+            "fr": "durée"
+        }
+    },
+    "route:road:duration": {
+        "@default": {
+            "fr": "durée"
+        }
+    },
+    "route:canoe:duration": {
+        "@default": {
+            "fr": "durée"
+        }
+    },
+    "route:hiking:length": {
+        "@default": {
+            "fr": "distance"
+        }
+    },
+    "route:mtb:length": {
+        "@default": {
+            "fr": "distance"
+        }
+    },
+    "route:bicycle:length": {
+        "@default": {
+            "fr": "distance"
+        }
+    },
+    "route:road:length": {
+        "@default": {
+            "fr": "distance"
+        }
+    },
+    "route:canoe:length": {
+        "@default": {
+            "fr": "distance"
+        }
+    },
     "route:gpx_trace": {
         "@default": {
             "fr": "Trace GPS"
