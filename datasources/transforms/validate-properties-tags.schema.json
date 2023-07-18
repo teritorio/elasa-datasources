@@ -59,14 +59,8 @@
         },
         "addr": {
             "type": "object",
-            "required": [
-                "city"
-            ],
             "additionalProperties": false,
             "properties": {
-                "housenumber": {
-                    "type": "string"
-                },
                 "street": {
                     "type": "string"
                 },
@@ -351,7 +345,8 @@
         "public_transport": {
             "enum": [
                 "platform",
-                "stop_position"
+                "stop_position",
+                "station"
             ]
         },
         "bin": {
@@ -380,7 +375,9 @@
         "bench": {
             "enum": [
                 "no",
-                "yes"
+                "yes",
+                "stand_up_bench",
+                "wave_lounger"
             ]
         },
         "network": {
@@ -396,17 +393,24 @@
             "enum": [
                 "yes",
                 "no",
-                "only"
+                "only",
+                "limited"
             ]
         },
         "diet:vegan": {
             "enum": [
-                "only"
+                "yes",
+                "no",
+                "only",
+                "limited"
             ]
         },
         "diet:vegetarian": {
             "enum": [
-                "only"
+                "yes",
+                "no",
+                "only",
+                "limited"
             ]
         },
         "fast_food": {

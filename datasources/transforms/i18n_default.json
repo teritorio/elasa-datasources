@@ -320,6 +320,11 @@
                 "@default:full": {
                     "fr": "bio uniquement"
                 }
+            },
+            "limited": {
+                "@default:full": {
+                    "fr": "en partie bio"
+                }
             }
         }
     },
@@ -392,6 +397,16 @@
             "no": {
                 "@default:full": {
                     "fr": "pas de banc"
+                }
+            },
+            "stand_up_bench": {
+                "@default:full": {
+                    "fr": "banc debout"
+                }
+            },
+            "wave_lounger": {
+                "@default:full": {
+                    "fr": "banc couché"
                 }
             }
         }
@@ -678,11 +693,6 @@
     "addr": {
         "@default": {
             "fr": "adresse"
-        }
-    },
-    "addr:housenumber": {
-        "@default": {
-            "fr": "numéro"
         }
     },
     "addr:street": {
@@ -1175,6 +1185,11 @@
                 "@default:full": {
                     "fr": "arrêt"
                 }
+            },
+            "station": {
+                "@default:full": {
+                    "fr": "station"
+                }
             }
         }
     },
@@ -1195,9 +1210,24 @@
             "fr": "vegan"
         },
         "values": {
+            "yes": {
+                "@default:full": {
+                    "fr": "produits bio"
+                }
+            },
+            "no": {
+                "@default:full": {
+                    "fr": "pas de bio"
+                }
+            },
             "only": {
                 "@default:full": {
-                    "fr": "vegan uniquement"
+                    "fr": "bio uniquement"
+                }
+            },
+            "limited": {
+                "@default:full": {
+                    "fr": "en partie bio"
                 }
             }
         }
@@ -1207,9 +1237,24 @@
             "fr": "végétarien"
         },
         "values": {
+            "yes": {
+                "@default:full": {
+                    "fr": "produits bio"
+                }
+            },
+            "no": {
+                "@default:full": {
+                    "fr": "pas de bio"
+                }
+            },
             "only": {
                 "@default:full": {
-                    "fr": "végétarien uniquement"
+                    "fr": "bio uniquement"
+                }
+            },
+            "limited": {
+                "@default:full": {
+                    "fr": "en partie bio"
                 }
             }
         }
