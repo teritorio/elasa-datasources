@@ -28,7 +28,14 @@ class ValidateTransformer < Transformer
     @properties_schema['properties']['tags'] = @properties_tags_schema
     @properties_schema['$defs'] = (@properties_schema['$defs'] || {}).merge(@properties_tags_schema['$defs'])
 
+    # Relax constraints on schema
+
+    return unless additional_tags
+
     @properties_schema['properties']['tags']['additionalProperties'] = additional_tags
+    ['shop'].each{ |key|
+      @properties_schema['properties']['tags']['properties'][key] = { type: 'string' }
+    }
   end
 
   def validate_i18n_key(base, properties, i18n)
