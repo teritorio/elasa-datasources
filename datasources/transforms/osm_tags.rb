@@ -21,6 +21,7 @@ class OsmTags < Transformer
     contact:email
     contact:website
     cuisine
+    route_ref
   ]
 
   def group(prefix, tags)
