@@ -7,3 +7,11 @@ datasources:
         attribution: Geotrek
         portal_id: 2
         website_details_url: https://exmaple.com/{{practice}}/{{name}}/
+    ontology:
+      connector:
+        type: TeritorioOntology
+        relation_id: 7376 # Landes
+        url: https://vecto.teritorio.xyz/data/teritorio-tourism-ontology-latest.json
+      validate:
+        type: ValidateTransformer
+        additional_tags: true
