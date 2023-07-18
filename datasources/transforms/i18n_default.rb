@@ -2,7 +2,7 @@
 # typed: true
 
 require 'json'
-require 'json-schema'
+require 'active_support/all'
 
 require_relative 'transformer'
 
@@ -15,7 +15,7 @@ class I18nDefaultTransformer < Transformer
   end
 
   def process_i18n(i18n)
-    @i18n_default.merge(i18n)
+    @i18n_default.deep_merge(i18n)
   end
 
   def process_data(row)
