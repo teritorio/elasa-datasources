@@ -12,6 +12,8 @@ class ValidateTransformer < Transformer
     super(settings)
     additional_tags = settings['additional_tags'] || false
 
+    @i18n = {}
+
     @count = 0
     @bad = {
       missing_geometry: 0,
@@ -33,12 +35,12 @@ class ValidateTransformer < Transformer
     return unless additional_tags
 
     @properties_schema['properties']['tags']['additionalProperties'] = additional_tags
-    ['shop'].each{ |key|
+    %w[shop amenity leisure tourism natural water highway].each{ |key|
       @properties_schema['properties']['tags']['properties'][key] = { type: 'string' }
     }
   end
 
-  def validate_i18n_key(base, properties, i18n)
+  def validate_schema_i18n_key(base, properties, i18n)
     keys = properties.keys.collect{ |key| Regexp.new((base + [Regexp.quote(key)]).join(':')) }
     keys_without_i18n = keys.select{ |key| !i18n.keys.find{ |i18n_key| key.match(i18n_key) } }
     raise "Tags Keys without i18n : #{keys_without_i18n.inspect}" if !keys_without_i18n.empty?
@@ -47,7 +49,7 @@ class ValidateTransformer < Transformer
     # raise "Tags Key pending in i18n : #{i18n_without_keys.inspect}" if !i18n_without_keys.empty?
   end
 
-  def validate_i18n_enum(base, properties, i18n)
+  def validate_schema_i18n_enum(base, properties, i18n)
     enums = properties.select{ |_key, value|
       value['type'] == 'array' && !value['items']['enum'].nil?
     }.collect{ |key, value|
@@ -71,30 +73,40 @@ class ValidateTransformer < Transformer
     }.find.first && raise('Tags value i18n Error')
   end
 
-  def validate_i18n_object(base, properties, i18n)
+  def validate_schema_i18n_object(base, properties, i18n)
     properties.select{ |_key, value|
       value['type'] == 'object' && !value['properties'].nil?
     }.collect{ |key, value|
-      validate_i18n(base + [Regexp.quote(key)], value['properties'], i18n)
+      validate_schema_i18n(base + [Regexp.quote(key)], value['properties'], i18n)
     }
 
     properties.select{ |_key, value|
       value['type'] == 'object' && value['additionalProperties'] && value['additionalProperties']['type'] == 'object'
     }.collect{ |key, value|
-      validate_i18n(base + [Regexp.quote(key), '[^:]+'], value['additionalProperties']['properties'], i18n)
+      validate_schema_i18n(base + [Regexp.quote(key), '[^:]+'], value['additionalProperties']['properties'], i18n)
     }
   end
 
-  def validate_i18n(base, properties, i18n)
-    validate_i18n_key(base, properties, i18n)
-    validate_i18n_enum(base, properties, i18n)
-    validate_i18n_object(base, properties, i18n)
+  def validate_schema_i18n(base, properties, i18n)
+    validate_schema_i18n_key(base, properties, i18n)
+    validate_schema_i18n_enum(base, properties, i18n)
+    validate_schema_i18n_object(base, properties, i18n)
   end
 
   def process_i18n(i18n)
     JSON::Validator.validate!(@i18n_schema, i18n)
-    validate_i18n([], @properties_tags_schema['properties'], i18n)
+    validate_schema_i18n([], @properties_tags_schema['properties'], i18n)
+    @i18n = i18n
     i18n
+  end
+
+  def validate_i18n(properties)
+    missing = properties.collect{ |key, value|
+      if @properties_tags_schema.key?(key.to_s) && @i18n.key?(key.to_s) && @i18n[key.to_s].key?(:values) && !@i18n[key.to_s][:values].key?(value.to_s)
+        "#{key}=#{value}"
+      end
+    }.compact
+    raise "Missing key or key=value: #{missing.join(', ')}" if missing.present?
   end
 
   def process_data(row)
@@ -113,6 +125,7 @@ class ValidateTransformer < Transformer
     begin
       JSON::Validator.validate!(@geojson_schema, row)
       JSON::Validator.validate!(@properties_schema, row[:properties])
+      validate_i18n(row[:properties][:tags])
     rescue StandardError => e
       puts row.inspect
       raise e
