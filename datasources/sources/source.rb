@@ -39,9 +39,10 @@ class Source
   end
 
   def each(raw)
-    yield [:i18n, i18n]
+    i18n_data = i18n
+    yield [:i18n, i18n_data]
 
-    puts "    > #{self.class.name}, #{@destination_id}: #{raw.size}"
+    puts "    > #{self.class.name}, #{@destination_id.inspect}: #{raw.size}#{i18n_data.present? ? ' +i18n' : ''}"
     bad = {
       filtered_out: 0,
       missing_id: 0,
