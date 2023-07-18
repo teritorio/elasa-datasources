@@ -66,13 +66,34 @@ class OsmTags < Transformer
       tags = group(key, tags)
       tags = tags.transform_keys(&:to_sym)
 
-      if !value.nil?
-        if %i[name description].include?(key)
-          if !tags.dig(key, 'fr')
-            tags[key] = (tags[key] || {}).merge({ 'fr' => value })
-          end
-        else
-          tags[key] = (tags[key] || {}).merge({ '' => value })
+      # else
+      # tags[key] = (tags[key] || {}).merge({ '' => value })
+      if !value.nil? && %i[name description].include?(key) && !tags.dig(key, 'fr')
+        tags[key] = (tags[key] || {}).merge({ 'fr' => value })
+      end
+      # else
+      # tags[key] = (tags[key] || {}).merge({ '' => value })
+    }
+
+    # Move mobile to phone
+    phone = (tags[:phone] || []) + (tags.delete(:mobile) || [])
+    tags[:phone] = phone if phone.present?
+
+    # Move housenumber, housename, place, unit... to street
+    if tags[:addr]
+      tags[:addr].delete('full') # Remove full
+      street = %w[housenumber housename place unit street].collect{ |key| tags[:addr].delete(key) }.compact.join(', ')
+      tags[:addr]['street'] = street if street.present?
+    end
+
+    ['capacity:beds', 'capacity:rooms', 'capacity:persons', 'capacity:caravans', 'capacity:cabins', 'capacity:pitches'].each { |key|
+      capacity = tags.delete(key.to_sym)
+      if capacity
+        begin
+          tags[key] = Integer(capacity)
+        rescue StandardError => e
+          puts "Fails converto to integer #{key}=#{capacity}"
+          raise
         end
       end
     }
