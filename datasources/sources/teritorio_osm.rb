@@ -29,24 +29,13 @@ class TeritorioOsmSource < Source
 
   def overpass(relation_id, selectors)
     area_id = 3_600_000_000 + relation_id
-    query = selectors.collect{ |selector|
-      s = selector.collect{ |k, v|
-        k = k[0] == '~' ? "~\"#{k[1..]}\"" : "\"#{k}\""
-        _, o, v = /(=|~=|=~|!=|!~|~)?(.*)/.match(v).to_a
-        "[#{k}#{o || '='}\"#{v}\"]"
-      }
-      "nwr#{s.join}(area.a);"
-    }.join("\n")
-
-    ovarpass = "
+    overpass = "
 [out:json][timeout:25];
 area(#{area_id})->.a;
-(
-#{query}
-);
+nwr#{selectors}(area.a);
 out center meta;
 "
-    raw_query = CGI.escape(ovarpass)
+    raw_query = CGI.escape(overpass)
     url = "https://overpass-api.de/api/interpreter?data=#{raw_query}"
 
     JSON.parse(fetch(url))['elements']

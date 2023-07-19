@@ -12,6 +12,22 @@ require_relative '../sources/mock'
 require_relative '../transforms/osm_tags'
 require_relative '../transforms/reverse_geocode'
 
+# Backport ruby 3.2
+def unquote(self_)
+  s = self_.dup
+
+  case self_[0, 1]
+  when "'", '"', '`'
+    s[0] = ''
+  end
+
+  case self_[-1, 1]
+  when "'", '"', '`'
+    s[-1] = ''
+  end
+
+  s
+end
 
 class TeritorioOntology < Connector
   def setup(kiba)
@@ -21,16 +37,17 @@ class TeritorioOntology < Connector
       superclasses['class'].collect{ |_class_id, classes|
         if classes['subclass']
           classes['subclass'].collect{ |_subclass_id, subclasses|
-            if subclasses['osm_tags'].size == 1 && subclasses['osm_tags'][0].size
-              [subclasses['osm_tags'][0], subclasses['label']]
+            if !subclasses['osm_tags'].include?('][')
+              [subclasses['osm_tags'][1..-2], subclasses['label']]
             end
           }
-        elsif classes['osm_tags'].size == 1 && classes['osm_tags'][0].size
-          [[classes['osm_tags'][0], classes['label']]]
+        elsif !classes['osm_tags'].include?('][')
+          [[classes['osm_tags'][1..-2], classes['label']]]
         end
       }
-    }.flatten(2).collect{ |i18n|
-      [i18n[0].keys[0], i18n[0].values[0], i18n[1]]
+    }.flatten(2).compact.collect{ |i18n|
+      k, _, v = i18n[0].split(/(=|~=|=~|!=|!~|~)/, 2).collect{ |s| unquote(s) }
+      [k, v, i18n[1]]
     }.group_by(&:first).transform_values { |values|
       {
         values: values.to_h{ |_, value, i18n|
