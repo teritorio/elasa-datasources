@@ -33,32 +33,43 @@ class TeritorioOntology < Connector
   def setup(kiba)
     ontology = JSON.parse(URI.open(@settings['url']).read)
 
-    i18n = ontology['superclass'].collect{ |_superclass_id, superclasses|
+    ontology_tags = ontology['superclass'].collect{ |_superclass_id, superclasses|
       superclasses['class'].collect{ |_class_id, classes|
         if classes['subclass']
           classes['subclass'].collect{ |_subclass_id, subclasses|
-            if !subclasses['osm_tags'].include?('][')
-              [subclasses['osm_tags'][1..-2], subclasses['label']]
-            end
+            [subclasses['osm_tags'], subclasses['label']]
           }
-        elsif !classes['osm_tags'].include?('][')
-          [[classes['osm_tags'][1..-2], classes['label']]]
+        elsif [[classes['osm_tags'], classes['label']]]
         end
       }
-    }.flatten(2).compact.collect{ |i18n|
-      k, _, v = i18n[0].split(/(=|~=|=~|!=|!~|~)/, 2).collect{ |s| unquote(s) }
-      [k, v, i18n[1]]
-    }.group_by(&:first).transform_values { |values|
+    }.flatten(2).compact.collect{ |osm_tags, label|
+      osm_tags = osm_tags[1..-2].split('][').collect{ |osm_tag|
+        osm_tag.split(/(=|~=|=~|!=|!~|~)/, 2).collect{ |s| unquote(s) }
+      }
+      [osm_tags, label]
+    }
+
+    i18n = ontology_tags.select{ |osm_tags, _label| osm_tags.size == 1 }.group_by{ |osm_tags, _label| osm_tags[0][0] }.transform_values { |values|
       {
-        values: values.to_h{ |_, value, i18n|
+        values: values.to_h{ |osm_tags, _label|
           [
-            value,
+            osm_tags[0][1],
             { '@default:full' => i18n },
           ]
         }
       }
     }
     kiba.source(MockSource, @multi_source_id, { i18n: i18n })
+
+    osm_tags = (
+      ontology_tags.collect{ |osm_tags, _label|
+        osm_tags.collect{ |k, _o, v| [k, v] }
+      }.flatten(1) +
+      ontology['osm_tags_extra'].collect{ |key|
+        [key, nil]
+      }
+    ).group_by(&:first).transform_values{ |_k, v| v.nil? || v.include?(nil) ? nil : v }
+    kiba.source(MockSource, @multi_source_id, { osm_tags: osm_tags })
 
     source_filter = @source_filter&.split('-')
     ontology['superclass'].each{ |superclass_id, superclasses|

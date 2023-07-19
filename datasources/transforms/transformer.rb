@@ -5,11 +5,16 @@ class Transformer
   def initialize(settings)
     @settings = settings
     @has_i18n = false
+    @has_osm_tags = false
     @count_input_row = 0
     @count_output_row = 0
   end
 
   def process_i18n(data)
+    data
+  end
+
+  def process_osm_tags(data)
     data
   end
 
@@ -19,6 +24,10 @@ class Transformer
     when :i18n
       d = process_i18n(data)
       @has_i18n = true if d.present?
+      [type, d]
+    when :osm_tags
+      d = process_osm_tags(data)
+      @has_osm_tags = true if d.present?
       [type, d]
     when :data
       @count_input_row += 1
@@ -38,6 +47,8 @@ class Transformer
 
   def close_i18n; end
 
+  def close_osm_tags; end
+
   def close_data; end
 
   def close
@@ -45,6 +56,13 @@ class Transformer
       if data.present?
         @has_i18n = true
         yield [:i18n, data]
+      end
+    }
+
+    close_osm_tags { |data|
+      if data.present?
+        @has_osm_tags = true
+        yield [:osm_tags, data]
       end
     }
 
@@ -56,6 +74,9 @@ class Transformer
     }
 
     count = @count_output_row == @count_input_row ? @count_input_row.to_s : "#{@count_input_row} -> #{@count_output_row}"
-    puts "    ~ #{self.class.name}: #{count}#{@has_i18n ? ' +i18n' : ''}"
+    log = "    ~ #{self.class.name}: #{count}#"
+    log += ' +i18' if @has_i18n
+    log += ' +osm_tags' if @has_osm_tags
+    puts log
   end
 end

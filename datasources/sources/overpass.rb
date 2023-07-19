@@ -19,7 +19,8 @@ class OverpassSource < CsvSource
     settings['overpass_url'] ||= 'https://overpass-api.de/api'
     settings['attribution'] = '<a href="https://osm.org">© OpenStreetMap</a>'
     if settings['query'].nil?
-      out_tags = (settings['out_tags'] || ['name']).collect{ |t| "\"#{t}\"" }.join(',')
+      settings['out_tags'] = settings['out_tags'] || ['name']
+      out_tags = settings['out_tags'].collect{ |t| "\"#{t}\"" }.join(',')
       filters_tags = settings['filter_tags'].collect{ |k, v| "[\"#{k}\"=\"#{v}\"]" }.join
       relation_id = settings['relation_id']
       settings['query'] = <<~QUERY
@@ -33,5 +34,9 @@ class OverpassSource < CsvSource
     settings['url'] = "#{settings['overpass_url']}/interpreter?data=#{data}"
 
     super(destination_id, settings)
+  end
+
+  def osm_tags
+    super().merge(@settings['filter_tags'], @settings['out_tags'].to_h{ |key| [key, nil] })
   end
 end

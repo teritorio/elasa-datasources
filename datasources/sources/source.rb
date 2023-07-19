@@ -24,6 +24,12 @@ class Source
     }
   end
 
+  def osm_tags
+    {
+      destination_id: @destination_id,
+    }
+  end
+
   def select(_feat)
     true
   end
@@ -43,8 +49,13 @@ class Source
   def each(raw)
     i18n_data = i18n
     yield [:i18n, i18n_data]
+    osm_tags_data = osm_tags
+    yield [:osm_tags, osm_tags_data]
 
-    puts "    > #{self.class.name}, #{@destination_id.inspect}: #{raw.size}#{i18n_data.present? ? ' +i18n' : ''}"
+    log = "    > #{self.class.name}, #{@destination_id.inspect}: #{raw.size}"
+    log += ' +i18n' if i18n_data.except(:destination_id).present?
+    log += ' +osm_tags' if osm_tags_data.except(:destination_id).present?
+    puts log
     bad = {
       filtered_out: 0,
       missing_id: 0,
