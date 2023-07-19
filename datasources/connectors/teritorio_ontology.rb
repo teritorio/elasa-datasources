@@ -58,7 +58,7 @@ class TeritorioOntology < Connector
         }
       }
     }
-    kiba.source(MockSource, :i18n, { 'i18n' => i18n })
+    kiba.source(MockSource, @multi_source_id, { i18n: i18n })
 
     source_filter = @source_filter&.split('-')
     ontology['superclass'].each{ |superclass_id, superclasses|

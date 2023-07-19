@@ -22,6 +22,7 @@ class ValidateTransformer < Transformer
     }
 
     @i18n_schema = JSON.parse(File.new('datasources/transforms/validate-i18n.schema.json').read)
+    @i18n_schema['properties'] = { destination_id: { type: 'string' } }
 
     # Schema from https://geojson.org/schema/Feature.json
     @geojson_schema = JSON.parse(File.new('datasources/transforms/validate-geojson-feature.schema.json').read)

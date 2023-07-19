@@ -18,10 +18,8 @@ class Transformer
     case type
     when :i18n
       d = process_i18n(data)
-      if d.present?
-        @has_i18n = true
-        [type, d]
-      end
+      @has_i18n = true if d.present?
+      [type, d]
     when :data
       @count_input_row += 1
       begin

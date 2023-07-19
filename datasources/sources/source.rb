@@ -19,7 +19,9 @@ class Source
   end
 
   def i18n
-    {}
+    {
+      destination_id: @destination_id,
+    }
   end
 
   def select(_feat)

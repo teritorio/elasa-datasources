@@ -7,7 +7,9 @@ require_relative 'source'
 
 class MockSource < Source
   def i18n
-    @settings['i18n']
+    super.merge(
+      @settings[:i18n]
+    )
   end
 
   def each
