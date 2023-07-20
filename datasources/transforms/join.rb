@@ -12,13 +12,8 @@ class JoinTransformer < Transformer
     @path = "$.#{settings['key']}"
     @full_join = settings['full_join']
 
-    @i18n = {}
     @rows = {}
     @rows_without_key = []
-  end
-
-  def process_i18n(data)
-    @i18n = @i18n.merge(data)
   end
 
   def process_tags(current_tags, update_tags, current_source, update_source)
@@ -64,10 +59,6 @@ class JoinTransformer < Transformer
     end
 
     nil
-  end
-
-  def close_i18n
-    yield @i18n
   end
 
   def close_data(&block)
