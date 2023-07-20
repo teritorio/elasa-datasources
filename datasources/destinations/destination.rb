@@ -40,15 +40,11 @@ class Destination
   end
 
   def close_i18n(destination_id, data)
-    return if !data.present?
-
     destination_id = destination_id.gsub('/', '_')
     File.write("#{@path}/#{destination_id}.i18n.json", JSON.pretty_generate(data))
   end
 
   def close_osm_tags(destination_id, data)
-    return if !data.present?
-
     destination_id = destination_id.gsub('/', '_')
     File.write("#{@path}/#{destination_id}.osm_data.json", JSON.pretty_generate(data))
   end
@@ -59,14 +55,18 @@ class Destination
       close_data(destination_id, rows)
     }
 
-    @destinations_i18n.each{ |destination_id, rows|
+    @destinations_i18n.each{ |destination_id, row|
+      next if !row.present?
+
       puts "    < #{self.class.name}: #{destination_id}: +i18n"
-      close_i18n(destination_id, rows)
+      close_i18n(destination_id, row)
     }
 
-    @destinations_osm_tags.each{ |destination_id, rows|
+    @destinations_osm_tags.each{ |destination_id, row|
+      next if !row.present?
+
       puts "    < #{self.class.name}: #{destination_id}: +osm_data"
-      close_osm_tags(destination_id, rows)
+      close_osm_tags(destination_id, row)
     }
   end
 end
