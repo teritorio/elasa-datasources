@@ -284,7 +284,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
   }
 
   def i18n
-    {
+    super.merge({
       route: {
         values: @@practices.compact.to_a.collect(&:reverse).to_h.transform_values{ |v| { fr: v } }
       }
@@ -296,7 +296,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
           }
         }
       }
-    )
+    ))
   end
 
   def map_geometry(feat)
