@@ -9,7 +9,7 @@ require_relative '../sources/apidae'
 
 class Apidae < Connector
   def setup(kiba)
-    kiba.source(I18nSource, @multi_source_id, { 'url' => 'datasources/connectors/i18n_generator_default.json' })
+    kiba.source(I18nSource, @job_id, @job_id, { 'url' => 'datasources/connectors/i18n_generator_default.json' })
 
     projet_id = @settings['projetId']
     api_key = @settings['apiKey']
@@ -21,6 +21,7 @@ class Apidae < Connector
       name = "#{selection['id']}-#{selection['nom']}"
       kiba.source(
         ApidaeSource,
+        @job_id,
         name,
         @settings.merge({ 'selection_id' => selection['id'] }),
       )

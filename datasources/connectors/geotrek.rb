@@ -13,7 +13,7 @@ class Geotrek < Connector
   end
 
   def setup(kiba)
-    kiba.source(I18nSource, @multi_source_id, { 'url' => 'datasources/connectors/i18n_generator_default.json' })
+    kiba.source(I18nSource, @job_id, @job_id, { 'url' => 'datasources/connectors/i18n_generator_default.json' })
     super(kiba)
   end
 end

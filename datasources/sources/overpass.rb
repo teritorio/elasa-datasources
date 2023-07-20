@@ -10,7 +10,7 @@ require_relative 'csv'
 
 
 class OverpassSource < CsvSource
-  def initialize(destination_id, settings)
+  def initialize(job_id, destination_id, settings)
     settings['col_sep'] = "\t"
     settings['id'] ||= '@id'
     settings['lon'] ||= '@lon'
@@ -33,7 +33,7 @@ class OverpassSource < CsvSource
     data = CGI.escape(settings['query'])
     settings['url'] = "#{settings['overpass_url']}/interpreter?data=#{data}"
 
-    super(destination_id, settings)
+    super(job_id, destination_id, settings)
   end
 
   def osm_tags

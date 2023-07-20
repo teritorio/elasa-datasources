@@ -25,6 +25,7 @@ class TeritorioOsm < Connector
     config.each{ |source_id, _extra|
       kiba.source(
         TeritorioOsmSource,
+        @job_id,
         source_id,
         @settings.merge({ 'select' => c['select'] }),
       )

@@ -59,7 +59,7 @@ class TeritorioOntology < Connector
         }
       }
     }
-    kiba.source(MockSource, @multi_source_id, { i18n: i18n })
+    kiba.source(MockSource, @job_id, @job_id, { i18n: i18n })
 
     osm_tags = (
       ontology_tags.collect{ |osm_tags, _label|
@@ -69,7 +69,7 @@ class TeritorioOntology < Connector
         [key, nil]
       }
     ).group_by(&:first).transform_values{ |_k, v| v.nil? || v.include?(nil) ? nil : v }
-    kiba.source(MockSource, @multi_source_id, { osm_tags: osm_tags })
+    kiba.source(MockSource, @job_id, @job_id, { osm_tags: osm_tags })
 
     source_filter = @source_filter&.split('-')
     ontology['superclass'].each{ |superclass_id, superclasses|
@@ -84,6 +84,7 @@ class TeritorioOntology < Connector
 
             kiba.source(
               TeritorioOsmSource,
+              @job_id,
               "#{superclass_id}-#{class_id}-#{subclass_id}",
               @settings.merge({ 'select' => subclasses['osm_tags'] }),
             )
@@ -91,6 +92,7 @@ class TeritorioOntology < Connector
         else
           kiba.source(
             TeritorioOsmSource,
+            @job_id,
             "#{superclass_id}-#{class_id}",
             @settings.merge({ 'select' => classes['osm_tags'] }),
           )

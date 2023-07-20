@@ -49,7 +49,7 @@ class Job
       else
         sources, tasks = tasks.partition{ |task| task[:class] <= Source }
         sources.each{ |src|
-          source(src[:class], src[:id], src[:settings])
+          source(src[:class], job_id, src[:id], src[:settings])
         }
       end
 

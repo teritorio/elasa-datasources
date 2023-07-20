@@ -9,7 +9,7 @@ require_relative '../sources/tourism_system'
 
 class TourismSystem < Connector
   def setup(kiba)
-    kiba.source(I18nSource, @multi_source_id, { 'url' => 'datasources/connectors/i18n_generator_default.json' })
+    kiba.source(I18nSource, @job_id, @job_id, { 'url' => 'datasources/connectors/i18n_generator_default.json' })
 
     id = @settings['id']
     basic_auth = @settings['basic_auth']
@@ -32,6 +32,7 @@ class TourismSystem < Connector
       })
       kiba.source(
         TourismSystemSource,
+        @job_id,
         source_id,
         tourism_system_settings,
       )

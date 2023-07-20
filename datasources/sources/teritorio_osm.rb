@@ -12,8 +12,8 @@ require_relative 'source'
 class TeritorioOsmSource < Source
   attr_reader :input_file
 
-  def initialize(destination_id, settings)
-    super(destination_id, settings)
+  def initialize(job_id, destination_id, settings)
+    super(job_id, destination_id, settings)
     @relation_id = @settings['relation_id']
     @select = @settings['select']
   end

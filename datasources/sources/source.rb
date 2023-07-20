@@ -12,7 +12,8 @@ class HashExcep < Hash
 end
 
 class Source
-  def initialize(destination_id, settings)
+  def initialize(job_id, destination_id, settings)
+    @job_id = job_id
     @destination_id = destination_id
     @settings = settings
     @attribution = settings['attribution']
