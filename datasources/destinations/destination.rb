@@ -4,6 +4,10 @@
 class Destination
   def initialize(path)
     @path = path
+
+    @destinations = Hash.new { |h, k|
+      h[k] = []
+    }
   end
 
   def write_i18n(data)
@@ -22,6 +26,10 @@ class Destination
     File.write("#{@path}/#{destination_id}.osm_data.json", JSON.pretty_generate(data))
   end
 
+  def write_data(row)
+    @destinations[row[:destination_id]] << row.except(:destination_id)
+  end
+
   def write(row)
     type, data = row
     case type
@@ -30,5 +38,13 @@ class Destination
     when :data then write_data(data)
     else Raise "Not support stream item #{type}"
     end
+  end
+
+  def close
+    @destinations.each{ |destination_id, rows|
+      puts "    < #{self.class.name}: #{destination_id}: #{rows.size}"
+
+      close_data(destination_id, rows)
+    }
   end
 end
