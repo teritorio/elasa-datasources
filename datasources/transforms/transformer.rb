@@ -78,7 +78,7 @@ class Transformer
     }
 
     count = @count_output_row == @count_input_row ? @count_input_row.to_s : "#{@count_input_row} -> #{@count_output_row}"
-    log = "    ~ #{self.class.name}: #{count}#"
+    log = "    ~ #{self.class.name}: #{count}"
     log += ' +i18' if @has_i18n
     log += ' +osm_tags' if @has_osm_tags
     puts log
