@@ -17,7 +17,6 @@ require './datasources/destinations/destination'
 require './datasources/destinations/geojson'
 require './datasources/transforms/derivated_tag'
 require './datasources/transforms/end_date'
-require './datasources/transforms/i18n_default'
 require './datasources/transforms/join'
 require './datasources/transforms/validate'
 
@@ -58,7 +57,6 @@ class Job
         transform(task[:class], task[:settings])
       }
       transform(EndDateTransformer, {})
-      transform(I18nDefaultTransformer, {})
       transform(ValidateTransformer, tasks_by_class[ValidateTransformer] || {})
       destination(GeoJson, path)
     end
