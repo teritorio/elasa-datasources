@@ -5,29 +5,28 @@ class Destination
   def initialize(path)
     @path = path
 
-    @destinations = Hash.new { |h, k|
+    @destinations_i18n = Hash.new { |h, k|
+      h[k] = {}
+    }
+    @destinations_osm_tags = Hash.new { |h, k|
+      h[k] = {}
+    }
+
+    @destinations_data = Hash.new { |h, k|
       h[k] = []
     }
   end
 
   def write_i18n(data)
-    destination_id = data.delete(:destination_id).to_s.gsub('/', '_')
-
-    return if !data.present?
-
-    File.write("#{@path}/#{destination_id}.i18n.json", JSON.pretty_generate(data))
+    @destinations_i18n[data[:destination_id]] = @destinations_i18n[data[:destination_id]].deep_merge(data.except(:destination_id))
   end
 
   def write_osm_tags(data)
-    destination_id = data.delete(:destination_id).gsub('/', '_')
-
-    return if !data.present?
-
-    File.write("#{@path}/#{destination_id}.osm_data.json", JSON.pretty_generate(data))
+    @destinations_osm_tags[data[:destination_id]] = @destinations_osm_tags[data[:destination_id]].deep_merge(data.except(:destination_id))
   end
 
   def write_data(row)
-    @destinations[row[:destination_id]] << row.except(:destination_id)
+    @destinations_data[row[:destination_id]] << row.except(:destination_id)
   end
 
   def write(row)
@@ -40,11 +39,34 @@ class Destination
     end
   end
 
-  def close
-    @destinations.each{ |destination_id, rows|
-      puts "    < #{self.class.name}: #{destination_id}: #{rows.size}"
+  def close_i18n(destination_id, data)
+    return if !data.present?
 
+    destination_id = destination_id.gsub('/', '_')
+    File.write("#{@path}/#{destination_id}.i18n.json", JSON.pretty_generate(data))
+  end
+
+  def close_osm_tags(destination_id, data)
+    return if !data.present?
+
+    destination_id = destination_id.gsub('/', '_')
+    File.write("#{@path}/#{destination_id}.osm_data.json", JSON.pretty_generate(data))
+  end
+
+  def close
+    @destinations_data.each{ |destination_id, rows|
+      puts "    < #{self.class.name}: #{destination_id}: #{rows.size}"
       close_data(destination_id, rows)
+    }
+
+    @destinations_i18n.each{ |destination_id, rows|
+      puts "    < #{self.class.name}: #{destination_id}: +i18n"
+      close_i18n(destination_id, rows)
+    }
+
+    @destinations_osm_tags.each{ |destination_id, rows|
+      puts "    < #{self.class.name}: #{destination_id}: +osm_data"
+      close_osm_tags(destination_id, rows)
     }
   end
 end
