@@ -23,12 +23,16 @@ class Transformer
     case type
     when :i18n
       d = process_i18n(data)
-      @has_i18n = true if d.present?
-      [type, d]
+      if d.present?
+        @has_i18n = true
+        [type, d]
+      end
     when :osm_tags
       d = process_osm_tags(data)
-      @has_osm_tags = true if d.present?
-      [type, d]
+      if d.present?
+        @has_osm_tags = true
+        [type, d]
+      end
     when :data
       @count_input_row += 1
       begin
