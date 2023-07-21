@@ -91,7 +91,7 @@ class OsmTags < Transformer
       if capacity
         begin
           tags[key] = Integer(capacity)
-        rescue StandardError => e
+        rescue StandardError => _e
           puts "Fails converto to integer #{key}=#{capacity}"
           raise
         end

@@ -56,14 +56,14 @@ class Destination
     }
 
     @destinations_i18n.each{ |destination_id, row|
-      next if !row.present?
+      next if row.blank?
 
       puts "    < #{self.class.name}: #{destination_id}: +i18n"
       close_i18n(destination_id, row)
     }
 
     @destinations_osm_tags.each{ |destination_id, row|
-      next if !row.present?
+      next if row.blank?
 
       puts "    < #{self.class.name}: #{destination_id}: +osm_data"
       close_osm_tags(destination_id, row)

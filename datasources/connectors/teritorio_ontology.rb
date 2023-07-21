@@ -30,16 +30,17 @@ def unquote(self_)
 end
 
 class TeritorioOntology < Connector
-  def setup(kiba)
+  def fetch_ontology_tags
     ontology = JSON.parse(URI.open(@settings['url']).read)
 
-    ontology_tags = ontology['superclass'].collect{ |_superclass_id, superclasses|
+    ontology['superclass'].collect{ |_superclass_id, superclasses|
       superclasses['class'].collect{ |_class_id, classes|
         if classes['subclass']
           classes['subclass'].collect{ |_subclass_id, subclasses|
             [subclasses['osm_tags'], subclasses['label']]
           }
-        elsif [[classes['osm_tags'], classes['label']]]
+        else
+          [[classes['osm_tags'], classes['label']]]
         end
       }
     }.flatten(2).compact.collect{ |osm_tags, label|
@@ -48,6 +49,10 @@ class TeritorioOntology < Connector
       }
       [osm_tags, label]
     }
+  end
+
+  def parse_ontology
+    ontology_tags = fetch_ontology_tags
 
     i18n = ontology_tags.select{ |osm_tags, _label| osm_tags.size == 1 }.group_by{ |osm_tags, _label| osm_tags[0][0] }.transform_values { |values|
       {
@@ -59,16 +64,22 @@ class TeritorioOntology < Connector
         }
       }
     }
-    kiba.source(MockSource, @job_id, @job_id, { i18n: i18n })
 
     osm_tags = (
-      ontology_tags.collect{ |osm_tags, _label|
-        osm_tags.collect{ |k, _o, v| [k, v] }
+      ontology_tags.collect{ |osm_selectors, _label|
+        osm_selectors.collect{ |k, _o, v| [k, v] }
       }.flatten(1) +
       ontology['osm_tags_extra'].collect{ |key|
         [key, nil]
       }
     ).group_by(&:first).transform_values{ |_k, v| v.nil? || v.include?(nil) ? nil : v }
+
+    [i18n, osm_tags]
+  end
+
+  def setup(kiba)
+    i18n, osm_tags = parse_ontology
+    kiba.source(MockSource, @job_id, @job_id, { i18n: i18n })
     kiba.source(MockSource, @job_id, @job_id, { osm_tags: osm_tags })
 
     source_filter = @source_filter&.split('-')
