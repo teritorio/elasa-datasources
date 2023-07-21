@@ -10,11 +10,11 @@ require_relative '../sources/apidae'
 class Apidae < Connector
   def setup(kiba)
     kiba.source(I18nSource, @job_id, @job_id, { 'urls' => [
-      'datasources/connectors/i18n-properties-tags.json',
-      'datasources/connectors/i18n-properties-tags-event.json',
-      'datasources/connectors/i18n-properties-tags-hosting.json',
-      'datasources/connectors/i18n-properties-tags-restaurant.json',
-      'datasources/connectors/i18n-properties-tags-route.json',
+      'datasources/schemas/tags/base.i18n.json',
+      'datasources/schemas/tags/event.i18n.json',
+      'datasources/schemas/tags/hosting.i18n.json',
+      'datasources/schemas/tags/restaurant.i18n.json',
+      'datasources/schemas/tags/route.i18n.json',
     ] })
 
     projet_id = @settings['projetId']
