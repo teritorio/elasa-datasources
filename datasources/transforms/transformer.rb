@@ -4,13 +4,14 @@
 class Transformer
   def initialize(settings)
     @settings = settings
+    @has_schema = false
     @has_i18n = false
     @has_osm_tags = false
     @count_input_row = 0
     @count_output_row = 0
   end
 
-  def process_i18n(data)
+  def process_schema(data)
     data
   end
 
@@ -21,10 +22,11 @@ class Transformer
   def process(row)
     type, data = row
     case type
-    when :i18n
-      d = process_i18n(data)
+    when :schema
+      d = process_schema(data)
       if d.present?
-        @has_i18n = true
+        @has_schema = data[:schema].present?
+        @has_i18n = data[:i18n].present?
         [type, d]
       end
     when :osm_tags
@@ -49,17 +51,18 @@ class Transformer
     end
   end
 
-  def close_i18n; end
+  def close_schema; end
 
   def close_osm_tags; end
 
   def close_data; end
 
   def close
-    close_i18n { |data|
+    close_schema { |data|
       if data.present?
-        @has_i18n = true
-        yield [:i18n, data]
+        @has_schema = data[:schema].present?
+        @has_i18n = data[:i18n].present?
+        yield [:schema, data]
       end
     }
 
@@ -79,7 +82,8 @@ class Transformer
 
     count = @count_output_row == @count_input_row ? @count_input_row.to_s : "#{@count_input_row} -> #{@count_output_row}"
     log = "    ~ #{self.class.name}: #{count}"
-    log += ' +i18' if @has_i18n
+    log += ' +schema' if @has_schema
+    log += ' +i18n' if @has_i18n
     log += ' +osm_tags' if @has_osm_tags
     puts log
   end

@@ -283,20 +283,22 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     'Visite' => 'Other', # FIXME
   }
 
-  def i18n
+  def schema
     super.merge({
-      route: {
-        values: @@practices.compact.to_a.collect(&:reverse).to_h.transform_values{ |v| { fr: v } }
-      }
-    }.merge(
-      *@@practices.values.collect { |practice|
-        {
-          "route:#{practice}:difficulty": {
-            values: @@difficulties.compact.to_a.collect(&:reverse).to_h.transform_values{ |v| { fr: v } }
+      i18n: {
+        route: {
+          values: @@practices.compact.to_a.collect(&:reverse).to_h.transform_values{ |v| { fr: v } }
+        }
+      }.merge(
+        *@@practices.values.collect { |practice|
+          {
+            "route:#{practice}:difficulty": {
+              values: @@difficulties.compact.to_a.collect(&:reverse).to_h.transform_values{ |v| { fr: v } }
+            }
           }
         }
-      }
-    ))
+      )
+    })
   end
 
   def map_geometry(feat)

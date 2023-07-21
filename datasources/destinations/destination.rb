@@ -5,7 +5,7 @@ class Destination
   def initialize(path)
     @path = path
 
-    @destinations_i18n = Hash.new { |h, k|
+    @destinations_schema = Hash.new { |h, k|
       h[k] = {}
     }
     @destinations_osm_tags = Hash.new { |h, k|
@@ -17,8 +17,8 @@ class Destination
     }
   end
 
-  def write_i18n(data)
-    @destinations_i18n[data[:destination_id]] = @destinations_i18n[data[:destination_id]].deep_merge(data.except(:destination_id))
+  def write_schema(data)
+    @destinations_schema[data[:destination_id]] = @destinations_schema[data[:destination_id]].deep_merge(data.except(:destination_id))
   end
 
   def write_osm_tags(data)
@@ -32,21 +32,22 @@ class Destination
   def write(row)
     type, data = row
     case type
-    when :i18n then write_i18n(data)
+    when :schema then write_schema(data)
     when :osm_tags then write_osm_tags(data)
     when :data then write_data(data)
     else Raise "Not support stream item #{type}"
     end
   end
 
-  def close_i18n(destination_id, data)
-    destination_id = destination_id.gsub('/', '_')
-    File.write("#{@path}/#{destination_id}.i18n.json", JSON.pretty_generate(data))
+  def close_schema(destination_id, data)
+    destination = destination_id.nil? ? '' : "#{destination_id.gsub('/', '_')}."
+    File.write("#{@path}/#{destination}schema.json", JSON.pretty_generate(data[:schema]))
+    File.write("#{@path}/#{destination}i18n.json", JSON.pretty_generate(data[:i18n]))
   end
 
   def close_osm_tags(destination_id, data)
-    destination_id = destination_id.gsub('/', '_')
-    File.write("#{@path}/#{destination_id}.osm_data.json", JSON.pretty_generate(data))
+    destination = destination_id.nil? ? '' : "#{destination_id.gsub('/', '_')}."
+    File.write("#{@path}/#{destination}osm_data.json", JSON.pretty_generate(data))
   end
 
   def close
@@ -55,11 +56,12 @@ class Destination
       close_data(destination_id, rows)
     }
 
-    @destinations_i18n.each{ |destination_id, row|
+    @destinations_schema.each{ |destination_id, row|
       next if row.blank?
 
-      puts "    < #{self.class.name}: #{destination_id}: +i18n"
-      close_i18n(destination_id, row)
+      puts "    < #{self.class.name}: #{destination_id}: +schema" if row[:schema].present?
+      puts "    < #{self.class.name}: #{destination_id}: +i18n" if row[:i18n].present?
+      close_schema(destination_id, row)
     }
 
     @destinations_osm_tags.each{ |destination_id, row|

@@ -10,7 +10,7 @@ require_relative 'transformer'
 class ValidateTransformer < Transformer
   def initialize(settings)
     super(settings)
-    additional_tags = settings['additional_tags'] || false
+    @additional_tags = settings['additional_tags'] || false
 
     @i18n = {}
 
@@ -26,25 +26,6 @@ class ValidateTransformer < Transformer
 
     # Schema from https://geojson.org/schema/Feature.json
     @geojson_schema = JSON.parse(File.new('datasources/schemas/geojson-feature.schema.json').read)
-    @properties_tags_schema = [
-      JSON.parse(File.new('datasources/schemas/tags/base.schema.json').read),
-      JSON.parse(File.new('datasources/schemas/tags/event.schema.json').read),
-      JSON.parse(File.new('datasources/schemas/tags/hosting.schema.json').read),
-      JSON.parse(File.new('datasources/schemas/tags/restaurant.schema.json').read),
-      JSON.parse(File.new('datasources/schemas/tags/route.schema.json').read),
-    ].inject({}, &:deep_merge)
-    @properties_schema = JSON.parse(File.new('datasources/schemas/properties.schema.json').read)
-    @properties_schema['properties']['tags'] = @properties_tags_schema
-    @properties_schema['$defs'] = (@properties_schema['$defs'] || {}).merge(@properties_tags_schema['$defs'])
-
-    # Relax constraints on schema
-
-    return unless additional_tags
-
-    @properties_schema['properties']['tags']['additionalProperties'] = additional_tags
-    %w[shop amenity leisure tourism natural water highway].each{ |key|
-      @properties_schema['properties']['tags']['properties'][key] = { type: 'string' }
-    }
   end
 
   def validate_schema_i18n_key(base, properties, i18n)
@@ -100,11 +81,25 @@ class ValidateTransformer < Transformer
     validate_schema_i18n_object(base, properties, i18n)
   end
 
-  def process_i18n(i18n)
-    JSON::Validator.validate!(@i18n_schema, i18n)
-    validate_schema_i18n([], @properties_tags_schema['properties'], i18n)
-    @i18n = i18n
-    i18n
+  def process_schema(schema)
+    @properties_tags_schema = schema[:schema]
+    @properties_schema = JSON.parse(File.new('datasources/schemas/properties.schema.json').read)
+    @properties_schema['properties']['tags'] = @properties_tags_schema
+    @properties_schema['$defs'] = (@properties_schema['$defs'] || {}).merge(@properties_tags_schema['$defs'])
+
+    # Relax constraints on schema
+    if @additional_tags
+      @properties_schema['properties']['tags']['additionalProperties'] = additional_tags
+      %w[shop amenity leisure tourism natural water highway].each{ |key|
+        @properties_schema['properties']['tags']['properties'][key] = { type: 'string' }
+      }
+    end
+
+    JSON::Validator.validate!(@i18n_schema, schema[:i18n])
+    validate_schema_i18n([], @properties_tags_schema['properties'], schema[:i18n])
+    @schema = schema[:schema]
+    @i18n = schema[:i18n]
+    schema
   end
 
   def validate_i18n(properties)

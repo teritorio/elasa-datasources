@@ -4,7 +4,7 @@
 
 require 'yaml'
 require 'sorbet-runtime'
-require './datasources/sources/i18n'
+require './datasources/sources/schema'
 require './datasources/jobs/job'
 
 
@@ -16,7 +16,6 @@ require './datasources/jobs/job'
 @config['datasources'].to_a.select { |project, _jobs|
   !@project || project == @project
 }.each { |project, jobs|
-  # datasources|
   puts project
   dir = "data/#{project}"
   FileUtils.makedirs(dir)
@@ -27,12 +26,12 @@ require './datasources/jobs/job'
     Job.new(job_id, job, @source_filter, dir)
   }
 
-
   puts '  - Conflate metadata'
   job = Kiba.parse do
-    Dir.glob("#{dir}/*.i18n.json").each{ |i18n|
-      source(I18nSource, 'i18n', 'i18n', { 'urls' => [i18n] })
-    }
+    source(SchemaSource, nil, nil, {
+      'schema' => Dir.glob("#{dir}/*.schema.json"),
+      'i18n' => Dir.glob("#{dir}/*.i18n.json"),
+    })
     destination(GeoJson, dir)
   end
   Kiba.run(job)

@@ -11,16 +11,18 @@ class MetadataMerge < Transformer
     super(settings)
     destination_id = settings['destination_id']
 
-    @destinations_i18n = {
+    @destinations_schema = {
       destination_id: destination_id
     }
     @destinations_osm_tags = {
       destination_id: destination_id
     }
+
+    @rows = []
   end
 
-  def process_i18n(data)
-    @destinations_i18n = @destinations_i18n.deep_merge(data.except(:destination_id))
+  def process_schema(data)
+    @destinations_schema = @destinations_schema.deep_merge(data.except(:destination_id))
     nil
   end
 
@@ -30,14 +32,19 @@ class MetadataMerge < Transformer
   end
 
   def process_data(row)
-    row
+    @rows << row
+    nil
   end
 
-  def close_i18n
-    yield @destinations_i18n
+  def close_schema
+    yield @destinations_schema
   end
 
   def close_osm_tags
     yield @destinations_osm_tags
+  end
+
+  def close_data(&block)
+    @rows.each(&block)
   end
 end

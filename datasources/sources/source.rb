@@ -19,7 +19,7 @@ class Source
     @attribution = settings['attribution']
   end
 
-  def i18n
+  def schema
     {
       destination_id: @destination_id,
     }
@@ -48,13 +48,14 @@ class Source
   end
 
   def each(raw)
-    i18n_data = i18n
-    yield [:i18n, i18n_data]
+    schema_data = schema
+    yield [:schema, schema_data]
     osm_tags_data = osm_tags
     yield [:osm_tags, osm_tags_data]
 
     log = "    > #{self.class.name}, #{@destination_id.inspect}: #{raw.size}"
-    log += ' +i18n' if i18n_data.except(:destination_id).present?
+    log += ' +schema' if schema_data[:schema].present?
+    log += ' +i18n' if schema_data[:i18n].present?
     log += ' +osm_tags' if osm_tags_data.except(:destination_id).present?
     puts log
     bad = {
