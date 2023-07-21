@@ -1,0 +1,110 @@
+{
+    "type": "object",
+    "required": [],
+    "additionalProperties": false,
+    "properties": {
+        "amenity": {
+            "enum": [
+                "cafe",
+                "fast_food",
+                "ice_cream",
+                "restaurant"
+            ]
+        },
+        "fast_food": {
+            "enum": [
+                "cafeteria"
+            ]
+        },
+        "shop": {
+            "enum": [
+                "cheese"
+            ]
+        },
+        "organic": {
+            "enum": [
+                "yes",
+                "no",
+                "only",
+                "limited"
+            ]
+        },
+        "diet:vegan": {
+            "enum": [
+                "yes",
+                "no",
+                "only",
+                "limited"
+            ]
+        },
+        "diet:vegetarian": {
+            "enum": [
+                "yes",
+                "no",
+                "only",
+                "limited"
+            ]
+        },
+        "cuisine": {
+            "type": "array",
+            "items": {
+                "enum": [
+                    "african",
+                    "american",
+                    "asian",
+                    "bistronomique",
+                    "burger",
+                    "caribbean",
+                    "european",
+                    "fine_dining",
+                    "fish",
+                    "french",
+                    "indian",
+                    "japanese",
+                    "local",
+                    "meat",
+                    "mediterranean",
+                    "new_french",
+                    "pie",
+                    "pizza",
+                    "regional",
+                    "salad",
+                    "sandwich",
+                    "seafood",
+                    "south_american",
+                    "sushi",
+                    "tapas",
+                    "italian",
+                    "ice_cream",
+                    "spanish",
+                    "crepe",
+                    "international",
+                    "steak_house",
+                    "western",
+                    "arab",
+                    "latin_american",
+                    "chicken",
+                    "friture",
+                    "waffle",
+                    "greek",
+                    "kebab",
+                    "thai",
+                    "vietnamese",
+                    "fish_and_chips",
+                    "chinese",
+                    "argentinian",
+                    "coffee_shop",
+                    "hawaiian",
+                    "portuguese",
+                    "tex-mex",
+                    "barbecue",
+                    "brunch",
+                    "breakfast",
+                    "indonesian",
+                    "pasta",
+                    "oriental"
+                ]
+            }
+        }
+    }
+}

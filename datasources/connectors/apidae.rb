@@ -9,7 +9,13 @@ require_relative '../sources/apidae'
 
 class Apidae < Connector
   def setup(kiba)
-    kiba.source(I18nSource, @job_id, @job_id, { 'url' => 'datasources/connectors/i18n_generator_default.json' })
+    kiba.source(I18nSource, @job_id, @job_id, { 'urls' => [
+      'datasources/connectors/i18n-properties-tags.json',
+      'datasources/connectors/i18n-properties-tags-event.json',
+      'datasources/connectors/i18n-properties-tags-hosting.json',
+      'datasources/connectors/i18n-properties-tags-restaurant.json',
+      'datasources/connectors/i18n-properties-tags-route.json',
+    ] })
 
     projet_id = @settings['projetId']
     api_key = @settings['apiKey']

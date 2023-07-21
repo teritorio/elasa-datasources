@@ -1,0 +1,99 @@
+{
+    "tourism": {
+        "@default": {
+            "fr": "intérêt touristique"
+        },
+        "values": {
+            "hotel": {
+                "@default:full": {
+                    "fr": "hotel"
+                }
+            }
+        }
+    },
+    "stars": {
+        "@default": {
+            "fr": "nombre d'étoiles"
+        }
+    },
+    "award:tournesol": {
+        "@default": {
+            "fr": "Tournesol"
+        }
+    },
+    "award:soleil": {
+        "@default": {
+            "fr": "Soleil"
+        }
+    },
+    "award:epi": {
+        "@default": {
+            "fr": "Épi"
+        }
+    },
+    "award:cle": {
+        "@default": {
+            "fr": "Clé"
+        }
+    },
+    "award:toque": {
+        "@default": {
+            "fr": "Toque"
+        }
+    },
+    "award:fleurs": {
+        "@default": {
+            "fr": "Fleurs"
+        }
+    },
+    "award:cheminee": {
+        "@default": {
+            "fr": "Cheminée"
+        }
+    },
+    "award:lutin_bleu": {
+        "@default": {
+            "fr": "Lutin Bleu"
+        }
+    },
+    "award:lutin_blanc": {
+        "@default": {
+            "fr": "Lutin Blanc"
+        }
+    },
+    "award:lutin_rouge": {
+        "@default": {
+            "fr": "Lutin Rouge"
+        }
+    },
+    "capacity:beds": {
+        "@default": {
+            "fr": "nombre de lits"
+        }
+    },
+    "capacity:rooms": {
+        "@default": {
+            "fr": "nombre de chambres"
+        }
+    },
+    "capacity:persons": {
+        "@default": {
+            "fr": "capacité en nombre de persones"
+        }
+    },
+    "capacity:caravans": {
+        "@default": {
+            "fr": "nombre de places pour caravanes"
+        }
+    },
+    "capacity:cabins": {
+        "@default": {
+            "fr": "nombre de chalets"
+        }
+    },
+    "capacity:pitches": {
+        "@default": {
+            "fr": "nombre de places"
+        }
+    }
+}

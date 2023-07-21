@@ -1,0 +1,59 @@
+{
+    "type": "object",
+    "required": [],
+    "additionalProperties": false,
+    "properties": {
+        "highway": {
+            "enum": [
+                "bus_stop"
+            ]
+        },
+        "public_transport": {
+            "enum": [
+                "platform",
+                "stop_position",
+                "station"
+            ]
+        },
+        "bin": {
+            "enum": [
+                "no",
+                "yes"
+            ]
+        },
+        "lit": {
+            "enum": [
+                "no",
+                "yes"
+            ]
+        },
+        "bus": {
+            "enum": [
+                "yes"
+            ]
+        },
+        "shelter": {
+            "enum": [
+                "no",
+                "yes"
+            ]
+        },
+        "bench": {
+            "enum": [
+                "no",
+                "yes",
+                "stand_up_bench",
+                "wave_lounger"
+            ]
+        },
+        "network": {
+            "type": "string"
+        },
+        "route_ref": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    }
+}

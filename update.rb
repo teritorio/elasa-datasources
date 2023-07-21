@@ -31,7 +31,7 @@ require './datasources/jobs/job'
   puts '  - Conflate metadata'
   job = Kiba.parse do
     Dir.glob("#{dir}/*.i18n.json").each{ |i18n|
-      source(I18nSource, 'i18n', 'i18n', { 'url' => i18n })
+      source(I18nSource, 'i18n', 'i18n', { 'urls' => [i18n] })
     }
     destination(GeoJson, dir)
   end

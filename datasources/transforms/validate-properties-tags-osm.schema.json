@@ -1,0 +1,38 @@
+{
+    "type": "object",
+    "required": [],
+    "additionalProperties": false,
+    "properties": {
+        "boundary": {
+            "enum": [
+                "protected_area"
+            ]
+        },
+        "leisure": {
+            "enum": [
+                "nature_reserve"
+            ]
+        },
+        "water": {
+            "enum": [
+                "lake"
+            ]
+        },
+        "protect_class": {
+            "enum": [
+                "4"
+            ]
+        },
+        "tourism": {
+            "enum": [
+                "viewpoint"
+            ]
+        },
+        "natural": {
+            "enum": [
+                "bay",
+                "mountain_range"
+            ]
+        }
+    }
+}

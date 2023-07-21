@@ -1,0 +1,39 @@
+{
+    "type": "object",
+    "required": [],
+    "additionalProperties": false,
+    "properties": {
+        "route": {
+            "type": "object",
+            "properties": {
+                "gpx_trace": {
+                    "type": "string"
+                },
+                "pdf": {
+                    "$ref": "#/$defs/multilingual"
+                }
+            },
+            "additionalProperties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "difficulty": {
+                        "enum": [
+                            "easy",
+                            "normal",
+                            "hard"
+                        ]
+                    },
+                    "duration": {
+                        "title": "Duration in minutes",
+                        "type": "number"
+                    },
+                    "length": {
+                        "title": "Length in meters",
+                        "type": "number"
+                    }
+                }
+            }
+        }
+    }
+}

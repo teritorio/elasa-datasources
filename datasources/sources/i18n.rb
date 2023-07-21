@@ -7,9 +7,7 @@ require_relative 'source'
 
 class I18nSource < Source
   def i18n
-    super.merge(
-      JSON.load(File.read(@settings['url']))
-    )
+    @settings['urls'].collect{ |url| JSON.load(File.read(url)) }.inject(super, &:deep_merge)
   end
 
   def each

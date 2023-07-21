@@ -1,0 +1,94 @@
+{
+    "boundary": {
+        "@default": {
+            "fr": "frontière"
+        },
+        "values": {
+            "protected_area": {
+                "@default:full": {
+                    "fr": "zone protégée"
+                }
+            }
+        }
+    },
+    "leisure": {
+        "@default": {
+            "fr": "loisirs"
+        },
+        "values": {
+            "nature_reserve": {
+                "@default:full": {
+                    "fr": "réserve naturelle"
+                }
+            }
+        }
+    },
+    "water": {
+        "@default": {
+            "fr": "eau"
+        },
+        "values": {
+            "lake": {
+                "@default:full": {
+                    "fr": "lac"
+                }
+            }
+        }
+    },
+    "protect_class": {
+        "@default": {
+            "fr": "niveau de protection"
+        },
+        "values": {
+            "4": {
+                "@default:full": {
+                    "fr": "biotope"
+                }
+            }
+        }
+    },
+    "tourism": {
+        "@default": {
+            "fr": "intérêt touristique"
+        },
+        "values": {
+            "viewpoint": {
+                "@default:full": {
+                    "fr": "point de vue"
+                }
+            }
+        }
+    },
+    "natural": {
+        "@default": {
+            "fr": "nature"
+        },
+        "values": {
+            "bay": {
+                "@default:full": {
+                    "fr": "baie"
+                }
+            },
+            "mountain_range": {
+                "@default:full": {
+                    "fr": "cordillère"
+                }
+            }
+        }
+    },
+    "amenity": {
+        "@default": {
+            "fr": "équipement"
+        }
+    },
+    "highway": {
+        "@default": {
+            "fr": "voirie"
+        }
+    },
+    "shop": {
+        "@default": {
+            "fr": "commerce"
+        }
+    }
+}

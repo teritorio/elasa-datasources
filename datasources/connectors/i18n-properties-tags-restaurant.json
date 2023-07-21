@@ -1,0 +1,405 @@
+{
+    "amenity": {
+        "values": {
+            "cafe": {
+                "@default:full": {
+                    "fr": "café"
+                }
+            },
+            "fast_food": {
+                "@default:full": {
+                    "fr": "fastfood"
+                }
+            },
+            "ice_cream": {
+                "@default:full": {
+                    "fr": "glaces"
+                }
+            },
+            "restaurant": {
+                "@default:full": {
+                    "fr": "restaurant"
+                }
+            }
+        }
+    },
+    "fast_food": {
+        "@default": {
+            "fr": "fastfood"
+        },
+        "values": {
+            "cafeteria": {
+                "@default:full": {
+                    "fr": "cantine"
+                }
+            }
+        }
+    },
+    "shop": {
+        "values": {
+            "cheese": {
+                "@default:full": {
+                    "fr": "fromager"
+                }
+            }
+        }
+    },
+    "organic": {
+        "@default": {
+            "fr": "produits bio"
+        },
+        "values": {
+            "yes": {
+                "@default:full": {
+                    "fr": "produits bio"
+                }
+            },
+            "no": {
+                "@default:full": {
+                    "fr": "pas de bio"
+                }
+            },
+            "only": {
+                "@default:full": {
+                    "fr": "bio uniquement"
+                }
+            },
+            "limited": {
+                "@default:full": {
+                    "fr": "en partie bio"
+                }
+            }
+        }
+    },
+    "diet:vegan": {
+        "@default": {
+            "fr": "vegan"
+        },
+        "values": {
+            "yes": {
+                "@default:full": {
+                    "fr": "produits bio"
+                }
+            },
+            "no": {
+                "@default:full": {
+                    "fr": "pas de bio"
+                }
+            },
+            "only": {
+                "@default:full": {
+                    "fr": "bio uniquement"
+                }
+            },
+            "limited": {
+                "@default:full": {
+                    "fr": "en partie bio"
+                }
+            }
+        }
+    },
+    "diet:vegetarian": {
+        "@default": {
+            "fr": "végétarien"
+        },
+        "values": {
+            "yes": {
+                "@default:full": {
+                    "fr": "produits bio"
+                }
+            },
+            "no": {
+                "@default:full": {
+                    "fr": "pas de bio"
+                }
+            },
+            "only": {
+                "@default:full": {
+                    "fr": "bio uniquement"
+                }
+            },
+            "limited": {
+                "@default:full": {
+                    "fr": "en partie bio"
+                }
+            }
+        }
+    },
+    "cuisine": {
+        "@default": {
+            "fr": "cuisine"
+        },
+        "values": {
+            "african": {
+                "@default:full": {
+                    "fr": "cuisine africaine"
+                }
+            },
+            "american": {
+                "@default:full": {
+                    "fr": "cuisine américaine"
+                }
+            },
+            "bistronomique": {
+                "@default:full": {
+                    "fr": "cuisine bistronomique"
+                }
+            },
+            "caribbean": {
+                "@default:full": {
+                    "fr": "cuisine caribéenne"
+                }
+            },
+            "european": {
+                "@default:full": {
+                    "fr": "cuisine européenne"
+                }
+            },
+            "new_french": {
+                "@default:full": {
+                    "fr": "nouvelle cuisine française"
+                }
+            },
+            "seafood": {
+                "@default:full": {
+                    "fr": "fruits de mer"
+                }
+            },
+            "sushi": {
+                "@default:full": {
+                    "fr": "sushis"
+                }
+            },
+            "french": {
+                "@default:full": {
+                    "fr": "cuisine française"
+                }
+            },
+            "local": {
+                "@default:full": {
+                    "fr": "cuisine traditionnelle"
+                }
+            },
+            "burger": {
+                "@default:full": {
+                    "fr": "burger"
+                }
+            },
+            "western": {
+                "@default:full": {
+                    "fr": "cuisine européenne"
+                }
+            },
+            "fine_dining": {
+                "@default:full": {
+                    "fr": "cuisine gastronomique"
+                }
+            },
+            "mediterranean": {
+                "@default:full": {
+                    "fr": "cuisine méditerranéenne"
+                }
+            },
+            "regional": {
+                "@default:full": {
+                    "fr": "cuisine régionale française"
+                }
+            },
+            "south_american": {
+                "@default:full": {
+                    "fr": "cuisine sud-américaine"
+                }
+            },
+            "ice_cream": {
+                "@default:full": {
+                    "fr": "glaces"
+                }
+            },
+            "pizza": {
+                "@default:full": {
+                    "fr": "pizzas"
+                }
+            },
+            "fish": {
+                "@default:full": {
+                    "fr": "poisson"
+                }
+            },
+            "salad": {
+                "@default:full": {
+                    "fr": "salades"
+                }
+            },
+            "sandwich": {
+                "@default:full": {
+                    "fr": "sandwichs"
+                }
+            },
+            "tapas": {
+                "@default:full": {
+                    "fr": "tapas"
+                }
+            },
+            "pie": {
+                "@default:full": {
+                    "fr": "tartes"
+                }
+            },
+            "meat": {
+                "@default:full": {
+                    "fr": "viandes"
+                }
+            },
+            "arab": {
+                "@default:full": {
+                    "fr": "vuisine arabe"
+                }
+            },
+            "asian": {
+                "@default:full": {
+                    "fr": "vuisine asiatique"
+                }
+            },
+            "indian": {
+                "@default:full": {
+                    "fr": "vuisine indienne"
+                }
+            },
+            "italian": {
+                "@default:full": {
+                    "fr": "vuisine italienne"
+                }
+            },
+            "latin_american": {
+                "@default:full": {
+                    "fr": "vuisine latino-américaine"
+                }
+            },
+            "spanish": {
+                "@default:full": {
+                    "fr": "vuisine espagnole"
+                }
+            },
+            "crepe": {
+                "@default:full": {
+                    "fr": "vrêpes"
+                }
+            },
+            "steak_house": {
+                "@default:full": {
+                    "fr": "viandes, grillades"
+                }
+            },
+            "chicken": {
+                "@default:full": {
+                    "fr": "poulet"
+                }
+            },
+            "friture": {
+                "@default:full": {
+                    "fr": "friterie"
+                }
+            },
+            "waffle": {
+                "@default:full": {
+                    "fr": "gauffres"
+                }
+            },
+            "greek": {
+                "@default:full": {
+                    "fr": "cuisine grecque"
+                }
+            },
+            "japanese": {
+                "@default:full": {
+                    "fr": "cuisine japonaise"
+                }
+            },
+            "kebab": {
+                "@default:full": {
+                    "fr": "kebab"
+                }
+            },
+            "thai": {
+                "@default:full": {
+                    "fr": "cuisine thaïlandaise"
+                }
+            },
+            "international": {
+                "@default:full": {
+                    "fr": "cuisine internationale"
+                }
+            },
+            "vietnamese": {
+                "@default:full": {
+                    "fr": "cuisine vietnamienne"
+                }
+            },
+            "fish_and_chips": {
+                "@default:full": {
+                    "fr": "fish and chips"
+                }
+            },
+            "chinese": {
+                "@default:full": {
+                    "fr": "cuisine chinoise"
+                }
+            },
+            "argentinian": {
+                "@default:full": {
+                    "fr": "cuisine argentine"
+                }
+            },
+            "coffee_shop": {
+                "@default:full": {
+                    "fr": "café"
+                }
+            },
+            "hawaiian": {
+                "@default:full": {
+                    "fr": "cuisine hawaïenne"
+                }
+            },
+            "portuguese": {
+                "@default:full": {
+                    "fr": "cuisine portugaise"
+                }
+            },
+            "tex-mex": {
+                "@default:full": {
+                    "fr": "cuisine tex-mex"
+                }
+            },
+            "barbecue": {
+                "@default:full": {
+                    "fr": "barbecue"
+                }
+            },
+            "brunch": {
+                "@default:full": {
+                    "fr": "brunch"
+                }
+            },
+            "breakfast": {
+                "@default:full": {
+                    "fr": "petit-déjeuner"
+                }
+            },
+            "indonesian": {
+                "@default:full": {
+                    "fr": "cuisine indonésienne"
+                }
+            },
+            "pasta": {
+                "@default:full": {
+                    "fr": "pâtes"
+                }
+            },
+            "oriental": {
+                "@default:full": {
+                    "fr": "cuisine orientale"
+                }
+            }
+        }
+    }
+}

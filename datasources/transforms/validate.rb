@@ -26,7 +26,13 @@ class ValidateTransformer < Transformer
 
     # Schema from https://geojson.org/schema/Feature.json
     @geojson_schema = JSON.parse(File.new('datasources/transforms/validate-geojson-feature.schema.json').read)
-    @properties_tags_schema = JSON.parse(File.new('datasources/transforms/validate-properties-tags.schema.json').read)
+    @properties_tags_schema = [
+      JSON.parse(File.new('datasources/transforms/validate-properties-tags.schema.json').read),
+      JSON.parse(File.new('datasources/transforms/validate-properties-tags-event.schema.json').read),
+      JSON.parse(File.new('datasources/transforms/validate-properties-tags-hosting.schema.json').read),
+      JSON.parse(File.new('datasources/transforms/validate-properties-tags-restaurant.schema.json').read),
+      JSON.parse(File.new('datasources/transforms/validate-properties-tags-route.schema.json').read),
+    ].inject({}, &:deep_merge)
     @properties_schema = JSON.parse(File.new('datasources/transforms/validate-properties.schema.json').read)
     @properties_schema['properties']['tags'] = @properties_tags_schema
     @properties_schema['$defs'] = (@properties_schema['$defs'] || {}).merge(@properties_tags_schema['$defs'])

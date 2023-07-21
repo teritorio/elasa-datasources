@@ -1,0 +1,59 @@
+{
+    "type": "object",
+    "required": [],
+    "additionalProperties": false,
+    "properties": {
+        "event": {
+            "title": "Non OSM",
+            "type": "array",
+            "items": {
+                "enum": [
+                    "SaleEvent",
+                    "BricABrac",
+                    "FairOrShow",
+                    "Market",
+                    "OpenDay",
+                    "GarageSale",
+                    "BusinessEvent",
+                    "TrainingWorkshop",
+                    "ExecutiveBoardMeeting",
+                    "Congress",
+                    "BoardMeeting",
+                    "WorkMeeting",
+                    "Seminar",
+                    "SocialEvent",
+                    "LocalAnimation",
+                    "Carnival",
+                    "Parade",
+                    "TraditionalCelebration",
+                    "PilgrimageAndProcession",
+                    "ReligiousEvent",
+                    "CulturalEvent",
+                    "Concert",
+                    "Conference",
+                    "ArtistSigning",
+                    "ChildrensEvent",
+                    "Exhibition",
+                    "Festival",
+                    "Reading",
+                    "Opera",
+                    "TheaterEvent",
+                    "ScreeningEvent",
+                    "Recital",
+                    "VisualArtsEvent",
+                    "ShowEvent",
+                    "CircusEvent",
+                    "DanceEvent",
+                    "Harvest",
+                    "SportsEvent",
+                    "SportsCompetition",
+                    "SportsDemonstration",
+                    "Game",
+                    "Rally",
+                    "Rambling",
+                    "Other"
+                ]
+            }
+        }
+    }
+}

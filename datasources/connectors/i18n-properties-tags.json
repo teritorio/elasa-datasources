@@ -1,0 +1,102 @@
+{
+    "ref": {
+        "@default": {
+            "fr": "image"
+        }
+    },
+    "source": {
+        "@default": {
+            "fr": "source"
+        }
+    },
+    "description": {
+        "@default": {
+            "fr": "description"
+        }
+    },
+    "email": {
+        "@default": {
+            "fr": "email"
+        }
+    },
+    "name": {
+        "@default": {
+            "fr": "nom du lieu"
+        }
+    },
+    "opening_hours": {
+        "@default": {
+            "fr": "horaires d’ouverture"
+        }
+    },
+    "phone": {
+        "@default": {
+            "fr": "téléphone"
+        }
+    },
+    "website": {
+        "@default": {
+            "fr": "web"
+        }
+    },
+    "facebook": {
+        "@default": {
+            "fr": "facebook"
+        }
+    },
+    "addr": {
+        "@default": {
+            "fr": "adresse"
+        }
+    },
+    "addr:street": {
+        "@default": {
+            "fr": "rue"
+        }
+    },
+    "addr:postcode": {
+        "@default": {
+            "fr": "code postal"
+        }
+    },
+    "addr:city": {
+        "@default": {
+            "fr": "ville"
+        }
+    },
+    "addr:country": {
+        "@default": {
+            "fr": "pays"
+        }
+    },
+    "instagram": {
+        "@default": {
+            "fr": "instagram"
+        }
+    },
+    "twitter": {
+        "@default": {
+            "fr": "twitter"
+        }
+    },
+    "image": {
+        "@default": {
+            "fr": "image"
+        }
+    },
+    "website:details": {
+        "@default": {
+            "fr": "lien vers le detail"
+        }
+    },
+    "start_date": {
+        "@default": {
+            "fr": "date de début"
+        }
+    },
+    "end_date": {
+        "@default": {
+            "fr": "date de fin"
+        }
+    }
+}

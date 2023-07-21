@@ -1,0 +1,229 @@
+{
+    "event": {
+        "@default": {
+            "fr": "type d'évènement"
+        },
+        "values": {
+            "SaleEvent": {
+                "@default:full": {
+                    "fr": "évènement commercial"
+                }
+            },
+            "BricABrac": {
+                "@default:full": {
+                    "fr": "brocante"
+                }
+            },
+            "FairOrShow": {
+                "@default:full": {
+                    "fr": "foire ou salon"
+                }
+            },
+            "Market": {
+                "@default:full": {
+                    "fr": "marché"
+                }
+            },
+            "OpenDay": {
+                "@default:full": {
+                    "fr": "portes ouvertes"
+                }
+            },
+            "GarageSale": {
+                "@default:full": {
+                    "fr": "vide-grenier"
+                }
+            },
+            "BusinessEvent": {
+                "@default:full": {
+                    "fr": "évènement commercial"
+                }
+            },
+            "TrainingWorkshop": {
+                "@default:full": {
+                    "fr": "atelier de formation"
+                }
+            },
+            "ExecutiveBoardMeeting": {
+                "@default:full": {
+                    "fr": "bureau éxécutif"
+                }
+            },
+            "Congress": {
+                "@default:full": {
+                    "fr": "congrès"
+                }
+            },
+            "BoardMeeting": {
+                "@default:full": {
+                    "fr": "conseil d'administration"
+                }
+            },
+            "WorkMeeting": {
+                "@default:full": {
+                    "fr": "réunion de travail"
+                }
+            },
+            "Seminar": {
+                "@default:full": {
+                    "fr": "séminaire"
+                }
+            },
+            "SocialEvent": {
+                "@default:full": {
+                    "fr": "évènement social"
+                }
+            },
+            "LocalAnimation": {
+                "@default:full": {
+                    "fr": "animation locale"
+                }
+            },
+            "Carnival": {
+                "@default:full": {
+                    "fr": "carnaval"
+                }
+            },
+            "Parade": {
+                "@default:full": {
+                    "fr": "défilé, cortège, parade"
+                }
+            },
+            "TraditionalCelebration": {
+                "@default:full": {
+                    "fr": "fête traditionnelle"
+                }
+            },
+            "PilgrimageAndProcession": {
+                "@default:full": {
+                    "fr": "pèlerinage et procession"
+                }
+            },
+            "ReligiousEvent": {
+                "@default:full": {
+                    "fr": "religiousEvent"
+                }
+            },
+            "CulturalEvent": {
+                "@default:full": {
+                    "fr": "évènement culturel"
+                }
+            },
+            "Concert": {
+                "@default:full": {
+                    "fr": "concert"
+                }
+            },
+            "Conference": {
+                "@default:full": {
+                    "fr": "conference"
+                }
+            },
+            "ArtistSigning": {
+                "@default:full": {
+                    "fr": "dédicace et rencontre d'artiste"
+                }
+            },
+            "ChildrensEvent": {
+                "@default:full": {
+                    "fr": "évènement jeune public"
+                }
+            },
+            "Exhibition": {
+                "@default:full": {
+                    "fr": "exposition"
+                }
+            },
+            "Festival": {
+                "@default:full": {
+                    "fr": "festival"
+                }
+            },
+            "Reading": {
+                "@default:full": {
+                    "fr": "lecture"
+                }
+            },
+            "Opera": {
+                "@default:full": {
+                    "fr": "opéra"
+                }
+            },
+            "TheaterEvent": {
+                "@default:full": {
+                    "fr": "pièce de théâtre"
+                }
+            },
+            "ScreeningEvent": {
+                "@default:full": {
+                    "fr": "projection, cinéma"
+                }
+            },
+            "Recital": {
+                "@default:full": {
+                    "fr": "récital"
+                }
+            },
+            "VisualArtsEvent": {
+                "@default:full": {
+                    "fr": "son et lumière, feu d'artifice"
+                }
+            },
+            "ShowEvent": {
+                "@default:full": {
+                    "fr": "spectacle"
+                }
+            },
+            "CircusEvent": {
+                "@default:full": {
+                    "fr": "spectacle de cirque"
+                }
+            },
+            "DanceEvent": {
+                "@default:full": {
+                    "fr": "spectacle de danse"
+                }
+            },
+            "Harvest": {
+                "@default:full": {
+                    "fr": "vendange, récolte"
+                }
+            },
+            "SportsEvent": {
+                "@default:full": {
+                    "fr": "évènement sports et loisirs"
+                }
+            },
+            "SportsCompetition": {
+                "@default:full": {
+                    "fr": "compétition sportive"
+                }
+            },
+            "SportsDemonstration": {
+                "@default:full": {
+                    "fr": "démonstration sportive"
+                }
+            },
+            "Game": {
+                "@default:full": {
+                    "fr": "jeu, concours"
+                }
+            },
+            "Rally": {
+                "@default:full": {
+                    "fr": "rallye"
+                }
+            },
+            "Rambling": {
+                "@default:full": {
+                    "fr": "randonnée, balade"
+                }
+            },
+            "Other": {
+                "@default:full": {
+                    "fr": "autre"
+                }
+            }
+        }
+    }
+}
