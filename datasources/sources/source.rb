@@ -125,7 +125,8 @@ class Source
       rescue StandardError => e
         puts 'Native', JSON.dump(r)
         puts 'OSM Tags', JSON.dump(tags) if tags
-        raise e
+        puts "#{e}\n\n"
+        nil
       end
     }
     bad = bad.select{ |_k, v| v != 0 }.to_h.compact_blank
