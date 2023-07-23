@@ -344,4 +344,10 @@ class TourismSystemSource < Source
       ratings(jp(f, '.ratings')),
     )
   end
+
+  def map_native_properties(feat, properties)
+    properties.transform_values{ |path|
+      jp(feat, path).collect{ |k| @thesaurus[k] }
+    }.compact.to_h
+  end
 end
