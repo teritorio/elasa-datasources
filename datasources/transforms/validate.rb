@@ -82,10 +82,10 @@ class ValidateTransformer < Transformer
   end
 
   def process_schema(schema)
-    @properties_tags_schema = schema[:schema]
+    @properties_tags_schema = schema[:schema] || {}
     @properties_schema = JSON.parse(File.new('datasources/schemas/properties.schema.json').read)
     @properties_schema['properties']['tags'] = @properties_tags_schema
-    @properties_schema['$defs'] = (@properties_schema['$defs'] || {}).merge(@properties_tags_schema['$defs'])
+    @properties_schema['$defs'] = (@properties_schema['$defs'] || {}).merge(@properties_tags_schema['$defs'] || {})
 
     # Relax constraints on schema
     if @additional_tags
