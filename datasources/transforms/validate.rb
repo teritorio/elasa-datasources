@@ -141,7 +141,7 @@ class ValidateTransformer < Transformer
     bad = @bad.select{ |_k, v| v != 0 }.to_h.compact_blank
     return unless !bad.empty? && bad[:pass] != @count
 
-    logger.info("      ! #{bad.inspect}")
+    logger.info("    ! #{bad.inspect}")
 
     # TODO: check for additionalProperties translation
   end
