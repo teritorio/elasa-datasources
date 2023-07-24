@@ -56,12 +56,16 @@ class TeritorioOntology < Connector
   def parse_ontology
     ontology, ontology_tags, osm_tags_extra = fetch_ontology_tags
 
-    i18n = ontology_tags.select{ |osm_tags, _label| osm_tags.size == 1 }.group_by{ |osm_tags, _label| osm_tags[0][0] }.transform_values { |values|
+    i18n = ontology_tags.select{ |osm_tags, _label|
+      osm_tags.size == 1
+    }.group_by{ |osm_tags, _label|
+      osm_tags[0][0]
+    }.transform_values { |values|
       {
-        values: values.to_h{ |osm_tags, _label|
+        values: values.to_h{ |osm_tags, label|
           [
-            osm_tags[0][1],
-            { '@default:full' => i18n },
+            osm_tags[0][2],
+            { '@default:full' => label },
           ]
         }
       }
