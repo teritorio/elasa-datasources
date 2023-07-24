@@ -82,6 +82,20 @@ class TeritorioOntology < Connector
   end
 
   def setup(kiba)
+    kiba.source(SchemaSource, @job_id, @job_id, {
+      'schema' => [
+        'datasources/schemas/tags/base.schema.json',
+        'datasources/schemas/tags/hosting.schema.json',
+        'datasources/schemas/tags/restaurant.schema.json',
+        'datasources/schemas/tags/any.schema.json',
+      ],
+      'i18n' => [
+        'datasources/schemas/tags/base.i18n.json',
+        'datasources/schemas/tags/hosting.i18n.json',
+        'datasources/schemas/tags/restaurant.i18n.json',
+      ]
+    })
+
     ontology, i18n, osm_tags, osm_tags_extra = parse_ontology
     kiba.source(MockSource, @job_id, @job_id, { i18n: i18n })
     kiba.source(MockSource, @job_id, @job_id, { osm_tags: {
