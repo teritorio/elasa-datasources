@@ -84,17 +84,30 @@ class TeritorioOntology < Connector
     kiba.source(MockSource, @job_id, @job_id, { i18n: i18n })
     kiba.source(MockSource, @job_id, @job_id, { osm_tags: osm_tags })
 
-    source_filter = @source_filter&.split('-')
-    ontology['superclass'].each{ |superclass_id, superclasses|
-      next if source_filter && source_filter.size >= 1 && source_filter[0] != superclass_id
+    source_filter = (
+      if @source_filter.blank?
+        @settings['filters']
+      else
+        @source_filter.split('-').reverse.inject(nil){ |sum, i| { i => sum } }
+      end
+    )
 
-      superclasses['class'].each{ |class_id, classes|
-        next if source_filter && source_filter.size >= 2 && source_filter[1] != class_id
-
+    ontology['superclass'].select{ |superclass_id, _superclasses|
+      !source_filter ||
+        source_filter.key?(superclass_id)
+    }.each{ |superclass_id, superclasses|
+      superclasses['class'].select{ |class_id, _classes|
+        !source_filter ||
+          !source_filter[superclass_id] ||
+          source_filter[superclass_id].key?(class_id)
+      }.each{ |class_id, classes|
         if classes['subclass']
-          classes['subclass'].each{ |subclass_id, subclasses|
-            next if source_filter && source_filter.size >= 3 && source_filter[2] != subclass_id
-
+          classes['subclass'].select{ |subclass_id, _subclasses|
+            !source_filter ||
+              !source_filter[superclass_id] ||
+              !source_filter[superclass_id][class_id] ||
+              source_filter[superclass_id][class_id].key?(subclass_id)
+          }.each{ |subclass_id, subclasses|
             kiba.source(
               TeritorioOsmSource,
               @job_id,
