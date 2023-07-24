@@ -6,7 +6,7 @@
         "values": {
             "hotel": {
                 "@default:full": {
-                    "fr": "hotel"
+                    "fr": "hôtel"
                 }
             }
         }
