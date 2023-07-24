@@ -286,14 +286,14 @@ class TourinsoftSirtaquiSource < TourinsoftSource
   def schema
     super.merge({
       i18n: {
-        route: {
-          values: @@practices.compact.to_a.collect(&:reverse).to_h.transform_values{ |v| { fr: v } }
+        'route' => {
+          'values' => @@practices.compact.to_a.collect(&:reverse).to_h.transform_values{ |v| { fr: v } }
         }
       }.merge(
         *@@practices.values.collect { |practice|
           {
-            "route:#{practice}:difficulty": {
-              values: @@difficulties.compact.to_a.collect(&:reverse).to_h.transform_values{ |v| { fr: v } }
+            "route:#{practice}:difficulty" => {
+              'values' => @@difficulties.compact.to_a.collect(&:reverse).to_h.transform_values{ |v| { fr: v } }
             }
           }
         }

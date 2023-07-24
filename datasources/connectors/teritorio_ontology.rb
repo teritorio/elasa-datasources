@@ -62,7 +62,7 @@ class TeritorioOntology < Connector
       osm_tags[0][0]
     }.transform_values { |values|
       {
-        values: values.to_h{ |osm_tags, label|
+        'values' => values.to_h{ |osm_tags, label|
           [
             osm_tags[0][2],
             { '@default:full' => label },
