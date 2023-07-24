@@ -35,23 +35,29 @@ class OverpassSource < Source
   end
 
   def map_updated_at(feat)
-    feat['timestamp']
+    feat['timestamp'] || feat['tags']['timestamp']
   end
 
   def map_geometry(feat)
+    coordinates = (
+      if !feat['lon'].nil?
+        [feat['lon'], feat['lat']]
+      elsif !feat.dig('center', 'lon').nil?
+        [feat['center']['lon'], feat['center']['lat']]
+      elsif !feat.dig('tags', 'lon').nil?
+        [feat['tags']['lon'].to_f, feat['tags']['lat'].to_f]
+      end
+    )
+
+    return if coordinates.nil?
+
     {
       type: 'Point',
-      coordinates: (
-        if feat['lon'].nil?
-          [feat['center']['lon'], feat['center']['lat']]
-        else
-          [feat['lon'], feat['lat']]
-        end
-      )
+      coordinates: coordinates,
     }
   end
 
   def map_tags(feat)
-    feat['tags']
+    feat['tags'].except('timestamp', 'lon', 'lat')
   end
 end
