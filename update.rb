@@ -13,7 +13,8 @@ include Logging.globally
 Logging.logger.root.appenders = Logging.appenders.stdout(
   layout: Logging.layouts.pattern(
     pattern: '%m\n'
-  )
+  ),
+  level: :info,
 )
 Logging.logger.root.level = :debug
 
@@ -26,9 +27,20 @@ Logging.logger.root.level = :debug
 @config['datasources'].to_a.select { |project, _jobs|
   !@project || project == @project
 }.each { |project, jobs|
-  logger.info(project)
   dir = "data/#{project}"
   FileUtils.makedirs(dir)
+
+  logging_appender = Logging.appenders.file(
+    "#{dir}/log.txt",
+    truncate: true,
+    layout: Logging.layouts.pattern(
+      pattern: '%m\n'
+    ),
+    level: :debug,
+  )
+  Logging.logger.root.add_appenders(logging_appender)
+
+  logger.info(project)
 
   jobs&.to_a&.select{ |id, _job|
     !@datasource || id == @datasource
@@ -45,4 +57,6 @@ Logging.logger.root.level = :debug
     destination(GeoJson, dir)
   end
   Kiba.run(job)
+
+  Logging.logger.root.remove_appenders(logging_appender)
 }
