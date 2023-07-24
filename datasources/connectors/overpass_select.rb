@@ -4,11 +4,11 @@
 require 'sorbet-runtime'
 
 require_relative 'csv'
-require_relative '../sources/overpass'
+require_relative '../sources/overpass_select'
 
 
-class Overpass < CsvConnector
+class OverpassSelect < CsvConnector
   def self.source_class
-    OverpassSource
+    OverpassSelectSource
   end
 end

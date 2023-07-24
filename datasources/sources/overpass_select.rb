@@ -9,7 +9,7 @@ require 'sorbet-runtime'
 require_relative 'csv'
 
 
-class OverpassSource < CsvSource
+class OverpassSelectSource < CsvSource
   def initialize(job_id, destination_id, settings)
     settings['col_sep'] = "\t"
     settings['id'] ||= '@id'
