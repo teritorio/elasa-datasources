@@ -57,7 +57,7 @@ class Source
     log += ' +schema' if schema_data[:schema].present?
     log += ' +i18n' if schema_data[:i18n].present?
     log += ' +osm_tags' if osm_tags_data.except(:destination_id).present?
-    puts log
+    logger.info(log)
     bad = {
       filtered_out: 0,
       missing_id: 0,
@@ -123,15 +123,15 @@ class Source
 
         bad[:pass] += 1
       rescue StandardError => e
-        puts 'Native', JSON.dump(r)
-        puts 'OSM Tags', JSON.dump(tags) if tags
-        puts "#{e}\n\n"
+        logger.debug(['Native', JSON.dump(r)].join("\n"))
+        logger.debug(['OSM Tags', JSON.dump(tags)].join("\n")) if tags
+        logger.debug("#{e}\n\n")
         nil
       end
     }
     bad = bad.select{ |_k, v| v != 0 }.to_h.compact_blank
     return unless !bad.empty? && bad[:pass] != raw.size
 
-    puts "    ! #{bad.inspect}"
+    logger.info("    ! #{bad.inspect}")
   end
 end

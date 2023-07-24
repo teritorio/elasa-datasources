@@ -2,10 +2,20 @@
 # frozen_string_literal: true
 # typed: true
 
+require 'logging'
 require 'yaml'
 require 'sorbet-runtime'
 require './datasources/sources/schema'
 require './datasources/jobs/job'
+
+
+include Logging.globally
+Logging.logger.root.appenders = Logging.appenders.stdout(
+  layout: Logging.layouts.pattern(
+    pattern: '%m\n'
+  )
+)
+Logging.logger.root.level = :debug
 
 
 @config = YAML.safe_load(File.read('config.yaml'))
@@ -16,7 +26,7 @@ require './datasources/jobs/job'
 @config['datasources'].to_a.select { |project, _jobs|
   !@project || project == @project
 }.each { |project, jobs|
-  puts project
+  logger.info(project)
   dir = "data/#{project}"
   FileUtils.makedirs(dir)
 
@@ -26,7 +36,7 @@ require './datasources/jobs/job'
     Job.new(job_id, job, @source_filter, dir)
   }
 
-  puts '  - Conflate metadata'
+  logger.info('  - Conflate metadata')
   job = Kiba.parse do
     source(SchemaSource, nil, nil, {
       'schema' => Dir.glob("#{dir}/*.schema.json"),

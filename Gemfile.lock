@@ -36,9 +36,13 @@ GEM
     jsonpath (1.1.2)
       multi_json
     kiba (4.0.0)
+    little-plugger (1.1.4)
     llhttp-ffi (0.4.0)
       ffi-compiler (~> 1.0)
       rake (~> 13.0)
+    logging (2.3.1)
+      little-plugger (~> 1.1)
+      multi_json (~> 1.14)
     method_source (1.0.0)
     minitest (5.18.0)
     multi_json (1.15.0)
@@ -150,6 +154,7 @@ DEPENDENCIES
   json-schema
   jsonpath
   kiba
+  logging
   nokogiri
   psych
   racc

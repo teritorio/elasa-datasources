@@ -52,22 +52,22 @@ class Destination
 
   def close
     @destinations_data.each{ |destination_id, rows|
-      puts "    < #{self.class.name}: #{destination_id}: #{rows.size}"
+      logger.info("    < #{self.class.name}: #{destination_id}: #{rows.size}")
       close_data(destination_id, rows)
     }
 
     @destinations_schema.each{ |destination_id, row|
       next if row.blank?
 
-      puts "    < #{self.class.name}: #{destination_id}: +schema" if row[:schema].present?
-      puts "    < #{self.class.name}: #{destination_id}: +i18n" if row[:i18n].present?
+      logger.info("    < #{self.class.name}: #{destination_id}: +schema") if row[:schema].present?
+      logger.info("    < #{self.class.name}: #{destination_id}: +i18n") if row[:i18n].present?
       close_schema(destination_id, row)
     }
 
     @destinations_osm_tags.each{ |destination_id, row|
       next if row.blank?
 
-      puts "    < #{self.class.name}: #{destination_id}: +osm_data"
+      logger.info("    < #{self.class.name}: #{destination_id}: +osm_data")
       close_osm_tags(destination_id, row)
     }
   end

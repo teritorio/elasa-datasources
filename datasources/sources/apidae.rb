@@ -129,7 +129,7 @@ class ApidaeSource < Source
     if raw_date.nil?
       oed = @@exceptional_day[day]
       if oed.nil?
-        puts "Missing #{day}"
+        logger.debug("Missing #{day}")
       else
         oed
       end

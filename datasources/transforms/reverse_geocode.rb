@@ -19,7 +19,7 @@ class ReverseGeocode
   end
 
   def close_data
-    puts "#{self.class.name}: #{@rows.size}"
+    logger.info("#{self.class.name}: #{@rows.size}")
 
     # TODO: geocoder uniquement ceux qui ont besoin d'un adresse
 

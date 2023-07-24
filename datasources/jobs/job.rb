@@ -31,7 +31,7 @@ class Job
           settings: task.except('type'),
         }
     }
-    puts "  - #{job_id}: #{tasks[0][:class].name}"
+    logger.info("  - #{job_id}: #{tasks[0][:class].name}")
 
     job = Kiba.parse do
       sources, tasks = tasks.partition{ |task|

@@ -52,10 +52,10 @@ class ValidateTransformer < Transformer
       key_match = Regexp.new((base + [Regexp.quote(key)]).join(':'))
       i18n_key = i18n.keys.find{ |k| key_match.match(k) }
       i18n_missing_values = enum - (i18n[i18n_key]['values'] || {}).keys
-      puts "Tags Key values without i18n : #{key}=#{i18n_missing_values.join('|')}" if !i18n_missing_values.empty?
+      logger.debug("Tags Key values without i18n : #{key}=#{i18n_missing_values.join('|')}") if !i18n_missing_values.empty?
 
       i18n_pending_values = (i18n[i18n_key]['values'] || {}).keys - enum
-      puts "Tags Key values pending i18n : #{key}=#{i18n_pending_values.join('|')}" if !i18n_pending_values.empty?
+      logger.debug("Tags Key values pending i18n : #{key}=#{i18n_pending_values.join('|')}") if !i18n_pending_values.empty?
 
       !i18n_missing_values.empty? || !i18n_pending_values.empty?
     }.find.first && raise('Tags value i18n Error')
@@ -129,7 +129,7 @@ class ValidateTransformer < Transformer
       JSON::Validator.validate!(@properties_schema, row[:properties])
       validate_i18n(row[:properties][:tags])
     rescue StandardError => e
-      puts row.inspect
+      logger.call(row.inspect)
       raise e
     end
 
@@ -141,7 +141,7 @@ class ValidateTransformer < Transformer
     bad = @bad.select{ |_k, v| v != 0 }.to_h.compact_blank
     return unless !bad.empty? && bad[:pass] != @count
 
-    puts "      ! #{bad.inspect}"
+    logger.info("      ! #{bad.inspect}")
 
     # TODO: check for additionalProperties translation
   end

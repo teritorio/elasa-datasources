@@ -92,7 +92,7 @@ class OsmTags < Transformer
         begin
           tags[key] = Integer(capacity)
         rescue StandardError => _e
-          puts "Fails converto to integer #{key}=#{capacity}"
+          logger.error("Fails converto to integer #{key}=#{capacity}")
           raise
         end
       end

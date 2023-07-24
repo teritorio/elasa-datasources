@@ -44,7 +44,7 @@ class Transformer
           [type, d]
         end
       rescue StandardError => e
-        puts "#{e}\n\n"
+        logger.debug("#{e}\n\n")
         nil
       end
     else Raise "Not support stream item #{type}"
@@ -85,6 +85,6 @@ class Transformer
     log += ' +schema' if @has_schema
     log += ' +i18n' if @has_i18n
     log += ' +osm_tags' if @has_osm_tags
-    puts log
+    logger.info(log)
   end
 end

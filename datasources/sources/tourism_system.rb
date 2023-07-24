@@ -222,7 +222,7 @@ class TourismSystemSource < Source
     }&.collect{ |c|
       t = @@event_type[c]
       if t.nil?
-        puts raise("Missing #{tm['libelleFr']}")
+        logger.error(raise("Missing #{tm['libelleFr']}"))
       else
         t
       end
