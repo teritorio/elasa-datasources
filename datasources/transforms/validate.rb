@@ -10,7 +10,6 @@ require_relative 'transformer'
 class ValidateTransformer < Transformer
   def initialize(settings)
     super(settings)
-    @additional_tags = settings['additional_tags'] || false
 
     @i18n = {}
 
@@ -86,14 +85,6 @@ class ValidateTransformer < Transformer
     @properties_schema = JSON.parse(File.new('datasources/schemas/properties.schema.json').read)
     @properties_schema['properties']['tags'] = @properties_tags_schema
     @properties_schema['$defs'] = (@properties_schema['$defs'] || {}).merge(@properties_tags_schema['$defs'] || {})
-
-    # Relax constraints on schema
-    if @additional_tags
-      @properties_schema['properties']['tags']['additionalProperties'] = additional_tags
-      %w[shop amenity leisure tourism natural water highway].each{ |key|
-        @properties_schema['properties']['tags']['properties'][key] = { type: 'string' }
-      }
-    end
 
     JSON::Validator.validate!(@i18n_schema, schema[:i18n])
     validate_schema_i18n([], @properties_tags_schema['properties'], schema[:i18n])

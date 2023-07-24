@@ -12,6 +12,3 @@ datasources:
         type: TeritorioOntology
         relation_id: 7376 # Landes
         url: https://vecto.teritorio.xyz/data/teritorio-tourism-ontology-latest.json
-      validate:
-        type: ValidateTransformer
-        additional_tags: true
