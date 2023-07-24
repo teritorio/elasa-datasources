@@ -37,6 +37,9 @@ class OverpassSource < CsvSource
   end
 
   def osm_tags
-    super().merge(@settings['filter_tags'], @settings['out_tags'].to_h{ |key| [key, nil] })
+    super().merge({
+      select: @settings['filter_tags'].transform_values{ |v| [v] },
+      interest: @settings['out_tags'].to_h{ |key| [key, nil] },
+    })
   end
 end

@@ -67,22 +67,27 @@ class TeritorioOntology < Connector
       }
     }
 
-    osm_tags = (
-      ontology_tags.collect{ |osm_selectors, _label|
-        osm_selectors.collect{ |k, _o, v| [k, v] }
-      }.flatten(1) +
-      osm_tags_extra.collect{ |key|
-        [key, nil]
-      }
-    ).group_by(&:first).transform_values{ |_k, v| v.nil? || v.include?(nil) ? nil : v }
+    osm_tags = ontology_tags.collect(&:first).flatten(1).collect{ |k, _o, v|
+      [k, v]
+    }.group_by(&:first).transform_values{ |vs|
+      r = vs.collect(&:last).uniq
+      r.include?(nil) ? nil : r
+    }
 
-    [ontology, i18n, osm_tags]
+    osm_tags_extra = osm_tags_extra.to_h{ |key|
+      [key, nil]
+    }
+
+    [ontology, i18n, osm_tags, osm_tags_extra]
   end
 
   def setup(kiba)
-    ontology, i18n, osm_tags = parse_ontology
+    ontology, i18n, osm_tags, osm_tags_extra = parse_ontology
     kiba.source(MockSource, @job_id, @job_id, { i18n: i18n })
-    kiba.source(MockSource, @job_id, @job_id, { osm_tags: osm_tags })
+    kiba.source(MockSource, @job_id, @job_id, { osm_tags: {
+      select: osm_tags,
+      interest: osm_tags_extra,
+    } })
 
     source_filter = (
       if @source_filter.blank?
