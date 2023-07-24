@@ -7,14 +7,10 @@ require_relative 'source'
 
 class MockSource < Source
   def schema
-    {
-      schema: super.merge(
-        @settings[:schema] || {}
-      ),
-      i18n: super.merge(
-        @settings[:i18n] || {}
-      )
-    }
+    super.merge({
+      schema: @settings[:schema],
+      i18n: @settings[:i18n],
+  }.compact)
   end
 
   def osm_tags
