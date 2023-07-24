@@ -84,6 +84,11 @@
             "fr": "image"
         }
     },
+    "mapillary": {
+        "@default": {
+            "fr": "photo Mapillary"
+        }
+    },
     "website:details": {
         "@default": {
             "fr": "lien vers le detail"

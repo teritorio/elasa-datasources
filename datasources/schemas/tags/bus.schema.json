@@ -38,6 +38,12 @@
                 "yes"
             ]
         },
+        "covered": {
+            "enum": [
+                "no",
+                "yes"
+            ]
+        },
         "bench": {
             "enum": [
                 "no",

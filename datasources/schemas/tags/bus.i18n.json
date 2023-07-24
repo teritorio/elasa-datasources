@@ -120,6 +120,23 @@
             }
         }
     },
+    "covered": {
+        "@default": {
+            "fr": "couvert"
+        },
+        "values": {
+            "yes": {
+                "@default:full": {
+                    "fr": "couvert"
+                }
+            },
+            "no": {
+                "@default:full": {
+                    "fr": "non couvert"
+                }
+            }
+        }
+    },
     "route_ref": {
         "@default": {
             "fr": "lignes desservant cet arrêt"

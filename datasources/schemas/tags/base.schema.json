@@ -57,6 +57,9 @@
                 "type": "string"
             }
         },
+        "mapillary": {
+            "type": "string"
+        },
         "addr": {
             "type": "object",
             "additionalProperties": false,
