@@ -7,7 +7,7 @@ require 'kiba'
 require 'sorbet-runtime'
 
 require_relative 'connector'
-require_relative '../sources/overpass'
+require_relative '../sources/overpass_select'
 require_relative '../sources/mock'
 require_relative '../transforms/osm_tags'
 require_relative '../transforms/reverse_geocode'
@@ -114,7 +114,7 @@ class TeritorioOntology < Connector
               source_filter[superclass_id][class_id].key?(subclass_id)
           }.each{ |subclass_id, subclasses|
             kiba.source(
-              OverpassSource,
+              OverpassSelectSource,
               @job_id,
               "#{superclass_id}-#{class_id}-#{subclass_id}",
               @settings.merge({ 'select' => subclasses['osm_tags'] }),
@@ -122,7 +122,7 @@ class TeritorioOntology < Connector
           }
         else
           kiba.source(
-            OverpassSource,
+            OverpassSelectSource,
             @job_id,
             "#{superclass_id}-#{class_id}",
             @settings.merge({ 'select' => classes['osm_tags'] }),

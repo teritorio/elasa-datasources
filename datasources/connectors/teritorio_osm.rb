@@ -7,7 +7,7 @@ require 'kiba'
 require 'sorbet-runtime'
 
 require_relative 'connector'
-require_relative '../sources/overpass'
+require_relative '../sources/overpass_select'
 require_relative '../transforms/osm_tags'
 require_relative '../transforms/reverse_geocode'
 
@@ -24,7 +24,7 @@ class TeritorioOsm < Connector
 
     config.each{ |source_id, _extra|
       kiba.source(
-        OverpassSource,
+        OverpassSelectSource,
         @job_id,
         source_id,
         @settings.merge({ 'select' => c['select'] }),
