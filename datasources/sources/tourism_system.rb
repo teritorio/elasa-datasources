@@ -288,6 +288,8 @@ class TourismSystemSource < Source
   end
 
   def map_geometry(feat)
+    return if jp(feat, '.geolocations')&.first.blank?
+
     {
       type: 'Point',
       coordinates: [

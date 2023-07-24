@@ -80,25 +80,25 @@ class Source
         id = map_id(r)
         if check && id.blank?
           bad[:missing_id] += 1
-          next
+          raise 'Missing id'
         end
 
         updated_at = map_updated_at(r)
         if check && updated_at.blank?
           bad[:missing_updated_at] += 1
-          next
+          raise 'Missing updated_at'
         end
 
         geometry = map_geometry(r)
         if check && geometry.blank?
           bad[:missing_geometry] += 1
-          next
+          raise 'Missing geometry'
         end
 
         geometry = map_geometry(r)
         if check && geometry[:type] == 'Point' && geometry[:coordinates] == [0.0, 0.0]
           bad[:null_island_geometry] += 1
-          next
+          raise 'Null island geometry'
         end
 
         tags = map_tags(r)
