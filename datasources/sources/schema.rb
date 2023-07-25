@@ -13,9 +13,9 @@ class SchemaSource < Source
   end
 
   def schema
-    super.deep_merge({
-      schema: load(@settings['schema'])&.inject({}, &:deep_merge),
-      i18n: load(@settings['i18n'])&.inject({}, &:deep_merge),
+    super.deep_merge_array({
+      schema: load(@settings['schema'])&.inject({}, &:deep_merge_array),
+      i18n: load(@settings['i18n'])&.inject({}, &:deep_merge_array),
     })
   end
 

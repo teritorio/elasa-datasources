@@ -22,12 +22,12 @@ class MetadataMerge < Transformer
   end
 
   def process_schema(data)
-    @destinations_schema = @destinations_schema.deep_merge(data.except(:destination_id))
+    @destinations_schema = @destinations_schema.deep_merge_array(data.except(:destination_id))
     nil
   end
 
   def process_osm_tags(data)
-    @destinations_osm_tags = @destinations_osm_tags.deep_merge(data.except(:destination_id))
+    @destinations_osm_tags = @destinations_osm_tags.deep_merge_array(data.except(:destination_id))
     nil
   end
 

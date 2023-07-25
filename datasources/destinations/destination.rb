@@ -18,11 +18,12 @@ class Destination
   end
 
   def write_schema(data)
-    @destinations_schema[data[:destination_id]] = @destinations_schema[data[:destination_id]].deep_merge(data.except(:destination_id))
+    @destinations_schema[data[:destination_id]] = @destinations_schema[data[:destination_id]].deep_merge_array(data.except(:destination_id))
+
   end
 
   def write_osm_tags(data)
-    @destinations_osm_tags[data[:destination_id]] = @destinations_osm_tags[data[:destination_id]].deep_merge(data.except(:destination_id))
+    @destinations_osm_tags[data[:destination_id]] = @destinations_osm_tags[data[:destination_id]].deep_merge_array(data.except(:destination_id))
   end
 
   def write_data(row)

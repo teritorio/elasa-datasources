@@ -56,7 +56,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
   def self.cuisines(cuisines)
     cuisines.collect{ |cuisine|
       @@cuisines[cuisine]
-    }.compact.inject(:deep_merge) || {}
+    }.compact.inject(:deep_merge_array) || {}
   end
 
   @@class = HashExcep[{

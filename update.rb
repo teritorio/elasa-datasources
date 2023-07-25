@@ -19,6 +19,17 @@ Logging.logger.root.appenders = Logging.appenders.stdout(
 Logging.logger.root.level = :debug
 
 
+class Hash
+  def deep_merge_array(other_hash)
+    dup.deep_merge_array!(other_hash)
+  end
+
+  def deep_merge_array!(other_hash)
+    deep_merge!(other_hash) { |_key, old, new| (Array.wrap(old) + Array.wrap(new)).uniq }
+  end
+end
+
+
 @config = YAML.safe_load_file('config.yaml')
 @project = ARGV[0]
 @datasource = ARGV[1]
