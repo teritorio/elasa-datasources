@@ -16,7 +16,7 @@ class TeritorioOsm < Connector
   def setup(kiba)
     configs = @settings['configs']
     config = configs.inject({}){ |sum, config_path|
-      sum.merge(YAML.safe_load(File.read(config_path)))
+      sum.merge(YAML.safe_load_file(config_path))
     }
     FileUtils.makedirs("#{@path}/config")
     generated_config = "#{@path}/config/osm_tags.json"

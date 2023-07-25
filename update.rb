@@ -19,7 +19,7 @@ Logging.logger.root.appenders = Logging.appenders.stdout(
 Logging.logger.root.level = :debug
 
 
-@config = YAML.safe_load(File.read('config.yaml'))
+@config = YAML.safe_load_file('config.yaml')
 @project = ARGV[0]
 @datasource = ARGV[1]
 @source_filter = ARGV[2]
