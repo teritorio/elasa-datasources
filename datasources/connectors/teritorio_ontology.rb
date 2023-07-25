@@ -33,21 +33,21 @@ class TeritorioOntology < Connector
   def fetch_ontology_tags
     ontology = JSON.parse(URI.open(@settings['url']).read)
 
-    ontology_tags = ontology['superclass'].collect{ |_superclass_id, superclasses|
-      superclasses['class'].collect{ |_class_id, classes|
+    ontology_tags = ontology['superclass'].collect{ |superclass_id, superclasses|
+      superclasses['class'].collect{ |class_id, classes|
         if classes['subclass']
-          classes['subclass'].collect{ |_subclass_id, subclasses|
-            [subclasses['osm_tags'], subclasses['label']]
+          classes['subclass'].collect{ |subclass_id, subclasses|
+            [subclasses['osm_tags'], subclasses['label'], "#{@settings['url']}##{superclass_id}-#{class_id}-#{subclass_id}"]
           }
         else
-          [[classes['osm_tags'], classes['label']]]
+          [[classes['osm_tags'], classes['label'], "#{@settings['url']}##{superclass_id}-#{class_id}"]]
         end
       }
-    }.flatten(2).compact.collect{ |osm_tags, label|
+    }.flatten(2).compact.collect{ |osm_tags, label, origin|
       osm_tags = osm_tags[1..-2].split('][').collect{ |osm_tag|
         osm_tag.split(/(=|~=|=~|!=|!~|~)/, 2).collect{ |s| unquote(s) }
       }
-      [osm_tags, label]
+      [osm_tags, label, origin]
     }
 
     [ontology, ontology_tags, ontology['osm_tags_extra']]
@@ -56,13 +56,13 @@ class TeritorioOntology < Connector
   def parse_ontology
     ontology, ontology_tags, osm_tags_extra = fetch_ontology_tags
 
-    i18n = ontology_tags.select{ |osm_tags, _label|
+    i18n = ontology_tags.select{ |osm_tags, _label, _origin|
       osm_tags.size == 1
-    }.group_by{ |osm_tags, _label|
+    }.group_by{ |osm_tags, _label, _origin|
       osm_tags[0][0]
     }.transform_values { |values|
       {
-        'values' => values.to_h{ |osm_tags, label|
+        'values' => values.to_h{ |osm_tags, label, _origin|
           [
             osm_tags[0][2],
             { '@default:full' => label },
@@ -71,15 +71,19 @@ class TeritorioOntology < Connector
       }
     }
 
-    osm_tags = ontology_tags.collect(&:first).flatten(1).collect{ |k, _o, v|
-      [k, v]
-    }.group_by(&:first).transform_values{ |vs|
-      r = vs.collect(&:last).uniq
-      r.include?(nil) ? nil : r
+    osm_tags = ontology_tags.collect{ |tags, _label, origin|
+      tags.collect{ |k, _o, v|
+        [k, v, origin]
+      }
+    }.flatten(1).group_by(&:first).transform_values{ |vs|
+      vs.group_by(&:second).transform_values{ |s|
+        r = s.collect(&:last).uniq
+        r.include?(nil) ? nil : r
+      }
     }
 
     osm_tags_extra = osm_tags_extra.to_h{ |key|
-      [key, nil]
+      [key, { nil => [@settings['url']] }]
     }
 
     [ontology, i18n, osm_tags, osm_tags_extra]
