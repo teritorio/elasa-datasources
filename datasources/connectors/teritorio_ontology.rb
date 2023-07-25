@@ -56,6 +56,19 @@ class TeritorioOntology < Connector
   def parse_ontology
     ontology, ontology_tags, osm_tags_extra = fetch_ontology_tags
 
+    schema = ontology_tags.collect{ |tags, _label, _origin|
+      tags.collect{ |k, _o, v|
+        [k, v]
+      }
+    }.flatten(1).group_by(&:first).transform_values{ |vs|
+      r = vs.collect(&:second).uniq
+      if r.include?(nil)
+        { 'type' => 'string' }
+      else
+        { 'enum' => r }
+      end
+    }
+
     i18n = ontology_tags.select{ |osm_tags, _label, _origin|
       osm_tags.size == 1
     }.group_by{ |osm_tags, _label, _origin|
@@ -69,6 +82,11 @@ class TeritorioOntology < Connector
           ]
         }
       }
+    }
+
+    # FIXME should be translated, rather than removed
+    (schema.keys - i18n.keys).each{ |key|
+      schema.delete(key)
     }
 
     osm_tags = ontology_tags.collect{ |tags, _label, origin|
@@ -86,10 +104,24 @@ class TeritorioOntology < Connector
       [key, { nil => [@settings['url']] }]
     }
 
-    [ontology, i18n, osm_tags, osm_tags_extra]
+    [ontology, schema, i18n, osm_tags, osm_tags_extra]
   end
 
   def setup(kiba)
+    ontology, schema, i18n, osm_tags, osm_tags_extra = parse_ontology
+    kiba.source(MockSource, @job_id, @job_id, {
+      schema: {
+        'type' => 'object',
+        'additionalProperties' => false,
+        'properties' => schema,
+      },
+      i18n: i18n,
+      osm_tags: {
+        select: osm_tags,
+        interest: osm_tags_extra,
+      },
+    })
+
     kiba.source(SchemaSource, @job_id, @job_id, {
       'schema' => [
         'datasources/schemas/tags/base.schema.json',
@@ -103,13 +135,6 @@ class TeritorioOntology < Connector
         'datasources/schemas/tags/restaurant.i18n.json',
       ]
     })
-
-    ontology, i18n, osm_tags, osm_tags_extra = parse_ontology
-    kiba.source(MockSource, @job_id, @job_id, { i18n: i18n })
-    kiba.source(MockSource, @job_id, @job_id, { osm_tags: {
-      select: osm_tags,
-      interest: osm_tags_extra,
-    } })
 
     source_filter = (
       if @source_filter.blank?
