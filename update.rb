@@ -72,6 +72,7 @@ end
     source(SchemaSource, nil, nil, {
       'schema' => Dir.glob("#{dir}/*.schema.json"),
       'i18n' => Dir.glob("#{dir}/*.i18n.json"),
+      'osm_tags' => Dir.glob("#{dir}/*.osm_tags.json"),
     })
     destination(GeoJson, dir)
   end

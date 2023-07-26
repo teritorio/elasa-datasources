@@ -14,9 +14,11 @@ class MockSource < Source
   end
 
   def osm_tags
-    super.merge(
-      @settings[:osm_tags] || {}
-    )
+    if @settings[:osm_tags]
+      super.merge({ data: @settings[:osm_tags] })
+    else
+      super
+    end
   end
 
   def each

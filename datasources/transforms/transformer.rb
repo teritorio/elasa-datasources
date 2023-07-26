@@ -31,7 +31,7 @@ class Transformer
       end
     when :osm_tags
       d = process_osm_tags(data)
-      if d.present?
+      if d&.dig(:data).present?
         @has_osm_tags = true
         [type, d]
       end
@@ -67,7 +67,7 @@ class Transformer
     }
 
     close_osm_tags { |data|
-      if data.present?
+      if data&.dig(:data).present?
         @has_osm_tags = true
         yield [:osm_tags, data]
       end

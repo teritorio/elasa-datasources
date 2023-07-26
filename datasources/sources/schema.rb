@@ -19,6 +19,12 @@ class SchemaSource < Source
     })
   end
 
+  def osm_tags
+    super.deep_merge_array({
+      data: load(@settings['osm_tags'])&.inject([], &:+),
+    })
+  end
+
   def each
     super([])
   end

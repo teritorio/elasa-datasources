@@ -28,6 +28,7 @@ class Source
   def osm_tags
     {
       destination_id: @destination_id,
+      data: [],
     }
   end
 
@@ -56,7 +57,7 @@ class Source
     log = "    > #{self.class.name}, #{@destination_id.inspect}: #{raw.size}"
     log += ' +schema' if schema_data[:schema].present?
     log += ' +i18n' if schema_data[:i18n].present?
-    log += ' +osm_tags' if osm_tags_data&.except(:destination_id).present?
+    log += ' +osm_tags' if osm_tags_data&.dig(:data).present?
     logger.info(log)
     bad = {
       filtered_out: 0,

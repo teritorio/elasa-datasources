@@ -15,7 +15,8 @@ class MetadataMerge < Transformer
       destination_id: destination_id
     }
     @destinations_osm_tags = {
-      destination_id: destination_id
+      destination_id: destination_id,
+      data: [],
     }
 
     @rows = []

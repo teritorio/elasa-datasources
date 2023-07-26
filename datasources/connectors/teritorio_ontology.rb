@@ -130,10 +130,10 @@ class TeritorioOntology < Connector
         'properties' => schema,
       },
       i18n: i18n,
-      osm_tags: {
+      osm_tags: [{
         select: osm_tags,
         interest: osm_tags_extra,
-      },
+      }],
     })
 
     kiba.source(SchemaSource, @job_id, @job_id, {

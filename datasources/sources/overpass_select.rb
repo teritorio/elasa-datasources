@@ -39,8 +39,10 @@ out center meta;
     return if !@settings['select'] || @settings['select'].is_a?(String)
 
     super().merge({
-      select: @settings['select'].transform_values{ |v| { v => [[@job_id, @destination_id].uniq.join(', ')] } },
-      interest: @settings['interest']&.to_h{ |key| [key, { nil: [[@job_id, @destination_id].uniq.join(', ')] }] },
+      data: [{
+        select: @settings['select'].transform_values{ |v| { v => [[@job_id, @destination_id].uniq.join(', ')] } },
+        interest: @settings['interest']&.to_h{ |key| [key, { nil: [[@job_id, @destination_id].uniq.join(', ')] }] },
+      }]
     })
   end
 end

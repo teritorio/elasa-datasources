@@ -47,7 +47,7 @@ class Destination
 
   def close_osm_tags(destination_id, data)
     destination = destination_id.nil? ? '' : "#{destination_id.gsub('/', '_')}."
-    File.write("#{@path}/#{destination}osm_data.json", JSON.pretty_generate(data))
+    File.write("#{@path}/#{destination}osm_tags.json", JSON.pretty_generate(data[:data]))
   end
 
   def close
@@ -65,9 +65,9 @@ class Destination
     }
 
     @destinations_osm_tags.each{ |destination_id, row|
-      next if row.blank?
+      next if row.blank? || row[:data].blank?
 
-      logger.info("    < #{self.class.name}: #{destination_id}: +osm_data")
+      logger.info("    < #{self.class.name}: #{destination_id}: +osm_tags")
       close_osm_tags(destination_id, row)
     }
   end
