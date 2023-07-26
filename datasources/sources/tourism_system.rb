@@ -347,9 +347,16 @@ class TourismSystemSource < Source
     )
   end
 
-  def map_native_properties(feat, properties)
-    properties.transform_values{ |path|
-      jp(feat, path).collect{ |k| @thesaurus[k] }
-    }.compact.to_h
+  def map_native_properties(feat, _properties)
+    criterion = jp(feat, '$.data.dublinCore.criteria..criterion')
+
+    criterion.collect{ |t|
+      std = t[0] == '0' ? t : t.split('.', 2)[1]
+      [std.split('.')[0..3], @thesaurus[t]]
+    }.group_by(&:first).transform_values{ |values| values.collect(&:last) }.transform_keys{ |key|
+      nature = @thesaurus[key[0..2].join('.')]
+      segmentation = @thesaurus[key.join('.')]
+      "#{nature}-#{segmentation}".parameterize
+    }
   end
 end
