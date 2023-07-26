@@ -25,7 +25,15 @@ class Hash
   end
 
   def deep_merge_array!(other_hash)
-    deep_merge!(other_hash) { |_key, old, new| (Array.wrap(old) + Array.wrap(new)).uniq }
+    merge!(other_hash) do |_key, this_val, other_val|
+      if this_val.is_a?(Hash) && other_val.is_a?(Hash)
+        this_val.deep_merge_array(other_val)
+      elsif this_val.is_a?(Array) && other_val.is_a?(Array)
+        (this_val + other_val).uniq
+      else
+        other_val
+      end
+    end
   end
 end
 
