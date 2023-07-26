@@ -30,13 +30,25 @@ def unquote(self_)
 end
 
 class TeritorioOntology < Connector
-  def fetch_ontology_tags
+  def fetch_ontology_tags(source_filter)
     ontology = JSON.parse(URI.open(@settings['url']).read)
 
-    ontology_tags = ontology['superclass'].collect{ |superclass_id, superclasses|
-      superclasses['class'].collect{ |class_id, classes|
+    ontology_tags = ontology['superclass'].select{ |superclass_id, _superclasses|
+      !source_filter ||
+        source_filter.key?(superclass_id)
+    }.collect{ |superclass_id, superclasses|
+      superclasses['class'].select{ |class_id, _classes|
+        !source_filter ||
+          !source_filter[superclass_id] ||
+          source_filter[superclass_id].key?(class_id)
+      }.collect{ |class_id, classes|
         if classes['subclass']
-          classes['subclass'].collect{ |subclass_id, subclasses|
+          classes['subclass'].select{ |subclass_id, _subclasses|
+            !source_filter ||
+              !source_filter[superclass_id] ||
+              !source_filter[superclass_id][class_id] ||
+              source_filter[superclass_id][class_id].key?(subclass_id)
+          }.collect{ |subclass_id, subclasses|
             [subclasses['osm_tags'], subclasses['label'], "#{@settings['url']}##{superclass_id}-#{class_id}-#{subclass_id}"]
           }
         else
@@ -53,8 +65,8 @@ class TeritorioOntology < Connector
     [ontology, ontology_tags, ontology['osm_tags_extra']]
   end
 
-  def parse_ontology
-    ontology, ontology_tags, osm_tags_extra = fetch_ontology_tags
+  def parse_ontology(source_filter)
+    ontology, ontology_tags, osm_tags_extra = fetch_ontology_tags(source_filter)
 
     schema = ontology_tags.collect{ |tags, _label, _origin|
       tags.collect{ |k, _o, v|
@@ -108,7 +120,9 @@ class TeritorioOntology < Connector
   end
 
   def setup(kiba)
-    ontology, schema, i18n, osm_tags, osm_tags_extra = parse_ontology
+    source_filter = @settings['filters']
+
+    ontology, schema, i18n, osm_tags, osm_tags_extra = parse_ontology(source_filter)
     kiba.source(MockSource, @job_id, @job_id, {
       schema: {
         'type' => 'object',
@@ -136,13 +150,9 @@ class TeritorioOntology < Connector
       ]
     })
 
-    source_filter = (
-      if @source_filter.blank?
-        @settings['filters']
-      else
-        @source_filter.split('-').reverse.inject(nil){ |sum, i| { i => sum } }
-      end
-    )
+    if @source_filter.present?
+      source_filter = @source_filter.split('-').reverse.inject(nil){ |sum, i| { i => sum } }
+    end
 
     ontology['superclass'].select{ |superclass_id, _superclasses|
       !source_filter ||
