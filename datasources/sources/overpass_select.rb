@@ -15,7 +15,7 @@ class OverpassSelectSource < OverpassSource
       if settings['query']
         settings['query']
       else
-        selectors = (
+        @selectors = (
           if settings['select'].is_a?(String)
             settings['select']
           else
@@ -26,7 +26,7 @@ class OverpassSelectSource < OverpassSource
         "
 [out:json][timeout:25];
 area(#{area_id})->.a;
-nwr#{selectors}(area.a);
+nwr#{@selectors}(area.a);
 out center meta;
 "
       end
@@ -40,8 +40,9 @@ out center meta;
 
     super().merge({
       data: [{
-        select: @settings['select'].transform_values{ |v| { v => [[@job_id, @destination_id].uniq.join(', ')] } },
-        interest: @settings['interest']&.to_h{ |key| [key, { nil: [[@job_id, @destination_id].uniq.join(', ')] }] },
+        select: @selectors,
+        interest: @settings['interest']&.to_h{ |key| [key, nil] },
+        source: [[@job_id, @destination_id].uniq.join(', ')]
       }]
     })
   end

@@ -56,10 +56,10 @@ class TeritorioOntology < Connector
         end
       }
     }.flatten(2).compact.collect{ |osm_tags, label, origin|
-      osm_tags = osm_tags[1..-2].split('][').collect{ |osm_tag|
+      split = osm_tags[1..-2].split('][').collect{ |osm_tag|
         osm_tag.split(/(=|~=|=~|!=|!~|~)/, 2).collect{ |s| unquote(s) }
       }
-      [osm_tags, label, origin]
+      [osm_tags, split, label, origin]
     }
 
     [ontology, ontology_tags, ontology['osm_tags_extra']]
@@ -68,8 +68,8 @@ class TeritorioOntology < Connector
   def parse_ontology(source_filter)
     ontology, ontology_tags, osm_tags_extra = fetch_ontology_tags(source_filter)
 
-    schema = ontology_tags.collect{ |tags, _label, _origin|
-      tags.collect{ |k, _o, v|
+    schema = ontology_tags.collect{ |_tags, split, _label, _origin|
+      split.collect{ |k, _o, v|
         [k, v]
       }
     }.flatten(1).group_by(&:first).transform_values{ |vs|
@@ -81,15 +81,15 @@ class TeritorioOntology < Connector
       end
     }
 
-    i18n = ontology_tags.select{ |osm_tags, _label, _origin|
+    i18n = ontology_tags.select{ |osm_tags, _split, _label, _origin|
       osm_tags.size == 1
-    }.group_by{ |osm_tags, _label, _origin|
-      osm_tags[0][0]
+    }.group_by{ |_osm_tags, split, _label, _origin|
+      split[0][0]
     }.transform_values { |values|
       {
-        'values' => values.to_h{ |osm_tags, label, _origin|
+        'values' => values.to_h{ |_osm_tags, split, label, _origin|
           [
-            osm_tags[0][2],
+            split[0][2],
             { '@default:full' => label },
           ]
         }
@@ -101,28 +101,25 @@ class TeritorioOntology < Connector
       schema.delete(key)
     }
 
-    osm_tags = ontology_tags.collect{ |tags, _label, origin|
-      tags.collect{ |k, _o, v|
-        [k, v, origin]
-      }
-    }.flatten(1).group_by(&:first).transform_values{ |vs|
-      vs.group_by(&:second).transform_values{ |s|
-        r = s.collect(&:last).uniq
-        r.include?(nil) ? nil : r
-      }
-    }
-
     osm_tags_extra = osm_tags_extra.to_h{ |key|
-      [key, { nil => [@settings['url']] }]
+      [key, nil]
     }
 
-    [ontology, schema, i18n, osm_tags, osm_tags_extra]
+    osm_tags = ontology_tags.collect{ |tags, _split, _label, origin|
+      {
+        select: tags,
+        interest: osm_tags_extra,
+        source: origin,
+      }
+    }
+
+    [ontology, schema, i18n, osm_tags]
   end
 
   def setup(kiba)
     source_filter = @settings['filters']
 
-    ontology, schema, i18n, osm_tags, osm_tags_extra = parse_ontology(source_filter)
+    ontology, schema, i18n, osm_tags = parse_ontology(source_filter)
     kiba.source(MockSource, @job_id, @job_id, {
       schema: {
         'type' => 'object',
@@ -130,10 +127,7 @@ class TeritorioOntology < Connector
         'properties' => schema,
       },
       i18n: i18n,
-      osm_tags: [{
-        select: osm_tags,
-        interest: osm_tags_extra,
-      }],
+      osm_tags: osm_tags,
     })
 
     kiba.source(SchemaSource, @job_id, @job_id, {
