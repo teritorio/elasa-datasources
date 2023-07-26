@@ -84,7 +84,7 @@ class TeritorioOntology < Connector
       }
     }
 
-    # FIXME should be translated, rather than removed
+    # FIXME: should be translated, rather than removed
     (schema.keys - i18n.keys).each{ |key|
       schema.delete(key)
     }
