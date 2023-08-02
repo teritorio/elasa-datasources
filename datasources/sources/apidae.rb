@@ -347,7 +347,13 @@ class ApidaeSource < Source
       start_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_on : nil,
       end_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_off : nil,
       stars: r.dig('informationsHotellerie', 'classement', 'ordre')&.to_s,
-      event: r.dig('informationsFeteEtManifestation', 'typesManifestation').nil? ? nil : self.class.event(r.dig('informationsFeteEtManifestation', 'typesManifestation'))
+      # event: r.dig('informationsFeteEtManifestation', 'typesManifestation').nil? ? nil : self.class.event(r.dig('informationsFeteEtManifestation', 'typesManifestation'))
     }
+  end
+
+  def map_native_properties(feat, properties)
+    properties.transform_values{ |path|
+      jp(feat, path)
+    }.compact_blank
   end
 end
