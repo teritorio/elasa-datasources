@@ -60,6 +60,8 @@ class TourinsoftSirtaquiSource < TourinsoftSource
   end
 
   @@class = HashExcep[{
+    nil => nil,
+    'Non classé' => nil,
     '1 étoile' => '1',
     '2 étoiles' => '2',
     '3 étoiles' => '3',
@@ -367,7 +369,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       opening_hours: osm_openning_hours,
       start_date: date_on,
       end_date: date_off,
-      stars: r['CLAS'],
+      stars: self.class.classs(r['CLAS']),
       event: r['ObjectTypeName'] == 'Fêtes et manifestations' ? multiple_split(r, ['CATFMA']).collect{ |t| @@event_type[t] } : nil,
     }.merge(
       r['TYPE'] == 'Restaurant' ? self.class.cuisines(multiple_split(r, ['SPECIALITES'])) : {},
