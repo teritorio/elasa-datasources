@@ -280,6 +280,13 @@ class ApidaeSource < Source
     }.compact.uniq
   end
 
+  def self.classs(clas)
+    clas = clas&.to_s
+    return unless clas != '9'
+
+    clas
+  end
+
   def each
     super(self.class.fetch_paged('recherche/list-objets-touristiques', {
       projetId: @projet_id,
@@ -349,7 +356,7 @@ class ApidaeSource < Source
       opening_hours: osm_openning_hours,
       start_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_on : nil,
       end_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_off : nil,
-      stars: r.dig('informationsHotellerie', 'classement', 'ordre')&.to_s,
+      stars: self.class.classs(r.dig('informationsHotellerie', 'classement', 'ordre')),
       # event: r.dig('informationsFeteEtManifestation', 'typesManifestation').nil? ? nil : self.class.event(r.dig('informationsFeteEtManifestation', 'typesManifestation'))
     }
   end
