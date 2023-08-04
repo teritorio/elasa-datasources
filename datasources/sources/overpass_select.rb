@@ -42,7 +42,7 @@ out center meta;
       data: [{
         select: @selectors,
         interest: @settings['interest']&.to_h{ |key| [key, nil] },
-        source: [[@job_id, @destination_id].uniq.join(', ')]
+        sources: [@job_id, @destination_id].uniq
       }]
     })
   end

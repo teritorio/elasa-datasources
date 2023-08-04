@@ -19,21 +19,21 @@ class JoinTransformer < Transformer
   def process_tags(current_tags, update_tags, current_source, update_source)
     # Set non already existing tags
     out = {}
-    source = {}
+    sources = {}
     update = false
     (current_tags.keys + update_tags.keys).each{ |key|
       if current_tags.key?(key)
         out[key] = current_tags[key]
-        source[key] = current_source if current_source
+        sources[key] = current_source if current_source
       elsif update_tags.key?(key)
         out[key] = update_tags[key]
-        source[key] = update_source if update_source
+        sources[key] = update_source if update_source
         update = true
       end
     }
 
     if update
-      out[:source] = (out[:source] || {}).merge(source)
+      out[:sources] = (out[:sources] || {}).merge(sources)
     end
 
     out
@@ -46,8 +46,8 @@ class JoinTransformer < Transformer
         @rows[key][:properties][:tags] = process_tags(
           @rows[key][:properties][:tags],
           row[:properties][:tags],
-          @rows[key][:properties][:source],
-          row[:properties][:source],
+          @rows[key][:properties][:sources],
+          row[:properties][:sources],
         )
       else
         @rows[key] = row

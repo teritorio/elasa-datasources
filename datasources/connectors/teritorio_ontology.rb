@@ -49,10 +49,10 @@ class TeritorioOntology < Connector
               !source_filter[superclass_id][class_id] ||
               source_filter[superclass_id][class_id].key?(subclass_id)
           }.collect{ |subclass_id, subclasses|
-            [subclasses['osm_tags'], subclasses['label'], "#{@settings['url']}##{superclass_id}-#{class_id}-#{subclass_id}"]
+            [subclasses['osm_tags'], subclasses['label'], ["#{@settings['url']}##{superclass_id}-#{class_id}-#{subclass_id}"]]
           }
         else
-          [[classes['osm_tags'], classes['label'], "#{@settings['url']}##{superclass_id}-#{class_id}"]]
+          [[classes['osm_tags'], classes['label'], ["#{@settings['url']}##{superclass_id}-#{class_id}"]]]
         end
       }
     }.flatten(2).compact.collect{ |osm_tags, label, origin|
@@ -109,7 +109,7 @@ class TeritorioOntology < Connector
       {
         select: tags,
         interest: osm_tags_extra,
-        source: origin,
+        sources: origin,
       }
     }
 
