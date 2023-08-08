@@ -46,6 +46,8 @@ class TourinsoftCdt50Source < TourinsoftSource
 
   @@practices = HashExcep[{
     'Pédestre' => 'hiking',
+    'Equestre' => 'horse',
+    'VTT' => 'mtb',
   }]
 
   def self.route(route)
@@ -142,7 +144,7 @@ class TourinsoftCdt50Source < TourinsoftSource
       }, :merge)&.compact_blank,
       start_date: r['ObjectTypeName'] == 'Fêtes et manifestations' && r['DateDebut']&.split('/')&.reverse&.join('-'),
       end_date: r['ObjectTypeName'] == 'Fêtes et manifestations' && r['DateFin']&.split('/')&.reverse&.join('-'),
-      event: r['ObjectTypeName'] == 'Fêtes et manifestations' ? multiple_split(r, ['Type']).collect{ |t| [@@event_type[t]] }.flatten : nil,
+      event: r['ObjectTypeName'] == 'Fêtes et manifestations' ? multiple_split(r, ['Type']).collect{ |t| [@@event_type[t]] }.flatten.compact : nil,
     }.merge(
       r['ObjectTypeName'] == 'Restauration' ? self.class.cuisines(multiple_split(r, ['Type'])) : {},
     )
