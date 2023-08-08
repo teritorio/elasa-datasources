@@ -61,4 +61,12 @@ class TourinsoftSource < Source
   def map_updated_at(feat)
     feat['Updated']
   end
+
+  def map_native_properties(feat, properties)
+    feat.slice(*properties.keys).compact.to_h{ |k, v|
+      v = split(v, 0) if properties.dig(k, 'split')
+      k = properties[k]['rename'] || k
+      [k, v]
+    }
+  end
 end
