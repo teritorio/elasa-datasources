@@ -399,6 +399,36 @@
                 "@default:full": {
                     "fr": "cuisine orientale"
                 }
+            },
+            "tea": {
+                "@default:full": {
+                    "fr": "thé"
+                }
+            },
+            "bistro": {
+                "@default:full": {
+                    "fr": "bistro"
+                }
+            },
+            "brasserie": {
+                "@default:full": {
+                    "fr": "brasserie"
+                }
+            },
+            "gastronomique": {
+                "@default:full": {
+                    "fr": "gastronomique"
+                }
+            },
+            "grill": {
+                "@default:full": {
+                    "fr": "grill"
+                }
+            },
+            "rotisserie": {
+                "@default:full": {
+                    "fr": "rotisserie"
+                }
             }
         }
     }

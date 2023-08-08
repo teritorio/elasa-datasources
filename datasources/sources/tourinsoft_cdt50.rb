@@ -17,13 +17,16 @@ class TourinsoftCdt50Source < TourinsoftSource
 
   @@cuisines = HashExcep[{
     'Bistrot / bar à vin' => { amenity: 'restaurant', cuisine: ['bistro'] },
+    'Bistrot gastronomique' => { amenity: 'restaurant', cuisine: ['bistronomique'] },
     'Brasserie' => { amenity: 'restaurant', cuisine: ['brasserie'] },
+    'Cuisine gastronomique' => { amenity: 'restaurant', cuisine: ['gastronomique'] },
     'Café' => { amenity: 'cafe' },
     'Cafétéria' => { amenity: 'fast_food', fast_food: 'cafeteria' },
     'Crêperie' => { amenity: 'restaurant', cuisine: ['crepe'] },
     'Cuisine inventive' => { amenity: 'restaurant' }, # FIXME: add specific tags
     'Cuisine traditionnelle' => { amenity: 'restaurant' }, # FIXME: add specific tags
     'Cuisine traditionnelle française' => { amenity: 'restaurant', cuisine: ['french'] },
+    'Cuisine du monde' => { amenity: 'restaurant', cuisine: ['international'] },
     'Grill' => { amenity: 'restaurant', cuisine: ['grill'] },
     'Pizzeria' => { amenity: 'restaurant', cuisine: ['pizza'] },
     'Restauration à thème' => { amenity: 'restaurant' }, # FIXME: add specific tags
@@ -32,6 +35,7 @@ class TourinsoftCdt50Source < TourinsoftSource
     'Routier' => { amenity: 'restaurant' }, # FIXME: add specific tags
     'Saladerie' => { amenity: 'fast_food', cuisine: ['salad'] },
     'Salon de thé' => { amenity: 'cafe', cuisine: ['tea'] },
+    'Food-Truck' => { amenity: 'fast_food' }, # FIXME: street_vendor=yes
   }]
 
   def self.cuisines(cuisines)
