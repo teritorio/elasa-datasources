@@ -140,7 +140,8 @@ class TourinsoftCdt50Source < TourinsoftSource
         city: r['Commune'],
       }.compact_blank,
       route: r['ObjectTypeName'] == 'Itinéraires touristiques' && multiple_split(r, ['Type']).collect{ |route| self.class.route(route) }&.inject({
-        gpx_trace: r['FichierGPX']
+        gpx_trace: r['FichierGPX'],
+        pdf: { fr: r['FichierPDF'] }.compact_blank,
       }, :merge)&.compact_blank,
       start_date: r['ObjectTypeName'] == 'Fêtes et manifestations' && r['DateDebut']&.split('/')&.reverse&.join('-'),
       end_date: r['ObjectTypeName'] == 'Fêtes et manifestations' && r['DateFin']&.split('/')&.reverse&.join('-'),
