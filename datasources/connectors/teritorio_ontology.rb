@@ -82,7 +82,7 @@ class TeritorioOntology < Connector
     }
 
     i18n = ontology_tags.select{ |osm_tags, _split, _label, _origin|
-      osm_tags.size == 1
+      osm_tags.split('][').size == 1
     }.group_by{ |_osm_tags, split, _label, _origin|
       split[0][0]
     }.transform_values { |values|
@@ -135,12 +135,14 @@ class TeritorioOntology < Connector
         'datasources/schemas/tags/base.schema.json',
         'datasources/schemas/tags/hosting.schema.json',
         'datasources/schemas/tags/restaurant.schema.json',
+        'datasources/schemas/tags/osm.schema.json',
         'datasources/schemas/tags/any.schema.json',
       ],
       'i18n' => [
         'datasources/schemas/tags/base.i18n.json',
         'datasources/schemas/tags/hosting.i18n.json',
         'datasources/schemas/tags/restaurant.i18n.json',
+        'datasources/schemas/tags/osm.i18n.json',
       ]
     })
 
