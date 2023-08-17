@@ -303,6 +303,10 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     })
   end
 
+  def select(feat)
+    super(feat) && !feat['PHOTO'].nil?
+  end
+
   def map_geometry(feat)
     {
       type: 'Point',
