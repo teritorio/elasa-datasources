@@ -25,13 +25,39 @@
         },
         "tourism": {
             "enum": [
-                "viewpoint"
+                "viewpoint",
+                "information"
             ]
         },
         "natural": {
             "enum": [
                 "bay",
-                "mountain_range"
+                "mountain_range",
+                "water"
+            ]
+        },
+        "amenity": {
+            "enum": [
+                "fuel"
+            ]
+        },
+        "shop": {
+            "enum": [
+                "chemist",
+                "gas"
+            ]
+        },
+        "craft": {
+            "enum": [
+                "bakery",
+                "beekeeper",
+                "winery"
+            ]
+        },
+        "healthcare": {
+            "enum": [
+                "pharmacy",
+                "doctor"
             ]
         }
     }

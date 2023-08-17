@@ -67,6 +67,9 @@
                 "street": {
                     "type": "string"
                 },
+                "hamlet": {
+                    "type": "string"
+                },
                 "postcode": {
                     "type": "string"
                 },

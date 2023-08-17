@@ -429,6 +429,16 @@
                 "@default:full": {
                     "fr": "rotisserie"
                 }
+            },
+            "tunisian": {
+                "@default:full": {
+                    "fr": "tunisienne"
+                }
+            },
+            "cake": {
+                "@default:full": {
+                    "fr": "gâteau"
+                }
             }
         }
     }

@@ -54,6 +54,11 @@
             "fr": "rue"
         }
     },
+    "addr:hamlet": {
+        "@default": {
+            "fr": "hameau"
+        }
+    },
     "addr:postcode": {
         "@default": {
             "fr": "code postal"

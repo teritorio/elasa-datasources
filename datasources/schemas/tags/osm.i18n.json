@@ -56,6 +56,11 @@
                 "@default:full": {
                     "fr": "point de vue"
                 }
+            },
+            "information": {
+                "@default:full": {
+                    "fr": "information touristique"
+                }
             }
         }
     },
@@ -73,12 +78,24 @@
                 "@default:full": {
                     "fr": "cordillère"
                 }
+            },
+            "water": {
+                "@default:full": {
+                    "fr": "plan d'eau"
+                }
             }
         }
     },
     "amenity": {
         "@default": {
             "fr": "équipement"
+        },
+        "values": {
+            "fuel": {
+                "@default:full": {
+                    "fr": "station services"
+                }
+            }
         }
     },
     "highway": {
@@ -89,6 +106,57 @@
     "shop": {
         "@default": {
             "fr": "commerce"
+        },
+        "values": {
+            "chemist": {
+                "@default:full": {
+                    "fr": "droguerie"
+                }
+            },
+            "gas": {
+                "@default:full": {
+                    "fr": "vente de bouteille de gaz"
+                }
+            }
+        }
+    },
+    "craft": {
+        "@default": {
+            "fr": "artisans"
+        },
+        "values": {
+            "bakery": {
+                "@default:full": {
+                    "fr": "boulanger"
+                }
+            },
+            "beekeeper": {
+                "@default:full": {
+                    "fr": "apiculteur"
+                }
+            },
+            "winery": {
+                "@default:full": {
+                    "fr": "chai"
+                }
+            }
+        }
+    },
+    "healthcare": {
+        "@default": {
+            "fr": "équipement de santé"
+        },
+        "values": {
+            "pharmacy": {
+                "@default:full": {
+                    "fr": "pharmacy"
+                }
+            },
+            "doctor": {
+                "@default:full": {
+                    "fr": "médecin"
+                }
+            }
         }
     }
 }
