@@ -120,7 +120,7 @@ class ValidateTransformer < Transformer
       JSON::Validator.validate!(@properties_schema, row[:properties])
       validate_i18n(row[:properties][:tags])
     rescue StandardError => e
-      logger.info(row.inspect)
+      logger.debug(row.inspect)
       raise e
     end
 
