@@ -21,7 +21,7 @@ class OverpassSource < Source
 
   def overpass(overpass_query)
     raw_query = CGI.escape(overpass_query)
-    url = "https://overpass-api.de/api/interpreter?data=#{raw_query}"
+    url = "#{@settings['overpass'] || 'https://overpass-api.de/api/interpreter'}?data=#{raw_query}"
 
     JSON.parse(fetch(url))['elements']
   end
