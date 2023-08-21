@@ -50,11 +50,36 @@ class TourinsoftCdt50Source < TourinsoftSource
     'VTT' => 'mtb',
   }]
 
-  def self.route(route)
-    practice_slug = @@practices[route]
-    {
-      "#{practice_slug}": {
-        length: 0, # FIXME
+  @@difficulties = HashExcep[{
+    nil => nil,
+    'Facile' => 'easy',
+    'Moyen' => 'normal',
+    'Difficile' => 'hard',
+  }]
+
+  def route(feat)
+    types = multiple_split(feat, ['Type'])
+    length = (feat['LongueurKM']&.to_f || 0) * 1000
+    durations_difficulty = multiple_split(feat, ['PratiqueDureeDifficulte'], 0..-1).to_h{ |practice, durations, difficulty|
+      [practice, [durations, difficulty]]
+    }
+
+    types.collect{ |type|
+      duration, difficulty = durations_difficulty[type]
+      if duration.present?
+        d = duration.split(':', 2).collect(&:to_i)
+        duration = d[0] * 60 + d[1]
+      end
+      {
+        "#{@@practices[type]}": {
+          duration: duration,
+          length: if length == 0
+                    duration.nil? ? 0 : nil
+                  else
+                    length
+                  end, # Ensure at least duration or length are present
+          difficulty: @@difficulties[difficulty]
+        }.compact_blank
       }
     }
   end
@@ -130,6 +155,7 @@ class TourinsoftCdt50Source < TourinsoftSource
     r = feat
     {
       name: { fr: r['NomOffre'] }.compact_blank,
+      description: { fr: r['Descriptif'] }.compact_blank,
       website: multiple_split(r, %w[SiteWeb], 0),
       'website:details': { fr: @website_details_url&.gsub('{{id}}', r['SyndicObjectID']) }.compact_blank,
       phone: multiple_split(r, %w[TelephoneFilaire TelephoneMobile], 0),
@@ -139,7 +165,7 @@ class TourinsoftCdt50Source < TourinsoftSource
         postcode: r['CP'],
         city: r['Commune'],
       }.compact_blank,
-      route: r['ObjectTypeName'] == 'Itinéraires touristiques' && multiple_split(r, ['Type']).collect{ |route| self.class.route(route) }&.inject({
+      route: r['ObjectTypeName'] == 'Itinéraires touristiques' && route(r)&.inject({
         gpx_trace: r['FichierGPX'],
         pdf: { fr: r['FichierPDF'] }.compact_blank,
       }, :merge)&.compact_blank,
