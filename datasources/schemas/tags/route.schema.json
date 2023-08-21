@@ -29,7 +29,7 @@
                         "type": "number"
                     },
                     "length": {
-                        "title": "Length in meters",
+                        "title": "Length in kilometer",
                         "type": "number"
                     }
                 }

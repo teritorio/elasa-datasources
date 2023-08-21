@@ -59,7 +59,7 @@ class TourinsoftCdt50Source < TourinsoftSource
 
   def route(feat)
     types = multiple_split(feat, ['Type'])
-    length = (feat['LongueurKM']&.to_f || 0) * 1000
+    length = feat['LongueurKM']&.to_f || 0
     durations_difficulty = multiple_split(feat, ['PratiqueDureeDifficulte'], 0..-1).to_h{ |practice, durations, difficulty|
       [practice, [durations, difficulty]]
     }
