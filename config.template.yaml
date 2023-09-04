@@ -1,0 +1,13 @@
+geotrek:
+  connector:
+    type: Geotrek
+    url: https://demo-admin.geotrek.fr/api/v2
+    attribution: Geotrek
+    portal_id: 2
+    website_details_url: https://exmaple.com/{{practice}}/{{name}}/
+
+ontology:
+  connector:
+    type: TeritorioOntology
+    relation_id: 7376 # Landes
+    url: https://vecto.teritorio.xyz/data/teritorio-tourism-ontology-latest.json

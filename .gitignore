@@ -1,3 +1,7 @@
 sorbet
 bin/tapioca
 data
+config/*.yaml
+config/**
+config_private/*.yaml
+config_private/**

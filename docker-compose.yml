@@ -3,9 +3,11 @@ services:
   datasources:
     build: .
     volumes:
-      - ./config.yaml:/config.yaml
       - ./config:/config
+      - ./config_private:/config_private
       - ./data:/data
+      - ./update.rb:/update.rb
+      - ./datasources:/datasources
     # restart: unless-stopped
 
   nginx:

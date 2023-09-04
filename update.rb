@@ -37,13 +37,19 @@ class Hash
   end
 end
 
+def load_config_dir(glob)
+  Dir[glob].to_h{ |path|
+    project = path.split('/', 2)[1].split('.', -2)[0]
+    [project, YAML.safe_load_file(path)]
+  }
+end
 
-@config = YAML.safe_load_file('config.yaml')
+@config = load_config_dir('config/*.yaml').deep_merge_array(load_config_dir('config_private/*.yaml'))
 @project = ARGV[0]
 @datasource = ARGV[1]
 @source_filter = ARGV[2]
 
-@config['datasources'].to_a.select { |project, _jobs|
+@config.select { |project, _jobs|
   !@project || project == @project
 }.each { |project, jobs|
   dir = "data/#{project}"
