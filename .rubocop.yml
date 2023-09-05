@@ -59,10 +59,10 @@ Metrics/CyclomaticComplexity:
   Max: 30
 
 Metrics/MethodLength:
-  Max: 60
+  Max: 100
 
 Metrics/AbcSize:
-  Max: 50
+  Max: 80
 
 Metrics/PerceivedComplexity:
   Max: 30

@@ -317,6 +317,15 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     }
   end
 
+  def pdfs(feat)
+    feat.select{ |k, v|
+      k.start_with?('DOCPDF') && !v.nil?
+    }.to_h{ |k, _v|
+      c = k[-2..].downcase
+      [c == 'gb' ? 'en' : c, "#{@photo_base_url}#{feat['DOCGPX']}"]
+    }
+  end
+
   def map_tags(feat)
     r = feat
 
@@ -331,15 +340,6 @@ class TourinsoftSirtaquiSource < TourinsoftSource
         :openning_one_days
       )
     end
-
-    pdfs = (
-      r.select{ |k, v|
-        k.start_with?('DOCPDF') && !v.nil?
-      }.to_h{ |k, _v|
-        c = k[-2..].downcase
-        [c == 'gb' ? 'en' : c, "#{@photo_base_url}#{r['DOCGPX']}"]
-      }
-    )
 
     {
       ref: {
@@ -362,7 +362,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       }.compact_blank || nil,
       route: route(r['ITITEMPSDIF'], r['DISTANCE'])&.inject({
         gpx_trace: r['DOCGPX'] && "#{@photo_base_url}#{r['DOCGPX']}",
-        pdf: pdfs,
+        pdf: pdfs(r),
       }, :merge)&.compact_blank,
       'capacity:beds': r['NBRELITS']&.to_i,
       'capacity:rooms': r['NBRECHAMB']&.to_i,
