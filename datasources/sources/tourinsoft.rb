@@ -12,6 +12,10 @@ require_relative 'source'
 
 
 class TourinsoftSource < Source
+  extend T::Sig
+  extend T::Helpers
+  abstract!
+
   def initialize(job_id, destination_id, settings)
     super(job_id, destination_id, settings)
     @client = @settings['client']

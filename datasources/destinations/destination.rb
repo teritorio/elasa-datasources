@@ -2,6 +2,10 @@
 # typed: true
 
 class Destination
+  extend T::Sig
+  extend T::Helpers
+  abstract!
+
   def initialize(path)
     @path = path
 
@@ -35,7 +39,7 @@ class Destination
     when :schema then write_schema(data)
     when :osm_tags then write_osm_tags(data)
     when :data then write_data(data)
-    else Raise "Not support stream item #{type}"
+    else raise "Not support stream item #{type}"
     end
   end
 
@@ -49,6 +53,9 @@ class Destination
     destination = destination_id.nil? ? '' : "#{destination_id.gsub('/', '_')}."
     File.write("#{@path}/#{destination}osm_tags.json", JSON.pretty_generate(data[:data]))
   end
+
+  sig { abstract.params(destination_id: String, rows: T.untyped).void }
+  def close_data(destination_id, rows); end
 
   def close
     @destinations_data.each{ |destination_id, rows|

@@ -2,6 +2,10 @@
 # typed: true
 
 class Transformer
+  extend T::Sig
+  extend T::Helpers
+  abstract!
+
   def initialize(settings)
     @settings = settings
     @has_schema = false
@@ -47,7 +51,7 @@ class Transformer
         logger.debug("#{e}\n\n")
         nil
       end
-    else Raise "Not support stream item #{type}"
+    else raise "Not support stream item #{type}"
     end
   end
 

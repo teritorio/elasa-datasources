@@ -12,6 +12,10 @@ class HashExcep < Hash
 end
 
 class Source
+  extend T::Sig
+  extend T::Helpers
+  abstract!
+
   def initialize(job_id, destination_id, settings)
     @job_id = job_id
     @destination_id = destination_id
@@ -36,10 +40,24 @@ class Source
     true
   end
 
+  sig { params(feat: T.untyped).returns(T.nilable(String)) }
+  def map_id(feat); end
+
+  sig { params(feat: T.untyped).returns(T.nilable(String)) }
+  def map_updated_at(feat); end
+
+  sig { params(feat: T.untyped).returns(T.untyped) }
+  def map_geometry(feat); end
+
+  sig { params(feat: T.untyped).returns(T.untyped) }
+  def map_tags(feat); end
+
+  sig { params(_feat: T.untyped).returns(String) }
   def map_destination_id(_feat)
     @destination_id
   end
 
+  sig { params(_feat: T.untyped).returns(T.nilable(String)) }
   def map_source(_feat)
     @attribution
   end
