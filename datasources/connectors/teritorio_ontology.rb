@@ -31,7 +31,7 @@ end
 
 class TeritorioOntology < Connector
   def fetch_ontology_tags(source_filter)
-    ontology = JSON.parse(URI.open(@settings['url']).read)
+    ontology = JSON.parse(URI.parse(@settings['url']).open.read)
 
     ontology_tags = ontology['superclass'].select{ |superclass_id, _superclasses|
       !source_filter ||

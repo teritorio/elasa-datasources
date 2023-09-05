@@ -289,13 +289,13 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     super.merge({
       i18n: {
         'route' => {
-          'values' => @@practices.compact.to_a.collect(&:reverse).to_h.transform_values{ |v| { fr: v } }
+          'values' => @@practices.compact.to_a.to_h(&:reverse).transform_values{ |v| { fr: v } }
         }
       }.merge(
         *@@practices.values.collect { |practice|
           {
             "route:#{practice}:difficulty" => {
-              'values' => @@difficulties.compact.to_a.collect(&:reverse).to_h.transform_values{ |v| { fr: v } }
+              'values' => @@difficulties.compact.to_a.to_h(&:reverse).transform_values{ |v| { fr: v } }
             }
           }
         }
