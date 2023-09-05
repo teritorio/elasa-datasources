@@ -42,3 +42,20 @@ Run NGINX http server
 ```
 docker-compose up -d nginx
 ```
+
+## Dev
+
+Setup
+```
+bundle install
+bundle exec tapioca init
+bundle exec tapioca dsl
+bundle exec srb rbi suggest-typed
+```
+
+Tests and Validation
+```
+bundle exec rubocop --parallel -c .rubocop.yml --autocorrect
+bundle exec srb typecheck
+bundle exec rake test
+```
