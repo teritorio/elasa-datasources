@@ -2,19 +2,26 @@
     "type": "object",
     "additionalProperties": {
         "type": "object",
+        "additionalProperties": false,
         "properties": {
             "@default": {
                 "$ref": "#/$defs/multilingual"
             },
+            "@long": {
+                "$ref": "#/$defs/multilingual"
+            },
             "values": {
-                "type": "object",
-                "minProperties": 1,
-                "properties": {
-                    "@default": {
-                        "$ref": "#/$defs/multilingual"
-                    },
-                    "@default:full": {
-                        "$ref": "#/$defs/multilingual"
+                "additionalProperties": {
+                    "type": "object",
+                    "minProperties": 1,
+                    "additionalProperties": false,
+                    "properties": {
+                        "@default": {
+                            "$ref": "#/$defs/multilingual"
+                        },
+                        "@default:full": {
+                            "$ref": "#/$defs/multilingual"
+                        }
                     }
                 }
             }
