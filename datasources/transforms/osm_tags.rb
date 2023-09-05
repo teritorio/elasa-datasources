@@ -33,29 +33,31 @@ class OsmTags < Transformer
     not_match.compact_blank
   end
 
+  def remove_contact_prefix(tags, key, has_flat_addr)
+    return key if !key.start_with?('contact:')
+
+    kk = key[('contact:'.size)..].to_sym
+    # Do no overwrite existing tags
+    # Do no remove contact: for adresse if an adress already exists
+    return if tags.include?(kk)
+
+    is_addr_key = @@contact_addr.include?(kk)
+    if is_addr_key && has_flat_addr
+      nil
+    elsif is_addr_key
+      "addr:#{kk}"
+    else
+      kk
+    end
+  end
+
   def process_tags(tags)
     # There is an adresse defined by addr:* ?
     has_flat_addr = tags.keys.find{ |k| k.start_with?('addr:') }
 
     tags = tags.collect{ |k, v|
       k = k.to_sym
-      # Remove contact prefixes
-      if k.start_with?('contact:')
-        kk = k[('contact:'.size)..].to_sym
-        # Do no overwrite existing tags
-        # Do no remove contact: for adresse if an adress already exists
-        if tags.include?(kk)
-          k = nil
-        else
-          is_addr_key = @@contact_addr.include?(kk)
-          if is_addr_key && has_flat_addr
-            k = nil
-          else
-            kk = "addr:#{kk}" if is_addr_key
-            k = kk
-          end
-        end
-      end
+      k = remove_contact_prefix(tags, k, has_flat_addr)
 
       # Split multi-values fields
       [k, @multiple.include?(k) ? v.split(';').collect(&:strip) : v]

@@ -8,10 +8,6 @@ require 'sorbet-runtime'
 require_relative 'source'
 
 
-def jp(object, path)
-  JsonPath.on(object, "$.#{path}")
-end
-
 class TourismSystemSource < Source
   def initialize(job_id, destination_id, settings)
     super(job_id, destination_id, settings)
@@ -20,6 +16,10 @@ class TourismSystemSource < Source
     @playlist_id = @settings['playlist_id']
     @thesaurus = @settings['thesaurus']
     @website_details_url = @settings['website_details_url']
+  end
+
+  def jp(object, path)
+    JsonPath.on(object, "$.#{path}")
   end
 
   def self.fetch(basic_auth, path)

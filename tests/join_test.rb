@@ -10,7 +10,7 @@ class JoinTransformerTags < Test::Unit::TestCase
   end
 
   def join(current, update)
-    @join.process_tags(current, update)
+    @join.process_tags(current, update, nil, nil)
   end
 
   def test_other

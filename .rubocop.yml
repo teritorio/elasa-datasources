@@ -96,3 +96,6 @@ Style/ClassVars:
 
 Rails/NegateInclude:
   Enabled: false
+
+Security/Eval:
+  Enabled: false

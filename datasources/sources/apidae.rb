@@ -12,10 +12,6 @@ require 'sorbet-runtime'
 require_relative 'source'
 
 
-def jp(object, path)
-  JsonPath.on(object, "$.#{path}")
-end
-
 class ApidaeSource < Source
   def initialize(job_id, destination_id, settings)
     super(job_id, destination_id, settings)
@@ -23,6 +19,10 @@ class ApidaeSource < Source
     @api_key = @settings['apiKey']
     @selection_id = @settings['selection_id']
     @website_details_url = @settings['website_details_url']
+  end
+
+  def jp(object, path)
+    JsonPath.on(object, "$.#{path}")
   end
 
   def self.build_url(path, query)

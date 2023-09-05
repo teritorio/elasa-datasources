@@ -66,6 +66,58 @@ class Source
     nil
   end
 
+  def one(row, bad)
+    if !select(row)
+      bad[:filtered_out] += 1
+      return
+    end
+
+    check = !@settings['allow_partial_source']
+
+    id = map_id(row)
+    if check && id.blank?
+      bad[:missing_id] += 1
+      raise 'Missing id'
+    end
+
+    updated_at = map_updated_at(row)
+    if check && updated_at.blank?
+      bad[:missing_updated_at] += 1
+      raise 'Missing updated_at'
+    end
+
+    geometry = map_geometry(row)
+    if check && geometry.blank?
+      bad[:missing_geometry] += 1
+      raise 'Missing geometry'
+    end
+
+    geometry = map_geometry(row)
+    if check && geometry[:type] == 'Point' && geometry[:coordinates] == [0.0, 0.0]
+      bad[:null_island_geometry] += 1
+      raise 'Null island geometry'
+    end
+
+    tags = map_tags(row)
+    if check && tags.blank?
+      bad[:missing_tags] += 1
+      return
+    end
+
+    {
+      destination_id: map_destination_id(row),
+      type: 'Feature',
+      geometry: geometry,
+      properties: { tags: {} }.merge({
+        id: id,
+        updated_at: updated_at,
+        source: map_source(row),
+        tags: tags&.compact_blank,
+        natives: map_native_properties(row, @settings['native_properties'] || {})&.compact_blank,
+      }.compact_blank),
+    }.compact_blank
+  end
+
   def each(raw)
     schema_data = schema
     yield [:schema, schema_data]
@@ -89,56 +141,10 @@ class Source
 
     raw.each{ |r|
       begin
-        if !select(r)
-          bad[:filtered_out] += 1
-          next
+        properties = one(r, bad)
+        if !properties.nil?
+          yield [:data, properties]
         end
-
-        check = !@settings['allow_partial_source']
-
-        id = map_id(r)
-        if check && id.blank?
-          bad[:missing_id] += 1
-          raise 'Missing id'
-        end
-
-        updated_at = map_updated_at(r)
-        if check && updated_at.blank?
-          bad[:missing_updated_at] += 1
-          raise 'Missing updated_at'
-        end
-
-        geometry = map_geometry(r)
-        if check && geometry.blank?
-          bad[:missing_geometry] += 1
-          raise 'Missing geometry'
-        end
-
-        geometry = map_geometry(r)
-        if check && geometry[:type] == 'Point' && geometry[:coordinates] == [0.0, 0.0]
-          bad[:null_island_geometry] += 1
-          raise 'Null island geometry'
-        end
-
-        tags = map_tags(r)
-        if check && tags.blank?
-          bad[:missing_tags] += 1
-          next
-        end
-
-        properties = {
-          destination_id: map_destination_id(r),
-          type: 'Feature',
-          geometry: geometry,
-          properties: { tags: {} }.merge({
-            id: id,
-            updated_at: updated_at,
-            source: map_source(r),
-            tags: tags&.compact_blank,
-            natives: map_native_properties(r, @settings['native_properties'] || {})&.compact_blank,
-          }.compact_blank),
-        }.compact_blank
-        yield [:data, properties]
 
         bad[:pass] += 1
       rescue StandardError => e
