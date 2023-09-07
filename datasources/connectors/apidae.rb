@@ -9,7 +9,7 @@ require_relative '../sources/apidae'
 
 class Apidae < Connector
   def setup(kiba)
-    kiba.source(SchemaSource, @job_id, @job_id, {
+    kiba.source(SchemaSource, @job_id, @job_id, SchemaSource::Settings.from_hash({
       'schema' => [
         'datasources/schemas/tags/base.schema.json',
         'datasources/schemas/tags/event.schema.json',
@@ -23,8 +23,8 @@ class Apidae < Connector
         'datasources/schemas/tags/hosting.i18n.json',
         'datasources/schemas/tags/restaurant.i18n.json',
         'datasources/schemas/tags/route.i18n.json',
-      ]
-    })
+      ],
+    }))
 
     projet_id = @settings['projetId']
     api_key = @settings['apiKey']
@@ -38,7 +38,7 @@ class Apidae < Connector
         ApidaeSource,
         @job_id,
         name,
-        @settings.merge({ 'selection_id' => selection['id'] }),
+        ApidaeSource::Settings.from_hash(@settings.merge({ 'selection_id' => selection['id'] })),
       )
     }
   end

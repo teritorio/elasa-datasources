@@ -23,7 +23,7 @@ class Connector
       self.class.source_class,
       @job_id,
       @job_id,
-      @settings,
+      self.class.source_class.const_get(:Settings).from_hash(@settings),
     )
   end
 end

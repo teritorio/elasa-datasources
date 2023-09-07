@@ -9,14 +9,18 @@ require_relative 'source'
 
 
 class TourismSystemSource < Source
-  def initialize(job_id, destination_id, settings)
-    super(job_id, destination_id, settings)
-    @basic_auth = @settings['basic_auth']
-    @id = @settings['id']
-    @playlist_id = @settings['playlist_id']
-    @thesaurus = @settings['thesaurus']
-    @website_details_url = @settings['website_details_url']
+  extend T::Sig
+
+  class Settings < Source::SourceSettings
+    const :basic_auth, String
+    const :id, String
+    const :playlist_id, String
+    const :thesaurus, T::Hash[String, String]
+    const :website_details_url, String
   end
+
+  extend T::Generic
+  SettingsType = type_member{ { upper: Settings } } # Generic param
 
   def jp(object, path)
     JsonPath.on(object, "$.#{path}")
@@ -72,7 +76,7 @@ class TourismSystemSource < Source
 
   def ratings(ratings)
     ((jp(ratings, '.officials..ratingLevel') || []) + (jp(ratings, '.labels..ratingLevel') || [])).collect{ |level|
-      @thesaurus[level].split(' ', 2)
+      @settings.thesaurus[level]&.split(' ', 2)
     }.collect{ |level, award|
       if level.to_i.to_s == level
         if award.start_with?('étoile')
@@ -274,7 +278,7 @@ class TourismSystemSource < Source
   # end
 
   def each
-    super(self.class.fetch_data(@basic_auth, "/content/ts/#{@id}/#{@playlist_id}"))
+    super(self.class.fetch_data(@settings.basic_auth, "/content/ts/#{@settings.id}/#{@settings.playlist_id}"))
   end
 
   def map_id(feat)
@@ -299,7 +303,7 @@ class TourismSystemSource < Source
 
   def map_tags(feat)
     f = feat
-    website_details = @website_details_url.gsub('{{id}}', map_id(feat))
+    website_details = @settings.website_details_url.gsub('{{id}}', map_id(feat))
     event = f.dig('data', 'dublinCore', 'classifications')&.pluck('classification')&.include?('02.01.03') # Fêtes et Manifestations
     date_on, date_off, osm_openning_hours = !f.dig('data', 'periods').nil? && self.class.openning(f['data']['periods'])
     {
@@ -332,7 +336,7 @@ class TourismSystemSource < Source
       #   f.dig('data', 'dublinCore', 'criteria')&.pluck('criterion')&.select{ |v|
       #     v.start_with?('02.01.13.03.') || v.include?('.00.02.01.13.03.')
       #   }&.map{ |v|
-      #     @thesaurus[v] || v
+      #     @settings.thesaurus[v] || v
       #   }),
       opening_hours: osm_openning_hours,
       start_date: event && date_on,
@@ -350,10 +354,10 @@ class TourismSystemSource < Source
 
     criterion.collect{ |t|
       std = t[0] == '0' ? t : t.split('.', 2)[1]
-      [std.split('.')[0..3], @thesaurus[t]]
+      [std.split('.')[0..3], @settings.thesaurus[t]]
     }.group_by(&:first).transform_values{ |values| values.collect(&:last) }.transform_keys{ |key|
-      nature = @thesaurus[key[0..2].join('.')]
-      segmentation = @thesaurus[key.join('.')]
+      nature = @settings.thesaurus[key[0..2].join('.')]
+      segmentation = @settings.thesaurus[key.join('.')]
       "#{nature}-#{segmentation}".parameterize
     }
   end

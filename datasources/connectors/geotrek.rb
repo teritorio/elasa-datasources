@@ -13,7 +13,7 @@ class Geotrek < Connector
   end
 
   def setup(kiba)
-    kiba.source(SchemaSource, @job_id, @job_id, {
+    kiba.source(SchemaSource, @job_id, @job_id, SchemaSource::Settings.from_hash({
       'schema' => [
         'datasources/schemas/tags/base.schema.json',
         'datasources/schemas/tags/event.schema.json',
@@ -28,7 +28,7 @@ class Geotrek < Connector
         'datasources/schemas/tags/restaurant.i18n.json',
         'datasources/schemas/tags/route.i18n.json',
       ]
-    })
+    }))
     super(kiba)
   end
 end

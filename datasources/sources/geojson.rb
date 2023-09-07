@@ -11,10 +11,12 @@ require_relative 'source'
 
 
 class GeoJsonSource < Source
-  def initialize(job_id, destination_id, settings)
-    super(job_id, destination_id, settings)
-    @url = @settings['url']
+  class Settings < Source::SourceSettings
+    const :url, String
   end
+
+  extend T::Generic
+  SettingsType = type_member{ { upper: Settings } } # Generic param
 
   def fetch(url)
     body = (
@@ -34,7 +36,7 @@ class GeoJsonSource < Source
   end
 
   def each
-    super(fetch(@url))
+    super(fetch(@settings.url))
   end
 
   def map_id(feat)

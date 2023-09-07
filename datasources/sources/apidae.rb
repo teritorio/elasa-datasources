@@ -12,13 +12,15 @@ require_relative 'source'
 
 
 class ApidaeSource < Source
-  def initialize(job_id, destination_id, settings)
-    super(job_id, destination_id, settings)
-    @projet_id = @settings['projetId']
-    @api_key = @settings['apiKey']
-    @selection_id = @settings['selection_id']
-    @website_details_url = @settings['website_details_url']
+  class Settings < Source::SourceSettings
+    const :projet_id, String, name: 'projetId'
+    const :api_key, String, name: 'apiKey'
+    const :selection_id, String
+    const :website_details_url, T.nilable(String)
   end
+
+  extend T::Generic
+  SettingsType = type_member{ { upper: Settings } } # Generic param
 
   def jp(object, path)
     JsonPath.on(object, "$.#{path}")
@@ -288,9 +290,9 @@ class ApidaeSource < Source
 
   def each
     super(self.class.fetch_paged('recherche/list-objets-touristiques', {
-      projetId: @projet_id,
-      apiKey: @api_key,
-      selectionIds: [@selection_id],
+      projetId: @settings.projet_id,
+      apiKey: @settings.api_key,
+      selectionIds: [@settings.selection_id],
       responseFields: ['@default', 'gestion', 'ouverture', 'multimedias'], # '@all' for debug with all fields
     }))
   end
@@ -321,7 +323,7 @@ class ApidaeSource < Source
       name: i18n_keys(r['nom']),
       description: i18n_keys(r.dig('presentation', 'descriptifCourt')),
       website: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Site web (URL)")].coordonnees.fr'),
-      'website:details': { fr: @website_details_url&.gsub('{{id}}', r['id'].to_s) }.compact_blank,
+      'website:details': { fr: @settings.website_details_url&.gsub('{{id}}', r['id'].to_s) }.compact_blank,
       phone: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Téléphone")].coordonnees.fr'),
       email: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Mél")].coordonnees.fr'),
       facebook: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Page facebook")].coordonnees.fr').first,

@@ -10,6 +10,16 @@ require 'sorbet-runtime'
 require_relative 'source'
 
 class OverpassSource < Source
+  extend T::Sig
+
+  class Settings < Source::SourceSettings
+    const :overpass, String, default: 'https://overpass-api.de/api/interpreter'
+    const :query, String
+  end
+
+  extend T::Generic
+  SettingsType = type_member{ { upper: Settings } } # Generic param
+
   def fetch(url)
     resp = HTTP.follow.get(url)
     if !resp.status.success?
@@ -21,13 +31,13 @@ class OverpassSource < Source
 
   def overpass(overpass_query)
     raw_query = CGI.escape(overpass_query)
-    url = "#{@settings['overpass'] || 'https://overpass-api.de/api/interpreter'}?data=#{raw_query}"
+    url = "#{@settings.overpass}?data=#{raw_query}"
 
     JSON.parse(fetch(url))['elements']
   end
 
   def each
-    super(overpass(@settings['query']))
+    super(overpass(@settings.query))
   end
 
   def map_id(feat)

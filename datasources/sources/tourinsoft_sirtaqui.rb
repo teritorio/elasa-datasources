@@ -10,10 +10,14 @@ require_relative 'tourinsoft'
 
 
 class TourinsoftSirtaquiSource < TourinsoftSource
-  def initialize(job_id, destination_id, settings)
-    super(job_id, destination_id, settings)
-    @photo_base_url = @settings['photo_base_url']
+  extend T::Sig
+
+  class Settings < TourinsoftSource::Settings
+    const :photo_base_url, String
   end
+
+  extend T::Generic
+  SettingsType = type_member{ { upper: Settings } } # Generic param
 
   @@cuisines = HashExcep[{
     # Cuisine
@@ -322,7 +326,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       k.start_with?('DOCPDF') && !v.nil?
     }.to_h{ |k, _v|
       c = k[-2..].downcase
-      [c == 'gb' ? 'en' : c, "#{@photo_base_url}#{feat['DOCGPX']}"]
+      [c == 'gb' ? 'en' : c, "#{@settings.photo_base_url}#{feat['DOCGPX']}"]
     }
   end
 
@@ -348,20 +352,20 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       name: { fr: r['NOMOFFRE'] }.compact_blank,
       description: { fr: r['DESCRIPTIF'] }.compact_blank,
       website: multiple_split(r, %w[URL URLCOMPLET], 0),
-      'website:details': { fr: @website_details_url&.gsub('{{id}}', r['SyndicObjectID']) }.compact_blank,
+      'website:details': { fr: @settings.website_details_url&.gsub('{{id}}', r['SyndicObjectID']) }.compact_blank,
       phone: multiple_split(r, %w[TEL TELCOMPLET TELMOB TELMOBCOMPLET], 0),
       email: multiple_split(r, %w[MAIL MAILCOMPLET], 0),
       facebook: r['FACEBOOK'],
       twitter: r['TWITTER'],
       instagram: r['INSTAGRAM'],
-      image: multiple_split(r, %w[PHOTO PHOTOCOMPLET PROPPRESENTATIONPHOTO PHOTO_DIAPO], 0)&.collect{ |p| "#{@photo_base_url}#{p}" },
+      image: multiple_split(r, %w[PHOTO PHOTOCOMPLET PROPPRESENTATIONPHOTO PHOTO_DIAPO], 0)&.collect{ |p| "#{@settings.photo_base_url}#{p}" },
       addr: r['COMMUNE'] && {
         street: [r['AD1'], r['AD1SUITE'], r['AD2'], r['AD3']].compact_blank.join(', '),
         postcode: r['CP'],
         city: r['COMMUNE'],
       }.compact_blank || nil,
       route: route(r['ITITEMPSDIF'], r['DISTANCE'])&.inject({
-        gpx_trace: r['DOCGPX'] && "#{@photo_base_url}#{r['DOCGPX']}",
+        gpx_trace: r['DOCGPX'] && "#{@settings.photo_base_url}#{r['DOCGPX']}",
         pdf: pdfs(r),
       }, :merge)&.compact_blank,
       'capacity:beds': r['NBRELITS']&.to_i,

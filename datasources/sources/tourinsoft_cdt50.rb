@@ -10,10 +10,8 @@ require_relative 'tourinsoft'
 
 
 class TourinsoftCdt50Source < TourinsoftSource
-  def initialize(job_id, destination_id, settings)
-    super(job_id, destination_id, settings)
-    @photo_base_url = @settings['photo_base_url']
-  end
+  extend T::Generic
+  SettingsType = type_member{ { upper: TourinsoftSource::Settings } } # Generic param
 
   @@cuisines = HashExcep[{
     'Bistrot / bar à vin' => { amenity: 'restaurant', cuisine: ['bistro'] },
@@ -157,9 +155,9 @@ class TourinsoftCdt50Source < TourinsoftSource
       name: { fr: r['NomOffre'] }.compact_blank,
       description: { fr: r['Descriptif'] }.compact_blank,
       website: multiple_split(r, %w[SiteWeb], 0),
-      'website:details': { fr: @website_details_url&.gsub('{{id}}', r['SyndicObjectID']) }.compact_blank,
+      'website:details': { fr: @settings.website_details_url&.gsub('{{id}}', r['SyndicObjectID']) }.compact_blank,
       phone: multiple_split(r, %w[TelephoneFilaire TelephoneMobile], 0),
-      image: multiple_split(r, %w[Photo], 0)&.collect{ |p| "#{@photo_base_url}#{p}" },
+      image: multiple_split(r, %w[Photo], 0),
       addr: {
         street: [r['Adresse1'], r['Adresse2'], r['Adresse3']].compact_blank.join(', '),
         postcode: r['CP'],

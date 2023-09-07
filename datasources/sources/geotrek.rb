@@ -9,11 +9,16 @@ require_relative 'source'
 
 
 class GeotrekSource < Source
-  def initialize(job_id, destination_id, settings)
-    super(job_id, destination_id, settings)
-    @base_url = @settings['url']
-    @website_details_url = @settings['website_details_url']
+  extend T::Sig
+
+  class Settings < Source::SourceSettings
+    const :base_url, String, name: 'url'
+    const :website_details_url, String
+    const :portal_id, String
   end
+
+  extend T::Generic
+  SettingsType = type_member{ { upper: Settings } } # Generic param
 
   def fetch_json_pages(url)
     next_url = url
@@ -59,9 +64,9 @@ class GeotrekSource < Source
   end
 
   def each
-    @difficulties = fetch_difficulties(@base_url)
-    @practices = fetch_practices(@base_url)
-    super(fetch(@base_url))
+    @difficulties = fetch_difficulties(@settings.base_url)
+    @practices = fetch_practices(@settings.base_url)
+    super(fetch(@settings.base_url))
   end
 
   def practice_slug(feat)
@@ -79,7 +84,7 @@ class GeotrekSource < Source
   end
 
   def select(feat)
-    feat['portal'].include?(@settings['portal_id']) && feat['practice'] && feat['published']['fr']
+    feat['portal'].include?(@settings.portal_id) && feat['practice'] && feat['published']['fr']
   end
 
   def map_id(feat)
@@ -113,7 +118,7 @@ class GeotrekSource < Source
     website_details = practice_name && name.collect{ |lang, _n|
       practice_name[lang] && name[lang] && [
         lang,
-        @website_details_url.gsub(
+        @settings.website_details_url.gsub(
           '{{practice}}',
           slug(practice_name[lang])
         ).gsub(

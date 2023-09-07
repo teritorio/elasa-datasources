@@ -9,7 +9,7 @@ require_relative '../sources/tourism_system'
 
 class TourismSystem < Connector
   def setup(kiba)
-    kiba.source(SchemaSource, @job_id, @job_id, {
+    kiba.source(SchemaSource, @job_id, @job_id, SchemaSource::Settings.from_hash({
       'schema' => [
         'datasources/schemas/tags/base.schema.json',
         'datasources/schemas/tags/event.schema.json',
@@ -24,7 +24,7 @@ class TourismSystem < Connector
         'datasources/schemas/tags/restaurant.i18n.json',
         'datasources/schemas/tags/route.i18n.json',
       ]
-    })
+    }))
 
     id = @settings['id']
     basic_auth = @settings['basic_auth']
@@ -49,7 +49,7 @@ class TourismSystem < Connector
         TourismSystemSource,
         @job_id,
         source_id,
-        tourism_system_settings,
+        TourismSystemSource::Settings.from_hash(tourism_system_settings),
       )
     }
   end

@@ -9,7 +9,7 @@ require_relative '../sources/tourinsoft'
 
 class Tourinsoft < Connector
   def setup(kiba)
-    kiba.source(SchemaSource, @job_id, @job_id, {
+    kiba.source(SchemaSource, @job_id, @job_id, SchemaSource::Settings.from_hash({
       'schema' => [
         'datasources/schemas/tags/base.schema.json',
         'datasources/schemas/tags/event.schema.json',
@@ -24,7 +24,7 @@ class Tourinsoft < Connector
         'datasources/schemas/tags/restaurant.i18n.json',
         'datasources/schemas/tags/route.i18n.json',
       ]
-    })
+    }))
 
     @settings['syndications'].select{ |name, _syndication|
       @source_filter.nil? || name.start_with?(@source_filter)
@@ -33,7 +33,7 @@ class Tourinsoft < Connector
         self.class.source_class,
         @job_id,
         name,
-        @settings.merge({ 'syndication' => syndication }),
+        self.class.source_class.const_get(:Settings).from_hash(@settings.merge({ 'syndication' => syndication })),
       )
     }
   end

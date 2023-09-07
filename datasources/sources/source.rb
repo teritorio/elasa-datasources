@@ -16,11 +16,21 @@ class Source
   extend T::Helpers
   abstract!
 
+  class SourceSettings < T::InexactStruct
+    const :attribution, T.nilable(String)
+    const :allow_partial_source, T::Boolean, default: false
+    const :native_properties, T.nilable(T::Hash[String, T.untyped])
+  end
+
+  extend T::Generic
+  SettingsType = type_member{ { upper: SourceSettings } } # Generic param
+
+  sig { params(job_id: T.nilable(String), destination_id: T.nilable(String), settings: SettingsType).void }
   def initialize(job_id, destination_id, settings)
     @job_id = job_id
     @destination_id = destination_id
+    T.assert_type!(settings, SourceSettings) # FIXME: Manually assert type, because type is not asserted automatically, because of genereics ? (why?)
     @settings = settings
-    @attribution = settings['attribution']
   end
 
   def schema
@@ -52,7 +62,7 @@ class Source
   sig { params(feat: T.untyped).returns(T.untyped) }
   def map_tags(feat); end
 
-  sig { params(_feat: T.untyped).returns(String) }
+  sig { params(_feat: T.untyped).returns(T.nilable(String)) }
   def map_destination_id(_feat)
     @destination_id
   end
@@ -72,7 +82,7 @@ class Source
       return
     end
 
-    check = !@settings['allow_partial_source']
+    check = !@settings.allow_partial_source
 
     id = map_id(row)
     if check && id.blank?
@@ -113,7 +123,7 @@ class Source
         updated_at: updated_at,
         source: map_source(row),
         tags: tags&.compact_blank,
-        natives: map_native_properties(row, @settings['native_properties'] || {})&.compact_blank,
+        natives: map_native_properties(row, @settings.native_properties || {})&.compact_blank,
       }.compact_blank),
     }.compact_blank
   end

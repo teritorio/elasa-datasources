@@ -15,13 +15,14 @@ class TourinsoftSource < Source
   extend T::Helpers
   abstract!
 
-  def initialize(job_id, destination_id, settings)
-    super(job_id, destination_id, settings)
-    @client = @settings['client']
-    @syndication = @settings['syndication']
-    @website_details_url = @settings['website_details_url']
-    @photo_base_url = @settings['photo_base_url']
+  class Settings < Source::SourceSettings
+    const :client, String
+    const :syndication, String
+    const :website_details_url, T.nilable(String)
   end
+
+  extend T::Generic
+  SettingsType = type_member{ { upper: Settings } } # Generic param
 
   def self.fetch(client, syndication)
     url = "http://wcf.tourinsoft.com/Syndication/3.0/#{client}/#{syndication}/Objects?$format=json"
@@ -54,7 +55,7 @@ class TourinsoftSource < Source
   end
 
   def each
-    super(self.class.fetch(@client, @syndication))
+    super(self.class.fetch(@settings.client, @settings.syndication))
   end
 
   def map_id(feat)

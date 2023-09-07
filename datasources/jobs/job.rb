@@ -51,7 +51,7 @@ class Job
           # self as Kiba context
           connector.setup(self)
         else
-          source(src[:class], job_id, src[:id], src[:settings])
+          source(src[:class], job_id, src[:id], src[:class].const_get(:Settings).from_hash(src[:settings]))
         end
       }
 

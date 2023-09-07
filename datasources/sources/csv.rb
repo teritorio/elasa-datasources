@@ -11,15 +11,17 @@ require_relative 'source'
 
 
 class CsvSource < Source
-  def initialize(job_id, destination_id, settings)
-    super(job_id, destination_id, settings)
-    @url = @settings['url']
-    @col_sep = @settings['col_sep']
-    @id = @settings['id']
-    @lon = @settings['lon']
-    @lat = @settings['lat']
-    @timestamp = @settings['timestamp']
+  class Settings < Source::SourceSettings
+    const :url, String
+    const :col_sep, String
+    const :id, String
+    const :lon, String
+    const :lat, String
+    const :timestamp, String
   end
+
+  extend T::Generic
+  SettingsType = type_member{ { upper: Settings } } # Generic param
 
   def fetch(url, col_sep)
     resp = HTTP.follow.get(url)
@@ -31,28 +33,28 @@ class CsvSource < Source
   end
 
   def each
-    super(fetch(@url, @col_sep))
+    super(fetch(@settings.url, @settings.col_sep))
   end
 
   def map_id(feat)
-    feat[@id].to_i
+    feat[@settings.id].to_i
   end
 
   def map_updated_at(feat)
-    feat[@timestamp]
+    feat[@settings.timestamp]
   end
 
   def map_geometry(feat)
     {
       type: 'Point',
       coordinates: [
-        feat[@lon].to_f,
-        feat[@lat].to_f
+        feat[@settings.lon].to_f,
+        feat[@settings.lat].to_f
       ]
     }
   end
 
   def map_tags(feat)
-    feat.to_h.except(@id, @lon, @lat, @timestamp)
+    feat.to_h.except(@settings.id, @settings.lon, @settings.lat, @settings.timestamp)
   end
 end
