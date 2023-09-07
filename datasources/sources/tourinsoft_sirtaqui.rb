@@ -134,7 +134,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     open1, close1, open2, close2, close_days = parts
 
     close_days = close_days&.split('-')&.collect{ |d| @@days[d] }
-    open_days = close_days.nil? ? nil : (%w[Mo Tu We Th Fr Sa Su] - close_days)&.join(',')
+    open_days = close_days.nil? ? nil : (%w[Mo Tu We Th Fr Sa Su] - close_days).join(',')
 
     format_days_hours(open_days, open1, close1, open2, close2)
   end

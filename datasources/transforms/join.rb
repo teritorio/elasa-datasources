@@ -20,7 +20,7 @@ class JoinTransformer < Transformer
     # Set non already existing tags
     out = {}
     sources = {}
-    update = false
+    update = T.let(false, T::Boolean)
     (current_tags.keys + update_tags.keys).each{ |key|
       if current_tags.key?(key)
         out[key] = current_tags[key]

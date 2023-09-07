@@ -3,6 +3,8 @@
 
 require 'yaml'
 require 'kiba'
+require 'http'
+
 
 require 'sorbet-runtime'
 
@@ -31,7 +33,7 @@ end
 
 class TeritorioOntology < Connector
   def fetch_ontology_tags(source_filter)
-    ontology = JSON.parse(URI.parse(@settings['url']).open.read)
+    ontology = JSON.parse(HTTP.follow.get(@settings['url']).body)
 
     ontology_tags = ontology['superclass'].select{ |superclass_id, _superclasses|
       !source_filter ||

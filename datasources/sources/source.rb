@@ -149,7 +149,7 @@ class Source
         bad[:pass] += 1
       rescue StandardError => e
         logger.debug(['Native', JSON.dump(r)].join("\n"))
-        logger.debug(['OSM Tags', JSON.dump(tags)].join("\n")) if tags
+        logger.debug(['OSM Tags', JSON.dump(properties[:properties][:tags])].join("\n")) if !properties.nil? && properties[:properties][:tags]
         logger.debug("#{e}\n\n")
         nil
       end

@@ -6,7 +6,6 @@ require 'http'
 require 'active_support/all'
 
 require 'jsonpath'
-require 'open-uri'
 require 'cgi'
 require 'sorbet-runtime'
 require_relative 'source'
@@ -143,8 +142,8 @@ class ApidaeSource < Source
   end
 
   def self.openning(ouverture)
-    min_date_on = nil
-    max_date_off = nil
+    min_date_on = T.let(nil, T.nilable(String))
+    max_date_off = T.let(nil, T.nilable(String))
     osm_openning_hours = (ouverture['periodesOuvertures'].collect { |po|
       min_date_on = [min_date_on, po['dateDebut']].compact.min
       max_date_off = po['tousLesAns'] ? nil : [max_date_off, po['dateFin']].compact.max
@@ -349,7 +348,7 @@ class ApidaeSource < Source
             length: jp(r, 'informationsEquipement.itineraire.distance').first,
           }.compact_blank
         ]
-      } || {})&.compact_blank,
+      } || {}).compact_blank,
       'capacity:persons': jp(r, 'informationsHebergementLocatif.capacite.capaciteHebergement').first || jp(r, 'informationsHebergementLocatif.capacite.capaciteMaximumPossible').first,
       'capacity:rooms': jp(r, 'informationsHebergementLocatif.capacite.nombreChambres').first,
       'capacity:beds': [jp(r, 'informationsHebergementLocatif.capacite.nombreLitsSimples').first, jp(r, 'informationsHebergementLocatif.capacite.nombreLitsDoubles').first].compact_blank.presence&.sum,

@@ -5,7 +5,6 @@ require 'json'
 require 'http'
 require 'active_support/all'
 
-require 'open-uri'
 require 'cgi'
 require 'sorbet-runtime'
 require_relative 'source'

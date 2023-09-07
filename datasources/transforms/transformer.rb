@@ -23,6 +23,9 @@ class Transformer
     data
   end
 
+  sig { params(row: T.untyped).returns(T.untyped) }
+  def process_data(row); end
+
   def process(row)
     type, data = row
     case type

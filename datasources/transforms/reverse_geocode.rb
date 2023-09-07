@@ -53,7 +53,7 @@ class ReverseGeocode
     })
 
     if !resp.status.success?
-      raise 'Fails reverse geocoding', resp.body
+      raise "Fails reverse geocoding #{resp.body}"
     end
 
     CSV.parse(resp.body.to_s, col_sep: ',', headers: true)

@@ -51,6 +51,21 @@ bundle install
 bundle exec tapioca init
 bundle exec tapioca dsl
 bundle exec srb rbi suggest-typed
+
+echo "# typed: false
+sig { returns(T.untyped) }
+def logger; end
+
+class Hash
+  sig { returns(Hash) }
+  def compact_blank; end
+end
+
+class Array
+  sig { returns(Array) }
+  def compact_blank; end
+end
+" > sorbet/rbi/kernel.rbi
 ```
 
 Tests and Validation
