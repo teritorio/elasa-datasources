@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# typed: false
+# typed: true
 
 require 'jsonpath'
 require 'open-uri'
@@ -42,7 +42,7 @@ class TourismSystemSource < Source
     start = 0
     size = 1000
 
-    data = []
+    data = T.let([], T::Array[T.untyped])
     # Deals with stange remote paging API
     while start == 0 || data.size >= size - 1
       next_path = path + "?start=#{start}&size=#{size}"
@@ -119,8 +119,8 @@ class TourismSystemSource < Source
   end
 
   def self.openning(periods)
-    min_date_on = nil
-    max_date_off = nil
+    min_date_on = T.let(nil, T.nilable(String))
+    max_date_off = T.let(nil, T.nilable(String))
 
     osm_openning_hours = periods.select{ |p|
       if ['09.01.01', '09.01.05', '09.01.06', '09.01.07', nil].exclude?(p['type'])
@@ -221,11 +221,9 @@ class TourismSystemSource < Source
       c.start_with?('02.01.03.04')
     }&.collect{ |c|
       t = @@event_type[c]
-      if t.nil?
-        logger.error(raise("Missing #{tm['libelleFr']}"))
-      else
-        t
-      end
+      raise "Missing #{c}" if t.nil?
+
+      t
     }&.compact
   end
 
