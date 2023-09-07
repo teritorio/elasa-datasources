@@ -65,6 +65,11 @@ class Array
   sig { returns(Array) }
   def compact_blank; end
 end
+
+class Time
+  sig { returns(Time) }
+  def self.current; end
+end
 " > sorbet/rbi/kernel.rbi
 ```
 

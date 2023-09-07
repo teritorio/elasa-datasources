@@ -8,7 +8,7 @@ class EndDateTransformer < Transformer
   def initialize(settings)
     super(settings)
 
-    @today = Time.now.strftime('%Y-%m-%d')
+    @today = Time.current.strftime('%Y-%m-%d')
   end
 
   def process_data(row)
