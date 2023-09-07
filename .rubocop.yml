@@ -3,8 +3,9 @@ AllCops:
   TargetRubyVersion: 3.0
   Exclude:
     - 'bin/*'
-    - '*/bin/*'
     - '**/Rakefile.rb'
+    - 'db/schema.rb'
+    - 'vendor/**/*'
 
 require:
  - rubocop-rake
@@ -98,4 +99,10 @@ Rails/NegateInclude:
   Enabled: false
 
 Security/Eval:
+  Enabled: false
+
+Style/NestedTernaryOperator:
+  Enabled: false
+
+Rails/Output:
   Enabled: false
