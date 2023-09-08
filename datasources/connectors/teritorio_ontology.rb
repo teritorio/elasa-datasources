@@ -123,13 +123,13 @@ class TeritorioOntology < Connector
 
     ontology, schema, i18n, osm_tags = parse_ontology(source_filter)
     kiba.source(MockSource, @job_id, @job_id, MockSource::Settings.from_hash({
-      schema: {
+      'schema' => {
         'type' => 'object',
         'additionalProperties' => false,
         'properties' => schema,
       },
-      i18n: i18n,
-      osm_tags: osm_tags,
+      'i18n' => i18n,
+      'osm_tags' => osm_tags,
     }))
 
     kiba.source(SchemaSource, @job_id, @job_id, SchemaSource::Settings.from_hash({
