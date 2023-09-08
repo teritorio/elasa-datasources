@@ -23,6 +23,7 @@ class ValidateTransformer < Transformer
       null_island_geometry: 0,
       pass: 0,
     }
+    @missing_enum_value = Hash.new { |h, k| h[k] = Hash.new { |hh, kk| hh[kk] = 0 } }
 
     @i18n_schema = JSON.parse(File.new('datasources/schemas/i18n.schema.json').read)
     @i18n_schema['properties'] = { destination_id: { type: 'string' } }
@@ -120,8 +121,29 @@ class ValidateTransformer < Transformer
     end
 
     begin
-      JSON::Validator.validate!(@geojson_schema, row)
-      JSON::Validator.validate!(@properties_schema, row[:properties])
+      JSON::Validator.validate!(@geojson_schema, row, errors_as_objects: true)
+
+      errors = JSON::Validator.fully_validate(@properties_schema, row[:properties], errors_as_objects: true)
+      errors.reverse.each{ |error| # Reverse to remove values un array from the end
+        raise(error[:message]) unless error[:failed_attribute] == 'Enum'
+
+        # Extract the faulty path
+        path = error[:fragment][2..].split('/').collect(&:to_sym)
+        if Integer(path[-1].to_s, exception: false).nil?
+          # Collected the faulty value
+          @missing_enum_value[path[-1]][row[:properties].dig(*path)] += 1
+          # Remothe the attribute
+          row[:properties].dig(*path[..-2]).delete(path[-1])
+        else
+          index = Integer(path.pop.to_s)
+
+          # Collected the faulty value
+          @missing_enum_value[path[-1]][row[:properties].dig(*path)[index]] += 1
+          # Remothe the attribute
+          row[:properties].dig(*path).delete_at(index)
+        end
+      }
+
       validate_i18n(row[:properties][:tags])
     rescue StandardError => e
       logger.debug(row.inspect)
@@ -134,9 +156,17 @@ class ValidateTransformer < Transformer
 
   def close_data
     bad = @bad.select{ |_k, v| v != 0 }.to_h.compact_blank
-    return unless !bad.empty? && bad[:pass] != @count
+    if bad.empty? || bad[:pass] != @count
+      logger.info("    ! #{bad.inspect}")
+    end
+    return if @missing_enum_value.empty?
 
-    logger.info("    ! #{bad.inspect}")
+    logger.info('    ! Missing values in schema for keys:')
+    @missing_enum_value.transform_values{ |counts|
+      counts.to_a.sort_by(&:first).collect{ |k, v| "#{k} x#{v}" }
+    }.to_a.sort_by(&:first).collect{ |k, counts| counts.collect{ |count| "#{k}=#{count}" } }.flatten.each{ |log|
+      logger.info("    !     #{log}")
+    }
 
     # TODO: check for additionalProperties translation
   end
