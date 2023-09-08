@@ -5,9 +5,19 @@ require_relative 'transformer'
 
 
 class OsmTags < Transformer
+  extend T::Sig
+
+  class Settings < Transformer::TransformerSettings
+    const :extra_multiple, T::Array[String], default: []
+  end
+
+  extend T::Generic
+  SettingsType = type_member{ { upper: Settings } } # Generic param
+
+  sig { params(settings: Settings).void }
   def initialize(settings)
     super(settings)
-    @multiple = @@multiple_base + (settings['extra_multiple'] || [])
+    @multiple = @@multiple_base + settings.extra_multiple
   end
 
   @@multiple_base = %i[

@@ -8,6 +8,10 @@ require_relative 'transformer'
 
 
 class ValidateTransformer < Transformer
+  extend T::Generic
+  SettingsType = type_member{ { upper: Transformer::TransformerSettings } } # Generic param
+
+  sig { params(settings: Transformer::TransformerSettings).void }
   def initialize(settings)
     super(settings)
 

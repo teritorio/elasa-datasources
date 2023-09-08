@@ -186,10 +186,10 @@ class TeritorioOntology < Connector
       }
     }
 
-    kiba.transform(OsmTags, {})
+    kiba.transform(OsmTags, OsmTags::Settings.from_hash({}))
 
     return unless @settings['georeverse']
 
-    kiba.transform(ReverseGeocode)
+    kiba.transform(ReverseGeocode, Transformer::TransformerSettings.from_hash({}))
   end
 end

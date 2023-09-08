@@ -7,9 +7,19 @@ require_relative 'transformer'
 
 
 class MetadataMerge < Transformer
+  extend T::Sig
+
+  class Settings < Transformer::TransformerSettings
+    const :destination_id, String
+  end
+
+  extend T::Generic
+  SettingsType = type_member{ { upper: Settings } } # Generic param
+
+  sig { params(settings: Settings).void }
   def initialize(settings)
     super(settings)
-    destination_id = settings['destination_id']
+    destination_id = settings.destination_id
 
     @destinations_schema = {
       destination_id: destination_id

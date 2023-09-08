@@ -14,6 +14,6 @@ class OverpassSelect < Connector
 
   def setup(kiba)
     super(kiba)
-    kiba.transform(OsmTags, @settings)
+    kiba.transform(OsmTags, OsmTags::Settings.from_hash(@settings))
   end
 end

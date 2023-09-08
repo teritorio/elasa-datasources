@@ -7,7 +7,11 @@ require 'csv'
 require_relative 'transformer'
 
 
-class ReverseGeocode
+class ReverseGeocode < Transformer
+  extend T::Generic
+  SettingsType = type_member{ { upper: Transformer::TransformerSettings } } # Generic param
+
+  sig { params(settings: Transformer::TransformerSettings).void }
   def initialize(settings)
     super(settings)
     @rows = []

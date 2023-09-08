@@ -55,13 +55,12 @@ class Job
         end
       }
 
-      tasks_by_class = tasks.to_h{ |task| [task[:class], task[:settings]] }
       (tasks || []).select{ |task| ![ValidateTransformer].include?(task[:class]) }.each{ |task|
-        transform(task[:class], task[:settings])
+        transform(task[:class], task[:class].const_get(:Settings).from_hash(task[:settings]))
       }
-      transform(EndDateTransformer, {})
-      transform(MetadataMerge, { 'destination_id' => job_id }) # Merge before validate
-      transform(ValidateTransformer, tasks_by_class[ValidateTransformer] || {})
+      transform(EndDateTransformer, Transformer::TransformerSettings.from_hash({}))
+      transform(MetadataMerge, MetadataMerge::Settings.from_hash({ 'destination_id' => job_id })) # Merge before validate
+      transform(ValidateTransformer, Transformer::TransformerSettings.from_hash({}))
       destination(GeoJson, path)
     end
     Kiba.run(job)

@@ -5,6 +5,10 @@ require_relative 'transformer'
 
 
 class EndDateTransformer < Transformer
+  extend T::Generic
+  SettingsType = type_member{ { upper: Transformer::TransformerSettings } } # Generic param
+
+  sig { params(settings: Transformer::TransformerSettings).void }
   def initialize(settings)
     super(settings)
 

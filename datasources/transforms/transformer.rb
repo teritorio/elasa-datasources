@@ -6,7 +6,15 @@ class Transformer
   extend T::Helpers
   abstract!
 
+  class TransformerSettings < T::InexactStruct
+  end
+
+  extend T::Generic
+  SettingsType = type_member{ { upper: TransformerSettings } } # Generic param
+
+  sig { params(settings: SettingsType).void }
   def initialize(settings)
+    T.assert_type!(settings, TransformerSettings) # FIXME: Manually assert type, because type is not asserted automatically, because of genereics ? (why?)
     @settings = settings
     @has_schema = false
     @has_i18n = false

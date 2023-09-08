@@ -7,10 +7,21 @@ require_relative 'transformer'
 
 
 class JoinTransformer < Transformer
+  extend T::Sig
+
+  class Settings < Transformer::TransformerSettings
+    const :destination_id, String
+    const :key, String
+    const :full_join, T::Boolean, default: false
+  end
+
+  extend T::Generic
+  SettingsType = type_member{ { upper: Settings } } # Generic param
+
+  sig { params(settings: Settings).void }
   def initialize(settings)
     super(settings)
-    @path = "$.#{settings['key']}"
-    @full_join = settings['full_join']
+    @path = "$.#{settings.key}"
 
     @rows = {}
     @rows_without_key = []
@@ -52,9 +63,9 @@ class JoinTransformer < Transformer
       else
         @rows[key] = row
       end
-      @rows[key][:destination_id] = @settings['destination_id']
-    elsif @full_join
-      row[:destination_id] = @settings['destination_id']
+      @rows[key][:destination_id] = @settings.destination_id
+    elsif @settings.full_join
+      row[:destination_id] = @settings.destination_id
       @rows_without_key << row
     end
 

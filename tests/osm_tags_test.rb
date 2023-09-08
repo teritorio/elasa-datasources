@@ -6,7 +6,7 @@ require './datasources/transforms/osm_tags'
 
 class TestOsmTags < Test::Unit::TestCase
   def setup
-    @osm_tags = OsmTags.new({})
+    @osm_tags = OsmTags.new(OsmTags::Settings.from_hash({}))
   end
 
   def map(tags)

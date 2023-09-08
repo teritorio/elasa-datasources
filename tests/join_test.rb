@@ -6,7 +6,10 @@ require './datasources/transforms/join'
 
 class JoinTransformerTags < Test::Unit::TestCase
   def setup
-    @join = JoinTransformer.new('ref')
+    @join = JoinTransformer.new(JoinTransformer::Settings.from_hash({
+      'destination_id' => 'plop',
+      'key' => 'ref',
+    }))
   end
 
   def join(current, update)
