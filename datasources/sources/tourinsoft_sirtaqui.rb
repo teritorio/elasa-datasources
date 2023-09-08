@@ -113,7 +113,6 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     'Dimanche midi' => 'Su',
     'Dimanche après midi' => 'Su',
     'Dimanche soir' => 'Su',
-    'Dimanche Lundi' => '' ################ FIXME to be removed
   }]
 
   @@month = %w[Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec]
@@ -137,7 +136,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
   def self.openning_one_days(parts)
     open1, close1, open2, close2, close_days = parts
 
-    close_days = close_days&.split('-')&.collect{ |d| @@days[d] }
+    close_days = close_days&.split(/(?:-| (?=[A-Z]))/)&.collect{ |d| @@days[d] }
     open_days = close_days.nil? ? nil : (%w[Mo Tu We Th Fr Sa Su] - close_days).join(',')
 
     format_days_hours(open_days, open1, close1, open2, close2)
