@@ -69,7 +69,7 @@ class Source
 
   sig { params(_feat: T.untyped).returns(T.nilable(String)) }
   def map_source(_feat)
-    @attribution
+    @settings.attribution
   end
 
   def map_native_properties(_feat, _properties)
