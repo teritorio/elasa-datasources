@@ -138,7 +138,7 @@ class GeotrekSource < Source
           difficulty: difficulty(@difficulties, r['difficulty']),
           duration: (r['duration'].to_f * 60).to_i,
           length: r['length_2d'].to_f / 1000,
-        },
+        }.compact_blank,
         gpx_trace: r['gpx'],
         pdf: r['pdf']&.compact_blank,
       }.compact_blank,
