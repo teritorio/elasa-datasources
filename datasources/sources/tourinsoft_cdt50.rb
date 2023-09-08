@@ -45,6 +45,7 @@ class TourinsoftCdt50Source < TourinsoftSource
   @@practices = HashExcep[{
     'Pédestre' => 'hiking',
     'Equestre' => 'horse',
+    'Vélo' => 'bicycle',
     'VTT' => 'mtb',
   }]
 
