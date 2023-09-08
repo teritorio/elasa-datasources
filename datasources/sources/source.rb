@@ -79,7 +79,7 @@ class Source
   def one(row, bad)
     if !select(row)
       bad[:filtered_out] += 1
-      return
+      return [nil, bad]
     end
 
     check = !@settings.allow_partial_source
@@ -111,10 +111,10 @@ class Source
     tags = map_tags(row)
     if check && tags.blank?
       bad[:missing_tags] += 1
-      return
+      return [nil, bad]
     end
 
-    {
+    properties = {
       destination_id: map_destination_id(row),
       type: 'Feature',
       geometry: geometry,
@@ -126,6 +126,14 @@ class Source
         natives: map_native_properties(row, @settings.native_properties || {})&.compact_blank,
       }.compact_blank),
     }.compact_blank
+
+    bad[:pass] += 1
+    [properties, bad]
+  rescue StandardError => e
+    logger.debug(['Native', JSON.dump(row)].join("\n"))
+    logger.debug(['OSM Tags', JSON.dump(properties[:properties][:tags])].join("\n")) if !properties.nil? && properties[:properties][:tags]
+    logger.debug("#{e}\n\n")
+    [nil, bad]
   end
 
   def each(raw)
@@ -139,7 +147,7 @@ class Source
     log += ' +i18n' if schema_data[:i18n].present?
     log += ' +osm_tags' if osm_tags_data&.dig(:data).present?
     logger.info(log)
-    bad = {
+    bad = T.let({
       filtered_out: 0,
       missing_id: 0,
       missing_updated_at: 0,
@@ -147,21 +155,12 @@ class Source
       null_island_geometry: 0,
       missing_tags: 0,
       pass: 0,
-    }
+    }, T.untyped)
 
-    raw.each{ |r|
-      begin
-        properties = one(r, bad)
-        if !properties.nil?
-          yield [:data, properties]
-        end
-
-        bad[:pass] += 1
-      rescue StandardError => e
-        logger.debug(['Native', JSON.dump(r)].join("\n"))
-        logger.debug(['OSM Tags', JSON.dump(properties[:properties][:tags])].join("\n")) if !properties.nil? && properties[:properties][:tags]
-        logger.debug("#{e}\n\n")
-        nil
+    raw.each{ |row|
+      properties, bad = one(row, bad)
+      if !properties.nil?
+        yield [:data, properties]
       end
     }
     bad = bad.select{ |_k, v| v != 0 }.to_h.compact_blank
