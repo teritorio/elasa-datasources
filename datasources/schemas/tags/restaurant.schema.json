@@ -45,6 +45,13 @@
                 "limited"
             ]
         },
+        "diet:kosher": {
+            "enum": [
+                "yes",
+                "no",
+                "only"
+            ]
+        },
         "cuisine": {
             "type": "array",
             "items": {

@@ -38,6 +38,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     'Cuisine traditionnelle' => { amenity: 'restaurant' }, # FIXME: add specific tags
     # Diet
     'Cuisine bio' => { amenity: 'restaurant', organic: 'only' },
+    'Cuisine casher' => { amenity: 'restaurant', 'diet:kosher': 'only' },
     'Cuisine diététique' => { amenity: 'restaurant' }, # FIXME: diet:*
     'Cuisine vegan' => { amenity: 'restaurant', 'diet:vegan': 'only' },
     'Cuisine végétarienne' => { amenity: 'restaurant', 'diet:vegetarian': 'only' },
@@ -52,6 +53,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     'Tartines' => { amenity: 'restaurant' }, # FIXME: add specific tags
     'Triperies' => { amenity: 'restaurant' }, # FIXME: add specific tags
     'Viandes' => { amenity: 'restaurant', cuisine: ['meat'] },
+    'Crustacés' => { amenity: 'restaurant', cuisine: ['seafood'] },
     # Non Restaurant
     'Glaces' => { amenity: 'ice_cream', cuisine: ['ice_cream'] },
     'Fromagerie' => { shop: 'cheese' },

@@ -125,6 +125,28 @@
             }
         }
     },
+    "diet:kosher": {
+        "@default": {
+            "fr": "casher"
+        },
+        "values": {
+            "yes": {
+                "@default:full": {
+                    "fr": "produits casher"
+                }
+            },
+            "no": {
+                "@default:full": {
+                    "fr": "pas produit casher"
+                }
+            },
+            "only": {
+                "@default:full": {
+                    "fr": "casher uniquement"
+                }
+            }
+        }
+    },
     "cuisine": {
         "@default": {
             "fr": "cuisine"
