@@ -36,18 +36,18 @@ class GeotrekSource < Source
     results
   end
 
-  def fetch_practices(base_url)
-    rs = fetch_json_pages("#{base_url}/trek_practice/")
+  def fetch_practices
+    rs = fetch_json_pages("#{@settings.base_url}/trek_practice/")
     rs.each{ |r| r['name'].compact_blank! }.index_by{ |r| r['id'] }
   end
 
-  def fetch_difficulties(base_url)
-    rs = fetch_json_pages("#{base_url}/trek_difficulty/")
+  def fetch_difficulties
+    rs = fetch_json_pages("#{@settings.base_url}/trek_difficulty/")
     rs.each{ |r| r['label'].compact_blank! }.index_by{ |r| r['id'] }
   end
 
-  def fetch(base_url)
-    fetch_json_pages("#{base_url}/trek/?omit=geometry")
+  def fetch
+    fetch_json_pages("#{@settings.base_url}/trek/?omit=geometry")
   end
 
   def difficulty(difficulties, difficulty)
@@ -64,9 +64,9 @@ class GeotrekSource < Source
   end
 
   def each
-    @difficulties = fetch_difficulties(@settings.base_url)
-    @practices = fetch_practices(@settings.base_url)
-    super(fetch(@settings.base_url))
+    @difficulties = fetch_difficulties
+    @practices = fetch_practices
+    super(fetch)
   end
 
   def practice_slug(feat)
