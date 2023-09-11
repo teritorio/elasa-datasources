@@ -28,6 +28,19 @@
         },
         "tags": {
             "$ref": "datasources/transforms/validate-properties-tags.schema.json"
+        },
+        "refs": {
+            "type": "array",
+            "items": {
+                "anyOf": [
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "integer"
+                    }
+                ]
+            }
         }
     }
 }

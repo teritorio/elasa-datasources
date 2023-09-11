@@ -72,6 +72,9 @@ class Source
     @settings.attribution
   end
 
+  sig { params(_feat: T.untyped).returns(T.nilable(T::Array[T.any(Integer, String)])) }
+  def map_refs(_feat); end
+
   def map_native_properties(_feat, _properties)
     nil
   end

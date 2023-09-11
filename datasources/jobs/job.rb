@@ -18,6 +18,7 @@ require './datasources/transforms/derivated_tag'
 require './datasources/transforms/end_date'
 require './datasources/transforms/join'
 require './datasources/transforms/metadata_merge'
+require './datasources/transforms/refs_integrity'
 require './datasources/transforms/validate'
 
 
@@ -61,6 +62,7 @@ class Job
       transform(EndDateTransformer, Transformer::TransformerSettings.from_hash({}))
       transform(MetadataMerge, MetadataMerge::Settings.from_hash({ 'destination_id' => job_id })) # Merge before validate
       transform(ValidateTransformer, Transformer::TransformerSettings.from_hash({}))
+      transform(RefsIntegrityTransformer, Transformer::TransformerSettings.from_hash({}))
       destination(GeoJson, path)
     end
     Kiba.run(job)

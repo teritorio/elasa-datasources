@@ -46,6 +46,15 @@ class GeotrekSource < Source
     rs.each{ |r| r['label'].compact_blank! }.index_by{ |r| r['id'] }
   end
 
+  def fetch_trek_pois(trek_id)
+    rs = fetch_json_pages("#{@settings.base_url}/poi/?near_trek=#{trek_id}&fields=id")
+    rs.pluck('id').compact_blank
+  end
+
+  def fetch_pois(ids)
+    fetch_json_pages("#{@settings.base_url}/poi/?ids=#{ids.join(',')}")
+  end
+
   def fetch
     fetch_json_pages("#{@settings.base_url}/trek/?omit=geometry")
   end
@@ -66,7 +75,14 @@ class GeotrekSource < Source
   def each
     @difficulties = fetch_difficulties
     @practices = fetch_practices
-    super(fetch)
+    treks = fetch
+    treks.collect{ |trek|
+      trek['poi_ids'] = fetch_trek_pois(trek['id'])
+    }
+    poi_ids_all = treks.pluck('poi_ids').flatten.uniq
+    pois = fetch_pois(poi_ids_all)
+    super treks.collect{ |trek| [:trek, trek] } +
+      pois.collect{ |poi| [:poi, poi] }
   end
 
   def practice_slug(feat)
@@ -79,27 +95,41 @@ class GeotrekSource < Source
     }][(practice&.dig('name', 'en') || practice&.dig('name', 'fr'))&.parameterize]
   end
 
-  def map_destination_id(feat)
-    practice_slug(feat)
+  def map_destination_id(type_feat)
+    type, feat = type_feat
+    if type == :trek
+      practice_slug(feat)
+    else
+      id = feat['type_label']['en'] || feat['type_label']['fr']
+      "geotrek-poi-#{id}"
+    end
   end
 
-  def select(feat)
-    feat['portal'].include?(@settings.portal_id) && feat['practice'] && feat['published']['fr']
+  def select(type_feat)
+    type, feat = type_feat
+    type != :trek || feat['portal'].include?(@settings.portal_id) && feat['practice'] && feat['published']['fr']
   end
 
-  def map_id(feat)
+  def map_id(type_feat)
+    _, feat = type_feat
     feat['id']
   end
 
-  def map_updated_at(feat)
+  def map_updated_at(type_feat)
+    _, feat = type_feat
     feat['update_datetime']
   end
 
-  def map_geometry(feat)
-    {
-      type: 'Point',
-      coordinates: feat['departure_geom'],
-    }
+  def map_geometry(type_feat)
+    type, feat = type_feat
+    if type == :trek
+      {
+        type: 'Point',
+        coordinates: feat['departure_geom'],
+      }
+    else
+      feat['geometry']
+    end
   end
 
   @@diacritics = [*0x1DC0..0x1DFF, *0x0300..0x036F, *0xFE20..0xFE2F].pack('U*')
@@ -111,7 +141,13 @@ class GeotrekSource < Source
     str.unicode_normalize(:nfd).tr(@@diacritics, '').unicode_normalize(:nfc).tr('°«»/\'"’><®,', '').downcase.gsub(/[^a-z0-9\\-_]+/, '-').gsub(/^-/, '').gsub(/-$/, '')
   end
 
-  def map_tags(feat)
+  def image(attachments)
+    attachments&.filter{ |a|
+      a['type'] == 'image'
+    }&.pluck('url')&.compact_blank
+  end
+
+  def map_trek_tags(feat)
     r = feat
     name = r['name']&.compact_blank
     practice_name = @practices[r['practice']]&.dig('name')
@@ -131,7 +167,7 @@ class GeotrekSource < Source
     practice = practice_slug(r)
     {
       name: name,
-      description: r['description_teaser'].reject { |_, v| v == '' },
+      description: r['description_teaser'].compact_blank,
       'website:details': website_details,
       route: {
         "#{practice}": {
@@ -142,9 +178,27 @@ class GeotrekSource < Source
         gpx_trace: r['gpx'],
         pdf: r['pdf']&.compact_blank,
       }.compact_blank,
-      image: r['attachments']&.filter{ |a|
-        a['type'] == 'image'
-      }&.pluck('url')&.compact_blank,
+      image: image(r['attachments']),
     }
+  end
+
+  def map_poi_tags(feat)
+    r = feat
+    {
+      name: r['name']&.compact_blank,
+      description: r['description'].compact_blank,
+      website: [r['url']].compact_blank,
+      image: image(r['attachments']),
+    }
+  end
+
+  def map_tags(type_feat)
+    type, feat = type_feat
+    type == :trek ? map_trek_tags(feat) : map_poi_tags(feat)
+  end
+
+  def map_refs(type_feat)
+    type, feat = type_feat
+    type == :trek ? feat['poi_ids'] : nil
   end
 end
