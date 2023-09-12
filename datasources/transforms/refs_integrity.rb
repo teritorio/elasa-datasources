@@ -22,8 +22,6 @@ class RefsIntegrityTransformer < Transformer
   end
 
   def close_data
-    logger.info("#{self.class.name}: #{@ids.size}")
-
     missing_ids = @refs.flatten - @ids
     raise "Referencial integrity fails for refs #{missing_ids.join(', ')}" if missing_ids.present?
   end
