@@ -9,6 +9,9 @@ class Destination
   def initialize(path)
     @path = path
 
+    @destinations_metadata = Hash.new { |h, k|
+      h[k] = {}
+    }
     @destinations_schema = Hash.new { |h, k|
       h[k] = {}
     }
@@ -19,6 +22,10 @@ class Destination
     @destinations_data = Hash.new { |h, k|
       h[k] = []
     }
+  end
+
+  def write_metadata(data)
+    @destinations_metadata[data[:destination_id]] = @destinations_metadata[data[:destination_id]].deep_merge_array(data.except(:destination_id))
   end
 
   def write_schema(data)
@@ -36,11 +43,17 @@ class Destination
   def write(row)
     type, data = row
     case type
+    when :metadata then write_metadata(data)
     when :schema then write_schema(data)
     when :osm_tags then write_osm_tags(data)
     when :data then write_data(data)
     else raise "Not support stream item #{type}"
     end
+  end
+
+  def close_metadata(destination_id, data)
+    destination = destination_id.nil? ? '' : "#{destination_id.gsub('/', '_')}."
+    File.write("#{@path}/#{destination}metadata.json", JSON.pretty_generate(data[:data]))
   end
 
   def close_schema(destination_id, data)
@@ -63,9 +76,17 @@ class Destination
       close_data(destination_id, rows)
     }
 
+    @destinations_metadata.each{ |destination_id, row|
+      next if row.blank?
+
+      logger.info("    < #{self.class.name}: #{destination_id}: +metadata")
+      close_metadata(destination_id, row)
+    }
+
     @destinations_schema.each{ |destination_id, row|
       next if row.blank?
 
+      logger.info("    < #{self.class.name}: #{destination_id}: +metadata") if row[:metadata].present?
       logger.info("    < #{self.class.name}: #{destination_id}: +schema") if row[:schema].present?
       logger.info("    < #{self.class.name}: #{destination_id}: +i18n") if row[:i18n].present?
       close_schema(destination_id, row)

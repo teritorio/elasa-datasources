@@ -9,7 +9,7 @@ require_relative '../sources/tourism_system'
 
 class TourismSystem < Connector
   def setup(kiba)
-    kiba.source(MetadataSource, @job_id, @job_id, MetadataSource::Settings.from_hash({
+    kiba.source(MetadataSource, @job_id, @job_id, nil, MetadataSource::Settings.from_hash({
       'schema' => [
         'datasources/schemas/tags/base.schema.json',
         'datasources/schemas/tags/event.schema.json',
@@ -40,7 +40,7 @@ class TourismSystem < Connector
       else
         name.start_with?("Teritorio - #{@source_filter}")
       end
-    }.each{ |source_id, playlist_id|
+    }.each{ |name, playlist_id|
       tourism_system_settings = @settings.merge({
         'playlist_id' => playlist_id,
         'thesaurus' => thesaurus,
@@ -48,7 +48,8 @@ class TourismSystem < Connector
       kiba.source(
         TourismSystemSource,
         @job_id,
-        source_id,
+        name,
+        { 'fr' => name },
         TourismSystemSource::Settings.from_hash(tourism_system_settings),
       )
     }

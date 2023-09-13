@@ -9,7 +9,7 @@ require_relative '../sources/apidae'
 
 class Apidae < Connector
   def setup(kiba)
-    kiba.source(MetadataSource, @job_id, @job_id, MetadataSource::Settings.from_hash({
+    kiba.source(MetadataSource, @job_id, @job_id, nil, MetadataSource::Settings.from_hash({
       'schema' => [
         'datasources/schemas/tags/base.schema.json',
         'datasources/schemas/tags/event.schema.json',
@@ -33,10 +33,13 @@ class Apidae < Connector
     selections.select{ |selection|
       @source_filter.nil? || selection['nom'].start_with?(@source_filter)
     }.each{ |selection|
-      name = "#{selection['id']}-#{selection['nom']}"
+      destination_id = "#{selection['id']}-#{selection['nom']}"
+      name = selection['libelle'].transform_keys{ |key| key[('libelle'.size)..].downcase }
+
       kiba.source(
         ApidaeSource,
         @job_id,
+        destination_id,
         name,
         ApidaeSource::Settings.from_hash(@settings.merge({ 'selection_id' => selection['id'] })),
       )

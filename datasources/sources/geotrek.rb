@@ -95,6 +95,20 @@ class GeotrekSource < Source
     }][(practice&.dig('name', 'en') || practice&.dig('name', 'fr'))&.parameterize]
   end
 
+  def metadata
+    super.deep_merge_array({
+      data: @practices.to_h{ |_, practice|
+        [
+          (practice&.dig('name', 'en') || practice&.dig('name', 'fr'))&.parameterize,
+          {
+            name: practice['name'],
+            attribution: @settings.attribution,
+          }.compact_blank
+        ]
+      }.compact_blank
+    })
+  end
+
   def map_destination_id(type_feat)
     type, feat = type_feat
     if type == :trek

@@ -22,8 +22,8 @@ class OverpassSelectSource < OverpassSource
   extend T::Generic
   SettingsType = type_member{ { upper: Settings } } # Generic param
 
-  sig { params(job_id: T.nilable(String), destination_id: T.nilable(String), settings: Settings).void }
-  def initialize(job_id, destination_id, settings)
+  sig { params(job_id: T.nilable(String), destination_id: T.nilable(String), name: T.nilable(T::Hash[String, String]), settings: SettingsType).void }
+  def initialize(job_id, destination_id, name, settings)
     query = (
       if settings.query
         settings.query
@@ -45,7 +45,7 @@ out center meta;
       end
     )
 
-    super(job_id, destination_id, settings.with(query: query))
+    super(job_id, destination_id, name, settings.with(query: query))
   end
 
   def osm_tags

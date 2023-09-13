@@ -25,12 +25,25 @@ class Source
   extend T::Generic
   SettingsType = type_member{ { upper: SourceSettings } } # Generic param
 
-  sig { params(job_id: T.nilable(String), destination_id: T.nilable(String), settings: SettingsType).void }
-  def initialize(job_id, destination_id, settings)
+  sig { params(job_id: T.nilable(String), destination_id: T.nilable(String), name: T.nilable(T::Hash[String, String]), settings: SettingsType).void }
+  def initialize(job_id, destination_id, name, settings)
     @job_id = job_id
     @destination_id = destination_id
+    @name = name
     T.assert_type!(settings, SourceSettings) # FIXME: Manually assert type, because type is not asserted automatically, because of genereics ? (why?)
     @settings = settings
+  end
+
+  def metadata
+    {
+      destination_id: @destination_id,
+      data: {
+        @destination_id => {
+          name: @name,
+          attribution: @settings.attribution
+        }.compact_blank
+      }.compact_blank
+    }.compact_blank
   end
 
   def schema
@@ -140,12 +153,15 @@ class Source
   end
 
   def each(raw)
+    metadata_data = metadata
+    yield [:metadata, metadata_data]
     schema_data = schema
     yield [:schema, schema_data]
     osm_tags_data = osm_tags
     yield [:osm_tags, osm_tags_data]
 
     log = "    > #{self.class.name}, #{@destination_id.inspect}: #{raw.size}"
+    log += ' +metadata' if metadata_data.present?
     log += ' +schema' if schema_data[:schema].present?
     log += ' +i18n' if schema_data[:i18n].present?
     log += ' +osm_tags' if osm_tags_data&.dig(:data).present?

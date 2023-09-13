@@ -21,6 +21,9 @@ class MetadataMerge < Transformer
     super(settings)
     destination_id = settings.destination_id
 
+    @destinations_metadata = {
+      destination_id: destination_id
+    }
     @destinations_schema = {
       destination_id: destination_id
     }
@@ -30,6 +33,11 @@ class MetadataMerge < Transformer
     }
 
     @rows = []
+  end
+
+  def process_metadata(data)
+    @destinations_metadata = @destinations_metadata.deep_merge_array(data.except(:destination_id))
+    nil
   end
 
   def process_schema(data)
@@ -45,6 +53,10 @@ class MetadataMerge < Transformer
   def process_data(row)
     @rows << row
     nil
+  end
+
+  def close_metadata
+    yield @destinations_metadata
   end
 
   def close_schema

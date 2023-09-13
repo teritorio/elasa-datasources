@@ -9,8 +9,9 @@ class MetadataSource < Source
   extend T::Sig
 
   class Settings < Source::SourceSettings
-    const :schema, String
-    const :i18n, String
+    const :metadata, T.nilable(T::Array[String])
+    const :schema, T.nilable(T::Array[String])
+    const :i18n, T.nilable(T::Array[String])
     const :osm_tags, T.nilable(String)
   end
 
@@ -21,6 +22,12 @@ class MetadataSource < Source
     urls&.collect{ |url|
       JSON.parse(File.read(url))
     }
+  end
+
+  def metadata
+    super.deep_merge_array({
+      data: load(@settings.metadata)&.inject({}, &:deep_merge_array),
+    })
   end
 
   def schema

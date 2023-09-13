@@ -16,11 +16,16 @@ class Transformer
   def initialize(settings)
     T.assert_type!(settings, TransformerSettings) # FIXME: Manually assert type, because type is not asserted automatically, because of genereics ? (why?)
     @settings = settings
+    @has_metadata = false
     @has_schema = false
     @has_i18n = false
     @has_osm_tags = false
     @count_input_row = 0
     @count_output_row = 0
+  end
+
+  def process_metadata(data)
+    data
   end
 
   def process_schema(data)
@@ -37,6 +42,12 @@ class Transformer
   def process(row)
     type, data = row
     case type
+    when :metadata
+      d = process_metadata(data)
+      if d.present?
+        @has_metadata = true
+        [type, d]
+      end
     when :schema
       d = process_schema(data)
       if d.present?
@@ -66,6 +77,8 @@ class Transformer
     end
   end
 
+  def close_metadata; end
+
   def close_schema; end
 
   def close_osm_tags; end
@@ -73,6 +86,13 @@ class Transformer
   def close_data; end
 
   def close
+    close_metadata{ |data|
+      if data.present?
+        @has_metadata = true
+        yield [:metadata, data]
+      end
+    }
+
     close_schema { |data|
       if data.present?
         @has_schema = data[:schema].present?
@@ -97,6 +117,7 @@ class Transformer
 
     count = @count_output_row == @count_input_row ? @count_input_row.to_s : "#{@count_input_row} -> #{@count_output_row}"
     log = "    ~ #{self.class.name}: #{count}"
+    log += ' +metadata' if @has_metadata
     log += ' +schema' if @has_schema
     log += ' +i18n' if @has_i18n
     log += ' +osm_tags' if @has_osm_tags
