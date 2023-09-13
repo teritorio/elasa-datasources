@@ -1,0 +1,24 @@
+{
+    "type": "object",
+    "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "name": {
+                "$ref": "#/$defs/multilingual"
+            },
+            "attribution": {
+                "type": "string"
+            }
+        }
+    },
+    "$defs": {
+        "multilingual": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": {
+                "type": "string"
+            }
+        }
+    }
+}

@@ -25,11 +25,17 @@ class ValidateTransformer < Transformer
     }
     @missing_enum_value = Hash.new { |h, k| h[k] = Hash.new { |hh, kk| hh[kk] = 0 } }
 
+    @metadata_schema = JSON.parse(File.new('datasources/schemas/metadata.schema.json').read)
+
     @i18n_schema = JSON.parse(File.new('datasources/schemas/i18n.schema.json').read)
     @i18n_schema['properties'] = { destination_id: { type: 'string' } }
 
     # Schema from https://geojson.org/schema/Feature.json
     @geojson_schema = JSON.parse(File.new('datasources/schemas/geojson-feature.schema.json').read)
+  end
+
+  def process_metadata(metadata)
+    JSON::Validator.validate!(@metadata_schema, metadata['data'])
   end
 
   def validate_schema_i18n_key(base, properties, i18n)
