@@ -5,7 +5,7 @@
 require 'logging'
 require 'yaml'
 require 'sorbet-runtime'
-require './datasources/sources/schema'
+require './datasources/sources/metadata'
 require './datasources/jobs/job'
 
 
@@ -75,7 +75,7 @@ end
 
   logger.info('  - Conflate metadata')
   job = Kiba.parse do
-    source(SchemaSource, nil, nil, SchemaSource::Settings.from_hash({
+    source(MetadataSource, nil, nil, MetadataSource::Settings.from_hash({
       'schema' => Dir.glob("#{dir}/*.schema.json"),
       'i18n' => Dir.glob("#{dir}/*.i18n.json"),
       'osm_tags' => Dir.glob("#{dir}/*.osm_tags.json"),

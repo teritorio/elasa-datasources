@@ -5,7 +5,7 @@ require 'sorbet-runtime'
 require_relative 'source'
 
 
-class SchemaSource < Source
+class MetadataSource < Source
   extend T::Sig
 
   class Settings < Source::SourceSettings

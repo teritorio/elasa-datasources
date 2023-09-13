@@ -132,7 +132,7 @@ class TeritorioOntology < Connector
       'osm_tags' => osm_tags,
     }))
 
-    kiba.source(SchemaSource, @job_id, @job_id, SchemaSource::Settings.from_hash({
+    kiba.source(MetadataSource, @job_id, @job_id, MetadataSource::Settings.from_hash({
       'schema' => [
         'datasources/schemas/tags/base.schema.json',
         'datasources/schemas/tags/hosting.schema.json',
