@@ -67,23 +67,28 @@ end
 
   logger.info(project)
 
-  jobs&.to_a&.select{ |id, _job|
-    !@datasource || id == @datasource
-  }&.each { |job_id, job|
-    Job.new(job_id, job, @source_filter, dir)
-  }
+  begin
+    jobs&.to_a&.select{ |id, _job|
+      !@datasource || id == @datasource
+    }&.each { |job_id, job|
+      Job.new(job_id, job, @source_filter, dir)
+    }
 
-  logger.info('  - Conflate metadata')
-  job = Kiba.parse do
-    source(MetadataSource, nil, nil, nil, MetadataSource::Settings.from_hash({
-      'metadata' => Dir.glob("#{dir}/*.metadata.json"),
-      'schema' => Dir.glob("#{dir}/*.schema.json"),
-      'i18n' => Dir.glob("#{dir}/*.i18n.json"),
-      'osm_tags' => Dir.glob("#{dir}/*.osm_tags.json"),
-    }))
-    destination(GeoJson, dir)
+    logger.info('  - Conflate metadata')
+    job = Kiba.parse do
+      source(MetadataSource, nil, nil, nil, MetadataSource::Settings.from_hash({
+        'metadata' => Dir.glob("#{dir}/*.metadata.json"),
+        'schema' => Dir.glob("#{dir}/*.schema.json"),
+        'i18n' => Dir.glob("#{dir}/*.i18n.json"),
+        'osm_tags' => Dir.glob("#{dir}/*.osm_tags.json"),
+      }))
+      destination(GeoJson, dir)
+    end
+    Kiba.run(job)
+  rescue StandardError => e
+    logger.error(e.message)
+    logger.error(e.backtrace&.join("\n"))
   end
-  Kiba.run(job)
 
   Logging.logger.root.remove_appenders(logging_appender)
 }

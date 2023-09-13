@@ -92,6 +92,11 @@ class Source
     nil
   end
 
+  def one_error(msg, row)
+    logger.debug(['Native', JSON.dump(row)].join("\n"))
+    logger.debug("#{msg}\n\n")
+  end
+
   def one(row, bad)
     if !select(row)
       bad[:filtered_out] += 1
@@ -103,30 +108,47 @@ class Source
     id = map_id(row)
     if check && id.blank?
       bad[:missing_id] += 1
-      raise 'Missing id'
+      one_error('Missing id', row)
+      return [nil, bad]
     end
 
     updated_at = map_updated_at(row)
     if check && updated_at.blank?
       bad[:missing_updated_at] += 1
-      raise 'Missing updated_at'
+      one_error('Missing updated_at', row)
+      return [nil, bad]
     end
 
     geometry = map_geometry(row)
     if check && geometry.blank?
       bad[:missing_geometry] += 1
-      raise 'Missing geometry'
+      one_error('Missing geometry', row)
+      return [nil, bad]
     end
 
     geometry = map_geometry(row)
     if check && geometry[:type] == 'Point' && geometry[:coordinates] == [0.0, 0.0]
       bad[:null_island_geometry] += 1
-      raise 'Null island geometry'
+      one_error('Null island geometry', row)
+      return [nil, bad]
     end
 
-    tags = map_tags(row)
+    begin
+      tags = map_tags(row)
+    rescue RuntimeError
+      one_error('Error mapping tags', row)
+      return [nil, bad]
+    end
+
     if check && tags.blank?
       bad[:missing_tags] += 1
+      return [nil, bad]
+    end
+
+    begin
+      native_properties = map_native_properties(row, @settings.native_properties || {})
+    rescue RuntimeError
+      one_error('Error mapping native properties', row)
       return [nil, bad]
     end
 
@@ -139,17 +161,12 @@ class Source
         updated_at: updated_at,
         source: map_source(row),
         tags: tags&.compact_blank,
-        natives: map_native_properties(row, @settings.native_properties || {})&.compact_blank,
+        natives: native_properties&.compact_blank,
       }.compact_blank),
     }.compact_blank
 
     bad[:pass] += 1
     [properties, bad]
-  rescue StandardError => e
-    logger.debug(['Native', JSON.dump(row)].join("\n"))
-    logger.debug(['OSM Tags', JSON.dump(properties[:properties][:tags])].join("\n")) if !properties.nil? && properties[:properties][:tags]
-    logger.debug("#{e}\n\n")
-    [nil, bad]
   end
 
   def each(raw)

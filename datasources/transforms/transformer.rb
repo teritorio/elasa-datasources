@@ -63,15 +63,10 @@ class Transformer
       end
     when :data
       @count_input_row += 1
-      begin
-        d = process_data(data)
-        if !d.nil?
-          @count_output_row += 1
-          [type, d]
-        end
-      rescue StandardError => e
-        logger.debug("#{e}\n\n")
-        nil
+      d = process_data(data)
+      if !d.nil?
+        @count_output_row += 1
+        [type, d]
       end
     else raise "Not support stream item #{type}"
     end
