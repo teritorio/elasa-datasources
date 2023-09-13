@@ -77,7 +77,7 @@ end
     logger.info('  - Conflate metadata')
     job = Kiba.parse do
       source(MetadataSource, nil, nil, nil, MetadataSource::Settings.from_hash({
-        'metadata' => Dir.glob("#{dir}/*.metadata.json"),
+        'meta' => Dir.glob("#{dir}/*.metadata.json"),
         'schema' => Dir.glob("#{dir}/*.schema.json"),
         'i18n' => Dir.glob("#{dir}/*.i18n.json"),
         'osm_tags' => Dir.glob("#{dir}/*.osm_tags.json"),

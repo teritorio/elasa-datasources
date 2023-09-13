@@ -16,10 +16,16 @@ class Source
   extend T::Helpers
   abstract!
 
+  class Metadata < T::InexactStruct
+    const :name, T.nilable(T::Hash[String, String])
+    const :attribution, T.nilable(String)
+  end
+
   class SourceSettings < T::InexactStruct
     const :attribution, T.nilable(String)
     const :allow_partial_source, T::Boolean, default: false
     const :native_properties, T.nilable(T::Hash[String, T.untyped])
+    const :metadata, Metadata, default: Metadata.from_hash({})
   end
 
   extend T::Generic
@@ -41,7 +47,7 @@ class Source
         @destination_id => {
           name: @name,
           attribution: @settings.attribution
-        }.compact_blank
+        }.deep_merge(@settings.metadata.serialize).compact_blank
       }.compact_blank
     }.compact_blank
   end

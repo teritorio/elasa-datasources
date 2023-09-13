@@ -44,7 +44,7 @@ class Transformer
     case type
     when :metadata
       d = process_metadata(data)
-      if d.present?
+      if d&.dig(:data).present?
         @has_metadata = true
         [type, d]
       end
@@ -82,7 +82,7 @@ class Transformer
 
   def close
     close_metadata{ |data|
-      if data.present?
+      if data&.dig(:data).present?
         @has_metadata = true
         yield [:metadata, data]
       end

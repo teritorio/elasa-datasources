@@ -35,7 +35,8 @@ class ValidateTransformer < Transformer
   end
 
   def process_metadata(metadata)
-    JSON::Validator.validate!(@metadata_schema, metadata['data'])
+    JSON::Validator.validate!(@metadata_schema, metadata[:data])
+    metadata
   end
 
   def validate_schema_i18n_key(base, properties, i18n)

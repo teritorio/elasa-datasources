@@ -9,7 +9,7 @@ class MetadataSource < Source
   extend T::Sig
 
   class Settings < Source::SourceSettings
-    const :metadata, T.nilable(T::Array[String])
+    const :meta, T.nilable(T::Array[String])
     const :schema, T.nilable(T::Array[String])
     const :i18n, T.nilable(T::Array[String])
     const :osm_tags, T.nilable(String)
@@ -26,7 +26,7 @@ class MetadataSource < Source
 
   def metadata
     super.deep_merge_array({
-      data: load(@settings.metadata)&.inject({}, &:deep_merge_array),
+      data: load(@settings.meta)&.inject({}, &:deep_merge_array),
     })
   end
 
