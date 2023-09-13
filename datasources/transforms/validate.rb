@@ -80,7 +80,7 @@ class ValidateTransformer < Transformer
     }
 
     properties.select{ |_key, value|
-      value['type'] == 'object' && value['additionalProperties'] && value['additionalProperties']['type'] == 'object'
+      value['type'] == 'object' && ![true, false].include?(value['additionalProperties']) && value['additionalProperties']['type'] == 'object'
     }.collect{ |key, value|
       validate_schema_i18n(base + [Regexp.quote(key), '[^:]+'], value['additionalProperties']['properties'], i18n)
     }

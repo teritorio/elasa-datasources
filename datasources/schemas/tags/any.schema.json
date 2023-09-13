@@ -1,5 +1,10 @@
 {
     "type": "object",
     "required": [],
-    "additionalProperties": true
+    "additionalProperties": true,
+    "properties": {
+        "addr": {
+            "additionalProperties": true
+        }
+    }
 }
