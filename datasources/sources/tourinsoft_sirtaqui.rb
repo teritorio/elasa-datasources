@@ -376,11 +376,13 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       'capacity:cabins': r['NBREMHOME']&.to_i,
       'capacity:pitches': r['NBREEMP']&.to_i,
       opening_hours: osm_openning_hours,
-      start_date: date_on,
-      end_date: date_off,
       stars: self.class.classs(r['CLAS']),
-      event: r['ObjectTypeName'] == 'Fêtes et manifestations' ? multiple_split(r, ['CATFMA']).collect{ |t| @@event_type[t] } : nil,
     }.merge(
+      r['ObjectTypeName'] == 'Fêtes et manifestations' && {
+        start_date: date_on,
+        end_date: date_off,
+        event: multiple_split(r, ['CATFMA']).collect{ |t| @@event_type[t] },
+      } || {},
       r['TYPE'] == 'Restaurant' ? self.class.cuisines(multiple_split(r, ['SPECIALITES'])) : {},
       r['TYPE']&.include?('Hôtel') ? { tourism: 'hotel' } : {},
     )
