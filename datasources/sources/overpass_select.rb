@@ -14,7 +14,7 @@ class OverpassSelectSource < OverpassSource
 
   class Settings < OverpassSource::Settings
     const :query, T.nilable(String), override: true
-    const :select, T.nilable(T.any(String, T::Hash[String, T.untyped]))
+    const :select, T.nilable(T.any(String, T.any(T::Hash[String, T.any(String, T::Boolean)], T::Array[T::Hash[String, T.any(String, T::Boolean)]])))
     const :relation_id, T.nilable(Integer)
     const :interest, T.nilable(T::Array[String])
   end
@@ -28,18 +28,36 @@ class OverpassSelectSource < OverpassSource
       if settings.query
         settings.query
       else
-        @selectors = (
+        @selectors = []
+        query_selectors = (
           if settings.select.is_a?(String)
             settings.select
           else
-            T.cast(settings.select, Hash).collect{ |k, v| v.nil? ? "[#{k}]" : "[#{k}=#{v}]" }.join
+            select = settings.select
+            if select.is_a?(Hash)
+              select = [settings.select]
+            end
+            T.cast(select, T::Array[T::Hash[String, T.untyped]]).collect{ |select_hash|
+              selector = select_hash.collect{ |k, v|
+                if v.nil?
+                  "[#{k}]"
+                else
+                  v = v == true ? 'yes' : v == false ? 'no' : v
+                  "[\"#{k}\"=\"#{v}\"]"
+                end
+              }.join
+              @selectors << selector
+              "nwr#{selector}(area.a);"
+            }.join("\n")
           end
         )
         area_id = 3_600_000_000 + T.must(settings.relation_id)
         "
 [out:json][timeout:25];
 area(#{area_id})->.a;
-nwr#{@selectors}(area.a);
+(
+#{query_selectors}
+);
 out center meta;
 "
       end
@@ -52,11 +70,13 @@ out center meta;
     return if !@settings.select || @settings.select.is_a?(String)
 
     super().merge({
-      data: [{
-        select: @selectors,
-        interest: @settings.interest&.to_h{ |key| [key, nil] },
-        sources: [@job_id, @destination_id].uniq
-      }]
+      data: @selectors.collect{ |selector|
+        {
+          select: selector,
+          interest: @settings.interest&.to_h{ |key| [key, nil] },
+          sources: [@job_id, @destination_id].uniq
+        }
+      }
     })
   end
 end
