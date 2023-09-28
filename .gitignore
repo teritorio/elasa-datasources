@@ -2,4 +2,4 @@ sorbet
 bin/tapioca
 data
 config/*.yaml
-config_public/*.yaml
+config/config_public/*.yaml
