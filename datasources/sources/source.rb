@@ -141,8 +141,9 @@ class Source
 
     begin
       tags = map_tags(row)
-    rescue RuntimeError
+    rescue RuntimeError => e
       one_error('Error mapping tags', row)
+      logger.info(e)
       return [nil, bad]
     end
 
