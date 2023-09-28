@@ -39,12 +39,12 @@ end
 
 def load_config_dir(glob)
   Dir[glob].to_h{ |path|
-    project = T.must(path.split('/', 2)[1]).split('.', -2)[0]
+    project = T.must(path.split('/')[-1]).split('.', -2)[0]
     [project, YAML.safe_load_file(path)]
   }
 end
 
-@config = load_config_dir('config/*.yaml').deep_merge_array(load_config_dir('config_private/*.yaml'))
+@config = load_config_dir('config/config_public/*.yaml').deep_merge_array(load_config_dir('config/*.yaml'))
 @project = ARGV[0]
 @datasource = ARGV[1]
 @source_filter = ARGV[2]

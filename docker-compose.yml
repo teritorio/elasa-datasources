@@ -4,7 +4,6 @@ services:
     build: .
     volumes:
       - ./config:/config
-      - ./config_private:/config_private
       - ./data:/data
       - ./update.rb:/update.rb
       - ./datasources:/datasources
