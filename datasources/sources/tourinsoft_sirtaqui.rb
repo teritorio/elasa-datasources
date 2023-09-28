@@ -73,6 +73,8 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     '3 étoiles' => '3',
     '4 étoiles' => '4',
     '5 étoiles' => '5',
+    'Aire naturelle' => nil,
+    'Parc résidentiel de loisirs classé' => nil,
   }]
 
   def self.classs(clas)
