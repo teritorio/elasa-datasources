@@ -31,7 +31,7 @@ class OverpassSelectSource < OverpassSource
         @selectors = []
         query_selectors = (
           if settings.select.is_a?(String)
-            settings.select
+            "nwr#{settings.select};"
           else
             select = settings.select
             if select.is_a?(Hash)
