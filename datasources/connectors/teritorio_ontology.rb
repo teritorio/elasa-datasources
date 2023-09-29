@@ -83,6 +83,15 @@ class TeritorioOntology < Connector
       end
     }
 
+    osm_tags_extra_schema = osm_tags_extra.values.inject(&:merge).transform_values{ |values|
+      if values['values'].nil?
+        { 'type' => 'string' }
+      else
+        { 'enum' => values['values'].pluck('value') }
+      end
+    }
+    schema = schema.deep_merge_array(osm_tags_extra_schema)
+
     i18n = ontology_tags.select{ |osm_tags, _split, _label, _origin|
       osm_tags.split('][').size == 1
     }.group_by{ |_osm_tags, split, _label, _origin|
@@ -98,13 +107,26 @@ class TeritorioOntology < Connector
       }
     }
 
+    osm_tags_extra_i18n = osm_tags_extra.values.inject(&:merge).transform_values{ |values|
+      {
+        '@default' => values['label'].compact_blank,
+        'values' => values['values'].to_h { |h|
+          [
+            h['value'],
+            { '@default:full' => h['label'] },
+          ]
+        }.compact_blank
+      }.compact_blank
+    }.compact_blank
+    i18n = i18n.deep_merge_array(osm_tags_extra_i18n)
+
     # FIXME: should be translated, rather than removed
     (schema.keys - i18n.keys).each{ |key|
       schema.delete(key)
     }
 
-    osm_tags_extra = osm_tags_extra.to_h{ |key|
-      [key, nil]
+    osm_tags_extra = osm_tags_extra.values.inject(&:merge).transform_values{ |_values|
+      nil
     }
 
     osm_tags = ontology_tags.collect{ |tags, _split, _label, origin|
