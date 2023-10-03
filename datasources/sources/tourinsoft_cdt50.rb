@@ -140,6 +140,20 @@ class TourinsoftCdt50Source < TourinsoftSource
     'Sortie nature' => 'Other', # FIXME
   }
 
+  @@bool = HashExcep[{
+    nil => nil,
+    'oui' => 'yes',
+    'non' => 'no',
+  }]
+
+  @@wifi = HashExcep[{
+    nil => nil,
+    'Wifi' => 'wlan',
+    'WIFI' => 'wlan',
+    'Wifi gratuit' => 'wlan',
+  }]
+
+
   def map_geometry(feat)
     {
       type: 'Point',
@@ -171,6 +185,9 @@ class TourinsoftCdt50Source < TourinsoftSource
       start_date: r['ObjectTypeName'] == 'Fêtes et manifestations' && r['DateDebut']&.split('/')&.reverse&.join('-'),
       end_date: r['ObjectTypeName'] == 'Fêtes et manifestations' && r['DateFin']&.split('/')&.reverse&.join('-'),
       event: r['ObjectTypeName'] == 'Fêtes et manifestations' ? multiple_split(r, ['Type']).collect{ |t| [@@event_type[t]] }.flatten.compact : nil,
+      wheelchair: @@bool[r['AccesPMR']],
+      capacity: Integer(r['CapaciteHLOChambresHOTEmplacementsHPA'], exception: false),
+      internet_access: @@wifi[r['WifiHLOHOTHPA']],
     }.merge(
       r['ObjectTypeName'] == 'Restauration' ? self.class.cuisines(multiple_split(r, ['Type'])) : {},
     )

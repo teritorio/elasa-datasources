@@ -108,5 +108,39 @@
         "@default": {
             "fr": "date de fin"
         }
+    },
+    "wheelchair": {
+        "@default": {
+            "fr": "accès en fauteuil roulant"
+        },
+        "values": {
+            "yes": {
+                "@default:full": {
+                    "fr": "accessible en fauteuil roulant"
+                }
+            },
+            "no": {
+                "@default:full": {
+                    "fr": "non accessible en fauteuil roulant"
+                }
+            },
+            "limited": {
+                "@default:full": {
+                    "fr": "accès en fauteuil roulant limité (partiel)"
+                }
+            }
+        }
+    },
+    "internet_access": {
+        "@default": {
+            "fr": "accès internet"
+        },
+        "values": {
+            "wlan": {
+                "@default:full": {
+                    "fr": "wifi"
+                }
+            }
+        }
     }
 }

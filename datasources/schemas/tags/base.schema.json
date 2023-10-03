@@ -91,6 +91,18 @@
         "end_date": {
             "type": "string",
             "format": "date"
+        },
+        "wheelchair": {
+            "enum": [
+                "yes",
+                "no",
+                "limited"
+            ]
+        },
+        "internet_access": {
+            "enum": [
+                "wlan"
+            ]
         }
     },
     "$defs": {

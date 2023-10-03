@@ -51,6 +51,9 @@
             "title": "Non OSM",
             "type": "string"
         },
+        "capacity": {
+            "type": "integer"
+        },
         "capacity:beds": {
             "type": "integer"
         },

@@ -66,6 +66,11 @@
             "fr": "Lutin Rouge"
         }
     },
+    "capacity": {
+        "@default": {
+            "fr": "capacité"
+        }
+    },
     "capacity:beds": {
         "@default": {
             "fr": "nombre de lits"
