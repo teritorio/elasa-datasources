@@ -70,4 +70,9 @@ class OverpassSource < Source
   def map_tags(feat)
     feat['tags'].except('timestamp', 'lon', 'lat')
   end
+
+  sig { params(_feat: T.untyped).returns(T.nilable(String)) }
+  def map_source(_feat)
+    '<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a> <a href="https://www.openmaptiles.org/" target="_blank">© OpenMapTiles</a>'
+  end
 end
