@@ -34,6 +34,8 @@ class OsmTags < Transformer
     route_ref
   ]
 
+  @@capacities = ['capacity', 'capacity:beds', 'capacity:rooms', 'capacity:persons', 'capacity:caravans', 'capacity:cabins', 'capacity:pitches']
+
   def group(prefix, tags)
     match, not_match = tags.to_a.partition{ |k, _v|
       k.start_with?("#{prefix}:")
@@ -98,7 +100,7 @@ class OsmTags < Transformer
       tags[:addr]['street'] = street if street.present?
     end
 
-    ['capacity:beds', 'capacity:rooms', 'capacity:persons', 'capacity:caravans', 'capacity:cabins', 'capacity:pitches'].each { |key|
+    @@capacities.each { |key|
       capacity = tags.delete(key.to_sym)
       if capacity
         begin
