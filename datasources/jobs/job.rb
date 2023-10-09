@@ -4,6 +4,7 @@
 require 'sorbet-runtime'
 
 require './datasources/connectors/apidae'
+require './datasources/connectors/append'
 require './datasources/connectors/csv'
 require './datasources/connectors/geotrek'
 require './datasources/connectors/overpass_select'
