@@ -92,7 +92,7 @@ end
         'i18n' => Dir.glob("#{dir}/*.i18n.json"),
         'osm_tags' => Dir.glob("#{dir}/*.osm_tags.json"),
       }))
-      destination(GeoJson, dir)
+      destination(GeoJson, dir, metadata_only: true)
     end
     Kiba.run(job)
   rescue StandardError => e

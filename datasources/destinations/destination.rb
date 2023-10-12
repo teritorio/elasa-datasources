@@ -6,8 +6,9 @@ class Destination
   extend T::Helpers
   abstract!
 
-  def initialize(path)
+  def initialize(path, metadata_only: false)
     @path = path
+    @metadata_only = metadata_only
 
     @destinations_metadata = Hash.new { |h, k|
       h[k] = {}
@@ -80,11 +81,13 @@ class Destination
       row[:data].keys
     }.flatten.uniq
 
-    all_destination_ids.each{ |destination_id|
-      rows = @destinations_data[destination_id] || []
-      logger.info("    < #{self.class.name}: #{destination_id}: #{rows.size}")
-      close_data(destination_id, rows)
-    }
+    if !@metadata_only
+      all_destination_ids.each{ |destination_id|
+        rows = @destinations_data[destination_id] || []
+        logger.info("    < #{self.class.name}: #{destination_id}: #{rows.size}")
+        close_data(destination_id, rows)
+      }
+    end
 
     @destinations_schema.each{ |destination_id, row|
       next if row.blank?
