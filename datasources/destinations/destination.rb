@@ -71,16 +71,19 @@ class Destination
   def close_data(destination_id, rows); end
 
   def close
-    @destinations_data.each{ |destination_id, rows|
-      logger.info("    < #{self.class.name}: #{destination_id}: #{rows.size}")
-      close_data(destination_id, rows)
-    }
-
-    @destinations_metadata.each{ |destination_id, row|
+    all_destination_ids = @destinations_metadata.collect{ |destination_id, row|
       next if row.blank?
 
       logger.info("    < #{self.class.name}: #{destination_id}: +metadata")
       close_metadata(destination_id, row)
+
+      row[:data].keys
+    }.flatten.uniq
+
+    all_destination_ids.each{ |destination_id|
+      rows = @destinations_data[destination_id] || []
+      logger.info("    < #{self.class.name}: #{destination_id}: #{rows.size}")
+      close_data(destination_id, rows)
     }
 
     @destinations_schema.each{ |destination_id, row|
