@@ -311,7 +311,13 @@ class TourinsoftSirtaquiSource < TourinsoftSource
   end
 
   def select(feat)
-    super(feat) && !feat['PHOTO'].nil?
+    super(feat) &&
+      !feat['PHOTO'].nil? &&
+      (
+        feat['ObjectTypeName'] != 'Fêtes et manifestations' || (
+          feat['DATESCOMPLET'].present? && feat['DATES'].present?
+        )
+      )
   end
 
   def map_geometry(feat)
