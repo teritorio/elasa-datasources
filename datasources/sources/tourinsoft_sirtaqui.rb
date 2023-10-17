@@ -210,7 +210,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
   }]
 
   def route(itis, distance)
-    distance &&= (distance.gsub(',', '.').to_f * 1000).to_i
+    distance &&= distance.gsub(',', '.').to_f
 
     # "ITITEMPSDIF": "à pied|2h|Facile",
     itis&.split('#')&.collect{ |iti|
