@@ -29,6 +29,9 @@ class Tourinsoft < Connector
     @settings['syndications'].select{ |name, _syndication|
       @source_filter.nil? || name.start_with?(@source_filter)
     }.each{ |name, syndication|
+      # Empty medatadata to force output empty destination
+      kiba.source(MockSource, @job_id, name, nil, MockSource::Settings.from_hash({}))
+
       kiba.source(
         self.class.source_class,
         @job_id,
