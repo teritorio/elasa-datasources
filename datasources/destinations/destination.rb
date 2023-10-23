@@ -54,7 +54,7 @@ class Destination
 
   def close_metadata(destination_id, data)
     destination = destination_id.nil? ? '' : "#{destination_id.gsub('/', '_')}."
-    File.write("#{@path}/#{destination}metadata.json", JSON.pretty_generate(data[:data]))
+    File.write("#{@path}/#{destination}metadata.json", JSON.pretty_generate(data[:data].transform_keys{ |key| key.gsub('/', '_') }))
   end
 
   def close_schema(destination_id, data)
