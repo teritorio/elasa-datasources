@@ -85,8 +85,8 @@ class GeotrekSource < Source
       pois.collect{ |poi| [:poi, poi] }
   end
 
-  def practice_slug(feat)
-    practice = @practices[feat['practice']]
+  def practice_slug(practice)
+    practice = @practices[practice]
     HashExcep[{
       'cycling' => 'bicycle',
       'horse' => 'horse',
@@ -97,9 +97,9 @@ class GeotrekSource < Source
 
   def metadata
     super.deep_merge_array({
-      data: @practices.to_h{ |_, practice|
+      data: @practices.to_h{ |practice_id, practice|
         [
-          (practice&.dig('name', 'en') || practice&.dig('name', 'fr'))&.parameterize,
+          practice_slug(practice_id),
           {
             name: practice['name'],
             attribution: @settings.attribution,
@@ -112,7 +112,7 @@ class GeotrekSource < Source
   def map_destination_id(type_feat)
     type, feat = type_feat
     if type == :trek
-      practice_slug(feat)
+      practice_slug(feat['practice'])
     else
       id = feat['type_label']['en'] || feat['type_label']['fr']
       "geotrek-poi-#{id}"
@@ -178,7 +178,7 @@ class GeotrekSource < Source
       ] || nil
     }.compact.to_h || nil
 
-    practice = practice_slug(r)
+    practice = practice_slug(r['practice'])
     {
       name: name,
       description: r['description_teaser'].compact_blank,
