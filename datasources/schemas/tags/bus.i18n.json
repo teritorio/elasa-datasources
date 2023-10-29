@@ -1,4 +1,18 @@
 {
+    "route": {
+        "values": {
+            "bus": {
+                "@default:full": {
+                    "fr": "ligne de bus"
+                }
+            }
+        }
+    },
+    "colour": {
+        "@default": {
+            "fr": "couleur"
+        }
+    },
     "highway": {
         "values": {
             "bus_stop": {

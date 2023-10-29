@@ -3,6 +3,14 @@
     "required": [],
     "additionalProperties": false,
     "properties": {
+        "route": {
+            "enum": [
+                "bus"
+            ]
+        },
+        "colour": {
+            "type": "string"
+        },
         "highway": {
             "enum": [
                 "bus_stop"
