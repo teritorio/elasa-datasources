@@ -151,6 +151,7 @@ class TourinsoftCdt50Source < TourinsoftSource
     'Wifi' => 'wlan',
     'WIFI' => 'wlan',
     'Wifi gratuit' => 'wlan',
+    'Wifi#Wifi' => 'wlan',
   }]
 
 
