@@ -274,6 +274,7 @@ class ApidaeSource < Source
     'Paintball' => nil,
     'Golf' => nil,
     'Golf 18 trous' => nil,
+    'Sports divers' => nil,
   }]
 
   def self.practices(activites)
