@@ -78,7 +78,7 @@ class TourismSystemSource < Source
     ((jp(ratings, '.officials..ratingLevel') || []) + (jp(ratings, '.labels..ratingLevel') || [])).collect{ |level|
       @settings.thesaurus[level]&.split(' ', 2)
     }.collect{ |level, award|
-      if level.to_i.to_s == level
+      if level.to_i.to_s == level && level != '0'
         if award.start_with?('étoile')
           ['stars', award == 'étoiles Luxe' ? '4S' : level]
         else
