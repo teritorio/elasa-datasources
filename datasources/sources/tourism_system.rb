@@ -252,7 +252,7 @@ class TourismSystemSource < Source
       if !type.start_with?('14.01.') && !type.start_with?('99.14.01.')
         false
       else
-        !@@capacities[type].nil? && !capacity.nil?
+        !@@capacities[type].nil? && !capacity.nil? && capacity.to_i != 0
       end
     }.to_h{ |type, capacity|
       ["capacity:#{@@capacities[type]}", capacity.to_i]
