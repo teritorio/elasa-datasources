@@ -1,0 +1,172 @@
+{
+    "route_temp": {
+        "values": {
+            "bus": {
+                "@default:full": {
+                    "fr": "ligne de bus"
+                }
+            }
+        }
+    },
+    "route:gpx_trace": {
+        "@default": {
+            "fr": "Trace GPS"
+        },
+        "@long": {
+            "fr": "Le parcours (trace GPS) au format GPX"
+        }
+    },
+    "colour": {
+        "@default": {
+            "fr": "couleur"
+        }
+    },
+    "highway": {
+        "values": {
+            "bus_stop": {
+                "@default:full": {
+                    "fr": "arrêt de bus"
+                }
+            }
+        }
+    },
+    "public_transport": {
+        "@default": {
+            "fr": "transport public"
+        },
+        "values": {
+            "platform": {
+                "@default:full": {
+                    "fr": "quai"
+                }
+            },
+            "stop_position": {
+                "@default:full": {
+                    "fr": "arrêt"
+                }
+            },
+            "station": {
+                "@default:full": {
+                    "fr": "station"
+                }
+            }
+        }
+    },
+    "bus": {
+        "@default": {
+            "fr": "bus"
+        },
+        "values": {
+            "yes": {
+                "@default:full": {
+                    "fr": "bus"
+                }
+            }
+        }
+    },
+    "shelter": {
+        "@default": {
+            "fr": "abri"
+        },
+        "values": {
+            "yes": {
+                "@default:full": {
+                    "fr": "avec abri"
+                }
+            },
+            "no": {
+                "@default:full": {
+                    "fr": "sans abri"
+                }
+            }
+        }
+    },
+    "bench": {
+        "@default": {
+            "fr": "banc"
+        },
+        "values": {
+            "yes": {
+                "@default:full": {
+                    "fr": "avec bancs"
+                }
+            },
+            "no": {
+                "@default:full": {
+                    "fr": "pas de banc"
+                }
+            },
+            "stand_up_bench": {
+                "@default:full": {
+                    "fr": "banc debout"
+                }
+            },
+            "wave_lounger": {
+                "@default:full": {
+                    "fr": "banc couché"
+                }
+            }
+        }
+    },
+    "bin": {
+        "@default": {
+            "fr": "poupelle d'appoint"
+        },
+        "values": {
+            "yes": {
+                "@default:full": {
+                    "fr": "avec poubelle d'appoint"
+                }
+            },
+            "no": {
+                "@default:full": {
+                    "fr": "sans poubelle d'appoint"
+                }
+            }
+        }
+    },
+    "lit": {
+        "@default": {
+            "fr": "éclairage"
+        },
+        "values": {
+            "yes": {
+                "@default:full": {
+                    "fr": "lieu éclairé"
+                }
+            },
+            "no": {
+                "@default:full": {
+                    "fr": "lieu non éclairé"
+                }
+            }
+        }
+    },
+    "covered": {
+        "@default": {
+            "fr": "couvert"
+        },
+        "values": {
+            "yes": {
+                "@default:full": {
+                    "fr": "couvert"
+                }
+            },
+            "no": {
+                "@default:full": {
+                    "fr": "non couvert"
+                }
+            }
+        }
+    },
+    "route_ref": {
+        "@default": {
+            "fr": "lignes desservant cet arrêt"
+        }
+    },
+    "network": {
+        "@default": {
+            "fr": "réseau"
+        }
+    }
+}

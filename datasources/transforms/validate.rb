@@ -170,7 +170,7 @@ class ValidateTransformer < Transformer
 
     logger.info('    ! Missing values in schema for keys:')
     @missing_enum_value.transform_values{ |counts|
-      counts.to_a.sort_by(&:first).collect{ |k, v| "#{k} x#{v}" }
+      counts.to_a.sort_by{ |count| count[0].to_s }.collect{ |k, v| "#{k} x#{v}" }
     }.to_a.sort_by(&:first).collect{ |k, counts| counts.collect{ |count| "#{k}=#{count}" } }.flatten.each{ |log|
       logger.info("    !     #{log}")
     }
