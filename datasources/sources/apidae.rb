@@ -353,9 +353,9 @@ class ApidaeSource < Source
           }.compact_blank
         ]
       } || {}).compact_blank,
-      'capacity:persons': jp(r, 'informationsHebergementLocatif.capacite.capaciteHebergement').first || jp(r, 'informationsHebergementLocatif.capacite.capaciteMaximumPossible').first,
-      'capacity:rooms': jp(r, 'informationsHebergementLocatif.capacite.nombreChambres').first,
-      'capacity:beds': [jp(r, 'informationsHebergementLocatif.capacite.nombreLitsSimples').first, jp(r, 'informationsHebergementLocatif.capacite.nombreLitsDoubles').first].compact_blank.presence&.sum,
+      'capacity:persons': (jp(r, 'informationsHebergementLocatif.capacite.capaciteHebergement').first || jp(r, 'informationsHebergementLocatif.capacite.capaciteMaximumPossible').first)&.nonzero?,
+      'capacity:rooms': jp(r, 'informationsHebergementLocatif.capacite.nombreChambres').first&.nonzero?,
+      'capacity:beds': [jp(r, 'informationsHebergementLocatif.capacite.nombreLitsSimples').first, jp(r, 'informationsHebergementLocatif.capacite.nombreLitsDoubles').first].compact_blank.presence&.sum&.nonzero?,
       opening_hours: osm_openning_hours,
       start_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_on : nil,
       end_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_off : nil,
