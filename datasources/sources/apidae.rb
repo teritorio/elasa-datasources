@@ -342,7 +342,7 @@ class ApidaeSource < Source
       }.compact_blank,
       route: {
         gpx_trace: jp(r, 'multimedias[*].traductionFichiers[*][?(@.extension=="gpx")].url').first,
-        pdf: jp(r, 'multimedias[*].traductionFichiers[*][?(@.extension=="pdf")]').to_h{ |t| [t['locale'], t['url']] },
+        pdf: practices.nil? ? nil : jp(r, 'multimedias[*].traductionFichiers[*][?(@.extension=="pdf")]').to_h{ |t| [t['locale'], t['url']] },
       }.merge(practices&.to_h{ |practice_slug|
         [
           practice_slug,
