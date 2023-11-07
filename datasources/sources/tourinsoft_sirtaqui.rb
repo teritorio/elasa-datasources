@@ -333,9 +333,9 @@ class TourinsoftSirtaquiSource < TourinsoftSource
   def pdfs(feat)
     feat.select{ |k, v|
       k.start_with?('DOCPDF') && !v.nil?
-    }.to_h{ |k, _v|
+    }.to_h{ |k, v|
       c = k[-2..].downcase
-      [c == 'gb' ? 'en' : c, "#{@settings.photo_base_url}#{feat['DOCGPX']}"]
+      [c == 'gb' ? 'en' : c, "#{@settings.photo_base_url}#{v}"]
     }
   end
 
