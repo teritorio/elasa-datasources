@@ -335,7 +335,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       k.start_with?('DOCPDF') && !v.nil?
     }.to_h{ |k, _v|
       c = k[-2..].downcase
-      [c == 'gb' ? 'en' : c, "#{@settings.photo_base_url}#{feat['DOCGPX']}"]
+      [c == 'gb' ? 'en' : c, "#{@settings.photo_base_url}#{_v}"]
     }
   end
 
