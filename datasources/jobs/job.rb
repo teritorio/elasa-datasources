@@ -44,7 +44,6 @@ class Job
       sources.each{ |src|
         if src[:class] <= Connector
           connector = src
-          tasks = tasks[1..]
           connector = connector[:class].new(
             job_id,
             connector[:settings],
