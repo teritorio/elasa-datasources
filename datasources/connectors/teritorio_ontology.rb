@@ -58,10 +58,12 @@ class TeritorioOntology < Connector
         end
       }
     }.flatten(2).compact.collect{ |osm_tags, label, origin|
-      split = osm_tags[1..-2].split('][').collect{ |osm_tag|
-        osm_tag.split(/(=|~=|=~|!=|!~|~)/, 2).collect{ |s| unquote(s) }
+      splits = osm_tags.collect{ |osm_tag|
+        osm_tag[1..-2].split('][').collect{ |osm_tag|
+          osm_tag.split(/(=|~=|=~|!=|!~|~)/, 2).collect{ |s| unquote(s) }
+        }
       }
-      [osm_tags, split, label, origin]
+      [osm_tags, splits, label, origin]
     }
 
     [ontology, ontology_tags, ontology['osm_tags_extra']]
@@ -70,11 +72,13 @@ class TeritorioOntology < Connector
   def parse_ontology(source_filter)
     ontology, ontology_tags, osm_tags_extra = fetch_ontology_tags(source_filter)
 
-    schema = ontology_tags.collect{ |_tags, split, _label, _origin|
-      split.collect{ |k, _o, v|
-        [k, v]
+    schema = ontology_tags.collect{ |_tags, splits, _label, _origin|
+      splits.collect{ |split|
+        split.collect{ |k, _o, v|
+          [k, v]
+        }
       }
-    }.flatten(1).group_by(&:first).transform_values{ |vs|
+    }.flatten(2).group_by(&:first).transform_values{ |vs|
       r = vs.collect(&:second).uniq
       if r.include?(nil)
         { 'type' => 'string' }
@@ -92,15 +96,15 @@ class TeritorioOntology < Connector
     }
     schema = schema.deep_merge_array(osm_tags_extra_schema)
 
-    i18n = ontology_tags.select{ |osm_tags, _split, _label, _origin|
-      osm_tags.split('][').size == 1
-    }.group_by{ |_osm_tags, split, _label, _origin|
-      split[0][0]
+    i18n = ontology_tags.select{ |osm_tags, splits, _label, _origin|
+      osm_tags.split('][').size == 1 && splits.size == 1
+    }.group_by{ |_osm_tags, splits, _label, _origin|
+      splits[0][0][0]
     }.transform_values { |values|
       {
-        'values' => values.to_h{ |_osm_tags, split, label, _origin|
+        'values' => values.to_h{ |_osm_tags, splits, label, _origin|
           [
-            split[0][2],
+            splits[0][0][2],
             { '@default:full' => label },
           ]
         }
@@ -129,7 +133,7 @@ class TeritorioOntology < Connector
       nil
     }
 
-    osm_tags = ontology_tags.collect{ |tags, _split, _label, origin|
+    osm_tags = ontology_tags.collect{ |tags, _splits, _label, origin|
       {
         select: tags,
         interest: osm_tags_extra,
