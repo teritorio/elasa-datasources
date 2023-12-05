@@ -18,7 +18,8 @@
         },
         "shop": {
             "enum": [
-                "cheese"
+                "cheese",
+                "pastry"
             ]
         },
         "organic": {

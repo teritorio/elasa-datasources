@@ -41,6 +41,11 @@
                 "@default:full": {
                     "fr": "fromager"
                 }
+            },
+            "pastry": {
+                "@default:full": {
+                    "fr": "pâtisserie"
+                }
             }
         }
     },

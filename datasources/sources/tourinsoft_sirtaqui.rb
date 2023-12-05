@@ -56,6 +56,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     'Crustacés' => { amenity: 'restaurant', cuisine: ['seafood'] },
     # Non Restaurant
     'Glaces' => { amenity: 'ice_cream', cuisine: ['ice_cream'] },
+    'Pâtisseries' => { shop: 'pastry' },
     'Fromagerie' => { shop: 'cheese' },
   }]
 
