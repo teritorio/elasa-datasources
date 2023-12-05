@@ -2,6 +2,7 @@
 # typed: true
 
 require 'sorbet-runtime'
+require 'active_support/all'
 
 class HashExcep < Hash
   def [](key)
@@ -16,12 +17,50 @@ class Source
   extend T::Helpers
   abstract!
 
-  class Metadata < T::InexactStruct
+  class MergeableInexactStruct < T::InexactStruct
+    extend T::Sig
+
+    sig { params(other: T.any(MergeableInexactStruct, T::Hash[T.untyped, T.untyped])).returns(T.self_type) }
+    def deep_merge_array(other)
+      if !other.is_a?(Hash)
+        other = other.serialize
+      end
+      self.class.from_hash(serialize.deep_merge_array(other))
+    end
+
+    # What the hell we need to do this here?
+    delegate :to_json, to: :serialize
+  end
+
+  class Row < MergeableInexactStruct
+    const :destination_id, T.nilable(String)
+  end
+
+  class Metadata < MergeableInexactStruct
     const :name, T.nilable(T::Hash[String, String])
     const :attribution, T.nilable(String)
   end
 
-  class SourceSettings < T::InexactStruct
+  class MetadataRow < Row
+    const :data, T::Hash[T.nilable(String), Metadata], default: {}
+  end
+
+  class SchemaRow < Row
+    const :schema, T.nilable(T::Hash[String, T.untyped])
+    const :i18n, T.nilable(T::Hash[String, T.untyped])
+  end
+
+  class OsmTags < MergeableInexactStruct
+    const :select, T::Array[String]
+    const :interest, T.nilable(T::Hash[String, nil.class])
+    const :sources, T::Array[String]
+  end
+
+  class OsmTagsRow < Row
+    const :data, T::Array[OsmTags], default: []
+  end
+
+  class SourceSettings < MergeableInexactStruct
     const :attribution, T.nilable(String)
     const :allow_partial_source, T::Boolean, default: false
     const :native_properties, T.nilable(T::Hash[String, T.untyped])
@@ -40,29 +79,32 @@ class Source
     @settings = settings
   end
 
+  sig { returns(MetadataRow) }
   def metadata
-    {
+    MetadataRow.new(
       destination_id: @destination_id,
       data: {
-        @destination_id => {
-          name: @name,
-          attribution: @settings.attribution
-        }.deep_merge(@settings.metadata.serialize).compact_blank
+        @destination_id => Metadata.from_hash({
+          'name' => @name,
+          'attribution' => @settings.attribution
+        }).deep_merge_array(@settings.metadata)
       }.compact_blank
-    }.compact_blank
+    )
   end
 
+  sig { returns(SchemaRow) }
   def schema
-    {
+    SchemaRow.new(
       destination_id: @destination_id,
-    }
+    )
   end
 
+  sig { returns(OsmTagsRow) }
   def osm_tags
-    {
+    OsmTagsRow.new(
       destination_id: @destination_id,
       data: [],
-    }
+    )
   end
 
   def select(_feat)
@@ -186,9 +228,9 @@ class Source
 
     log = "    > #{self.class.name}, #{@destination_id.inspect}: #{raw.size}"
     log += ' +metadata' if metadata_data.present?
-    log += ' +schema' if schema_data[:schema].present?
-    log += ' +i18n' if schema_data[:i18n].present?
-    log += ' +osm_tags' if osm_tags_data&.dig(:data).present?
+    log += ' +schema' if schema_data.schema.present?
+    log += ' +i18n' if schema_data.i18n.present?
+    log += ' +osm_tags' if osm_tags_data.data.present?
     logger.info(log)
     bad = T.let({
       filtered_out: 0,

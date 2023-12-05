@@ -293,8 +293,9 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     'Visite' => 'Other', # FIXME
   }
 
+  sig { returns(SchemaRow) }
   def schema
-    super.merge({
+    super.with(
       i18n: {
         'route' => {
           'values' => @@practices.compact.to_a.to_h(&:reverse).transform_values{ |v| { '@default:full' => { 'fr' => v } } }
@@ -308,7 +309,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
           }
         }
       )
-    })
+    )
   end
 
   def select(feat)

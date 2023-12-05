@@ -13,7 +13,7 @@ class OverpassSelect < Connector
   end
 
   def setup(kiba)
-    kiba.source(MetadataSource, @job_id, @job_id, nil, MetadataSource::Settings.from_hash({
+    kiba.source(MetadataSource, @job_id, nil, nil, MetadataSource::Settings.from_hash({
       'schema' => [
         'datasources/schemas/tags/base.schema.json',
         'datasources/schemas/tags/any.schema.json',

@@ -21,32 +21,45 @@ class MetadataMerge < Transformer
     super(settings)
     destination_id = settings.destination_id
 
-    @destinations_metadata = {
+    @destinations_metadata = Source::MetadataRow.new(
       destination_id: destination_id
-    }
-    @destinations_schema = {
+    )
+    @destinations_schema = Source::SchemaRow.new(
       destination_id: destination_id
-    }
-    @destinations_osm_tags = {
+    )
+    @destinations_osm_tags = Source::OsmTagsRow.new(
       destination_id: destination_id,
       data: [],
-    }
+    )
 
     @rows = []
   end
 
+  sig { params(data: Source::MetadataRow).returns(T.nilable(Source::MetadataRow)) }
   def process_metadata(data)
-    @destinations_metadata = @destinations_metadata.deep_merge_array(data.except(:destination_id))
+    data = data.serialize.except('destination_id')
+    # Remove nil destination data
+    data['data'].delete(nil)
+    @destinations_metadata = @destinations_metadata.deep_merge_array(data)
     nil
   end
 
+  sig { params(data: Source::SchemaRow).returns(T.nilable(Source::SchemaRow)) }
   def process_schema(data)
-    @destinations_schema = @destinations_schema.deep_merge_array(data.except(:destination_id))
+    data = data.serialize.except('destination_id')
+    # Remove nil destination data
+    data['schema']&.delete(nil)
+    data['i18n']&.delete(nil)
+    @destinations_schema = @destinations_schema.deep_merge_array(data)
     nil
   end
 
+  sig { params(data: Source::OsmTagsRow).returns(T.nilable(Source::OsmTagsRow)) }
   def process_osm_tags(data)
-    @destinations_osm_tags = @destinations_osm_tags.deep_merge_array(data.except(:destination_id))
+    data = data.serialize.except('destination_id')
+    # Remove nil destination data
+    data['data'].delete(nil)
+    @destinations_osm_tags = @destinations_osm_tags.deep_merge_array(data)
     nil
   end
 

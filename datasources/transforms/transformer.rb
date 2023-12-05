@@ -24,14 +24,17 @@ class Transformer
     @count_output_row = 0
   end
 
+  sig { params(data: Source::MetadataRow).returns(T.nilable(Source::MetadataRow)) }
   def process_metadata(data)
     data
   end
 
+  sig { params(data: Source::SchemaRow).returns(T.nilable(Source::SchemaRow)) }
   def process_schema(data)
     data
   end
 
+  sig { params(data: Source::OsmTagsRow).returns(T.nilable(Source::OsmTagsRow)) }
   def process_osm_tags(data)
     data
   end
@@ -44,20 +47,20 @@ class Transformer
     case type
     when :metadata
       d = process_metadata(data)
-      if d&.dig(:data).present?
+      if d&.data.present?
         @has_metadata = true
         [type, d]
       end
     when :schema
       d = process_schema(data)
       if d.present?
-        @has_schema = data[:schema].present?
-        @has_i18n = data[:i18n].present?
+        @has_schema = data.schema.present?
+        @has_i18n = data.i18n.present?
         [type, d]
       end
     when :osm_tags
       d = process_osm_tags(data)
-      if d&.dig(:data).present?
+      if d&.data.present?
         @has_osm_tags = true
         [type, d]
       end
@@ -82,7 +85,7 @@ class Transformer
 
   def close
     close_metadata{ |data|
-      if data&.dig(:data).present?
+      if data.data.present?
         @has_metadata = true
         yield [:metadata, data]
       end
@@ -90,14 +93,14 @@ class Transformer
 
     close_schema { |data|
       if data.present?
-        @has_schema = data[:schema].present?
-        @has_i18n = data[:i18n].present?
+        @has_schema = data.schema.present?
+        @has_i18n = data.i18n.present?
         yield [:schema, data]
       end
     }
 
     close_osm_tags { |data|
-      if data&.dig(:data).present?
+      if data.data.present?
         @has_osm_tags = true
         yield [:osm_tags, data]
       end

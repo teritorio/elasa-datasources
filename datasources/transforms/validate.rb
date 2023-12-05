@@ -34,8 +34,9 @@ class ValidateTransformer < Transformer
     @geojson_schema = JSON.parse(File.new('datasources/schemas/geojson-feature.schema.json').read)
   end
 
+  sig { params(metadata: Source::MetadataRow).returns(T.nilable(Source::MetadataRow)) }
   def process_metadata(metadata)
-    JSON::Validator.validate!(@metadata_schema, metadata[:data])
+    JSON::Validator.validate!(@metadata_schema, metadata.data.to_json)
     metadata
   end
 
@@ -92,16 +93,17 @@ class ValidateTransformer < Transformer
     validate_schema_i18n_object(base, properties, i18n)
   end
 
+  sig { params(schema: Source::SchemaRow).returns(T.nilable(Source::SchemaRow)) }
   def process_schema(schema)
-    @properties_tags_schema = schema[:schema] || {}
+    @properties_tags_schema = schema.schema || {}
     @properties_schema = JSON.parse(File.new('datasources/schemas/properties.schema.json').read)
     @properties_schema['properties']['tags'] = @properties_tags_schema
     @properties_schema['$defs'] = (@properties_schema['$defs'] || {}).merge(@properties_tags_schema['$defs'] || {})
 
-    JSON::Validator.validate!(@i18n_schema, schema[:i18n])
-    validate_schema_i18n([], @properties_tags_schema['properties'], schema[:i18n])
-    @schema = schema[:schema]
-    @i18n = schema[:i18n]
+    JSON::Validator.validate!(@i18n_schema, schema.i18n)
+    validate_schema_i18n([], @properties_tags_schema['properties'], schema.i18n)
+    @schema = schema.schema
+    @i18n = schema.i18n
     schema
   end
 

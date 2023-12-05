@@ -135,9 +135,9 @@ class TeritorioOntology < Connector
 
     osm_tags = ontology_tags.collect{ |tags, _splits, _label, origin|
       {
-        select: tags,
-        interest: osm_tags_extra,
-        sources: origin,
+        'select' => tags,
+        'interest' => osm_tags_extra,
+        'sources' => origin,
       }
     }
 
@@ -148,7 +148,7 @@ class TeritorioOntology < Connector
     source_filter = @settings['filters']
 
     ontology, schema, i18n, osm_tags = parse_ontology(source_filter)
-    kiba.source(MockSource, @job_id, @job_id, nil, MockSource::Settings.from_hash({
+    kiba.source(MockSource, @job_id, nil, nil, MockSource::Settings.from_hash({
       'schema' => {
         'type' => 'object',
         'additionalProperties' => false,
@@ -158,7 +158,7 @@ class TeritorioOntology < Connector
       'osm_tags' => osm_tags,
     }))
 
-    kiba.source(MetadataSource, @job_id, @job_id, nil, MetadataSource::Settings.from_hash({
+    kiba.source(MetadataSource, @job_id, nil, nil, MetadataSource::Settings.from_hash({
       'schema' => [
         'datasources/schemas/tags/base.schema.json',
         'datasources/schemas/tags/hosting.schema.json',

@@ -95,6 +95,7 @@ class GeotrekSource < Source
     }][(practice&.dig('name', 'en') || practice&.dig('name', 'fr'))&.parameterize]
   end
 
+  sig { returns(MetadataRow) }
   def metadata
     super.deep_merge_array({
       data: @practices.to_h{ |practice_id, practice|

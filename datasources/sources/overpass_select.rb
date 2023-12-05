@@ -70,15 +70,16 @@ out center meta;
     super(job_id, destination_id, name, settings.with(query: query))
   end
 
+  sig { returns(OsmTagsRow) }
   def osm_tags
-    return if !@settings.select || @settings.select.is_a?(String)
+    return super() if !@settings.select || @settings.select.is_a?(String)
 
-    super().merge({
-      data: @selectors.collect{ |selector|
+    super().deep_merge_array({
+      'data' => @selectors.collect{ |selector|
         {
-          select: selector,
-          interest: @settings.interest&.to_h{ |key| [key, nil] },
-          sources: [@job_id, @destination_id].uniq
+          'select' => selector,
+          'interest' => @settings.interest&.to_h{ |key| [key, nil] },
+          'sources' => [@job_id, @destination_id].uniq
         }
       }
     })

@@ -9,7 +9,7 @@ require_relative '../sources/tourinsoft'
 
 class Tourinsoft < Connector
   def setup(kiba)
-    kiba.source(MetadataSource, @job_id, @job_id, nil, MetadataSource::Settings.from_hash({
+    kiba.source(MetadataSource, @job_id, nil, nil, MetadataSource::Settings.from_hash({
       'schema' => [
         'datasources/schemas/tags/base.schema.json',
         'datasources/schemas/tags/event.schema.json',
@@ -30,7 +30,7 @@ class Tourinsoft < Connector
       @source_filter.nil? || name.start_with?(@source_filter)
     }.each{ |name, syndication|
       # Empty medatadata to force output empty destination
-      kiba.source(MockSource, @job_id, name, nil, MockSource::Settings.from_hash({}))
+      kiba.source(MockSource, @job_id, nil, nil, MockSource::Settings.from_hash({}))
 
       kiba.source(
         self.class.source_class,
