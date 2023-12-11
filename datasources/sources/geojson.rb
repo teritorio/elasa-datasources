@@ -36,7 +36,7 @@ class GeoJsonSource < Source
   end
 
   def each
-    super(fetch(@settings.url))
+    super(ENV['NO_DATA'] ? [] : fetch(@settings.url))
   end
 
   def map_id(feat)

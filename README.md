@@ -30,6 +30,8 @@ ruby update.rb
 ruby update.rb demo
 ```
 
+Define env var `NO_DATA` to process and output only metadata.
+
 ## Docker
 
 ```

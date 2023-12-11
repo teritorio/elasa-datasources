@@ -278,7 +278,7 @@ class TourismSystemSource < Source
   # end
 
   def each
-    super(self.class.fetch_data(@settings.basic_auth, "/content/ts/#{@settings.id}/#{@settings.playlist_id}"))
+    super(ENV['NO_DATA'] ? [] : self.class.fetch_data(@settings.basic_auth, "/content/ts/#{@settings.id}/#{@settings.playlist_id}"))
   end
 
   def map_id(feat)

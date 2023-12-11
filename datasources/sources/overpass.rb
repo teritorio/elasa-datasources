@@ -39,7 +39,7 @@ class OverpassSource < Source
   end
 
   def each
-    super(overpass(@settings.query))
+    super(ENV['NO_DATA'] ? [] : overpass(@settings.query))
   end
 
   def map_id(feat)

@@ -33,7 +33,7 @@ class CsvSource < Source
   end
 
   def each
-    super(fetch(@settings.url, @settings.col_sep))
+    super(ENV['NO_DATA'] ? [] : fetch(@settings.url, @settings.col_sep))
   end
 
   def map_id(feat)

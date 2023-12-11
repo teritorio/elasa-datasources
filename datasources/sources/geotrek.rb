@@ -81,8 +81,7 @@ class GeotrekSource < Source
     }
     poi_ids_all = treks.pluck('poi_ids').flatten.uniq
     pois = fetch_pois(poi_ids_all)
-    super treks.collect{ |trek| [:trek, trek] } +
-      pois.collect{ |poi| [:poi, poi] }
+    super(ENV['NO_DATA'] ? [] : (treks.collect{ |trek| [:trek, trek] } + pois.collect{ |poi| [:poi, poi] }))
   end
 
   def practice_slug(practice)

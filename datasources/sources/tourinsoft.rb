@@ -55,7 +55,7 @@ class TourinsoftSource < Source
   end
 
   def each
-    super(self.class.fetch(@settings.client, @settings.syndication))
+    super(ENV['NO_DATA'] ? [] : self.class.fetch(@settings.client, @settings.syndication))
   end
 
   def map_id(feat)
