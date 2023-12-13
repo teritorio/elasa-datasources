@@ -1,0 +1,28 @@
+{
+    "type": "array",
+    "items": {
+        "type": "object",
+        "required": [
+            "select"
+        ],
+        "additionalProperties": false,
+        "properties": {
+            "select": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "interest": {
+                "type": "object",
+                "additionalProperties": true
+            },
+            "sources": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

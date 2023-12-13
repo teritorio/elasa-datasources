@@ -77,7 +77,7 @@ out center meta;
     super().deep_merge_array({
       'data' => @selectors.collect{ |selector|
         {
-          'select' => selector,
+          'select' => selector.is_a?(Array) ? selector : [selector],
           'interest' => @settings.interest&.to_h{ |key| [key, nil] },
           'sources' => [@job_id, @destination_id].uniq
         }

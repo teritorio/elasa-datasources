@@ -30,6 +30,8 @@ class ValidateTransformer < Transformer
     @i18n_schema = JSON.parse(File.new('datasources/schemas/i18n.schema.json').read)
     @i18n_schema['properties'] = { destination_id: { type: 'string' } }
 
+    @i18n_osm_tags = JSON.parse(File.new('datasources/schemas/osm_tags.schema.json').read)
+
     # Schema from https://geojson.org/schema/Feature.json
     @geojson_schema = JSON.parse(File.new('datasources/schemas/geojson-feature.schema.json').read)
   end
@@ -105,6 +107,12 @@ class ValidateTransformer < Transformer
     @schema = schema.schema
     @i18n = schema.i18n
     schema
+  end
+
+  sig { params(data: Source::OsmTagsRow).returns(T.nilable(Source::OsmTagsRow)) }
+  def process_osm_tags(data)
+    JSON::Validator.validate!(@i18n_osm_tags, data.data.collect{ |t| t.serialize.compact_blank })
+    data
   end
 
   def validate_i18n(properties)

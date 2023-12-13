@@ -72,7 +72,7 @@ class Destination
   sig { params(destination_id: T.nilable(String), data: Source::OsmTagsRow).void }
   def close_osm_tags(destination_id, data)
     destination = destination_id.nil? ? '' : "#{destination_id.gsub('/', '_')}."
-    File.write("#{@path}/#{destination}osm_tags.json", JSON.pretty_generate(data.data))
+    File.write("#{@path}/#{destination}osm_tags.json", JSON.pretty_generate(data.data.collect{ |t| t.serialize.compact_blank }))
   end
 
   sig { abstract.params(destination_id: String, rows: T.untyped).void }
