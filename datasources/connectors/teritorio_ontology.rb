@@ -60,8 +60,8 @@ class TeritorioOntology < Connector
       }
     }.flatten(2).compact.collect{ |osm_tags, osm_tags_extra, label, origin|
       splits = osm_tags.collect{ |osm_tag|
-        osm_tag[1..-2].split('][').collect{ |osm_tag|
-          osm_tag.split(/(=|~=|=~|!=|!~|~)/, 2).collect{ |s| unquote(s) }
+        osm_tag[1..-2].split('][').collect{ |ot|
+          ot.split(/(=|~=|=~|!=|!~|~)/, 2).collect{ |s| unquote(s) }
         }
       }
       osm_tags_extras += osm_tags_extra
