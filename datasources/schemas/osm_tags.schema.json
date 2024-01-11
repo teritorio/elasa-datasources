@@ -7,6 +7,15 @@
         ],
         "additionalProperties": false,
         "properties": {
+            "name": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": "string"
+                }
+            },
+            "icon": {
+                "type": "string"
+            },
             "select": {
                 "type": "array",
                 "items": {

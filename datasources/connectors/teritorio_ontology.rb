@@ -131,8 +131,10 @@ class TeritorioOntology < Connector
       schema.delete(key)
     }
 
-    osm_tags = ontology_tags.collect{ |tags, tags_extra, _splits, _label, origin|
+    osm_tags = ontology_tags.collect{ |tags, tags_extra, _splits, label, origin|
       {
+        'name' => label,
+        # 'icon' =>
         'select' => tags,
         'interest' => osm_tags_extra.slice(*tags_extra).values.inject(&:merge)&.transform_values{ |_values|
           # TODO: support values
