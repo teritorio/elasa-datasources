@@ -147,5 +147,5 @@ module TourinsoftSirtaquiMixin
     'Fête de ville, village, quartier' => 'Other', # FIXME
     'Meeting' => 'Other', # FIXME
     'Visite' => 'Other', # FIXME
-  }
+  }.freeze
 end

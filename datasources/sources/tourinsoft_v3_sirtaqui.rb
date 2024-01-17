@@ -23,8 +23,8 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
     JsonPath.on(object, "$.#{path}")
   end
 
-  def route(rs, distance)
-    rs&.select{ |r| !r['Modedelocomotion'].nil? }&.collect{ |r|
+  def route(routes, distance)
+    routes&.select{ |r| !r['Modedelocomotion'].nil? }&.collect{ |r|
       practice = r['Modedelocomotion']['ThesLibelle']
       duration = r['Tempsdeparcours']
       # distance = distance.gsub(',', '.').to_f
@@ -73,6 +73,24 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
     }
   end
 
+  def addr(feat)
+    nil if feat.dig('AdresseCompletes', 0).nil?
+
+    {
+      street: [feat['AdresseCompletes'][0]['Adresse1'], feat['AdresseCompletes'][0]['Adresse2'], feat['AdresseCompletes'][0]['Adresse3']].compact_blank.join(', '),
+      postcode: feat['AdresseCompletes'][0]['CodePostal'],
+      city: feat['AdresseCompletes'][0]['Commune'],
+    }.compact_blank
+  end
+
+  def pdfs(feat)
+    {
+      'en' => jp(feat, '.Fichierss[*].FichePDFGB.Url')&.first,
+      'fr' => jp(feat, '.Fichierss[*].FichePDFFR.Url')&.first,
+      'es' => jp(feat, '.Fichierss[*].FichePDFES.Url')&.first,
+    }.compact_blank
+  end
+
   def map_tags(feat)
     r = feat
 
@@ -105,18 +123,10 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
       'contact:pinterest': jp(r, '.ReseauxSociauxs[*].Pinterest')&.first,
       # jp(r, '.ReseauxSociauxs[0].GoogleMyBusiness')&.first,
       image: jp(r, '.Photoss[*].Photo.Url')&.compact_blank,
-      addr: r['AdresseCompletes'] && r['AdresseCompletes'][0] && {
-        street: [r['AdresseCompletes'][0]['Adresse1'], r['AdresseCompletes'][0]['Adresse2'], r['AdresseCompletes'][0]['Adresse3']].compact_blank.join(', '),
-        postcode: r['AdresseCompletes'][0]['CodePostal'],
-        city: r['AdresseCompletes'][0]['Commune'],
-      }.compact_blank || nil,
+      addr: addr(r),
       route: r['ObjectTypeName'] == 'Itinéraires touristiques' && route(r['LocomotionTempDifficultes'], r['Distance'])&.inject({
         gpx_trace: jp(r, '.Fichierss[*].TraceGPX.Url')&.first,
-        pdf: {
-          'en' => jp(r, '.Fichierss[*].FichePDFGB.Url')&.first,
-          'fr' => jp(r, '.Fichierss[*].FichePDFFR.Url')&.first,
-          'es' => jp(r, '.Fichierss[*].FichePDFES.Url')&.first,
-        }.compact_blank,
+        pdf: pdfs(r),
       }, :merge)&.compact_blank,
       'capacity:beds': jp(r, '.Capacites[*].Nombretotaldelits')&.first&.to_i,
       'capacity:rooms': jp(r, '.Capacites[*].Nombretotaldechambres')&.first&.to_i,
@@ -125,7 +135,7 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
       # 'capacity:cabins': r['NBREMHOME']&.to_i,
       # 'capacity:pitches': r['NBREEMP']&.to_i,
       #   opening_hours: osm_openning_hours,
-      stars: r['ClassementPrefectoral'] && TourinsoftSirtaquiMixin::CLASS[r['ClassementPrefectoral']['ThesLibelle']],
+      stars: TourinsoftSirtaquiMixin::CLASS[r.dig('ClassementPrefectoral', 'ThesLibelle')],
       internet_access: jp(r, '.PrestationsConfortss[*][?(@.ThesLibelle=="Wifi")]').any? ? 'wlan' : nil,
     }.merge(
       #   r['ObjectTypeName'] == 'Fêtes et manifestations' && {
