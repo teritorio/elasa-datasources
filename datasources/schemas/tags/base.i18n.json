@@ -41,7 +41,17 @@
     },
     "facebook": {
         "@default": {
-            "fr": "facebook"
+            "fr": "Facebook"
+        }
+    },
+    "contact:linkedin": {
+        "@default": {
+            "fr": "LinkedIn"
+        }
+    },
+    "contact:pinterest": {
+        "@default": {
+            "fr": "Pinterest"
         }
     },
     "addr": {
@@ -76,12 +86,12 @@
     },
     "instagram": {
         "@default": {
-            "fr": "instagram"
+            "fr": "Instagram"
         }
     },
     "twitter": {
         "@default": {
-            "fr": "twitter"
+            "fr": "Twitter"
         }
     },
     "image": {

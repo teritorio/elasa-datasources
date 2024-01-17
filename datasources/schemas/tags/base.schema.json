@@ -51,6 +51,12 @@
         "instagram": {
             "type": "string"
         },
+        "contact:linkedin": {
+            "type": "string"
+        },
+        "contact:pinterest": {
+            "type": "string"
+        },
         "image": {
             "type": "array",
             "items": {

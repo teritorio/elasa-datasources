@@ -53,6 +53,14 @@
                 "only"
             ]
         },
+        "diet:gluten_free": {
+            "enum": [
+                "yes",
+                "no",
+                "only",
+                "limited"
+            ]
+        },
         "cuisine": {
             "type": "array",
             "items": {

@@ -7,10 +7,12 @@ require 'active_support/all'
 
 require 'sorbet-runtime'
 require_relative 'tourinsoft'
+require_relative 'tourinsoft_sirtaqui_mixin'
 
 
 class TourinsoftSirtaquiSource < TourinsoftSource
   extend T::Sig
+  include TourinsoftSirtaquiMixin
 
   class Settings < TourinsoftSource::Settings
     const :photo_base_url, String
@@ -18,69 +20,6 @@ class TourinsoftSirtaquiSource < TourinsoftSource
 
   extend T::Generic
   SettingsType = type_member{ { upper: Settings } } # Generic param
-
-  @@cuisines = HashExcep[{
-    # Cuisine
-    'Burger' => { amenity: 'restaurant', cuisine: ['burger'] },
-    'Cuisine africaine' => { amenity: 'restaurant', cuisine: ['african'] },
-    'Cuisine asiatique' => { amenity: 'restaurant', cuisine: ['asian'] },
-    'Cuisine bistronomique' => { amenity: 'restaurant', cuisine: ['bistronomique'] },
-    'Cuisine des Iles' => { amenity: 'restaurant', cuisine: ['caribbean'] },
-    'Cuisine européenne' => { amenity: 'restaurant', cuisine: ['european'] },
-    'Cuisine gastronomique' => { amenity: 'restaurant', cuisine: ['fine_dining'] },
-    'Cuisine indienne' => { amenity: 'restaurant', cuisine: ['indian'] },
-    'Cuisine japonaise/sushi' => { amenity: 'restaurant', cuisine: %w[japanese sushi] },
-    'Cuisine locavore' => { amenity: 'restaurant', cuisine: ['local'] },
-    'Cuisine méditerranéenne' => { amenity: 'restaurant', cuisine: ['mediterranean'] },
-    'Cuisine nord-américaine' => { amenity: 'restaurant', cuisine: ['american'] },
-    'Cuisine régionale française' => { amenity: 'restaurant', cuisine: %w[regional french] },
-    'Cuisine sud-américaine' => { amenity: 'restaurant', cuisine: ['south_american'] },
-    'Cuisine traditionnelle' => { amenity: 'restaurant' }, # FIXME: add specific tags
-    # Diet
-    'Cuisine bio' => { amenity: 'restaurant', organic: 'only' },
-    'Cuisine casher' => { amenity: 'restaurant', 'diet:kosher': 'only' },
-    'Cuisine diététique' => { amenity: 'restaurant' }, # FIXME: diet:*
-    'Cuisine vegan' => { amenity: 'restaurant', 'diet:vegan': 'only' },
-    'Cuisine végétarienne' => { amenity: 'restaurant', 'diet:vegetarian': 'only' },
-    # Food
-    'Nouvelle cuisine française' => { amenity: 'restaurant', cuisine: ['new_french'] },
-    'Pizzas' => { amenity: 'restaurant', cuisine: ['pizza'] },
-    'Poisson / fruits de mer' => { amenity: 'restaurant', cuisine: %w[fish seafood] },
-    'Salades' => { amenity: 'fast_food', cuisine: ['salad'] },
-    'Sandwichs' => { amenity: 'fast_food', cuisine: ['sandwich'] },
-    'Tapas' => { amenity: 'restaurant', cuisine: ['tapas'] },
-    'Tartes' => { amenity: 'restaurant', cuisine: ['pie'] },
-    'Tartines' => { amenity: 'restaurant' }, # FIXME: add specific tags
-    'Triperies' => { amenity: 'restaurant' }, # FIXME: add specific tags
-    'Viandes' => { amenity: 'restaurant', cuisine: ['meat'] },
-    'Crustacés' => { amenity: 'restaurant', cuisine: ['seafood'] },
-    # Non Restaurant
-    'Glaces' => { amenity: 'ice_cream', cuisine: ['ice_cream'] },
-    'Pâtisseries' => { shop: 'pastry' },
-    'Fromagerie' => { shop: 'cheese' },
-  }]
-
-  def self.cuisines(cuisines)
-    cuisines.collect{ |cuisine|
-      @@cuisines[cuisine]
-    }.compact.inject(:deep_merge_array) || {}
-  end
-
-  @@class = HashExcep[{
-    nil => nil,
-    'Non classé' => nil,
-    '1 étoile' => '1',
-    '2 étoiles' => '2',
-    '3 étoiles' => '3',
-    '4 étoiles' => '4',
-    '5 étoiles' => '5',
-    'Aire naturelle' => nil,
-    'Parc résidentiel de loisirs classé' => nil,
-  }]
-
-  def self.classs(clas)
-    @@class[clas]
-  end
 
   @@days = HashExcep[{
     'Lundi' => 'Mo',
@@ -192,24 +131,6 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     [date_ons.compact.min, date_offs.compact.max, hours]
   end
 
-  @@practices = HashExcep[{
-    'en canoë' => 'canoe',
-    'à cheval' => 'horse',
-    'à pied' => 'hiking',
-    'à vélo' => 'bicycle',
-    'à VAE' => 'bicycle',
-    'à VTT' => 'mtb',
-    'en voiture' => 'car',
-  }]
-
-  @@difficulties = HashExcep[{
-    'Très facile' => 'easy',
-    'Facile' => 'easy',
-    'Moyenne' => 'normal',
-    'Difficile' => 'hard',
-    nil => nil,
-  }]
-
   def route(itis, distance)
     distance &&= distance.gsub(',', '.').to_f
 
@@ -217,15 +138,13 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     itis&.split('#')&.collect{ |iti|
       practice, duration, difficulty = iti.split('|')
 
-      practice_slug = @@practices[practice]
+      practice_slug = TourinsoftSirtaquiMixin::PRACTICES[practice]
 
-      duration_matches = duration.gsub(' ', '').downcase.match(/(?:([0-9]+)jours?)?(?:([0-9]+)h)?(?:([0-9]+).*)?/)
-      duration_matches = duration_matches[1..].to_a.collect(&:to_i)
-      duration = (duration_matches[0] * 24 + duration_matches[1]) * 60 + duration_matches[2]
+      duration = route_duration(duration)
 
       {
         "#{practice_slug}": {
-          difficulty: @@difficulties[difficulty],
+          difficulty: TourinsoftSirtaquiMixin::DIFFICULTIES[difficulty],
           duration: duration,
           length: distance,
         }.compact_blank
@@ -233,78 +152,18 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     }
   end
 
-  # https://www.datatourisme.fr/ontology/core/#EntertainmentAndEvent
-  @@event_type = {
-    # SaleEvent
-    # '' => 'SaleEvent',
-    'Brocante' => 'BricABrac',
-    'Foire ou salon' => 'FairOrShow',
-    'Marché' => 'Market',
-    'Portes ouvertes' => 'OpenDay',
-    'Vide greniers Braderie' => 'GarageSale',
-    # BusinessEvent
-    'Atelier/Stage' => 'TrainingWorkshop',
-    # '' => 'ExecutiveBoardMeeting',
-    # '' => 'Congress',
-    # '' => 'BoardMeeting',
-    # '' => 'WorkMeeting',
-    # '' => 'Seminar',
-    # SocialEvent
-    # '' => 'SocialEvent', # Generic
-    'Animations locales' => 'LocalAnimation',
-    'Carnaval' => 'Carnival',
-    'Défilé Cortège Parade' => 'Parade',
-    # '' => 'TraditionalCelebration',
-    # '' => 'PilgrimageAndProcession',
-    'Évènement religieux' => 'ReligiousEvent',
-    # CulturalEvent
-    # '' => 'CulturalEvent', # Culturelle, Generic
-    'Commémoration' => 'Commemoration',
-    'Concert' => 'Concert',
-    'Conférence' => 'Conference',
-    # '' => 'ArtistSigning',
-    'Animation Jeune Public' => 'ChildrensEvent',
-    'Exposition' => 'Exhibition',
-    'Festival' => 'Festival',
-    # '' => 'Reading',
-    'Opéra' => 'Opera',
-    'Théâtre' => 'TheaterEvent',
-    # '' => 'ScreeningEvent',
-    # '' => 'Recital',
-    # '' => 'VisualArtsEvent',
-    'Spectacle' => 'ShowEvent',
-    # '' => 'CircusEvent',
-    # '' => 'DanceEvent', # Danse
-    # '' => 'Harvest',
-    # SportsEvent
-    'Loisir sportif' => 'SportsEvent', # Generic
-    'Compétition sportive' => 'SportsCompetition',
-    # '' => 'SportsDemonstration',
-    # '' => 'Game',
-    'Rallye' => 'Rally',
-    'Loisir nature' => 'Rambling', # FIXME: mapping to be checked
-
-    # Other. Not part of datatourisme ontology
-    'Animation patrimoine' => 'Other', # FIXME
-    'Dégustations / Repas' => 'Other', # FIXME
-    'Divertissement' => 'Other', # FIXME
-    'Fête de ville, village, quartier' => 'Other', # FIXME
-    'Meeting' => 'Other', # FIXME
-    'Visite' => 'Other', # FIXME
-  }
-
   sig { returns(SchemaRow) }
   def schema
     super.with(
       i18n: {
         'route' => {
-          'values' => @@practices.compact.to_a.to_h(&:reverse).transform_values{ |v| { '@default:full' => { 'fr' => v } } }
+          'values' => TourinsoftSirtaquiMixin::PRACTICES.compact.to_a.to_h(&:reverse).transform_values{ |v| { '@default:full' => { 'fr' => v } } }
         }
       }.merge(
-        *@@practices.values.collect { |practice|
+        *TourinsoftSirtaquiMixin::PRACTICES.values.collect { |practice|
           {
             "route:#{practice}:difficulty" => {
-              'values' => @@difficulties.compact.to_a.to_h(&:reverse).transform_values{ |v| { '@default:full' => { 'fr' => v } } }
+              'values' => TourinsoftSirtaquiMixin::DIFFICULTIES.compact.to_a.to_h(&:reverse).transform_values{ |v| { '@default:full' => { 'fr' => v } } }
             }
           }
         }
@@ -386,14 +245,14 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       'capacity:cabins': r['NBREMHOME']&.to_i,
       'capacity:pitches': r['NBREEMP']&.to_i,
       opening_hours: osm_openning_hours,
-      stars: self.class.classs(r['CLAS']),
+      stars: TourinsoftSirtaquiMixin::CLASS[r['CLAS']],
     }.merge(
       r['ObjectTypeName'] == 'Fêtes et manifestations' && {
         start_date: date_on,
         end_date: date_off,
-        event: multiple_split(r, ['CATFMA']).collect{ |t| @@event_type[t] },
+        event: multiple_split(r, ['CATFMA']).collect{ |t| TourinsoftSirtaquiMixin::EVENT_TYPE[t] },
       } || {},
-      r['TYPE'] == 'Restaurant' ? self.class.cuisines(multiple_split(r, ['SPECIALITES'])) : {},
+      r['TYPE'] == 'Restaurant' ? cuisines(multiple_split(r, ['SPECIALITES'])) : {},
       r['TYPE']&.include?('Hôtel') ? { tourism: 'hotel' } : {},
     )
   end

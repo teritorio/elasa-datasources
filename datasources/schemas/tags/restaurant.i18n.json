@@ -152,6 +152,33 @@
             }
         }
     },
+    "diet:gluten_free": {
+        "@default": {
+            "fr": "sans gluten"
+        },
+        "values": {
+            "yes": {
+                "@default:full": {
+                    "fr": "produits sans gluten"
+                }
+            },
+            "no": {
+                "@default:full": {
+                    "fr": "pas produit sans gluten"
+                }
+            },
+            "only": {
+                "@default:full": {
+                    "fr": "sans gluten uniquement"
+                }
+            },
+            "limited": {
+                "@default:full": {
+                    "fr": "en sans gluten"
+                }
+            }
+        }
+    },
     "cuisine": {
         "@default": {
             "fr": "cuisine"
