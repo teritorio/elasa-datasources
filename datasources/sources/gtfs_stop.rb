@@ -15,6 +15,7 @@ class GtfsStopSource < GdalSource
     const :gdal_command, String, default: 'ogr2ogr -f GeoJSON {{tmp_geojson}} -dialect SQLITE -sql "
       SELECT
         stops.*,
+        routes.route_color,
         group_concat(DISTINCT routes.route_short_name) AS route_ref
       FROM
         stops
@@ -44,6 +45,7 @@ class GtfsStopSource < GdalSource
     r = feat['properties']
     {
       name: { fr: r['stop_name'] }.compact_blank,
+      colour: r['route_color'],
       route_ref: r['route_ref'].split(',')
     }
   end
