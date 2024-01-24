@@ -256,6 +256,7 @@ class ApidaeSource < Source
     'Véloroute et voie verte' => 'bicycle',
     'Itinéraire de Vélo à Assistance Electrique' => 'bicycle',
     'Voie verte' => 'bicycle',
+    'Véloroute' => 'bicycle',
     # mtb
     'Itinéraire VTT' => 'mtb',
     'Espace VTT' => 'mtb',
