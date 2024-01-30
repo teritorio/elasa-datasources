@@ -19,7 +19,7 @@ class OverpassSelectSource < OverpassSource
       T::Hash[String, T.any(String, T::Boolean)],
       T::Array[T::Hash[String, T.any(String, T::Boolean)]],
     ))
-    const :relation_id, T.nilable(Integer)
+    const :relation_ids, T.nilable(T::Array[Integer])
     const :interest, T.nilable(T::Array[String])
   end
 
@@ -55,10 +55,10 @@ class OverpassSelectSource < OverpassSource
             end
           }.join("\n")
         )
-        area_id = 3_600_000_000 + T.must(settings.relation_id)
+        area_ids = T.must(settings.relation_ids).collect{ |id| 3_600_000_000 + id }.collect(&:to_s).join(',')
         "
 [out:json][timeout:25];
-area(#{area_id})->.a;
+area(id:#{area_ids})->.a;
 (
 #{query_selectors}
 );
