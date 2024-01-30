@@ -94,19 +94,18 @@ class GeotrekSource < Source
     }][(practice&.dig('name', 'en') || practice&.dig('name', 'fr'))&.parameterize]
   end
 
-  sig { returns(MetadataRow) }
-  def metadata
-    super.deep_merge_array({
-      data: @practices.to_h{ |practice_id, practice|
-        [
-          practice_slug(practice_id),
-          {
-            name: practice['name'],
-            attribution: @settings.attribution,
-          }.compact_blank
-        ]
-      }.compact_blank
-    })
+  sig { returns(T::Array[MetadataRow]) }
+  def metadatas
+    super + @practices.collect{ |practice_id, practice|
+      MetadataRow.new({
+        data: {
+          practice_slug(practice_id) => Metadata.from_hash({
+            'name' => practice['name'],
+            'attribution' => @settings.attribution,
+          })
+        }.compact_blank
+      })
+    }
   end
 
   def map_destination_id(type_feat)

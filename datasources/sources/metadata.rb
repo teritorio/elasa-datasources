@@ -25,11 +25,11 @@ class MetadataSource < Source
     }
   end
 
-  sig { returns(MetadataRow) }
-  def metadata
-    super.deep_merge_array({
+  sig { returns(T::Array[MetadataRow]) }
+  def metadatas
+    [super[0].deep_merge_array({
       'data' => load(@settings.meta)&.inject({}, &:deep_merge_array),
-    })
+    })]
   end
 
   sig { returns(SchemaRow) }

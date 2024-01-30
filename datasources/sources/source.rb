@@ -79,17 +79,16 @@ class Source
     @settings = settings
   end
 
-  sig { returns(MetadataRow) }
-  def metadata
-    MetadataRow.new(
-      destination_id: @destination_id,
+  sig { returns(T::Array[MetadataRow]) }
+  def metadatas
+    [MetadataRow.new(
       data: {
         @destination_id => Metadata.from_hash({
           'name' => @name,
           'attribution' => @settings.attribution
         }).deep_merge_array(@settings.metadata)
       }.compact_blank
-    )
+    )]
   end
 
   sig { returns(SchemaRow) }
@@ -219,15 +218,17 @@ class Source
   end
 
   def each(raw)
-    metadata_data = metadata
-    yield [:metadata, metadata_data]
+    metadata_datas = metadatas
+    metadata_datas.each{ |metadata_data|
+      yield [:metadata, metadata_data]
+    }
     schema_data = schema
     yield [:schema, schema_data]
     osm_tags_data = osm_tags
     yield [:osm_tags, osm_tags_data]
 
     log = "    > #{self.class.name}, #{@destination_id.inspect}: #{raw.size}"
-    log += ' +metadata' if metadata_data.present?
+    log += ' +metadata' if metadata_datas.present?
     log += ' +schema' if schema_data.schema.present?
     log += ' +i18n' if schema_data.i18n.present?
     log += ' +osm_tags' if osm_tags_data.data.present?
