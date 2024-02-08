@@ -306,32 +306,32 @@
             },
             "arab": {
                 "@default:full": {
-                    "fr": "vuisine arabe"
+                    "fr": "cuisine arabe"
                 }
             },
             "asian": {
                 "@default:full": {
-                    "fr": "vuisine asiatique"
+                    "fr": "cuisine asiatique"
                 }
             },
             "indian": {
                 "@default:full": {
-                    "fr": "vuisine indienne"
+                    "fr": "cuisine indienne"
                 }
             },
             "italian": {
                 "@default:full": {
-                    "fr": "vuisine italienne"
+                    "fr": "cuisine italienne"
                 }
             },
             "latin_american": {
                 "@default:full": {
-                    "fr": "vuisine latino-américaine"
+                    "fr": "cuisine latino-américaine"
                 }
             },
             "spanish": {
                 "@default:full": {
-                    "fr": "vuisine espagnole"
+                    "fr": "cuisine espagnole"
                 }
             },
             "crepe": {
