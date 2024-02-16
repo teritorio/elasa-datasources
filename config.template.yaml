@@ -9,5 +9,5 @@ geotrek:
 ontology:
   connector:
     type: TeritorioOntology
-    relation_id: 7376 # Landes
+    relation_ids: [7376] # Landes
     url: https://vecto.teritorio.xyz/data/teritorio-tourism-ontology-latest.json
