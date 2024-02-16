@@ -25,6 +25,7 @@ class DerivatedTagTransformer < Transformer
   end
 
   def process_data(row)
+    row[:properties][@property] ||= {}
     row[:properties][@property][@key] = @lambda_value.call(row[:properties])
     row
   end
