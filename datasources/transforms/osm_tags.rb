@@ -75,18 +75,30 @@ class OsmTags < Transformer
       [k, @multiple.include?(k) ? v.split(';').collect(&:strip) : v]
     }.select{ |k, _v| !k.nil? }.to_h
 
-    %i[addr ref name description source].each{ |key|
+    (@@names + %i[addr ref description source]).each{ |key|
       value = tags.delete(key)
       tags = group(key, tags)
       tags = tags.transform_keys(&:to_sym)
 
       # else
       # tags[key] = (tags[key] || {}).merge({ '' => value })
-      if !value.nil? && %i[name description].include?(key) && !tags.dig(key, 'fr')
+      if !value.nil? && (@@names + %i[description]).include?(key) && !tags.dig(key, 'fr')
         tags[key] = (tags[key] || {}).merge({ 'fr' => value })
       end
       # else
       # tags[key] = (tags[key] || {}).merge({ '' => value })
+    }
+
+    # Fill default name
+    @@names.collect{ |name| tags[name]&.keys }.compact.flatten.uniq.each{ |lang|
+      name_lang = @@names.find{ |name| tags.dig(name, lang) }
+      if name_lang
+        if tags[:name]
+          tags[:name][lang] = tags[name_lang][lang]
+        else
+          tags[:name] = { lang => tags[name_lang][lang] }
+        end
+      end
     }
 
     # Move mobile to phone
@@ -118,6 +130,13 @@ class OsmTags < Transformer
     row[:properties][:tags] = process_tags(row[:properties][:tags])
     row
   end
+
+  @@names = %i[
+    name
+    alt_name
+    loc_name
+    official_name
+  ]
 
   # Part off addr:*, that could also be used in contact:*
   @@contact_addr = %i[

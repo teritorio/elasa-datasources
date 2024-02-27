@@ -21,7 +21,22 @@
     },
     "name": {
         "@default": {
-            "fr": "nom du lieu"
+            "fr": "nom"
+        }
+    },
+    "alt_name": {
+        "@default": {
+            "fr": "nom alternatif"
+        }
+    },
+    "loc_name": {
+        "@default": {
+            "fr": "appellation locale"
+        }
+    },
+    "official_name": {
+        "@default": {
+            "fr": "appellation officielle"
         }
     },
     "opening_hours": {

@@ -18,6 +18,15 @@
         "name": {
             "$ref": "#/$defs/multilingual"
         },
+        "alt_name": {
+            "$ref": "#/$defs/multilingual"
+        },
+        "loc_name": {
+            "$ref": "#/$defs/multilingual"
+        },
+        "official_name": {
+            "$ref": "#/$defs/multilingual"
+        },
         "description": {
             "$ref": "#/$defs/multilingual"
         },

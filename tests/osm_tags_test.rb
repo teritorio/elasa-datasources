@@ -30,4 +30,14 @@ class TestOsmTags < Test::Unit::TestCase
     assert_equal({ addr: { 'street' => 'a' } }, map({ 'addr:street' => 'a', 'contact:street' => 'b' }))
     assert_equal({ addr: { 'street' => 'a' } }, map({ 'addr:street' => 'a', 'contact:street' => 'b', 'contact:housenumber' => '666' }))
   end
+
+  def test_name
+    assert_equal({ name: { 'fr' => 'a' } }, map({ 'name' => 'a' }))
+    assert_equal({ name: { 'fr' => 'a' } }, map({ 'name:fr' => 'a' }))
+  end
+
+  def test_default_name
+    assert_equal({ name: { 'fr' => 'a' }, alt_name: { 'fr' => 'a' } }, map({ 'alt_name' => 'a' }))
+    assert_equal({ name: { 'fr' => 'a', 'de' => 'b' }, alt_name: { 'de' => 'b' } }, map({ 'name:fr' => 'a', 'alt_name:de' => 'b' }))
+  end
 end
