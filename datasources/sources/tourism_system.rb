@@ -114,11 +114,11 @@ class TourismSystemSource < Source
 
   def self.openning_day(day)
     d = @@days[day['day']]
-    hours = day['schedules'].select{ |s| s['startTime'] }.collect{ |s|
+    hours = day['schedules']&.select{ |s| s['startTime'] }&.collect{ |s|
       hours_start = s['startTime'][0..4]
       hours_end = s['endTime'].nil? ? nil : s['endTime'][0..4]
       hours_start + (hours_end.nil? ? '+' : "-#{hours_end}")
-    }.join(',')
+    }&.join(',')
     [d, hours]
   end
 
