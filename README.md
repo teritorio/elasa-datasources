@@ -8,11 +8,10 @@ bundle exec tapioca init
 # bundle exec srb rbi suggest-typed
 ```
 
-Tests and Validation
+Linting
 ```sh
 bundle exec srb typecheck
 bundle exec rubocop -c .rubocop.yml --autocorrect
-# bundle exec rake test
 ```
 
 ### Tests
