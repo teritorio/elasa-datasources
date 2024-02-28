@@ -52,13 +52,16 @@
             }
         },
         "facebook": {
-            "type": "string"
+            "type": "string",
+            "format": "uri"
         },
         "twitter": {
-            "type": "string"
+            "type": "string",
+            "format": "uri"
         },
         "instagram": {
-            "type": "string"
+            "type": "string",
+            "format": "uri"
         },
         "contact:linkedin": {
             "type": "string"

@@ -63,6 +63,15 @@ class OsmTags < Transformer
     end
   end
 
+  def tags_to_url(tags)
+    @@url_format.each{ |key, formatter|
+      if tags.include?(key) && !tags[key].start_with?('http')
+        tags[key] = formatter.gsub('$1', tags[key])
+      end
+    }
+    tags
+  end
+
   def process_tags(tags)
     # There is an adresse defined by addr:* ?
     has_flat_addr = tags.keys.find{ |k| k.start_with?('addr:') }
@@ -74,6 +83,8 @@ class OsmTags < Transformer
       # Split multi-values fields
       [k, @multiple.include?(k) ? v.split(';').collect(&:strip) : v]
     }.select{ |k, _v| !k.nil? }.to_h
+
+    tags = tags_to_url(tags)
 
     (@@names + %i[addr ref description source]).each{ |key|
       value = tags.delete(key)
@@ -174,4 +185,10 @@ class OsmTags < Transformer
     quarter
     block_number
   ]
+
+  @@url_format = {
+    facebook: 'https://www.facebook.com/$1',
+    twitter: 'https://twitter.com/$1',
+    instagram: 'https://www.instagram.com/$1',
+  }
 end

@@ -19,9 +19,9 @@ class TestOsmTags < Test::Unit::TestCase
   end
 
   def test_contact_social
-    assert_equal({ facebook: 'a' }, map({ facebook: 'a' }))
-    assert_equal({ facebook: 'b' }, map({ 'contact:facebook': 'b' }))
-    assert_equal({ facebook: 'a' }, map({ facebook: 'a', 'contact:facebook': 'b' }))
+    assert_equal({ facebook: 'https://www.facebook.com/a' }, map({ facebook: 'a' }))
+    assert_equal({ facebook: 'https://www.facebook.com/b' }, map({ 'contact:facebook': 'b' }))
+    assert_equal({ facebook: 'https://www.facebook.com/a' }, map({ facebook: 'a', 'contact:facebook': 'b' }))
   end
 
   def test_contact_addr
@@ -39,5 +39,10 @@ class TestOsmTags < Test::Unit::TestCase
   def test_default_name
     assert_equal({ name: { 'fr' => 'a' }, alt_name: { 'fr' => 'a' } }, map({ 'alt_name' => 'a' }))
     assert_equal({ name: { 'fr' => 'a', 'de' => 'b' }, alt_name: { 'de' => 'b' } }, map({ 'name:fr' => 'a', 'alt_name:de' => 'b' }))
+  end
+
+  def test_url_formatter
+    assert_equal({ facebook: 'https://www.facebook.com/a' }, map({ 'facebook' => 'a' }))
+    assert_equal({ facebook: 'https://face.book' }, map({ 'facebook' => 'https://face.book' }))
   end
 end
