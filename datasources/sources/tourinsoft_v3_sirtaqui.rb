@@ -106,9 +106,10 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
     #   )
     # end
 
+    id = map_id(r)
     {
       ref: {
-        'FR:CRTA': map_id(r),
+        'FR:CRTA': id,
       },
       name: { fr: r['SyndicObjectName'] }.compact_blank,
       description: { fr: jp(r, '.DescriptionsCommercialess[*].Descriptioncommerciale')&.first }.compact_blank,
@@ -116,9 +117,9 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
       'website:details': { fr: @settings.website_details_url&.gsub('{{id}}', r['SyndicObjectID']) }.compact_blank,
       phone: jp(r, '.MoyensDeComs[*][?(@.TypedaccesTelecom.ThesLibelle=="Téléphone filaire")]')&.pluck('CoordonneesTelecom')&.compact_blank,
       email: jp(r, '.MoyensDeComs[*][?(@.TypedaccesTelecom.ThesLibelle=="Mél")]')&.pluck('CoordonneesTelecom')&.compact_blank,
-      facebook: jp(r, '.ReseauxSociauxs[*].Facebook')&.first,
-      twitter: jp(r, '.ReseauxSociauxs[*].Twitter')&.first,
-      instagram: jp(r, '.ReseauxSociauxs[*].Instagram')&.first,
+      facebook: valid_url(id, :facebook, jp(r, '.ReseauxSociauxs[*].Facebook')&.first),
+      twitter: valid_url(id, :twitter, jp(r, '.ReseauxSociauxs[*].Twitter')&.first),
+      instagram: valid_url(id, :instagram, jp(r, '.ReseauxSociauxs[*].Instagram')&.first),
       'contact:linkedin': jp(r, '.ReseauxSociauxs[*].Linkedin')&.first,
       'contact:pinterest': jp(r, '.ReseauxSociauxs[*].Pinterest')&.first,
       # jp(r, '.ReseauxSociauxs[0].GoogleMyBusiness')&.first,

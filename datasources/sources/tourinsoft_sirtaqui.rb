@@ -215,9 +215,10 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       )
     end
 
+    id = map_id(r)
     {
       ref: {
-        'FR:CRTA': map_id(r),
+        'FR:CRTA': id,
       },
       name: { fr: r['NOMOFFRE'] }.compact_blank,
       description: { fr: r['DESCRIPTIF'] }.compact_blank,
@@ -225,9 +226,9 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       'website:details': { fr: @settings.website_details_url&.gsub('{{id}}', r['SyndicObjectID']) }.compact_blank,
       phone: multiple_split(r, %w[TEL TELCOMPLET TELMOB TELMOBCOMPLET], 0),
       email: multiple_split(r, %w[MAIL MAILCOMPLET], 0),
-      facebook: r['FACEBOOK'],
-      twitter: r['TWITTER'],
-      instagram: r['INSTAGRAM'],
+      facebook: valid_url(id, :facebook, r['FACEBOOK']),
+      twitter: valid_url(id, :twitter, r['TWITTER']),
+      instagram: valid_url(id, :instagram, r['INSTAGRAM']),
       image: multiple_split(r, %w[PHOTO PHOTOCOMPLET PROPPRESENTATIONPHOTO PHOTO_DIAPO], 0)&.collect{ |p| "#{@settings.photo_base_url}#{p}" },
       addr: r['COMMUNE'] && {
         street: [r['AD1'], r['AD1SUITE'], r['AD2'], r['AD3']].compact_blank.join(', '),
