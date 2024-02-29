@@ -145,10 +145,10 @@ class TourismSystemSource < Source
         day['type']
       }
 
-      day_hour = (((day_by_types['09.03.02'] || []) + (day_by_types['09.03.04'] || [])).pluck('days').flatten(1).collect{ |day|
+      day_hour = (((day_by_types['09.03.02'] || []) + (day_by_types['09.03.04'] || [])).pluck('days').flatten(1).compact.collect{ |day|
         # Ouverture, Visite
         openning_day(day)
-      } + ((day_by_types['09.03.01'] || []) + (day_by_types['09.03.03'] || [])).pluck('days').flatten(1).collect{ |day|
+      } + ((day_by_types['09.03.01'] || []) + (day_by_types['09.03.03'] || [])).pluck('days').flatten(1).compact.collect{ |day|
         # Fermeture, Relache
         openning_day(day) + ['off']
       }).group_by{ |od|
