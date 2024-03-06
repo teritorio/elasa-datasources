@@ -56,6 +56,7 @@ module TourinsoftSirtaquiMixin
   CLASS = HashExcep[{
     nil => nil,
     'Non classé' => nil,
+    'En cours de classement' => nil,
     '1 étoile' => '1',
     '2 étoiles' => '2',
     '3 étoiles' => '3',
@@ -73,6 +74,7 @@ module TourinsoftSirtaquiMixin
     'à vélo' => 'bicycle',
     'à VAE' => 'bicycle',
     'à VTT' => 'mtb',
+    'en gravel' => 'bicycle',
     'en voiture' => 'car',
   }]
 
