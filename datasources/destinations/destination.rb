@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 # typed: true
 
+require 'csv'
+
 class Destination
   extend T::Sig
   extend T::Helpers
@@ -59,7 +61,17 @@ class Destination
   def close_metadata(destination_id, data)
     destination = destination_id.nil? ? '' : "#{destination_id.gsub('/', '_')}."
     data.data.delete(nil)
-    File.write("#{@path}/#{destination}metadata.json", JSON.pretty_generate(data.data.transform_keys{ |key| key&.gsub('/', '_') }))
+    content = T.cast(data.data.transform_keys{ |key| key&.gsub('/', '_') }, T::Hash[String, Source::Metadata])
+    File.write("#{@path}/#{destination}metadata.json", JSON.pretty_generate(content))
+
+    column_names = content.values.collect{ |source| source.name&.keys }.compact.flatten.uniq
+    content_csv = CSV.generate { |csv|
+      csv << ['id'] + column_names.collect{ |lang| "name:#{lang}" } + ['attribution']
+      content.each { |id, source|
+        csv << [id] + column_names.collect{ |lang| source.name&.[](lang) } + [source.attribution]
+      }
+    }
+    File.write("#{@path}/#{destination}metadata.csv", content_csv)
   end
 
   sig { params(destination_id: T.nilable(String), data: Source::SchemaRow).void }
