@@ -63,7 +63,11 @@ end
   !@project || project == @project
 }.each { |project, jobs|
   dir = "data/#{project}"
-  FileUtils.makedirs(dir)
+  if @datasource.nil? # Full run, drop and recreate
+    dir += '_temp'
+    FileUtils.rm_rf(dir)
+    FileUtils.makedirs(dir)
+  end
 
   logging_appender = Logging.appenders.file(
     "#{dir}/log.txt",
@@ -98,6 +102,12 @@ end
   rescue StandardError => e
     logger.error(e.message)
     logger.error(e.backtrace&.join("\n"))
+  end
+
+  if @datasource.nil? # Full run, drop and recreate
+    dir_finnal = "data/#{project}"
+    FileUtils.rm_rf(dir_finnal)
+    FileUtils.mv(dir, dir_finnal)
   end
 
   Logging.logger.root.remove_appenders(logging_appender)
