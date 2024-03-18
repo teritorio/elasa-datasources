@@ -305,7 +305,7 @@ class ApidaeSource < Source
   end
 
   def select(feat)
-    feat['ouverture']['fermeTemporairement'] != 'FERME_TEMPORAIREMENT'
+    feat.dig('ouverture', 'fermeTemporairement') != 'FERME_TEMPORAIREMENT'
   end
 
   def map_id(feat)
@@ -313,11 +313,11 @@ class ApidaeSource < Source
   end
 
   def map_updated_at(feat)
-    feat['gestion']['dateModification']
+    feat.dig('gestion', 'dateModification')
   end
 
   def map_geometry(feat)
-    feat['localisation']['geolocalisation']['geoJson']
+    feat.dig('localisation', 'geolocalisation', 'geoJson')
   end
 
   def map_tags(feat)
