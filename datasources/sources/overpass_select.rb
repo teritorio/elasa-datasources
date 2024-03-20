@@ -41,7 +41,7 @@ class OverpassSelectSource < OverpassSource
           end
           selects.collect{ |select|
             if select.is_a?(String)
-              "nwr#{select};"
+              "nwr#{select}(area.a);"
             else
               selector = T.cast(select, T::Hash[String, T.untyped]).collect{ |k, v|
                 if v.nil?
