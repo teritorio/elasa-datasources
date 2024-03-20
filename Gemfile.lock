@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/teritorio/overpass_parser-rb.git
+  revision: f65489d03ffca1f5dc9d365d6d87d296ea6af5a1
+  specs:
+    overpass_parser (1.0.0)
+      rice (~> 4.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -85,6 +92,7 @@ GEM
       sorbet-runtime (>= 0.5.9204)
     regexp_parser (2.9.0)
     rexml (3.2.6)
+    rice (4.3.1)
     rubocop (1.62.1)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
@@ -165,6 +173,7 @@ DEPENDENCIES
   kiba
   logging
   nokogiri
+  overpass_parser!
   psych
   racc
   rake

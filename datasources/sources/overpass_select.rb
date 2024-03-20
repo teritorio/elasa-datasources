@@ -3,6 +3,7 @@
 
 require 'active_support/all'
 require 'cgi'
+require 'overpass_parser/visitor'
 
 require 'sorbet-runtime'
 
@@ -70,18 +71,57 @@ out center meta;
     super(job_id, destination_id, name, settings.with(query: query))
   end
 
+  def deep_select(object, &block)
+    if object.is_a?(Array)
+      object.collect{ |o|
+        deep_select(o, &block)
+      }.flatten(1).compact
+    elsif object.is_a?(Hash)
+      deep_select(object.values, &block) + (block.call(object) ? [object] : [])
+    end
+  end
+
   sig { returns(OsmTagsRow) }
   def osm_tags
-    return super() if !@settings.select || @settings.select.is_a?(String)
+    if @selectors.blank?
+      tree = OverpassParser.tree(@settings.query)
+      tags = deep_select(tree) { |o| o[:type] == :selector }.collect{ |selector|
+        if selector[:operator].nil?
+          if !selector[:not]
+            [selector[:key], nil]
+          end
+        elsif selector[:operator][0] == '='
+          [selector[:key], [selector[:value]]]
+        else
+          [selector[:key], nil]
+        end
+      }.compact.to_h
 
-    super().deep_merge_array({
-      'data' => @selectors.collect{ |selector|
-        {
-          'select' => selector.is_a?(Array) ? selector : [selector],
-          'interest' => @settings.interest&.to_h{ |key| [key, nil] },
-          'sources' => [@job_id, @destination_id].uniq
-        }
+      select = tags.collect{ |k, v|
+        s = "[\"#{k.gsub('\"', '\\\"')}\""
+        if !v.nil?
+          s += v.size == 1 ? '=' : '~'
+          s += v.collect{ |w| "\"#{w.gsub('\"', '\\\"')}\"" }.join('|')
+        end
+        s + ']'
       }
-    })
+      super().deep_merge_array({
+        'data' => [{
+          'select' => select,
+          'interest' => tags.merge(@settings.interest&.to_h{ |key| [key, nil] } || {}),
+          'sources' => [@job_id, @destination_id].uniq
+        }]
+      })
+    else
+      super().deep_merge_array({
+        'data' => @selectors.collect{ |selector|
+          {
+            'select' => selector.is_a?(Array) ? selector : [selector],
+            'interest' => @settings.interest&.to_h{ |key| [key, nil] },
+            'sources' => [@job_id, @destination_id].uniq
+          }
+        }
+      })
+    end
   end
 end

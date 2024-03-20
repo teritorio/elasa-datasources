@@ -14,6 +14,7 @@ gem 'json-schema'
 gem 'kiba'
 gem 'logging'
 gem 'nokogiri'
+gem 'overpass_parser', git: 'https://github.com/teritorio/overpass_parser-rb.git'
 gem 'sorbet-runtime'
 gem 'yaml'
 

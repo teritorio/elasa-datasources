@@ -26,7 +26,7 @@ bundle exec rake test
 ruby update.rb
 
 # Or partial update
-ruby update.rb demo
+bundler exec ruby update.rb demo
 ```
 
 Define env var `NO_DATA` to process and output only metadata.
@@ -35,8 +35,8 @@ Define env var `NO_DATA` to process and output only metadata.
 
 ```
 docker-compose build
-docker-compose run --rm datasources ruby update.rb
-docker-compose run --rm datasources ruby update.rb demo
+docker-compose run --rm datasources bundler exec ruby update.rb
+docker-compose run --rm datasources bundler exec ruby update.rb demo
 ```
 
 Run NGINX http server

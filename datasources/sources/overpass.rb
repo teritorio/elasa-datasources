@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 # typed: true
 
-# require 'yaml'
 require 'http'
-# require 'active_support/all'
-
 require 'sorbet-runtime'
 
 require_relative 'source'
