@@ -17,6 +17,7 @@ RUN apt update -y && apt install -y \
     ruby-json
 
 ADD Gemfile .
+ADD Gemfile.lock .
 RUN bundle config --global silence_root_warning 1
 RUN bundle install
 
