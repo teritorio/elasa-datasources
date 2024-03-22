@@ -91,20 +91,60 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
     }.compact_blank
   end
 
+  @@days = HashExcep[{
+    'lundi' => 'Mo',
+    'mardi' => 'Tu',
+    'mercredi' => 'We',
+    'jeudi' => 'Th',
+    'vendredi' => 'Fr',
+    'samedi' => 'Sa',
+    'dimanche' => 'Su',
+  }]
+
+  def self.openning(periode_ouvertures)
+    return nil if periode_ouvertures.blank?
+
+    periode_ouverture = periode_ouvertures[0]
+
+    date_on = periode_ouverture['Datededebut']&.[](0..9)
+    date_off = periode_ouverture['Datedefin']&.[](0..9)
+
+    # close_days = convert(periode_ouvertures['Joursdefermeture']) ## TODO
+
+    hours = (
+      if periode_ouverture.key?('Heuredouverture1')
+        %w[Heuredouverture1 Heuredefermeture1 Heuredouverture2 Heuredefermeture2].collect{ |h| periode_ouverture[h] }.map{ |h|
+          h.nil? ? nil : h[..-4]
+        }.each_slice(2).collect { |open, close|
+          open.nil? ? nil : open + (close.nil? ? '+' : "-#{close}")
+        }.compact.join('; ')
+      else
+        %w[lundi mardi mercredi jeudi vendredi samedi dimanche].collect{ |d|
+          [%w[heuredebut1 heurefin1 heuredebut2 heurefin2].collect{ |h| periode_ouverture["#{d}#{h}"] }.map{ |h|
+            h.nil? ? nil : h[..-4]
+          }, @@days[d]]
+        }.group_by(&:first).transform_values{ |hours_days|
+          hours_days.collect(&:last)
+        }.collect{ |hours, days|
+          if hours[1].nil? && hours[2].nil? && !hours[3].nil?
+            hours[1] = hours[3]
+            hours[3] = nil
+          end
+          hours.each_slice(2).collect { |open, close|
+            dayss = days.size == 7 ? '' : "#{days.join(',')} "
+            open.nil? ? nil : (dayss + open + (close.nil? ? '+' : "-#{close}"))
+          }
+        }.flatten.compact.join('; ')
+      end
+    )
+
+    [date_on, date_off, hours]
+  end
+
   def map_tags(feat)
     r = feat
 
-    # if r['OUVERTURECOMPLET']
-    #   date_on, date_off, osm_openning_hours = self.class.openning(
-    #     r['OUVERTURECOMPLET'],
-    #     :openning_seven_days
-    #   )
-    # elsif r['OUVERTURE'] || r['DATESCOMPLET']
-    #   date_on, date_off, osm_openning_hours = self.class.openning(
-    #     r['OUVERTURE'] || r['DATESCOMPLET'],
-    #     :openning_one_days
-    #   )
-    # end
+    date_on, date_off, osm_openning_hours = self.class.openning(r['PeriodeOuvertures'])
 
     id = map_id(r)
     {
@@ -135,17 +175,17 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
       # 'capacity:caravans': r['NBRECARAVANES']&.to_i,
       # 'capacity:cabins': r['NBREMHOME']&.to_i,
       # 'capacity:pitches': r['NBREEMP']&.to_i,
-      #   opening_hours: osm_openning_hours,
+      opening_hours: osm_openning_hours,
       stars: r['ObjectTypeName']&.include?('Hôtel') ? TourinsoftSirtaquiMixin::CLASS[r.dig('ClassementPrefectoral', 'ThesLibelle')] : nil,
       internet_access: jp(r, '.PrestationsConfortss[*][?(@.ThesLibelle=="Wifi")]').any? ? 'wlan' : nil,
     }.merge(
-      #   r['ObjectTypeName'] == 'Fêtes et manifestations' && {
-      #     start_date: date_on,
-      #     end_date: date_off,
-      #     event: multiple_split(r, ['CATFMA']).collect{ |t| TourinsoftSirtaquiMixin::EVENT_TYPE[t] },
-      #   } || {},
-      r['ObjectTypeName'] == 'Restauration' ? cuisines(jp(r, '.ClassificationTypeCuisines[*].ThesLibelle')&.compact_blank) : {},
-      r['ObjectTypeName'] == 'Hôtel' ? { tourism: 'hotel' } : {},
-    )
+        r['ObjectTypeName'] == 'Fêtes et manifestations' && {
+          start_date: date_on,
+          end_date: date_off,
+          # event: multiple_split(r, ['CATFMA']).collect{ |t| TourinsoftSirtaquiMixin::EVENT_TYPE[t] },
+        } || {},
+        r['ObjectTypeName'] == 'Restauration' ? cuisines(jp(r, '.ClassificationTypeCuisines[*].ThesLibelle')&.compact_blank) : {},
+        r['ObjectTypeName'] == 'Hôtel' ? { tourism: 'hotel' } : {},
+      )
   end
 end
