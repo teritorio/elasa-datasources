@@ -158,7 +158,7 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
       phone: jp(r, '.MoyensDeComs[*][?(@.TypedaccesTelecom.ThesLibelle=="Téléphone filaire")]')&.pluck('CoordonneesTelecom')&.compact_blank,
       email: jp(r, '.MoyensDeComs[*][?(@.TypedaccesTelecom.ThesLibelle=="Mél")]')&.pluck('CoordonneesTelecom')&.compact_blank,
       facebook: valid_url(id, :facebook, jp(r, '.ReseauxSociauxs[*].Facebook')&.first),
-      twitter: valid_url(id, :twitter, jp(r, '.ReseauxSociauxs[*].Twitter')&.first),
+      twitter: valid_url(id, :twitter, jp(r, '.ReseauxSociauxs[*].X')&.first),
       instagram: valid_url(id, :instagram, jp(r, '.ReseauxSociauxs[*].Instagram')&.first),
       'contact:linkedin': jp(r, '.ReseauxSociauxs[*].Linkedin')&.first,
       'contact:pinterest': jp(r, '.ReseauxSociauxs[*].Pinterest')&.first,
