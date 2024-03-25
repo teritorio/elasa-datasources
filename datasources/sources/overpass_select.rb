@@ -85,32 +85,54 @@ out center meta;
   def osm_tags
     if @selectors.blank?
       tree = OverpassParser.tree(@settings.query)
-      tags = deep_select(tree) { |o| o[:type] == :selector }.collect{ |selector|
-        if selector[:operator].nil?
-          if !selector[:not]
-            [selector[:key], nil]
-          end
-        elsif selector[:operator][0] == '='
-          [selector[:key], [selector[:value]]]
-        else
-          [selector[:key], nil]
-        end
-      }.compact.to_h
+      tags_all = {}
+      selects = deep_select(tree) { |o| o[:type] == :query_object }.select{ |query_object|
+        query_object[:selectors].present?
+      }.collect{ |query_object|
+        tags = query_object[:selectors].collect{ |selector|
+          key, value = (
+            if selector[:operator].nil?
+              if !selector[:not]
+                [selector[:key], nil]
+              else
+                next
+              end
+            elsif selector[:operator][0] == '='
+              [selector[:key], [selector[:value]]]
+            else
+              [selector[:key], nil]
+            end
+          )
 
-      select = tags.collect{ |k, v|
-        s = "[\"#{k.gsub('\"', '\\\"')}\""
-        if !v.nil?
-          s += v.size == 1 ? '=' : '~'
-          s += v.collect{ |w| "\"#{w.gsub('\"', '\\\"')}\"" }.join('|')
-        end
-        s + ']'
+          if !tags_all.key?(key)
+            tags_all[key] = value
+          elsif value.nil?
+            tags_all[key] = nil
+          elsif !tags_all[key].nil?
+            tags_all[key] += value
+          end
+
+          [key, value]
+        }.compact.to_h
+
+        tags.collect{ |k, v|
+          s = "[\"#{k.gsub('\"', '\\\"')}\""
+          if !v.nil?
+            s += v.size == 1 ? '=' : '~'
+            s += v.collect{ |w| "\"#{w.gsub('\"', '\\\"')}\"" }.join('|')
+          end
+          s + ']'
+        }.join
       }
+
       super().deep_merge_array({
-        'data' => [{
-          'select' => select,
-          'interest' => tags.merge(@settings.interest&.to_h{ |key| [key, nil] } || {}),
-          'sources' => [@job_id, @destination_id].uniq
-        }]
+        'data' => selects.collect{ |select|
+          {
+            'select' => [select],
+            'interest' => tags_all.merge(@settings.interest&.to_h{ |key| [key, nil] } || {}),
+            'sources' => [@job_id, @destination_id].uniq
+          }
+        }
       })
     else
       super().deep_merge_array({
