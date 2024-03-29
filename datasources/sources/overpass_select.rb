@@ -89,38 +89,7 @@ out center meta;
       selects = deep_select(tree) { |o| o[:type] == :query_object }.select{ |query_object|
         query_object[:selectors].present?
       }.collect{ |query_object|
-        tags = query_object[:selectors].collect{ |selector|
-          key, value = (
-            if selector[:operator].nil?
-              next if selector[:not]
-
-              [selector[:key], nil]
-            elsif selector[:operator][0] == '='
-              [selector[:key], [selector[:value]]]
-            else
-              [selector[:key], nil]
-            end
-          )
-
-          if !tags_all.key?(key)
-            tags_all[key] = value
-          elsif value.nil?
-            tags_all[key] = nil
-          elsif !tags_all[key].nil?
-            tags_all[key] += value
-          end
-
-          [key, value]
-        }.compact.to_h
-
-        tags.collect{ |k, v|
-          s = "[#{quote(k)}"
-          if !v.nil?
-            s += v.size == 1 ? '=' : '~'
-            s += v.collect{ |w| quote(w) }.join('|')
-          end
-          s + ']'
-        }.join
+        query_object[:selectors].to_overpass
       }
 
       super().deep_merge_array({
@@ -142,22 +111,6 @@ out center meta;
           }
         }
       })
-    end
-  end
-
-  private
-
-  def quote(string)
-    simple_quote = string.include?("'")
-    double_quote = string.include?('"')
-    if simple_quote || double_quote || /[^-_a-zA-Z0-9]/.match?(string)
-      if double_quote && !simple_quote
-        "'#{string}'"
-      else
-        "\"#{string.gsub('\"', '\\\"')}\""
-      end
-    else
-      string
     end
   end
 end
