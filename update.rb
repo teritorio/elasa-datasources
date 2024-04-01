@@ -99,15 +99,15 @@ end
       destination(GeoJson, dir, metadata_only: true)
     end
     Kiba.run(job)
+
+    if @datasource.nil? # Full run, drop and recreate
+      dir_finnal = "data/#{project}"
+      FileUtils.rm_rf(dir_finnal)
+      FileUtils.mv(dir, dir_finnal)
+    end
   rescue StandardError => e
     logger.error(e.message)
     logger.error(e.backtrace&.join("\n"))
-  end
-
-  if @datasource.nil? # Full run, drop and recreate
-    dir_finnal = "data/#{project}"
-    FileUtils.rm_rf(dir_finnal)
-    FileUtils.mv(dir, dir_finnal)
   end
 
   Logging.logger.root.remove_appenders(logging_appender)
