@@ -22,6 +22,7 @@ class OverpassSelectSource < OverpassSource
     ))
     const :relation_ids, T.nilable(T::Array[Integer])
     const :interest, T.nilable(T::Array[String])
+    const :with_osm_tags, T::Boolean, default: true
   end
 
   extend T::Generic
@@ -83,6 +84,8 @@ out center meta;
 
   sig { returns(OsmTagsRow) }
   def osm_tags
+    return super() if !@settings.with_osm_tags
+
     if @selectors.blank?
       tree = OverpassParser.tree(@settings.query)
       tags_all = {}

@@ -202,7 +202,7 @@ class TeritorioOntology < Connector
               @job_id,
               "#{superclass_id}-#{class_id}-#{subclass_id}",
               subclasses['label'],
-              OverpassSelectSource::Settings.from_hash(@settings.merge({ 'select' => subclasses['osm_tags'] })),
+              OverpassSelectSource::Settings.from_hash(@settings.merge({ 'select' => subclasses['osm_tags'], 'with_osm_tags' => false })),
             )
           }
         else
@@ -211,7 +211,7 @@ class TeritorioOntology < Connector
             @job_id,
             "#{superclass_id}-#{class_id}",
             classes['label'],
-            OverpassSelectSource::Settings.from_hash(@settings.merge({ 'select' => classes['osm_tags'] })),
+            OverpassSelectSource::Settings.from_hash(@settings.merge({ 'select' => classes['osm_tags'], 'with_osm_tags' => false })),
           )
         end
       }
