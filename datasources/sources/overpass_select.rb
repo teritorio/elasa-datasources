@@ -4,6 +4,8 @@
 require 'active_support/all'
 require 'cgi'
 require 'overpass_parser/visitor'
+require 'overpass_parser/nodes/query_objects'
+require 'overpass_parser/nodes/selectors'
 
 require 'sorbet-runtime'
 
@@ -73,12 +75,12 @@ out center meta;
   end
 
   def deep_select(object, &block)
-    if object.is_a?(Array)
-      object.collect{ |o|
+    if object.is_a?(OverpassParser::Nodes::QueryObjects)
+      object.selectors&.to_overpass
+    elsif object.is_a?(OverpassParser::Nodes::Request) || object.is_a?(OverpassParser::Nodes::QueryUnion)
+      object.queries.collect{ |o|
         deep_select(o, &block)
       }.flatten(1).compact
-    elsif object.is_a?(Hash)
-      deep_select(object.values, &block) + (block.call(object) ? [object] : [])
     end
   end
 
@@ -88,18 +90,13 @@ out center meta;
 
     if @selectors.blank?
       tree = OverpassParser.tree(@settings.query)
-      tags_all = {}
-      selects = deep_select(tree) { |o| o[:type] == :query_object }.select{ |query_object|
-        query_object[:selectors].present?
-      }.collect{ |query_object|
-        query_object[:selectors].to_overpass
-      }
+      selects = deep_select(tree[0])
 
       super().deep_merge_array({
         'data' => selects.collect{ |select|
           {
             'select' => [select],
-            'interest' => tags_all.merge(@settings.interest&.to_h{ |key| [key, nil] } || {}),
+            'interest' => @settings.interest&.to_h{ |key| [key, nil] } || {},
             'sources' => [@job_id, @destination_id].uniq
           }
         }
