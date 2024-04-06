@@ -52,7 +52,7 @@ class JoinTransformer < Transformer
 
   def process_data(row)
     key = JsonPath.on(row[:properties][:tags], @path)
-    if !key.nil?
+    if key.present?
       if @rows.key?(key)
         @rows[key][:properties][:tags] = process_tags(
           @rows[key][:properties][:tags],
