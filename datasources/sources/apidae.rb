@@ -359,12 +359,17 @@ class ApidaeSource < Source
         ]
       } || {}).compact_blank,
       'capacity:persons': (jp(r, 'informationsHebergementLocatif.capacite.capaciteHebergement').first || jp(r, 'informationsHebergementLocatif.capacite.capaciteMaximumPossible').first)&.nonzero?,
-      'capacity:rooms': jp(r, 'informationsHebergementLocatif.capacite.nombreChambres').first&.nonzero?,
+      'capacity:rooms': (jp(r, 'informationsHebergementLocatif.capacite.nombreChambres').first || jp(r, 'informationsHotellerie.capacite.nombreChambresDeclareesHotelier').first)&.nonzero?,
       'capacity:beds': [jp(r, 'informationsHebergementLocatif.capacite.nombreLitsSimples').first, jp(r, 'informationsHebergementLocatif.capacite.nombreLitsDoubles').first].compact_blank.presence&.sum&.nonzero?,
+      'capacity:pitches': jp(r, 'informationsHotelleriePleinAir.capacite.nombreEmplacementsClasses').first&.nonzero?,
       opening_hours: osm_openning_hours,
       start_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_on : nil,
       end_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_off : nil,
-      stars: self.class.classs(r.dig('informationsHotellerie', 'classement', 'ordre')),
+      stars: self.class.classs(
+        r.dig('informationsHotellerie', 'classement', 'ordre') ||
+        r.dig('informationsHebergementLocatif', 'classementPrefectoral', 'ordre') ||
+        r.dig('informationsHotelleriePleinAir', 'classement', 'ordre')
+      ),
       # event: r.dig('informationsFeteEtManifestation', 'typesManifestation').nil? ? nil : self.class.event(r.dig('informationsFeteEtManifestation', 'typesManifestation'))
     }
   end
