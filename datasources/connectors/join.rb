@@ -31,13 +31,14 @@ class Join < Connector
             'metadata' => JSON.parse(File.read("./#{@path}/#{source_config['metadata']}.metadata.json"))[source]
           })
         )
-      }
 
-      kiba.transform(JoinTransformer, JoinTransformer::Settings.from_hash({
-        'destination_id' => destination_id,
-        'key' => key,
-        'full_join' => true,
-      }))
+        kiba.transform(JoinTransformer, JoinTransformer::Settings.from_hash({
+          'source_ids' => [join.keys],
+          'destination_id' => destination_id,
+          'key' => key,
+          'full_join' => true,
+        }))
+      }
     }
   end
 end

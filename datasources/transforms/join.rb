@@ -10,6 +10,7 @@ class JoinTransformer < Transformer
   extend T::Sig
 
   class Settings < Transformer::TransformerSettings
+    const :source_ids, T.nilable(T::Array[String])
     const :destination_id, String
     const :key, String
     const :full_join, T::Boolean, default: false
@@ -51,6 +52,8 @@ class JoinTransformer < Transformer
   end
 
   def process_data(row)
+    return row if @settings.destination_id != row[:destination_id]
+
     key = JsonPath.on(row[:properties][:tags], @path)
     if key.present?
       if @rows.key?(key)
