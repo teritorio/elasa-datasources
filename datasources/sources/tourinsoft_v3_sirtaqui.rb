@@ -19,10 +19,6 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
   extend T::Generic
   SettingsType = type_member{ { upper: Settings } } # Generic param
 
-  def jp(object, path)
-    JsonPath.on(object, "$.#{path}")
-  end
-
   def route(routes, distance)
     routes&.select{ |r| !r['Modedelocomotion'].nil? }&.collect{ |r|
       practice = r['Modedelocomotion']['ThesLibelle']

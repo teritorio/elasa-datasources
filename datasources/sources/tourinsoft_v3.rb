@@ -24,6 +24,10 @@ class TourinsoftV3Source < Source
   extend T::Generic
   SettingsType = type_member{ { upper: Settings } } # Generic param
 
+  def jp(object, path)
+    JsonPath.on(object, "$.#{path}")
+  end
+
   def self.fetch(client, syndication)
     url = "https://api-v3.tourinsoft.com/api/syndications/#{client}/#{syndication}?format=json"
     resp = HTTP.follow.get(url)
@@ -57,5 +61,11 @@ class TourinsoftV3Source < Source
 
   def map_updated_at(feat)
     feat['Updated']
+  end
+
+  def map_native_properties(feat, properties)
+    properties.transform_values{ |path|
+      jp(feat, path)
+    }.compact_blank
   end
 end
