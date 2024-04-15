@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/teritorio/overpass_parser-rb.git
-  revision: f58f0da05054fe84521a61d32b4f2450490e6db6
+  revision: dba83837732df330ef018add559a4ab9d04b5c71
   specs:
     overpass_parser (1.0.0)
       rice (~> 4.0)

@@ -3,7 +3,7 @@
 
 require 'active_support/all'
 require 'cgi'
-require 'overpass_parser/visitor'
+require 'overpass_parser'
 require 'overpass_parser/nodes/query_objects'
 require 'overpass_parser/nodes/selectors'
 
@@ -89,8 +89,8 @@ out center meta;
     return super() if !@settings.with_osm_tags
 
     if @selectors.blank?
-      tree = OverpassParser.tree(@settings.query)
-      selects = deep_select(tree[0])
+      tree = OverpassParser.parse(@settings.query)
+      selects = deep_select(tree)
 
       super().deep_merge_array({
         'data' => selects.collect{ |select|
