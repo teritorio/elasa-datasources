@@ -251,7 +251,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       r['ObjectTypeName'] == 'Fêtes et manifestations' && {
         start_date: date_on,
         end_date: date_off,
-        event: multiple_split(r, ['CATFMA']).collect{ |t| TourinsoftSirtaquiMixin::EVENT_TYPE[t] },
+        event: multiple_split(r, ['CATFMA']).collect{ |t| TourinsoftSirtaquiMixin::EVENT_TYPE[t] }.uniq,
       } || {},
       r['TYPE'] == 'Restaurant' ? cuisines(multiple_split(r, ['SPECIALITES'])) : {},
       r['TYPE']&.include?('Hôtel') ? { tourism: 'hotel' } : {},

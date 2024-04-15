@@ -182,7 +182,7 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
         r['ObjectTypeName'] == 'Fêtes et manifestations' && {
           start_date: date_on,
           end_date: date_off,
-          # event: multiple_split(r, ['CATFMA']).collect{ |t| TourinsoftSirtaquiMixin::EVENT_TYPE[t] },
+          event: jp(r, '.ClassificationCategoriesFMAs[*].ThesLibelle').collect{ |t| TourinsoftSirtaquiMixin::EVENT_TYPE[t] }.uniq,
         } || {},
         r['ObjectTypeName'] == 'Restauration' ? cuisines(jp(r, '.ClassificationTypeCuisines[*].ThesLibelle')&.compact_blank) : {},
         r['ObjectTypeName'] == 'Hôtel' ? { tourism: 'hotel' } : {},
