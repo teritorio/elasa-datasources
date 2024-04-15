@@ -27,7 +27,7 @@ class MetadataSource < Source
 
   sig { returns(T::Array[MetadataRow]) }
   def metadatas
-    [super[0].deep_merge_array({
+    [T.must(super[0]).deep_merge_array({
       'data' => load(@settings.meta)&.inject({}, &:deep_merge_array),
     })]
   end

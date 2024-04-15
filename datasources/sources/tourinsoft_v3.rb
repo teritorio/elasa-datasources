@@ -37,10 +37,10 @@ class TourinsoftV3Source < Source
       if resp.status.code == 429 # Too Many Requests, Caching in progress
         logger.error('429 # Too Many Requests, Caching in progress ----- SKIP')
         return {} # FIXME: Response is cached server and cannot get a valid one. For now, just skip it
-        wait = resp.headers['Retry-After']&.to_i || 60
-        logger.info("Too Many Requests, wait for #{wait}")
-        sleep(wait + 2) # Wait a bit more to be sure
-        retry_request = true
+        # wait = resp.headers['Retry-After']&.to_i || 60
+        # logger.info("Too Many Requests, wait for #{wait}")
+        # sleep(wait + 2) # Wait a bit more to be sure
+        # retry_request = true
       elsif !resp.status.success?
         raise [url, resp].inspect
       else

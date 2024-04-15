@@ -88,8 +88,8 @@ out center meta;
   def osm_tags
     return super() if !@settings.with_osm_tags
 
-    if @selectors.blank?
-      tree = OverpassParser.parse(@settings.query)
+    if !@settings.query.nil?
+      tree = OverpassParser.parse(T.must(@settings.query))
       selects = deep_select(tree)
 
       super().deep_merge_array({
@@ -101,7 +101,7 @@ out center meta;
           }
         }
       })
-    else
+    elsif @selectors.present?
       super().deep_merge_array({
         'data' => @selectors.collect{ |selector|
           {
@@ -111,6 +111,8 @@ out center meta;
           }
         }
       })
+    else
+      raise 'Configuration error'
     end
   end
 end
