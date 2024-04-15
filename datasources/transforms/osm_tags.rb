@@ -14,7 +14,7 @@ class OsmTags < Transformer
   extend T::Generic
   SettingsType = type_member{ { upper: Settings } } # Generic param
 
-  sig { params(settings: Settings).void }
+  sig { params(settings: SettingsType).void }
   def initialize(settings)
     super(settings)
     @multiple = @@multiple_base + settings.extra_multiple

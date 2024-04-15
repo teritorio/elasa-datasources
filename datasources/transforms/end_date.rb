@@ -8,7 +8,7 @@ class EndDateTransformer < Transformer
   extend T::Generic
   SettingsType = type_member{ { upper: Transformer::TransformerSettings } } # Generic param
 
-  sig { params(settings: Transformer::TransformerSettings).void }
+  sig { params(settings: SettingsType).void }
   def initialize(settings)
     super(settings)
 
