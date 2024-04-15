@@ -220,7 +220,7 @@ class TourismSystemSource < Source
   }
 
   def self.events(events)
-    events = events.values if events&.is_a?(Hash) # Should be an array, but buggy remote API may return an Hash
+    events = events.values if events.is_a?(Hash) # Should be an array, but buggy remote API may return an Hash
 
     events&.pluck('criterion')&.select{ |c|
       # Fêtes et Manifestations - Types

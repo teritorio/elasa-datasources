@@ -25,7 +25,11 @@ class TourinsoftV3Source < Source
   SettingsType = type_member{ { upper: Settings } } # Generic param
 
   def jp(object, path)
-    JsonPath.on(object, "$.#{path}")
+    JsonPath.on(object, "$.#{path}")&.compact_blank
+  end
+
+  def jp_first(object, path)
+    j(object, path)&.first
   end
 
   def self.fetch(client, syndication)

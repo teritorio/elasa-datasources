@@ -200,20 +200,24 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     }
   end
 
-  def map_tags(feat)
-    r = feat
-
-    if r['OUVERTURECOMPLET']
-      date_on, date_off, osm_openning_hours = self.class.openning(
-        r['OUVERTURECOMPLET'],
+  def ouverture(feat)
+    if feat['OUVERTURECOMPLET']
+      self.class.openning(
+        feat['OUVERTURECOMPLET'],
         :openning_seven_days
       )
-    elsif r['OUVERTURE'] || r['DATESCOMPLET']
-      date_on, date_off, osm_openning_hours = self.class.openning(
-        r['OUVERTURE'] || r['DATESCOMPLET'],
+    elsif feat['OUVERTURE'] || feat['DATESCOMPLET']
+      self.class.openning(
+        feat['OUVERTURE'] || feat['DATESCOMPLET'],
         :openning_one_days
       )
     end
+  end
+
+  def map_tags(feat)
+    r = feat
+
+    date_on, date_off, osm_openning_hours = ouverture(r)
 
     id = map_id(r)
     {

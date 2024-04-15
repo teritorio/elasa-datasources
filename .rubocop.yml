@@ -2,10 +2,11 @@ AllCops:
   NewCops: enable
   TargetRubyVersion: 3.0
   Exclude:
-    - 'bin/*'
+    - bin/*
     - '**/Rakefile.rb'
-    - 'db/schema.rb'
+    - db/schema.rb
     - 'vendor/**/*'
+    - assert_migration.rb
 
 require:
  - rubocop-rake
@@ -108,4 +109,7 @@ Style/NestedTernaryOperator:
   Enabled: false
 
 Rails/Output:
+  Enabled: false
+
+Style/MultilineTernaryOperator:
   Enabled: false

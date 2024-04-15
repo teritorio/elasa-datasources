@@ -291,6 +291,19 @@ class ApidaeSource < Source
     clas
   end
 
+  def route(practices, feat)
+    practices.to_h{ |practice_slug|
+      [
+        practice_slug,
+        {
+          # "difficulty":
+          duration: jp(feat, 'informationsEquipement.itineraire.dureeJournaliere').first,
+          length: jp(feat, 'informationsEquipement.itineraire.distance').first,
+        }.compact_blank
+      ]
+    } || {}
+  end
+
   def each
     if ENV['NO_DATA']
       []
@@ -348,16 +361,7 @@ class ApidaeSource < Source
       route: {
         gpx_trace: jp(r, 'multimedias[*].traductionFichiers[*][?(@.extension=="gpx")].url').first,
         pdf: practices.nil? ? nil : jp(r, 'multimedias[*].traductionFichiers[*][?(@.extension=="pdf")]').to_h{ |t| [t['locale'], t['url']] },
-      }.merge(practices.to_h{ |practice_slug|
-        [
-          practice_slug,
-          {
-            # "difficulty":
-            duration: jp(r, 'informationsEquipement.itineraire.dureeJournaliere').first,
-            length: jp(r, 'informationsEquipement.itineraire.distance').first,
-          }.compact_blank
-        ]
-      } || {}).compact_blank,
+      }.merge(route(practices, r)).compact_blank,
       'capacity:persons': (jp(r, 'informationsHebergementLocatif.capacite.capaciteHebergement').first || jp(r, 'informationsHebergementLocatif.capacite.capaciteMaximumPossible').first)&.nonzero?,
       'capacity:rooms': (jp(r, 'informationsHebergementLocatif.capacite.nombreChambres').first || jp(r, 'informationsHotellerie.capacite.nombreChambresDeclareesHotelier').first)&.nonzero?,
       'capacity:beds': [jp(r, 'informationsHebergementLocatif.capacite.nombreLitsSimples').first, jp(r, 'informationsHebergementLocatif.capacite.nombreLitsDoubles').first].compact_blank.presence&.sum&.nonzero?,
