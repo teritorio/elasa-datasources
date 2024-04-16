@@ -29,7 +29,7 @@ class TourinsoftV3Source < Source
   end
 
   def jp_first(object, path)
-    j(object, path)&.first
+    jp(object, path)&.first
   end
 
   def self.fetch(client, syndication)
