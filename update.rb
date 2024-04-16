@@ -8,6 +8,19 @@ require 'yaml'
 require 'sorbet-runtime'
 require './datasources/sources/metadata'
 require './datasources/jobs/job'
+require 'sentry-ruby'
+
+
+if ENV['SENTRY_DSN']
+  Sentry.init do |config|
+    config.dsn = ENV['SENTRY_DSN']
+    config.sample_rate = 1.0
+    config.traces_sample_rate = 1.0
+    config.breadcrumbs_logger = [:http_logger]
+    config.include_local_variables = true
+    config.release = File.read('.build')
+  end
+end
 
 
 def load_config_dir(glob)
@@ -69,6 +82,7 @@ end
       FileUtils.mv(dir, dir_finnal)
     end
   rescue StandardError => e
+    Sentry.capture_exception(e)
     logger.error(e.message)
     logger.error(e.backtrace&.join("\n"))
   end

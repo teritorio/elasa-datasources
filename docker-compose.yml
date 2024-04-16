@@ -2,6 +2,8 @@ version: '3.3'
 services:
   datasources:
     build: .
+    environment:
+      SENTRY_DSN: ${SENTRY_DSN}
     volumes:
       - ./config:/config
       - ./data:/data

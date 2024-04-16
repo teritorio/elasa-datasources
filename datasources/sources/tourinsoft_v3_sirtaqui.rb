@@ -24,7 +24,7 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
 
     valid = url =~ URI::DEFAULT_PARSER.make_regexp && url.start_with?('https://') && url.split('/')[2].include?('.') && !url.split('/')[2].include?(' ')
     if !valid
-      logger.error("Invalid URL for #{id}: #{tag}=#{url}")
+      logger.info("Invalid URL for #{id}: #{tag}=#{url}")
     end
     valid ? url : nil
   end

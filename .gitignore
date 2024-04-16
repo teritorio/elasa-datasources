@@ -3,3 +3,4 @@ bin/tapioca
 data
 config/*.yaml
 config/config_public/*.yaml
+.env

@@ -116,6 +116,9 @@ GEM
       rubocop (~> 1.0)
     ruby-progressbar (1.13.0)
     safe_type (1.1.1)
+    sentry-ruby (5.17.3)
+      bigdecimal
+      concurrent-ruby (~> 1.0, >= 1.0.2)
     sorbet (0.5.11295)
       sorbet-static (= 0.5.11295)
     sorbet-coerce (0.7.0)
@@ -184,6 +187,7 @@ DEPENDENCIES
   rubocop
   rubocop-rails
   rubocop-rake
+  sentry-ruby
   sorbet
   sorbet-rails
   sorbet-runtime

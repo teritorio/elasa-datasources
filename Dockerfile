@@ -21,6 +21,7 @@ ADD Gemfile.lock .
 RUN bundle config --global silence_root_warning 1
 RUN bundle install
 
-ADD config.yaml .
 ADD *.rb ./
 ADD datasources datasources
+
+RUN date -u +"%Y-%m-%dT%H:%M:%SZ" > .build
