@@ -19,6 +19,16 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
   extend T::Generic
   SettingsType = type_member{ { upper: Settings } } # Generic param
 
+  def valid_url(id, tag, url)
+    return if url.blank?
+
+    valid = url =~ URI::DEFAULT_PARSER.make_regexp && url.start_with?('https://') && url.split('/')[2].include?('.') && !url.split('/')[2].include?(' ')
+    if !valid
+      logger.error("Invalid URL for #{id}: #{tag}=#{url}")
+    end
+    valid ? url : nil
+  end
+
   def route(routes, distance)
     routes&.select{ |r| !r['Modedelocomotion'].nil? }&.collect{ |r|
       practice = r['Modedelocomotion']['ThesLibelle']

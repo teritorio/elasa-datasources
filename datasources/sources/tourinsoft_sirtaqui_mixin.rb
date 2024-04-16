@@ -152,14 +152,4 @@ module TourinsoftSirtaquiMixin
     'Meeting' => 'Other', # FIXME
     'Visite' => 'Other', # FIXME
   }.freeze
-
-  def valid_url(id, tag, url)
-    return if url.blank?
-
-    valid = url =~ URI::DEFAULT_PARSER.make_regexp && url.start_with?('https://') && url.split('/')[2].include?('.') && !url.split('/')[2].include?(' ')
-    if !valid
-      Kernel.const_get(:logger)&.error("Invalid URL for #{id}: #{tag}=#{url}")
-    end
-    valid ? url : nil
-  end
 end
