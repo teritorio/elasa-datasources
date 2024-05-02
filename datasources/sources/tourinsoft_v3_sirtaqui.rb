@@ -80,7 +80,7 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
   end
 
   def addr(feat)
-    nil if feat.dig('AdresseCompletes', 0).nil?
+    return nil if feat.dig('AdresseCompletes', 0).nil?
 
     {
       street: [feat['AdresseCompletes'][0]['Adresse1'], feat['AdresseCompletes'][0]['Adresse2'], feat['AdresseCompletes'][0]['Adresse3']].compact_blank.join(', '),
