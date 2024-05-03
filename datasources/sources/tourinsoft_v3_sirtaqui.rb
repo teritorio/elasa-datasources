@@ -182,7 +182,7 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
       # 'capacity:cabins': r['NBREMHOME']&.to_i,
       # 'capacity:pitches': r['NBREEMP']&.to_i,
       opening_hours: osm_openning_hours,
-      stars: r['ObjectTypeName']&.include?('Hôtel') ? TourinsoftSirtaquiMixin::CLASS[r.dig('ClassementPrefectoral', 'ThesLibelle')] : nil,
+      stars: TourinsoftSirtaquiMixin::CLASS[r.dig('ClassementPrefectoral', 'ThesLibelle')],
       internet_access: jp(r, '.PrestationsConfortss[*][?(@.ThesLibelle=="Wifi")]').any? ? 'wlan' : nil,
     }.merge(
         r['ObjectTypeName'] == 'Fêtes et manifestations' && {
