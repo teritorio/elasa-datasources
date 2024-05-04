@@ -161,7 +161,7 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
       description: { fr: jp_first(r, '.DescriptionsCommercialess[*].Descriptioncommerciale') || jp_first(r, '.DESCRIPTIFSCOMMERCIALs[*].Descriptioncommerciale') }.compact_blank,
       website: jp(r, '.MoyensDeComs[*][?(@.TypedaccesTelecom.ThesLibelle=="Site web (URL)")]')&.pluck('CoordonneesTelecom')&.compact_blank,
       'website:details': { fr: @settings.website_details_url&.gsub('{{id}}', r['SyndicObjectID']) }.compact_blank,
-      phone: jp(r, '.MoyensDeComs[*][?(@.TypedaccesTelecom.ThesLibelle=="Téléphone filaire")]')&.pluck('CoordonneesTelecom')&.compact_blank,
+      phone: jp(r, '.MoyensDeComs[*][?(@.TypedaccesTelecom.ThesLibelle=="Téléphone filaire" || @.TypedaccesTelecom.ThesLibelle=="Téléphone cellulaire")]')&.pluck('CoordonneesTelecom')&.compact_blank,
       email: jp(r, '.MoyensDeComs[*][?(@.TypedaccesTelecom.ThesLibelle=="Mél")]')&.pluck('CoordonneesTelecom')&.compact_blank,
       facebook: valid_url(id, :facebook, jp_first(r, '.ReseauxSociauxs[*].Facebook')),
       twitter: valid_url(id, :twitter, jp_first(r, '.ReseauxSociauxs[*].X')),
