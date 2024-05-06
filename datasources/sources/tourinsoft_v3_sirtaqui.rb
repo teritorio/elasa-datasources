@@ -169,7 +169,7 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
       'contact:linkedin': jp_first(r, '.ReseauxSociauxs[*].Linkedin'),
       'contact:pinterest': jp_first(r, '.ReseauxSociauxs[*].Pinterest'),
       # jp_first(r, '.ReseauxSociauxs[0].GoogleMyBusiness'),
-      image: jp(r, '.Photoss[*].Photo.Url'),
+      image: jp(r, '.Photoss[*].Photo.Url') || jp(r, '.PHOTOSs[*].Photo.Url'),
       addr: addr(r),
       route: r['ObjectTypeName'] == 'Itinéraires touristiques' && route(r['LocomotionTempDifficultes'], r['Distance'])&.inject({
         gpx_trace: jp_first(r, '.Fichierss[*].TraceGPX.Url'),
