@@ -59,12 +59,12 @@
             "fr": "Facebook"
         }
     },
-    "contact:linkedin": {
+    "linkedin": {
         "@default": {
             "fr": "LinkedIn"
         }
     },
-    "contact:pinterest": {
+    "pinterest": {
         "@default": {
             "fr": "Pinterest"
         }

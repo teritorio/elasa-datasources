@@ -63,10 +63,10 @@
             "type": "string",
             "format": "uri"
         },
-        "contact:linkedin": {
+        "linkedin": {
             "type": "string"
         },
-        "contact:pinterest": {
+        "pinterest": {
             "type": "string"
         },
         "image": {

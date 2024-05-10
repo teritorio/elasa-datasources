@@ -243,7 +243,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       facebook: valid_url(id, :facebook, r['FACEBOOK']),
       twitter: valid_url(id, :twitter, r['TWITTER']),
       instagram: valid_url(id, :instagram, r['INSTAGRAM']),
-      'contact:linkedin': valid_url(id, :linkedin, r['LINKEDIN']),
+      linkedin: valid_url(id, :linkedin, r['LINKEDIN']),
       image: multiple_split(r, %w[PHOTO PHOTOCOMPLET PROPPRESENTATIONPHOTO PHOTO_DIAPO], 0)&.collect{ |p| "#{@settings.photo_base_url}#{p}" },
       addr: r['COMMUNE'] && {
         street: [r['AD1'], r['AD1SUITE'], r['AD2'], r['AD3']].compact_blank.join(', '),
