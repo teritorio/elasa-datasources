@@ -149,7 +149,7 @@ class TeritorioOntology < Connector
 
   def setup(kiba)
     source_filter = @settings['filters']
-    output_prefix = @settings['output_prefix'] ? "#{@settings['output_prefix']}-" : ""
+    output_prefix = @settings['output_prefix'] ? "#{@settings['output_prefix']}-" : ''
 
     ontology, schema, i18n, osm_tags = parse_ontology(source_filter)
     kiba.source(MockSource, @job_id, nil, nil, MockSource::Settings.from_hash({
