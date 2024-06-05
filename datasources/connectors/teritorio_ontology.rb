@@ -149,6 +149,7 @@ class TeritorioOntology < Connector
 
   def setup(kiba)
     source_filter = @settings['filters']
+    output_prefix = @settings['output_prefix'] ? "#{@settings['output_prefix']}-" : ""
 
     ontology, schema, i18n, osm_tags = parse_ontology(source_filter)
     kiba.source(MockSource, @job_id, nil, nil, MockSource::Settings.from_hash({
@@ -200,7 +201,7 @@ class TeritorioOntology < Connector
             kiba.source(
               OverpassSelectSource,
               @job_id,
-              "#{superclass_id}-#{class_id}-#{subclass_id}",
+              "#{output_prefix}#{superclass_id}-#{class_id}-#{subclass_id}",
               subclasses['label'],
               OverpassSelectSource::Settings.from_hash(@settings.merge({ 'select' => subclasses['osm_tags'], 'with_osm_tags' => false })),
             )
@@ -209,7 +210,7 @@ class TeritorioOntology < Connector
           kiba.source(
             OverpassSelectSource,
             @job_id,
-            "#{superclass_id}-#{class_id}",
+            "#{output_prefix}#{superclass_id}-#{class_id}",
             classes['label'],
             OverpassSelectSource::Settings.from_hash(@settings.merge({ 'select' => classes['osm_tags'], 'with_osm_tags' => false })),
           )
