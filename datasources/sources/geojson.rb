@@ -58,4 +58,8 @@ class GeoJsonSource < Source
   def map_tags(feat)
     feat['properties']['tags']
   end
+
+  def map_native_properties(feat, _properties)
+    feat['properties']['natives']
+  end
 end
