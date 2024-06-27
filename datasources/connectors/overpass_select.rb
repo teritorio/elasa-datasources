@@ -26,5 +26,9 @@ class OverpassSelect < Connector
     super(kiba)
 
     kiba.transform(OsmTags, OsmTags::Settings.from_hash(@settings))
+
+    return unless @settings['georeverse']
+
+    kiba.transform(ReverseGeocode, Transformer::TransformerSettings.from_hash({}))
   end
 end
