@@ -32,13 +32,19 @@ class ReverseGeocode < Transformer
     lon_lats = @rows.collect{ |f| f[:geometry][:coordinates] }
     addrs = reverse_query(lon_lats)
     @rows.zip(addrs).each { |f, addr|
-      if !f[:properties][:tags].key?(:addr) && addr['result_city']
-        f[:properties][:tags][:addr] = {
-          street: addr['result_name'],
-          postcode: addr['result_postcode'],
-          city: addr['result_city'],
-        }
-        f[:properties][:tags]['source:addr'] = 'BAN - ETALAB-2.0'
+      if addr['result_city']
+        if !f[:properties][:tags].key?(:addr)
+          f[:properties][:tags][:addr] = {
+            street: addr['result_name'],
+            postcode: addr['result_postcode'],
+            city: addr['result_city'],
+          }
+          f[:properties][:tags]['source:addr'] = 'BAN - ETALAB-2.0'
+        elsif !f[:properties][:tags][:addr].key?('postcode') || !f[:properties][:tags][:addr].key?('city')
+          f[:properties][:tags][:addr]['postcode'] = addr['result_postcode']
+          f[:properties][:tags][:addr]['city'] = addr['result_city']
+          f[:properties][:tags]['source:addr'] = 'BAN - ETALAB-2.0'
+        end
       end
 
       yield f
