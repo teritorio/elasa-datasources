@@ -22,33 +22,61 @@ class ReverseGeocode < Transformer
     nil
   end
 
-  def close_data
-    logger.info("#{self.class.name}: #{@rows.size}")
-
-    # TODO: geocoder uniquement ceux qui ont besoin d'un adresse
-
-    # TODO: supporter tous les type de geom
-
-    lon_lats = @rows.collect{ |f| f[:geometry][:coordinates] }
-    addrs = reverse_query(lon_lats)
-    @rows.zip(addrs).each { |f, addr|
-      if addr['result_city']
-        if !f[:properties][:tags].key?(:addr)
-          f[:properties][:tags][:addr] = {
-            street: addr['result_name'],
-            postcode: addr['result_postcode'],
-            city: addr['result_city'],
-          }
-          f[:properties][:tags]['source:addr'] = 'BAN - ETALAB-2.0'
-        elsif !f[:properties][:tags][:addr].key?('postcode') || !f[:properties][:tags][:addr].key?('city')
-          f[:properties][:tags][:addr]['postcode'] = addr['result_postcode']
-          f[:properties][:tags][:addr]['city'] = addr['result_city']
-          f[:properties][:tags]['source:addr'] = 'BAN - ETALAB-2.0'
-        end
-      end
-
-      yield f
+  def split_by_addr(features)
+    groups = features.group_by{ |f|
+      !f[:properties][:tags].key?(:addr) ||
+        !f[:properties][:tags][:addr].key?('postcode') ||
+        !f[:properties][:tags][:addr].key?('city')
     }
+    [
+      groups[false] || [],
+      groups[true] || []
+    ]
+  end
+
+  def reverse(features, &block)
+    # TODO: supporter tous les type de geom
+    coord_features = features.group_by{ |f|
+      f[:geometry][:coordinates]
+    }.to_a
+    reverse_query(coord_features.collect(:first)).zip(coord_features.collect(&:last)).each { |addr, fs|
+      fs.each{ |f|
+        if addr['result_city']
+          if f[:properties][:tags].key?(:addr)
+            f[:properties][:tags].deep_merge_array({
+              addr: {
+                postcode: addr['result_postcode'],
+                city: addr['result_city'],
+              },
+              source: {
+                'addr:postcode' => 'BAN - ETALAB-2.0',
+                'addr:city' => 'BAN - ETALAB-2.0',
+              },
+            })
+          else
+            f[:properties][:tags][:addr] =
+              f[:properties][:tags].deep_merge_array({
+                addr: {
+                  street: addr['result_name'],
+                  postcode: addr['result_postcode'],
+                  city: addr['result_city'],
+                },
+                source: {
+                  'addr' => 'BAN - ETALAB-2.0',
+                },
+              })
+          end
+        end
+
+        block.call(f)
+      }
+    }
+  end
+
+  def close_data(&block)
+    with_addr, without_addr = split_by_addr(@rows)
+    with_addr.each(&block)
+    reverse(without_addr, &block)
   end
 
   def reverse_query(lon_lats)
