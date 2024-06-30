@@ -3,6 +3,8 @@
 
 require 'http'
 require 'csv'
+require 'rgeo'
+require 'rgeo-geojson'
 
 require_relative 'transformer'
 
@@ -35,11 +37,12 @@ class ReverseGeocode < Transformer
   end
 
   def reverse(features, &block)
-    # TODO: supporter tous les type de geom
     coord_features = features.group_by{ |f|
-      f[:geometry][:coordinates]
+      geom = RGeo::GeoJSON.decode(f[:geometry].transform_keys(&:to_s))
+      point = geom.respond_to?(:point_on_surface) ? geom.point_on_surface : geom
+      [point.x, point.y] if geom
     }.to_a
-    reverse_query(coord_features.collect(:first)).zip(coord_features.collect(&:last)).each { |addr, fs|
+    reverse_query(coord_features.collect(&:first)).zip(coord_features.collect(&:last)).each { |addr, fs|
       fs.each{ |f|
         if addr['result_city']
           if f[:properties][:tags].key?(:addr)

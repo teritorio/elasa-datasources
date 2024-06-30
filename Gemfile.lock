@@ -93,6 +93,9 @@ GEM
       sorbet-runtime (>= 0.5.9204)
     regexp_parser (2.9.0)
     rexml (3.2.6)
+    rgeo (3.0.1)
+    rgeo-geojson (2.1.1)
+      rgeo (>= 1.0.0)
     rice (4.3.1)
     rubocop (1.62.1)
       json (~> 2.3)
@@ -184,6 +187,8 @@ DEPENDENCIES
   racc
   rake
   rbi
+  rgeo
+  rgeo-geojson
   rubocop
   rubocop-rails
   rubocop-rake
