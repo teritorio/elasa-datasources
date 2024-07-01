@@ -297,7 +297,8 @@ class ApidaeSource < Source
         practice_slug,
         {
           # "difficulty":
-          duration: jp(feat, 'informationsEquipement.itineraire.dureeJournaliere').first,
+          # 'informationsEquipement.itineraire.dureeJournaliere' will be removed at the end of 2025
+          duration: jp(feat, 'informationsEquipement.itineraire.dureeJournaliere').first || jp(feat, 'ouverture.dureeSeance').first,
           length: jp(feat, 'informationsEquipement.itineraire.distance').first,
         }.compact_blank
       ]
