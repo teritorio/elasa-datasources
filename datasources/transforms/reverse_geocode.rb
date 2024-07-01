@@ -24,19 +24,22 @@ class ReverseGeocode < Transformer
     nil
   end
 
-  def split_by_addr(features)
+  def self.split_by_addr(features)
     groups = features.group_by{ |f|
-      !f[:properties][:tags].key?(:addr) ||
-        !f[:properties][:tags][:addr].key?('postcode') ||
-        !f[:properties][:tags][:addr].key?('city')
+      f[:properties][:tags].key?(:addr) &&
+        f[:properties][:tags][:addr].key?('postcode') &&
+        f[:properties][:tags][:addr].key?('city') && (
+          f[:properties][:tags][:addr].key?('street') ||
+          f[:properties][:tags][:addr].key?('locality')
+        )
     }
     [
-      groups[false] || [],
-      groups[true] || []
+      groups[true] || [],
+      groups[false] || []
     ]
   end
 
-  def reverse(features, &block)
+  def self.reverse(features, &block)
     coord_features = features.group_by{ |f|
       geom = RGeo::GeoJSON.decode(f[:geometry].transform_keys(&:to_s))
       point = geom.respond_to?(:point_on_surface) ? geom.point_on_surface : geom
@@ -45,30 +48,32 @@ class ReverseGeocode < Transformer
     reverse_query(coord_features.collect(&:first)).zip(coord_features.collect(&:last)).each { |addr, fs|
       fs.each{ |f|
         if addr['result_city']
-          if f[:properties][:tags].key?(:addr)
-            f[:properties][:tags].deep_merge_array({
-              addr: {
-                postcode: addr['result_postcode'],
-                city: addr['result_city'],
-              },
-              source: {
-                'addr:postcode' => 'BAN - ETALAB-2.0',
-                'addr:city' => 'BAN - ETALAB-2.0',
-              },
-            })
-          else
-            f[:properties][:tags][:addr] =
+          f[:properties][:tags] = (
+            if f.dig(:properties, :tags, :addr, 'street') || f.dig(:properties, :tags, :addr, 'locality')
               f[:properties][:tags].deep_merge_array({
-                addr: {
-                  street: addr['result_name'],
-                  postcode: addr['result_postcode'],
-                  city: addr['result_city'],
-                },
-                source: {
-                  'addr' => 'BAN - ETALAB-2.0',
-                },
-              })
-          end
+                  addr: {
+                    'postcode' => addr['result_postcode'],
+                    'city' => addr['result_city'],
+                  },
+                  source: {
+                    'addr:postcode' => 'BAN - ETALAB-2.0',
+                    'addr:city' => 'BAN - ETALAB-2.0',
+                  },
+                })
+            else
+              f[:properties][:tags].deep_merge_array({
+                  addr: {
+                    'street' => %w[housenumber street].include?(addr['result_type']) ? addr['result_name'] : nil,
+                    'locality' => ['locality'].include?(addr['result_type']) ? addr['result_name'] : nil,
+                    'postcode' => addr['result_postcode'],
+                    'city' => addr['result_city'],
+                  }.compact,
+                  source: {
+                    'addr' => 'BAN - ETALAB-2.0',
+                  },
+                })
+            end
+          )
         end
 
         block.call(f)
@@ -77,12 +82,12 @@ class ReverseGeocode < Transformer
   end
 
   def close_data(&block)
-    with_addr, without_addr = split_by_addr(@rows)
+    with_addr, without_addr = self.class.split_by_addr(@rows)
     with_addr.each(&block)
-    reverse(without_addr, &block)
+    self.class.reverse(without_addr, &block)
   end
 
-  def reverse_query(lon_lats)
+  def self.reverse_query(lon_lats)
     csv_data = CSV.generate { |csv|
       csv << %w[lon lat]
       lon_lats.each{ |ll| csv << ll }
