@@ -195,8 +195,8 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     {
       type: 'Point',
       coordinates: [
-        feat['LON'].to_f,
-        feat['LAT'].to_f
+        (feat['LON'].presence || feat['GmapLongitude']).to_f,
+        (feat['LAT'].presence || feat['GmapLatitude']).to_f
       ]
     }
   end
