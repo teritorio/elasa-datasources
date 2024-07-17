@@ -69,8 +69,6 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     'Dimanche soir' => 'Su',
   }]
 
-  @@month = %w[Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec]
-
   def self.format_days_hours(open_days, open1, close1, open2, close2)
     hours = [
       if open1.nil?
@@ -105,12 +103,6 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     }.compact_blank
   end
 
-  def self.format_month_range(date_on, date_off)
-    on = [@@month[date_on.split('-')[1].to_i - 1], date_on.split('-')[2]].compact.join(' ') if !date_on.nil?
-    off = [@@month[date_off.split('-')[1].to_i - 1], date_off.split('-')[2]].compact.join(' ') if !date_off.nil? && date_on != date_off
-    [on, off].compact.join('-')
-  end
-
   def self.openning(ouvertures, openning_days)
     date_ons = []
     date_offs = []
@@ -127,7 +119,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       date_ons << date_on
       date_offs << date_off
 
-      dates = format_month_range(date_on, date_off)
+      dates = TourinsoftSirtaquiMixin::FORMAT_MONTH_RANGE.call(date_on, date_off)
 
       days_hours = method(openning_days).call(parts[2..]&.collect(&:presence) || [])
       days_hours&.collect{ |days_hour|
@@ -136,7 +128,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     }.flatten(1)
     hours = opennings.join(';').presence
     if hours.nil?
-      hours = format_month_range(date_ons.compact.min, date_offs.compact.max)
+      hours = TourinsoftSirtaquiMixin::FORMAT_MONTH_RANGE.call(date_ons.compact.min, date_offs.compact.max)
     end
     [date_ons.compact.min, date_offs.compact.max, hours]
   end

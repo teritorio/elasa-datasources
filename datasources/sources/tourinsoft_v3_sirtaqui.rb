@@ -144,7 +144,9 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
       end
     )
 
-    [date_on, date_off, hours]
+    dates = TourinsoftSirtaquiMixin::FORMAT_MONTH_RANGE.call(date_on, date_off)
+
+    [date_on, date_off, [dates, hours].compact.join(' ')]
   end
 
   def map_tags(feat)

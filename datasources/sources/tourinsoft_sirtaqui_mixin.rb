@@ -152,4 +152,12 @@ module TourinsoftSirtaquiMixin
     'Meeting' => 'Other', # FIXME
     'Visite' => 'Other', # FIXME
   }.freeze
+
+  MONTH = %w[Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec].freeze
+
+  FORMAT_MONTH_RANGE = lambda do |date_on, date_off|
+    on = [MONTH[date_on.split('-')[1].to_i - 1], date_on.split('-')[2]].compact.join(' ') if !date_on.nil?
+    off = [MONTH[date_off.split('-')[1].to_i - 1], date_off.split('-')[2]].compact.join(' ') if !date_off.nil? && date_on != date_off
+    [on, off].compact.join('-')
+  end
 end
