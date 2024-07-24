@@ -32,6 +32,11 @@ class OsmTags < Transformer
     contact:website
     cuisine
     route_ref
+    produce
+    product
+    crop
+    sport
+    shoes
   ]
 
   @@capacities = ['capacity', 'capacity:beds', 'capacity:rooms', 'capacity:persons', 'capacity:caravans', 'capacity:cabins', 'capacity:pitches']

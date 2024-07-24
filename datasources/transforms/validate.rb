@@ -63,7 +63,8 @@ class ValidateTransformer < Transformer
     }
 
     enums.collect{ |key, enum|
-      key_match = Regexp.new((base + [Regexp.quote(key)]).join(':'))
+      key_regex = (base + [Regexp.quote(key)]).join(':')
+      key_match = Regexp.new("^#{key_regex}$")
       i18n_key = i18n.keys.find{ |k| key_match.match(k) }
       i18n_missing_values = enum - (i18n[i18n_key]['values'] || {}).keys
       logger.debug("Tags Key values without i18n : #{key}=#{i18n_missing_values.join('|')}") if !i18n_missing_values.empty?

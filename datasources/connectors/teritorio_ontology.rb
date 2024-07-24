@@ -92,6 +92,8 @@ class TeritorioOntology < Connector
     osm_tags_extra_schema = osm_tags_extra.values.inject(&:merge).transform_values{ |values|
       if values['values'].nil?
         { 'type' => 'string' }
+      elsif values['is_array']
+        { 'type' => 'array', 'items' => { 'enum' => values['values'].pluck('value') } }
       else
         { 'enum' => values['values'].pluck('value') }
       end
