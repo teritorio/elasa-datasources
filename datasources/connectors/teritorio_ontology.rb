@@ -100,15 +100,19 @@ class TeritorioOntology < Connector
     }
     schema = schema.deep_merge_array(osm_tags_extra_schema)
 
-    i18n = ontology_tags.select{ |osm_tags, _tags_extra, splits, _label, _origin|
-      osm_tags.split('][').size == 1 && splits.size == 1
-    }.group_by{ |_osm_tags, _tags_extra, splits, _label, _origin|
-      splits[0][0][0]
+    i18n = ontology_tags.collect{ |osm_tags, tags_extra, splits, label, origin|
+      splits.collect{ |split|
+        [osm_tags, tags_extra, split, label, origin]
+      }
+    }.flatten(1).select{ |_osm_tags, _tags_extra, split, _label, _origin|
+      split.size == 1
+    }.group_by{ |_osm_tags, _tags_extra, split, _label, _origin|
+      split[0][0]
     }.transform_values { |values|
       {
-        'values' => values.to_h{ |_osm_tags, _tags_extra, splits, label, _origin|
+        'values' => values.to_h{ |_osm_tags, _tags_extra, split, label, _origin|
           [
-            splits[0][0][2],
+            split[0][2],
             { '@default:full' => label },
           ]
         }
