@@ -70,7 +70,7 @@ class ValidateTransformer < Transformer
       logger.debug("Tags Key values without i18n : #{key}=#{i18n_missing_values.join('|')}") if !i18n_missing_values.empty?
 
       i18n_pending_values = (i18n[i18n_key]['values'] || {}).keys - enum
-      logger.debug("Tags Key values pending i18n : #{key}=#{i18n_pending_values.join('|')}") if !i18n_pending_values.empty?
+      logger.debug("Tags Key values in i18n but not in schema : #{key}=#{i18n_pending_values.join('|')}") if !i18n_pending_values.empty?
 
       !i18n_missing_values.empty? || !i18n_pending_values.empty?
     }.find.first && raise('Tags value i18n Error')
