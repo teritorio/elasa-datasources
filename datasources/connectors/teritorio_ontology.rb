@@ -98,6 +98,17 @@ class TeritorioOntology < Connector
         { 'enum' => values['values'].pluck('value') }
       end
     }
+
+    # Upgrade enum to array if needed from extra_tags
+    osm_tags_extra_schema.select{ |key, value|
+      value['type'] == 'array' && schema.key?(key) && schema[key]['type'] != 'array' && schema[key].key?('enum')
+    }.each_key{ |key|
+      schema[key] = {
+        'type' => 'array',
+        'items' => schema[key]
+      }
+    }
+
     schema = schema.deep_merge_array(osm_tags_extra_schema)
 
     i18n = ontology_tags.collect{ |osm_tags, tags_extra, splits, label, origin|
