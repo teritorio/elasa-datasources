@@ -89,7 +89,7 @@ class TeritorioOntology < Connector
       end
     }
 
-    osm_tags_extra_schema = osm_tags_extra.values.inject(&:merge).transform_values{ |values|
+    osm_tags_extra_schema = osm_tags_extra.values.inject(&:deep_merge_array).transform_values{ |values|
       if values['values'].nil?
         { 'type' => 'string' }
       elsif values['is_array']
@@ -130,7 +130,7 @@ class TeritorioOntology < Connector
       }
     }
 
-    osm_tags_extra_i18n = osm_tags_extra.values.inject(&:merge).transform_values{ |values|
+    osm_tags_extra_i18n = osm_tags_extra.values.inject(&:deep_merge_array).transform_values{ |values|
       {
         '@default' => values['label'].compact_blank,
         'values' => values['values'].to_h { |h|
@@ -153,7 +153,7 @@ class TeritorioOntology < Connector
         'name' => label,
         # 'icon' =>
         'select' => tags,
-        'interest' => osm_tags_extra.slice(*tags_extra).values.inject(&:merge)&.transform_values{ |_values|
+        'interest' => osm_tags_extra.slice(*tags_extra).values.inject(&:deep_merge_array)&.transform_values{ |_values|
           # TODO: support values
           nil
         },
