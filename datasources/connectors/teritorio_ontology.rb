@@ -71,9 +71,7 @@ class TeritorioOntology < Connector
     [ontology, ontology_tags, ontology['osm_tags_extra'].slice(*osm_tags_extras.uniq)]
   end
 
-  def parse_ontology(source_filter)
-    ontology, ontology_tags, osm_tags_extra = fetch_ontology_tags(source_filter)
-
+  def parse_ontology_schema(ontology_tags, osm_tags_extra)
     schema = ontology_tags.collect{ |_tags, _tags_extra, splits, _label, _origin|
       splits.collect{ |split|
         split.collect{ |k, _o, v|
@@ -109,13 +107,18 @@ class TeritorioOntology < Connector
       }
     }
 
-    schema = schema.deep_merge_array(osm_tags_extra_schema)
+    schema.deep_merge_array(osm_tags_extra_schema)
+  end
 
+  def parse_ontology_i18n(ontology_tags, osm_tags_extra)
     i18n = ontology_tags.collect{ |osm_tags, tags_extra, splits, label, origin|
       splits.collect{ |split|
         [osm_tags, tags_extra, split, label, origin]
       }
-    }.flatten(1).select{ |_osm_tags, _tags_extra, split, _label, _origin|
+    }.flatten(1).collect{ |osm_tags, tags_extra, split, label, origin|
+      split = split.select{ |s| !%w[name access ref].include?(s[0]) }
+      [osm_tags, tags_extra, split, label, origin]
+    }.select{ |_osm_tags, _tags_extra, split, _label, _origin|
       split.size == 1
     }.group_by{ |_osm_tags, _tags_extra, split, _label, _origin|
       split[0][0]
@@ -141,7 +144,14 @@ class TeritorioOntology < Connector
         }.compact_blank
       }.compact_blank
     }.compact_blank
-    i18n = i18n.deep_merge_array(osm_tags_extra_i18n)
+    i18n.deep_merge_array(osm_tags_extra_i18n)
+  end
+
+  def parse_ontology(source_filter)
+    ontology, ontology_tags, osm_tags_extra = fetch_ontology_tags(source_filter)
+
+    schema = parse_ontology_schema(ontology_tags, osm_tags_extra)
+    i18n = parse_ontology_i18n(ontology_tags, osm_tags_extra)
 
     # FIXME: should be translated, rather than removed
     (schema.keys - i18n.keys).each{ |key|
