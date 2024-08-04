@@ -17,6 +17,22 @@ class Hash
       clear
     end
 
+    # Upgrade enum to array if needed
+    if self['type'] == 'array' && self['items']['enum'] && !other_hash['enum'].nil?
+      other_hash = {
+        'type' => 'array',
+        'items' => {
+          'enum' => other_hash['enum']
+        }
+      }
+    elsif other_hash['type'] == 'array' && other_hash['items']['enum'] && !self['enum'].nil?
+      self['type'] = 'array'
+      self['items'] = {
+        'enum' => self['enum']
+      }
+      delete('enum')
+    end
+
     merge!(other_hash) do |_key, this_val, other_val|
       if this_val.is_a?(Hash) && other_val.is_a?(Hash)
         this_val.deep_merge_array(other_val)
