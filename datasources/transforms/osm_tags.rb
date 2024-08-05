@@ -37,6 +37,7 @@ class OsmTags < Transformer
     crop
     sport
     shoes
+    vending
   ]
 
   @@capacities = ['capacity', 'capacity:beds', 'capacity:rooms', 'capacity:persons', 'capacity:caravans', 'capacity:cabins', 'capacity:pitches']
