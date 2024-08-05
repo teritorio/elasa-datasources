@@ -74,16 +74,18 @@ class TeritorioOntology < Connector
   def parse_ontology_schema(ontology_tags, osm_tags_extra)
     schema = ontology_tags.collect{ |_tags, _tags_extra, splits, _label, _origin|
       splits.collect{ |split|
-        split.collect{ |k, _o, v|
-          [k, v]
+        split.select{ |_k, o, _v|
+          o.nil? || o[0] != '!'
+        }.collect{ |k, o, v|
+          [k, o == '=' ? v : nil]
         }
       }
     }.flatten(2).group_by(&:first).transform_values{ |vs|
       r = vs.collect(&:second).uniq
-      if r.include?(nil)
+      if r == [nil]
         { 'type' => 'string' }
       else
-        { 'enum' => r }
+        { 'enum' => r.compact }
       end
     }
 
