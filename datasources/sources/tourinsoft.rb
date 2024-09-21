@@ -55,22 +55,33 @@ class TourinsoftSource < Source
   end
 
   def each
-    super(ENV['NO_DATA'] ? [] : self.class.fetch(@settings.client, @settings.syndication))
+    super(ENV['NO_DATA'] ?
+      [] :
+      self.class.fetch(@settings.client, @settings.syndication).collect{ |feat| [:feature, feat] }
+    )
   end
 
   def map_id(feat)
-    feat['SyndicObjectID']
+    feat.last['SyndicObjectID']
   end
 
   def map_updated_at(feat)
-    feat['Updated']
+    feat.last['Updated']
   end
 
   def map_native_properties(feat, properties)
-    feat.slice(*properties.keys).compact.to_h{ |k, v|
+    feat.last.slice(*properties.keys).compact.to_h{ |k, v|
       v = split(v, 0) if properties.dig(k, 'split')
       k = properties[k]['rename'] || k
       [k, v]
     }
   end
+
+  def map_tags(type_feat)
+    type, feat = type_feat
+    type == :feature ? map_feature_tags(feat) : nil
+  end
+
+  sig { params(feat: T.untyped).returns(T.untyped) }
+  def map_feature_tags(feat); end
 end

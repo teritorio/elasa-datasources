@@ -159,13 +159,13 @@ class TourinsoftCdt50Source < TourinsoftSource
     {
       type: 'Point',
       coordinates: [
-        feat['Longitude'].to_f,
-        feat['Latitude'].to_f
+        feat.last['Longitude'].to_f,
+        feat.last['Latitude'].to_f
       ]
     }
   end
 
-  def map_tags(feat)
+  def map_feature_tags(feat)
     r = feat
     {
       name: { fr: r['NomOffre'] }.compact_blank,

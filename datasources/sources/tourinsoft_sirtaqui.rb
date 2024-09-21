@@ -174,11 +174,11 @@ class TourinsoftSirtaquiSource < TourinsoftSource
   end
 
   def select(feat)
-    super(feat) &&
-      !feat['PHOTO'].nil? &&
+    super(feat.last) &&
+      !feat.last['PHOTO'].nil? &&
       (
-        feat['ObjectTypeName'] != 'Fêtes et manifestations' || (
-          feat['DATESCOMPLET'].present? && feat['DATES'].present?
+        feat.last['ObjectTypeName'] != 'Fêtes et manifestations' || (
+          feat.last['DATESCOMPLET'].present? && feat.last['DATES'].present?
         )
       )
   end
@@ -187,8 +187,8 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     {
       type: 'Point',
       coordinates: [
-        (feat['LON'].presence || feat['GmapLongitude']).to_f,
-        (feat['LAT'].presence || feat['GmapLatitude']).to_f
+        (feat.last['LON'].presence || feat.last['GmapLongitude']).to_f,
+        (feat.last['LAT'].presence || feat.last['GmapLatitude']).to_f
       ]
     }
   end
@@ -216,12 +216,12 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     end
   end
 
-  def map_tags(feat)
+  def map_feature_tags(feat)
     r = feat
 
     date_on, date_off, osm_openning_hours = ouverture(r)
 
-    id = map_id(r)
+    id = map_id([nil, r])
     {
       ref: {
         'FR:CRTA': id,
