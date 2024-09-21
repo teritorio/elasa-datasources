@@ -210,6 +210,7 @@ class Source
         source: map_source(row),
         tags: tags&.compact_blank,
         natives: native_properties&.compact_blank,
+        refs: map_refs(row)&.compact_blank,
       }.compact_blank),
     }.compact_blank
 
