@@ -76,7 +76,7 @@ class GeotrekSource < Source
     @difficulties = fetch_difficulties
     @practices = fetch_practices
     treks = fetch
-    treks.collect{ |trek|
+    treks.each{ |trek|
       trek['poi_ids'] = fetch_trek_pois(trek['id'])
     }
     poi_ids_all = treks.pluck('poi_ids').flatten.uniq
@@ -105,7 +105,16 @@ class GeotrekSource < Source
           })
         }.compact_blank
       })
-    }
+    } + [
+      MetadataRow.new({
+        data: {
+          'geotrek-poi' => Metadata.from_hash({
+            'name' => { 'en' => 'POI' },
+            'attribution' => @settings.attribution,
+          })
+        }
+      })
+    ]
   end
 
   def map_destination_id(type_feat)
@@ -113,8 +122,7 @@ class GeotrekSource < Source
     if type == :trek
       practice_slug(feat['practice'])
     else
-      id = feat['type_label']['en'] || feat['type_label']['fr']
-      "geotrek-poi-#{id}"
+      'geotrek-poi'
     end
   end
 
