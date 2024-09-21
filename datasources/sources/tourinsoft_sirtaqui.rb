@@ -154,6 +154,20 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     }
   end
 
+  def extract_steps_from_feature(feature)
+    feature['ETAPE']&.split('#')&.each_with_index&.collect{ |step, index|
+      step = %w[SyndicObjectID name description _ _ LON LAT image image_description image_source].zip(
+        step.split('|').collect(&:presence)
+      ).to_h
+      step['SyndicObjectID'] = "#{map_id([nil, feature])}.#{index}"
+      step['name'] = [step['id'], step['name']].compact.join(' - ') if !step['id'].nil? && !step['name'].nil?
+      step['LON'] = step['LON']&.to_f
+      step['LAT'] = step['LAT']&.to_f
+      step['Updated'] = feature['Updated']
+      step.compact
+    } || []
+  end
+
   sig { returns(SchemaRow) }
   def schema
     super.with(
@@ -174,13 +188,13 @@ class TourinsoftSirtaquiSource < TourinsoftSource
   end
 
   def select(feat)
-    super(feat.last) &&
+    super(feat) && (feat.first != :feature ||
       !feat.last['PHOTO'].nil? &&
       (
         feat.last['ObjectTypeName'] != 'Fêtes et manifestations' || (
           feat.last['DATESCOMPLET'].present? && feat.last['DATES'].present?
         )
-      )
+      ))
   end
 
   def map_geometry(feat)
@@ -214,6 +228,66 @@ class TourinsoftSirtaquiSource < TourinsoftSource
         :openning_one_days
       )
     end
+  end
+
+  sig { returns(T::Array[MetadataRow]) }
+  def metadatas
+    super + [
+      MetadataRow.new({
+        data: {
+          "#{@destination_id}-steps" => Metadata.from_hash({
+            'name' => { 'en' => "#{@destination_id}-steps" },
+            'attribution' => @settings.attribution,
+          })
+        }.compact_blank
+      })
+    ]
+  end
+
+  def map_destination_id(type_feat)
+    type, _feat = type_feat
+    if type == :step
+      "#{@destination_id}-steps"
+    else
+      @destination_id
+    end
+  end
+
+  def each
+    if ENV['NO_DATA']
+      super([])
+    else
+      features = self.class.fetch(@settings.client, @settings.syndication).collect{ |feat| [:feature, feat] }
+      features_steps = features.collect { |feature|
+        feature_steps = extract_steps_from_feature(feature.last)
+        feature.last['step_ids'] = feature_steps.pluck('SyndicObjectID')
+        [feature] + feature_steps.collect{ |feat| [:step, feat] }
+      }.flatten(1)
+      super(features_steps)
+    end
+  end
+
+  def map_tags(type_feat)
+    r = super(type_feat)
+    return r if !r.nil?
+
+    type, feat = type_feat
+    type == :step ? map_step_tags(feat) : nil
+  end
+
+  def map_step_tags(feat)
+    r = feat
+    id = map_id([nil, r])
+    {
+      ref: {
+        'FR:CRTA.step': id,
+      },
+      name: { fr: r['name'] }.compact_blank,
+      description: { fr: r['description'] }.compact_blank,
+      image: [r['image']].compact,
+      # image_description
+      # image_source
+    }
   end
 
   def map_feature_tags(feat)
@@ -263,5 +337,10 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       r['TYPE'] == 'Restaurant' ? cuisines(multiple_split(r, ['SPECIALITES'])) : {},
       r['TYPE']&.include?('Hôtel') ? { tourism: 'hotel' } : {},
     )
+  end
+
+  def map_refs(type_feat)
+    type, feat = type_feat
+    type == :feature ? feat['step_ids'] : nil
   end
 end

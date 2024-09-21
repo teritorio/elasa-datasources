@@ -54,10 +54,11 @@ class TourinsoftSource < Source
     parts
   end
 
-  def each
+  def each(raw = [])
     super(ENV['NO_DATA'] ?
       [] :
-      self.class.fetch(@settings.client, @settings.syndication).collect{ |feat| [:feature, feat] }
+      raw.empty? ? self.class.fetch(@settings.client, @settings.syndication).collect{ |feat| [:feature, feat] } :
+        raw
     )
   end
 
