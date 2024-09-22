@@ -16,7 +16,8 @@ class GtfsShapeSource < GdalSource
       SELECT
         GUnion(DISTINCT shapes_geom.geometry) AS geometry,
         routes.*,
-        group_concat(DISTINCT stops.stop_name) AS stops
+        group_concat(DISTINCT stops.stop_name) AS stops,
+        group_concat(DISTINCT stops.stop_id||\'~\') AS stop_ids
       FROM
         shapes_geom
         JOIN trips ON
@@ -60,5 +61,9 @@ class GtfsShapeSource < GdalSource
         gpx_trace: "#{@settings.path}/#{@destination_id&.gsub('/', '_')}-#{ref}.gpx"
       },
     }
+  end
+
+  def map_refs(feat)
+    feat['properties']['stop_ids']&.[](..-2)&.split('~,')
   end
 end
