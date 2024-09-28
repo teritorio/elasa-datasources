@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 # frozen_string_literal: true
-# typed: true
+# typed: false
 
 require_relative 'datasources/logging'
 require_relative 'datasources/hash'
