@@ -3,6 +3,7 @@
 
 require 'csv'
 require 'http'
+require 'bzip2/ffi'
 require 'active_support/all'
 
 require 'sorbet-runtime'
@@ -13,8 +14,9 @@ require_relative 'source'
 class CsvSource < Source
   class Settings < Source::SourceSettings
     const :url, String
-    const :col_sep, String
-    const :id, String
+    const :uncompress, T.nilable(String)
+    const :col_sep, String, default: ','
+    const :id, T::Array[String]
     const :lon, String
     const :lat, String
     const :timestamp, String
@@ -29,7 +31,12 @@ class CsvSource < Source
       raise [url, resp].inspect
     end
 
-    CSV.parse(resp.body.to_s, headers: true, col_sep: col_sep, quote_char: nil).each(&:to_h)
+    reader = resp.body.to_s
+    if @settings.uncompress == 'bz2'
+      reader = Bzip2::FFI::Reader.read(StringIO.new(reader))
+    end
+
+    CSV.parse(reader, headers: true, col_sep: col_sep, quote_char: nil).each(&:to_h)
   end
 
   def each
@@ -37,11 +44,11 @@ class CsvSource < Source
   end
 
   def map_id(feat)
-    feat[@settings.id].to_i
+    @settings.id.collect{ |id| feat[id] }.join(',')
   end
 
   def map_updated_at(feat)
-    feat[@settings.timestamp]
+    feat[@settings.timestamp] || '1970-01-01'
   end
 
   def map_geometry(feat)

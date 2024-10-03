@@ -119,8 +119,12 @@
         },
         "internet_access": {
             "enum": [
-                "wlan"
+                "wlan",
+                "no"
             ]
+        },
+        "brand": {
+            "type": "string"
         }
     },
     "$defs": {

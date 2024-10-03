@@ -165,7 +165,17 @@
                 "@default:full": {
                     "fr": "wifi"
                 }
+            },
+            "no": {
+                "@default:full": {
+                    "fr": "pas d'accès à internet"
+                }
             }
+        }
+    },
+    "brand": {
+        "@default": {
+            "fr": "enseigne"
         }
     }
 }
