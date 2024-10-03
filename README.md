@@ -34,14 +34,14 @@ Define env var `NO_DATA` to process and output only metadata.
 ## Docker
 
 ```
-docker-compose build
-docker-compose run --rm datasources bundler exec ruby update.rb
-docker-compose run --rm datasources bundler exec ruby update.rb demo
+docker compose build
+docker compose run --rm datasources bundler exec ruby update.rb
+docker compose run --rm datasources bundler exec ruby update.rb demo
 ```
 
 Run NGINX http server
 ```
-docker-compose up -d nginx
+docker compose up -d nginx
 ```
 
 ## Dev
