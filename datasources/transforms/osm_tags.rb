@@ -40,6 +40,7 @@ class OsmTags < Transformer
     vending
     seasonal
     clothes
+    healthcare:speciality
   ]
 
   @@capacities = ['capacity', 'capacity:beds', 'capacity:rooms', 'capacity:persons', 'capacity:caravans', 'capacity:cabins', 'capacity:pitches']
