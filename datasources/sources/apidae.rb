@@ -270,11 +270,23 @@ class ApidaeSource < Source
     'Parcours / sentier thématique' => 'hiking',
     'Itinéraire de Trail' => 'hiking',
     'Pôle trail' => 'hiking',
+    # foot
+    'Routes touristiques' => 'foot', # Generic
+    'Jeu de piste / Chasse au trésor' => 'foot',
+    # water
+    'Sports d\'eau' => nil,
+    'Itinéraire en canoë / en kayak' => 'canoe',
     # other random data
+    'Parcours santé/obstacles' => 'fitness_trail',
+    'Loisirs récréatifs' => nil,
     'Sports d\'adresse' => nil,
     'Paintball' => nil,
     'Golf' => nil,
+    'Golf practice' => nil,
+    'Golf 9 trous' => nil,
     'Golf 18 trous' => nil,
+    'Laser game / Laser Tag' => nil,
+    'Salle de jeux d\'arcade' => nil,
     'Sports divers' => nil,
   }]
 
