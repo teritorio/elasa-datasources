@@ -8,6 +8,17 @@ require_relative '../sources/apidae'
 
 
 class Apidae < Connector
+  def slugify(s)
+    s = s.gsub(/\s+/, ' ')
+    s.strip!
+    s.gsub!(' ', '-')
+    s.gsub!('&', 'and')
+    s = I18n.transliterate(s)
+    s.gsub!(/[^\w-]/u, '')
+    s.gsub!(/-+/, '-')
+    s.mb_chars.downcase.to_s
+  end
+
   def setup(kiba)
     kiba.source(MetadataSource, @job_id, @job_id, nil, MetadataSource::Settings.from_hash({
       'schema' => [
@@ -33,7 +44,7 @@ class Apidae < Connector
     selections.select{ |selection|
       @source_filter.nil? || selection['nom'].start_with?(@source_filter)
     }.each{ |selection|
-      destination_id = "#{selection['id']}-#{selection['nom']}"
+      destination_id = "#{selection['id']}-#{slugify(selection['nom'])}"
       name = selection['libelle'].transform_keys{ |key| key[('libelle'.size)..].downcase }
 
       kiba.source(
