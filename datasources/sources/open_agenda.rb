@@ -26,6 +26,10 @@ class OpenAgendaSource < Source
     JsonPath.on(object, "$.#{path}")
   end
 
+  def jp_first(object, path)
+    jp(object, path)&.first
+  end
+
   def self.build_url(path, query)
     query_string = query.flat_map do |key, value|
       if value.is_a?(Array)
@@ -73,7 +77,7 @@ class OpenAgendaSource < Source
       raise [next_url, response].inspect if response.status.success?
 
       json = JSON.parse(response.body)
-      results += json['agendas']
+      results += json['events']
 
       after = json['after']
       p after
@@ -81,6 +85,7 @@ class OpenAgendaSource < Source
 
       next_url = T.let(build_url(path, query.merge({ after: after })), T.nilable(String))
     end
+    results
   end
 
   def self.openning(periode)
@@ -90,16 +95,19 @@ class OpenAgendaSource < Source
     date_end = periode.dig(:firstTiming, :end)&.[](0..9)
     hour_start = periode.dig(:firstTiming, :begin)&.[](11..15)
     hour_end = periode.dig(:firstTiming, :end)&.[](11..15)
+
+    [date_start, date_end, hour_start, hour_end]
   end
 
   def each
     if ENV['NO_DATA']
       super([])
     else
-      super(self.class.fetch_paged("agendas/#{@settings.agendaUid}", {
+      super(self.class.fetch_paged("agendas/#{@settings.agendaUid}/events", {
         key: @settings.key,
         agenda_uid: @settings.agenda_uid,
         location_uid: @settings.location_uid,
+        event_uid: @settings.event_uid
       }))
     end
   end
