@@ -1,0 +1,353 @@
+{
+    "events": [
+        {
+            "longDescription": {
+                "fr": "Au programme, des ateliers et des animations pour adopter des gestes simples et efficaces au quotidien. ♻️\n🎟️ Réservation obligatoire par mail à : [acuinotta@mairie-wattignies.com](mailto:acuinotta@mairie-wattignies.com) ou par téléphone au 03 20 16 06 30\nParticipez à cette semaine pour apprendre, échanger et agir ensemble pour un avenir plus durable ! 🌱🍃 #SemaineRéductionDéchets #WattigniesEcoResponsable"
+            },
+            "country": {
+                "de": "Frankreich (Metropolitan)",
+                "code": "FR",
+                "oc": "França (Metropolitana)",
+                "en": "France (Metropolitan)",
+                "it": "Francia (continente)",
+                "fr": "France (Métropole)",
+                "es": "Francia (Metropolitana)"
+            },
+            "interetintercommunal": [
+                1
+            ],
+            "featured": false,
+            "private": 0,
+            "keywords": {},
+            "accessibility": {
+                "ii": false,
+                "hi": false,
+                "vi": false,
+                "pi": false,
+                "mi": false
+            },
+            "dateRange": {
+                "ar": "١٦ و ٢٣ نوفمبر ",
+                "de": "16 und 23 November",
+                "en": "16 and 23 November",
+                "it": "16 e 23 novembre",
+                "fr": "16 et 23 novembre",
+                "es": "16 i 23 noviembre"
+            },
+            "timezone": "Europe/Paris",
+            "imageCredits": null,
+            "originAgenda": {
+                "uid": 214147,
+                "image": "https://cibul.s3.amazonaws.com/agenda214147.jpg?__ts=1670411649560",
+                "description": "306 rue Clémenceau\n59139 Wattignies",
+                "title": "Mairie de Wattignies",
+                "slug": "mairie-de-wattignies",
+                "url": "http://mairie-wattignies.com",
+                "_agg": "eyJ1aWQiOjIxNDE0NywidGl0bGUiOiJNYWlyaWUgZGUgV2F0dGlnbmllcyIsImltYWdlIjoiaHR0cHM6Ly9jaWJ1bC5zMy5hbWF6b25hd3MuY29tL2FnZW5kYTIxNDE0Ny5qcGc/X190cz0xNjcwNDExNjQ5NTYwIiwidXJsIjoiaHR0cDovL21haXJpZS13YXR0aWduaWVzLmNvbSIsInNsdWciOiJtYWlyaWUtZGUtd2F0dGlnbmllcyJ9"
+            },
+            "description": {
+                "fr": "Du 16 au 23 novembre, rejoignez-nous pour une semaine dédiée à la réduction des déchets et à la transition écologique."
+            },
+            "title": {
+                "fr": "Semaine Européenne de la Réduction des Déchets à Wattignies !"
+            },
+            "onlineAccessLink": null,
+            "createdAt": "2024-10-30T16:27:25.000Z",
+            "uid": 82424955,
+            "motive": null,
+            "draft": 0,
+            "timings": [
+                {
+                    "begin": "2024-11-16T08:30:00+01:00",
+                    "end": "2024-11-16T12:30:00+01:00"
+                },
+                {
+                    "begin": "2024-11-23T08:30:00+01:00",
+                    "end": "2024-11-23T12:00:00+01:00"
+                }
+            ],
+            "firstTiming": {
+                "end": "2024-11-16T12:30:00.000+01:00",
+                "begin": "2024-11-16T08:30:00.000+01:00"
+            },
+            "links": [
+                {
+                    "link": "mailto:acuinotta@mairie-wattignies.com"
+                }
+            ],
+            "state": 2,
+            "categories-metropolitaines": [
+                10
+            ],
+            "slug": "semaine-europeenne-de-la-reduction-des-dechets-a-wattignies",
+            "updatedAt": "2024-10-30T16:27:27.000Z",
+            "addMethod": "contribution",
+            "image": {
+                "filename": "0706507519774af0a99acbebd52ef630.base.image.jpg",
+                "size": {
+                    "width": 700,
+                    "height": 990
+                },
+                "variants": [
+                    {
+                        "filename": "0706507519774af0a99acbebd52ef630.full.image.jpg",
+                        "size": {
+                            "width": 1754,
+                            "height": 2480
+                        },
+                        "type": "full"
+                    },
+                    {
+                        "filename": "0706507519774af0a99acbebd52ef630.thumb.image.jpg",
+                        "size": {
+                            "width": 200,
+                            "height": 200
+                        },
+                        "type": "thumbnail"
+                    }
+                ],
+                "base": "https://cibul.s3.amazonaws.com/"
+            },
+            "attendanceMode": 1,
+            "sourceAgendas": [],
+            "label": [],
+            "creatorUid": 15935982,
+            "recurringevent": [],
+            "lastTiming": {
+                "end": "2024-11-23T12:00:00.000+01:00",
+                "begin": "2024-11-23T08:30:00.000+01:00"
+            },
+            "registration": [],
+            "location": {
+                "disqualifiedDuplicates": null,
+                "access": {},
+                "city": "Wattignies",
+                "timezone": "Europe/Paris",
+                "postalCode": "59139",
+                "latitude": 50.587759,
+                "imageCredits": null,
+                "description": {},
+                "setUid": 59170,
+                "uid": 50172159,
+                "createdAt": "2024-03-11T11:02:53.000Z",
+                "duplicateCandidates": null,
+                "countryCode": "FR",
+                "adminLevel5": null,
+                "links": [],
+                "state": 0,
+                "extId": null,
+                "department": "Nord",
+                "slug": "wattignies_6232618",
+                "email": null,
+                "longitude": 3.050851,
+                "updatedAt": "2024-06-18T12:43:24.000Z",
+                "image": null,
+                "website": null,
+                "address": "mairie de Wattignies",
+                "adminLevel3": "Métropole Européenne de Lille",
+                "agendaUid": 44152079,
+                "adminLevel4": "Wattignies",
+                "adminLevel1": "Hauts-de-France",
+                "adminLevel2": "Nord",
+                "mergedIn": null,
+                "_agg": "eyJ1aWQiOjUwMTcyMTU5LCJuYW1lIjoiV2F0dGlnbmllcyJ9",
+                "tags": null,
+                "insee": "59648",
+                "phone": null,
+                "district": null,
+                "name": "Wattignies",
+                "region": "Hauts-de-France"
+            },
+            "ownerUid": 15935982,
+            "conditions": {},
+            "age": {
+                "min": null,
+                "max": null
+            },
+            "status": 1,
+            "nextTiming": {
+                "begin": "2024-11-16T08:30:00+01:00",
+                "end": "2024-11-16T12:30:00+01:00"
+            }
+        },
+        {
+            "longDescription": {
+                "fr": "« Les Petits Aimants »\n----------------------\n\nCompagnie Arrête de Grandir !\n\n### Petites histoires d’amour\n\nUn spectacle magnétique. Qu’ils aiment ou qu’ils n’aiment pas... à l’intérieur il y a toujours un cœur qui bat ! Le quotidien de nos tout-petits est jonché de découvertes... et l’Amour est l’une d’elles. Le jeu du « J’aime - J’aime pas » peut commencer...\nAvec beaucoup de simplicité et de sincérité, Valentine nous partage ses toutes petites histoires d’amour. Et elle y met...tout son cœur ! Et toujours une petite note d’anglais pour les oreilles grandes ouvertes. Mais aussi, des chansons, une touche de langue des signes, une pointe de percussions corporelles, des albums jeunesse comme fil conducteur du spectacle… Parce qu’on aime !\n\nDès 6 mois\nDurée: 25 mn\nJauge : 15-20 enfants\n\\> Samedi 16 novembre à 10h et à 11h\nCentre Culturel Robert Delefosse\nMezzanine 1er étage (accès ascenseur)"
+            },
+            "country": {
+                "de": "Frankreich (Metropolitan)",
+                "code": "FR",
+                "oc": "França (Metropolitana)",
+                "en": "France (Metropolitan)",
+                "it": "Francia (continente)",
+                "fr": "France (Métropole)",
+                "es": "Francia (Metropolitana)"
+            },
+            "interetintercommunal": [
+                1
+            ],
+            "featured": false,
+            "private": 0,
+            "keywords": {},
+            "accessibility": {
+                "ii": false,
+                "hi": true,
+                "vi": false,
+                "pi": false,
+                "mi": true
+            },
+            "dateRange": {
+                "ar": "السبت ١٦ نوفمبر, 10:00, 11:00",
+                "de": "Samstag 16 November, 10:00, 11:00",
+                "en": "Saturday 16 November, 10:00, 11:00",
+                "it": "Sabato 16 novembre, 10:00, 11:00",
+                "fr": "Samedi 16 novembre, 10h00, 11h00",
+                "es": "Sábado 16 noviembre, 10:00, 11:00"
+            },
+            "timezone": "Europe/Paris",
+            "imageCredits": "compagnie arrête de grandir",
+            "originAgenda": {
+                "image": "agenda214147.jpg?__ts=1670411649560",
+                "private": 0,
+                "locationSetUid": 59170,
+                "official": 1,
+                "description": "306 rue Clémenceau\n59139 Wattignies",
+                "title": "Mairie de Wattignies",
+                "url": "http://mairie-wattignies.com",
+                "_agg": "eyJ1aWQiOjIxNDE0NywidGl0bGUiOiJNYWlyaWUgZGUgV2F0dGlnbmllcyIsImltYWdlIjoiYWdlbmRhMjE0MTQ3LmpwZz9fX3RzPTE2NzA0MTE2NDk1NjAiLCJ1cmwiOiJodHRwOi8vbWFpcmllLXdhdHRpZ25pZXMuY29tIiwic2x1ZyI6Im1haXJpZS1kZS13YXR0aWduaWVzIn0=",
+                "uid": 214147,
+                "createdAt": "2022-12-07T11:14:08.000Z",
+                "officializedAt": "2023-02-02T12:11:05.000Z",
+                "slug": "mairie-de-wattignies",
+                "updatedAt": "2024-10-26T08:26:15.000Z"
+            },
+            "description": {
+                "fr": "Un spectacle magnétique. Avec beaucoup de simplicité et de sincérité, Valentine nous partage ses toutes petites histoires d’amour. Et elle y met...tout son cœur ! Parce qu’on aime !"
+            },
+            "title": {
+                "fr": "« Les Petits Aimants »"
+            },
+            "onlineAccessLink": "https://maps.app.goo.gl/EsMRtMq7JPoKsfbL9",
+            "createdAt": "2024-10-26T08:18:31.000Z",
+            "uid": 20247876,
+            "motive": null,
+            "draft": 0,
+            "timings": [
+                {
+                    "begin": "2024-11-16T10:00:00+01:00",
+                    "end": "2024-11-16T10:25:00+01:00"
+                },
+                {
+                    "begin": "2024-11-16T11:00:00+01:00",
+                    "end": "2024-11-16T11:25:00+01:00"
+                }
+            ],
+            "firstTiming": {
+                "end": "2024-11-16T10:25:00.000+01:00",
+                "begin": "2024-11-16T10:00:00.000+01:00"
+            },
+            "links": [],
+            "state": 2,
+            "categories-metropolitaines": [
+                20
+            ],
+            "slug": "les-petits-aimants-7311921",
+            "updatedAt": "2024-10-26T08:18:32.000Z",
+            "addMethod": "contribution",
+            "image": {
+                "filename": "501ffb697cf345b7a7962a67b9459828.base.image.jpg",
+                "size": {
+                    "width": 700,
+                    "height": 933
+                },
+                "variants": [
+                    {
+                        "filename": "501ffb697cf345b7a7962a67b9459828.full.image.jpg",
+                        "size": {
+                            "width": 756,
+                            "height": 1008
+                        },
+                        "type": "full"
+                    },
+                    {
+                        "filename": "501ffb697cf345b7a7962a67b9459828.thumb.image.jpg",
+                        "size": {
+                            "width": 200,
+                            "height": 200
+                        },
+                        "type": "thumbnail"
+                    }
+                ],
+                "base": "https://cibul.s3.amazonaws.com/"
+            },
+            "attendanceMode": 3,
+            "sourceAgendas": [],
+            "label": [],
+            "creatorUid": 15935982,
+            "recurringevent": [],
+            "lastTiming": {
+                "end": "2024-11-16T11:25:00.000+01:00",
+                "begin": "2024-11-16T11:00:00.000+01:00"
+            },
+            "registration": [
+                {
+                    "type": "link",
+                    "value": "https://wattignies.notre-billetterie.com/billets?ovl=1&fbclid=IwAR0y2ydjSGVKQBKHfU1Cx_7u2OKRCFkH6HCeGB9txIufZOqPgkO1_2kaxrs"
+                }
+            ],
+            "location": {
+                "disqualifiedDuplicates": null,
+                "access": {},
+                "city": "Wattignies",
+                "timezone": "Europe/Paris",
+                "postalCode": "59139",
+                "latitude": 50.587878,
+                "imageCredits": null,
+                "description": {},
+                "setUid": 59170,
+                "uid": 88118705,
+                "createdAt": "2019-11-05T11:35:09.000Z",
+                "duplicateCandidates": null,
+                "countryCode": "FR",
+                "adminLevel5": null,
+                "links": [],
+                "state": 0,
+                "extId": null,
+                "department": "Nord",
+                "slug": "centre-culturel-robert-delefosse225_23056",
+                "email": null,
+                "longitude": 3.051166,
+                "updatedAt": "2021-07-16T22:37:37.000Z",
+                "image": null,
+                "website": null,
+                "address": "rue des Arts Wattignies",
+                "adminLevel3": "Métropole Européenne de Lille",
+                "agendaUid": 59503740,
+                "adminLevel4": "Wattignies",
+                "adminLevel1": "Hauts-de-France",
+                "adminLevel2": "Nord",
+                "mergedIn": null,
+                "_agg": "eyJ1aWQiOjg4MTE4NzA1LCJuYW1lIjoiQ2VudHJlIEN1bHR1cmVsIFJvYmVydCBEZWxlZm9zc2UifQ==",
+                "tags": null,
+                "insee": "59648",
+                "phone": null,
+                "district": null,
+                "name": "Centre Culturel Robert Delefosse",
+                "region": "Hauts-de-France"
+            },
+            "ownerUid": 15935982,
+            "conditions": {
+                "fr": "3,50 €"
+            },
+            "age": {
+                "min": 0,
+                "max": 99
+            },
+            "status": 1,
+            "nextTiming": {
+                "begin": "2024-11-16T10:00:00+01:00",
+                "end": "2024-11-16T10:25:00+01:00"
+            }
+        }
+    ]
+}
