@@ -96,7 +96,7 @@ class OpenAgendaSource < Source
     hour_start = periode.dig(:firstTiming, :begin)&.[](11..15)
     hour_end = periode.dig(:firstTiming, :end)&.[](11..15)
 
-    [date_start, date_end, hour_start, hour_end]
+    [date_start, date_end, [hour_start, hour_end].compact.join(' - ')].compact.join(' ')
   end
 
   def each
@@ -131,6 +131,19 @@ class OpenAgendaSource < Source
   end
 
   def map_tags(feat)
-    feat.dig(:location, :tags)
+    r = feat
+    date_start, date_end, hour = self.class.openning(r)
+
+    {
+      name: r['title'],
+      description: r.dig(:description, :fr),
+    }
+
+  end
+
+  def map_native_properties(feat, properties)
+    properties.transform_values do |path|
+      jp(feat, path)
+    end
   end
 end
