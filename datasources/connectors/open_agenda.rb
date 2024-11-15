@@ -18,15 +18,29 @@ class OpenAgenda < Connector
       ]
     }))
 
-
-    api_key = @settings['key']
     agenda_uid = @settings['agenda_uid'].to_s
+    if agenda_uid.empty?
+      agendas = OpenAgendaSource.fetch('agendas', {
+        key: @settings['key']
+      }, 'agendas')
+      agendas.map do |agenda|
+        agenda_uid = agenda['uid']
+        logger.info(agenda_uid)
+        _call(kiba, agenda_uid)
+      end
+    else
+      _call(kiba, agenda_uid)
+    end
+  end
+
+  def _call(kiba, agenda_uid)
+    @settings['agenda_uid'] = agenda_uid
     events = OpenAgendaSource.fetch("agendas/#{agenda_uid}/events", {
-      key: api_key
+      key: @settings['key']
     })
     events.each do |event|
       logger.info(event['uid'])
-      destination_id = "#{event['uid']}-#{event['title']['fr']}"
+      destination_id = "#{agenda_uid}-#{event['uid']}-#{event['title']['fr']}"
       name = event['title']
 
       kiba.source(
@@ -34,7 +48,7 @@ class OpenAgenda < Connector
         @job_id,
         destination_id,
         name,
-        OpenAgendaSource::Settings.from_hash(@settings.merge({ 'event_uid' => event['uid'].to_s })),
+        OpenAgendaSource::Settings.from_hash(@settings.merge({ 'event_uid' => event['uid'].to_s, 'agenda_uid' => agenda_uid })),
       )
     end
   end
