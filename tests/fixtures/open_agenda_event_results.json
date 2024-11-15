@@ -1,0 +1,163 @@
+{
+    "success": true,
+    "event": {
+        "firstTiming": {
+            "end": "2024-11-16T12:30:00.000+01:00",
+            "begin": "2024-11-16T08:30:00.000+01:00"
+        },
+        "nextTiming": {
+            "begin": "2024-11-16T08:30:00+01:00",
+            "end": "2024-11-16T12:30:00+01:00"
+        },
+        "lastTiming": {
+            "end": "2024-11-23T12:00:00.000+01:00",
+            "begin": "2024-11-23T08:30:00.000+01:00"
+        },
+        "dateRange": {
+            "ar": "١٦ و ٢٣ نوفمبر ",
+            "de": "16 und 23 November",
+            "en": "16 and 23 November",
+            "it": "16 e 23 novembre",
+            "fr": "16 et 23 novembre",
+            "es": "16 i 23 noviembre"
+        },
+        "state": 2,
+        "featured": false,
+        "motive": null,
+        "originAgenda": {
+            "uid": 214147,
+            "image": "https://cibul.s3.amazonaws.com/agenda214147.jpg?__ts=1670411649560",
+            "description": "306 rue Clémenceau\n59139 Wattignies",
+            "title": "Mairie de Wattignies",
+            "slug": "mairie-de-wattignies",
+            "url": "http://mairie-wattignies.com",
+            "_agg": "eyJ1aWQiOjIxNDE0NywidGl0bGUiOiJNYWlyaWUgZGUgV2F0dGlnbmllcyIsImltYWdlIjoiaHR0cHM6Ly9jaWJ1bC5zMy5hbWF6b25hd3MuY29tL2FnZW5kYTIxNDE0Ny5qcGc/X190cz0xNjcwNDExNjQ5NTYwIiwidXJsIjoiaHR0cDovL21haXJpZS13YXR0aWduaWVzLmNvbSIsInNsdWciOiJtYWlyaWUtZGUtd2F0dGlnbmllcyJ9"
+        },
+        "sourceAgendas": [],
+        "image": {
+            "filename": "0706507519774af0a99acbebd52ef630.base.image.jpg",
+            "size": {
+                "width": 700,
+                "height": 990
+            },
+            "variants": [
+                {
+                    "filename": "0706507519774af0a99acbebd52ef630.full.image.jpg",
+                    "size": {
+                        "width": 1754,
+                        "height": 2480
+                    },
+                    "type": "full"
+                },
+                {
+                    "filename": "0706507519774af0a99acbebd52ef630.thumb.image.jpg",
+                    "size": {
+                        "width": 200,
+                        "height": 200
+                    },
+                    "type": "thumbnail"
+                }
+            ],
+            "base": "https://cibul.s3.amazonaws.com/"
+        },
+        "imageCredits": null,
+        "title": {
+            "fr": "Semaine Européenne de la Réduction des Déchets à Wattignies !"
+        },
+        "description": {
+            "fr": "Du 16 au 23 novembre, rejoignez-nous pour une semaine dédiée à la réduction des déchets et à la transition écologique."
+        },
+        "keywords": {},
+        "longDescription": {
+            "fr": "Au programme, des ateliers et des animations pour adopter des gestes simples et efficaces au quotidien. ♻️\n🎟️ Réservation obligatoire par mail à : [acuinotta@mairie-wattignies.com](mailto:acuinotta@mairie-wattignies.com) ou par téléphone au 03 20 16 06 30\nParticipez à cette semaine pour apprendre, échanger et agir ensemble pour un avenir plus durable ! 🌱🍃 #SemaineRéductionDéchets #WattigniesEcoResponsable"
+        },
+        "conditions": {},
+        "age": {
+            "min": null,
+            "max": null
+        },
+        "registration": [],
+        "accessibility": {
+            "ii": false,
+            "hi": false,
+            "vi": false,
+            "pi": false,
+            "mi": false
+        },
+        "attendanceMode": 1,
+        "location": {
+            "disqualifiedDuplicates": null,
+            "access": {},
+            "city": "Wattignies",
+            "timezone": "Europe/Paris",
+            "postalCode": "59139",
+            "latitude": 50.587759,
+            "imageCredits": null,
+            "description": {},
+            "setUid": 59170,
+            "uid": 50172159,
+            "createdAt": "2024-03-11T11:02:53.000Z",
+            "duplicateCandidates": null,
+            "countryCode": "FR",
+            "adminLevel5": null,
+            "links": [],
+            "state": 0,
+            "extId": null,
+            "department": "Nord",
+            "slug": "wattignies_6232618",
+            "email": null,
+            "longitude": 3.050851,
+            "updatedAt": "2024-06-18T12:43:24.000Z",
+            "image": null,
+            "website": null,
+            "address": "mairie de Wattignies",
+            "adminLevel3": "Métropole Européenne de Lille",
+            "agendaUid": 44152079,
+            "adminLevel4": "Wattignies",
+            "adminLevel1": "Hauts-de-France",
+            "adminLevel2": "Nord",
+            "mergedIn": null,
+            "_agg": "eyJ1aWQiOjUwMTcyMTU5LCJuYW1lIjoiV2F0dGlnbmllcyJ9",
+            "tags": null,
+            "insee": "59648",
+            "phone": null,
+            "district": null,
+            "name": "Wattignies",
+            "region": "Hauts-de-France"
+        },
+        "onlineAccessLink": null,
+        "status": 1,
+        "timings": [
+            {
+                "begin": "2024-11-16T08:30:00+01:00",
+                "end": "2024-11-16T12:30:00+01:00"
+            },
+            {
+                "begin": "2024-11-23T08:30:00+01:00",
+                "end": "2024-11-23T12:00:00+01:00"
+            }
+        ],
+        "interetintercommunal": [
+            1
+        ],
+        "recurringevent": [],
+        "categories-metropolitaines": [
+            10
+        ],
+        "label": [],
+        "uid": 82424955,
+        "slug": "semaine-europeenne-de-la-reduction-des-dechets-a-wattignies",
+        "private": 0,
+        "timezone": "Europe/Paris",
+        "draft": 0,
+        "createdAt": "2024-10-30T16:27:25.000Z",
+        "creatorUid": 15935982,
+        "ownerUid": 15935982,
+        "updatedAt": "2024-10-30T16:27:27.000Z",
+        "links": [
+            {
+                "link": "mailto:acuinotta@mairie-wattignies.com"
+            }
+        ]
+    }
+}
