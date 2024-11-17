@@ -1,0 +1,112 @@
+[
+    {
+        "publisher_name": {
+            "value": "SIRTAQUI Nouvelle-Aquitaine"
+        },
+        "identifier": {
+            "value": "DEGAQU047FS0002M"
+        },
+        "elem": {
+            "value": "https://data.datatourisme.fr/23/9f17574c-c071-3f90-9f14-67f05873750e"
+        },
+        "type": {
+            "value": "https://www.datatourisme.fr/ontology/core#WineCellar"
+        },
+        "label": {
+            "value": "Vin du Tsar"
+        },
+        "Latitude": {
+            "value": "44.429137"
+        },
+        "Longitude": {
+            "value": "1.01535"
+        },
+        "street_address": {
+            "value": "421 Route de Tournon"
+        },
+        "postalcode_address": {
+            "value": "47370"
+        },
+        "city_address": {
+            "value": "Thézac"
+        },
+        "wheelchair": {
+            "value": "true"
+        },
+        "takeaway": {
+            "value": "false"
+        },
+        "contact_phone": {
+            "value": "+33 5 53 40 72 76"
+        },
+        "contact_email": {
+            "value": "info@vin-du-tsar.fr"
+        },
+        "contact_website": {
+            "value": "http://www.vin-du-tsar.fr/"
+        },
+        "updated_at": {
+            "value": "2024-06-29T09:00:00Z"
+        },
+        "@context": {
+            "identifier": "@id",
+            "publisher_name": "http://schema.org/name",
+            "contact_website": "http://schema.org/url"
+        }
+    },
+    {
+        "publisher_name": {
+            "value": "ADT de la Marne"
+        },
+        "identifier": {
+            "value": "HOT0000000000283"
+        },
+        "elem": {
+            "value": "https://data.datatourisme.fr/26/a555df75-fc0a-358f-a478-542341d0c122"
+        },
+        "type": {
+            "value": "https://www.datatourisme.fr/ontology/core#Restaurant"
+        },
+        "label": {
+            "value": "Hôtel-Restaurant \"L'Auberge des Moissons\""
+        },
+        "Latitude": {
+            "value": "48.9916262"
+        },
+        "Longitude": {
+            "value": "4.2443773"
+        },
+        "street_address": {
+            "value": "RD3 - 8 route Nationale"
+        },
+        "postalcode_address": {
+            "value": "51510"
+        },
+        "city_address": {
+            "value": "Matougues"
+        },
+        "wheelchair": {
+            "value": "true"
+        },
+        "takeaway": {
+            "value": null
+        },
+        "contact_phone": {
+            "value": null
+        },
+        "contact_email": {
+            "value": null
+        },
+        "contact_website": {
+            "value": null
+        },
+        "updated_at": {
+            "value": "2024-06-29T09:00:00Z"
+        },
+        "@context": {
+            "identifier": "@id",
+            "publisher_name": "http://schema.org/name",
+            "contact_website": "http://schema.org/url"
+        }
+    }
+]

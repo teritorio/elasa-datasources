@@ -1,0 +1,6 @@
+project:
+  job5:
+    type: Datatourisme
+    key: key
+    flow_key: flow_key
+    attribution: "Datatourisme"
