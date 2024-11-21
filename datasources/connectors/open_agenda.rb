@@ -4,8 +4,8 @@
 require 'sorbet-runtime'
 
 require_relative 'connector'
-require_relative '../sources/open_agenda'
 require_relative '../sources/metadata'
+require_relative '../sources/open_agenda'
 
 class OpenAgenda < Connector
   def setup(kiba)

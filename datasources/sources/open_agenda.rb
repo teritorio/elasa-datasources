@@ -45,11 +45,13 @@ class OpenAgendaSource < Source
     "https://api.openagenda.com/v2/#{path}?#{query_string}"
   end
 
-  def self.fetch(path, query)
-    results = T.let([], T::Array[T.untyped])
+  def self.fetch(path, query, key = 'events', size = 100, **kwargs)
+    max_retry = kwargs[:max_retry] || 10
+    sleeping_time = kwargs[:sleeping_time] || 0.3
+    results = T.let(Set.new, T::Set[T.untyped])
+    retries = T.let(0, Integer)
 
     after = []
-    size = 100 # max size result per page
 
     query = query.merge({ after: after, size: size })
     next_url = T.let(build_url(path, query), T.nilable(String))
@@ -60,12 +62,19 @@ class OpenAgendaSource < Source
 
       json = JSON.parse(response.body)
 
-      results += json['events']
+      if json[key].empty? && retries < max_retry
+        retries += 1
+      else
+        retries = 0
+        results.merge(json[key])
 
-      after = json['after']
-      break if !after
+        after = json['after']
+        break if !after
 
-      next_url = T.let(build_url(path, query.merge({ after: after })), T.nilable(String))
+        query.delete(:after)
+        next_url = T.let(build_url(path, query.merge({ after: after })), T.nilable(String))
+      end
+      sleep sleeping_time
     end
     results
   end
@@ -103,8 +112,8 @@ class OpenAgendaSource < Source
     {
       type: 'Point',
       coordinates: [
-        jp_first(feat, 'location.latitude').to_f,
-        jp_first(feat, 'location.longitude').to_f
+        jp_first(feat, 'location.longitude').to_f,
+        jp_first(feat, 'location.latitude').to_f
       ],
     }
   end
@@ -118,12 +127,48 @@ class OpenAgendaSource < Source
             'fr' => 'Description longue'
           }
         },
+        'agenda' => {
+          '@default' => {
+            'fr' => "Nom de l'agenda"
+          },
+        },
+        'agenda:id' => {
+          '@default' => {
+            'fr' => "Identifiant de l'agenda"
+          },
+        },
+        'agenda:name' => {
+          '@default' => {
+            'fr' => "Nom de l'agenda"
+          },
+        },
+        'keywords' => {
+          '@default' => {
+            'fr' => 'Mots-clés'
+          }
+        }
       }.merge(OpenAgendaMixin::I18N_IMPAIREMENT),
       schema: {
         'properties' => {
           'long_description' => {
             '$ref' => '#/$defs/multilingual',
           },
+          'agenda' => {
+            'type' => 'object',
+            'properties' => {
+              'id' => { 'type' => 'string' },
+              'name' => { 'type' => 'string' },
+            },
+          },
+          'keywords' => {
+            'type' => 'object',
+            'additionalProperties' => {
+              'type' => 'array',
+              'items' => {
+                'type' => 'string',
+              },
+            }
+          }
         }.merge(OpenAgendaMixin::SCHEMA_IMPAIREMENT),
       }
     )
@@ -136,28 +181,42 @@ class OpenAgendaSource < Source
     {
       name: jp_first(r, 'title'),
       description: jp_first(r, 'description'),
-      long_description: jp_first(r, 'longDescription'),
       addr: {
         street: jp_first(r, 'location.address'),
         postcode: jp_first(r, 'location.postalCode'),
         city: jp_first(r, 'location.city'),
         country: jp_first(r, 'country.fr') || jp_first(r, 'location.countryCode'),
       },
-      website: [jp_first(r, 'location.website').to_s, jp_first(r, 'originAgenda.url').to_s],
-      phone: [jp_first(r, 'location.phone').to_s],
+      website: [jp_first(r, 'location.website').to_s, jp_first(r, 'originAgenda.url').to_s].compact_blank,
+      phone: phone(r),
+      email: email(r),
       wheelchair: wheelchair(r),
-      cognitive_impairment: cognitive_impairment(r),
-      visual_impairment: visual_impairment(r),
-      hearing_impairment: hearing_impairment(r),
-      psychic_impairment: psychic_impairment(r),
       start_date: date_start,
       end_date: date_end,
       opening_hours: hour,
       image: [
-          [jp_first(r, 'image.base'), jp_first(r, 'image.filename')].compact.join,
-          jp(r, 'image.variants[*].filename').map{ |img| [jp_first(r, 'image.base'), img].compact.join },
-        ].flatten,
+        [jp_first(r, 'image.base'), jp_first(r, 'image.filename')].compact.join,
+        jp(r, 'image.variants[*].filename').map{ |img| [jp_first(r, 'image.base'), img].compact.join },
+      ].flatten,
     }
+  end
+
+  def phone(feat)
+    # phone_regex = /^(?:(?:(?:\+|00)33\D?(?:\D?\(0\)\D?)?)|0){1}[1-9]{1}(?:\D?\d{2}){4}$/m
+    [
+      jp_first(feat, 'location.phone'),
+      jp_first(feat, 'registration[?(@.type == "phone")].value'),
+      # jp_first(feat, 'longDescription.fr').match(phone_regex)&.to_s
+    ].compact_blank
+  end
+
+  def email(feat)
+    email_regex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z]{2,}\b/i
+    [
+      jp_first(feat, 'location.email'),
+      jp_first(feat, 'registration[?(@.type == "email")].value'),
+      jp_first(feat, 'longDescription.fr').match(email_regex)&.to_s
+  ].compact_blank
   end
 
   def wheelchair(feat)
@@ -181,9 +240,18 @@ class OpenAgendaSource < Source
   end
 
   def map_native_properties(feat, properties)
-    properties.transform_values do |path|
-      jp(feat, path)
-    end
+    properties.merge({
+      cognitive_impairment: cognitive_impairment(feat),
+      visual_impairment: visual_impairment(feat),
+      hearing_impairment: hearing_impairment(feat),
+      psychic_impairment: psychic_impairment(feat),
+      agenda: {
+        id: @settings.agenda_uid.to_s,
+        name: jp_first(feat, 'originAgenda.title'),
+      },
+      long_description: jp_first(feat, 'longDescription'),
+      keywords: jp(feat, 'keywords'),
+    })
   end
 
   def each
@@ -193,13 +261,7 @@ class OpenAgendaSource < Source
       event = self.class.fetch_event("agendas/#{@settings.agenda_uid}/events/#{@settings.event_uid}", {
         key: @settings.key
       })
-
-      # event.first['timings'].each do |timing|
-      #   event.first['firstTiming'] = timing
-      # logger.info(event)
       super(event)
-      # end
-
     end
   end
 end
