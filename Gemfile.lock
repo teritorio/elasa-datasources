@@ -122,6 +122,7 @@ GEM
       rubocop (~> 1.0)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
+    rubyzip (2.3.2)
     safe_type (1.1.1)
     sentry-ruby (5.17.3)
       bigdecimal
@@ -196,6 +197,7 @@ DEPENDENCIES
   rubocop
   rubocop-rails
   rubocop-rake
+  rubyzip
   sentry-ruby
   sorbet
   sorbet-rails
