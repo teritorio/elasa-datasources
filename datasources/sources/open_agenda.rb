@@ -61,6 +61,7 @@ class OpenAgendaSource < Source
       raise [next_url, response].inspect unless response.status.success?
 
       json = JSON.parse(response.body)
+      total = json['total']
 
       if json[key].empty? && retries < max_retry
         retries += 1
@@ -76,6 +77,11 @@ class OpenAgendaSource < Source
       end
       sleep sleeping_time
     end
+
+    if results.size < total
+      raise "Not all results fetched. Expected #{total}, got #{results.size}"
+    end
+
     results
   end
 
