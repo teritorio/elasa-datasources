@@ -7,6 +7,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '>= 3'
 
 gem 'activesupport'
+gem 'async'
 gem 'http'
 gem 'json'
 gem 'jsonpath'
