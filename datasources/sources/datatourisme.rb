@@ -14,6 +14,7 @@ class DatatourismeSource < Source
     const :key, String, name: 'key' # API key
     const :flow_key, String, name: 'flow_key' # Flow key
     const :destination_id, T.nilable(String), name: 'destination_id' # Destination ID
+    const :datas, T.nilable(T::Array[T::Hash[String, T.untyped]]), name: 'datas' # Datas
   end
 
   extend T::Generic
@@ -21,54 +22,33 @@ class DatatourismeSource < Source
 
   def self.fetch(path)
     url = "https://diffuseur.datatourisme.fr/webservice/#{path}"
-    logger.info("Fetching #{url}")
     response = HTTP.follow.get(url)
-
-    logger.info("Response: #{response.status}")
 
     return [url, response].inspect unless response.status.success?
 
-    binary_data = response.body.to_s
-    decompressed_data = decompress_gzip(binary_data)
-
-    process_zip(decompressed_data)
-  end
-
-  def self.process_zip(data)
-    results = []
-    Zip::File.open_buffer(StringIO.new(data)) do |zip|
-      zip.each_with_index do |entry, index|
-        data = entry.get_input_stream.read
-        decompressed_data = data
-        results << JSON.parse(decompressed_data)
-        if index == 10
-          break
-        end
-      end
-    end
-
-    results
+    JSON.parse(
+      decompress_gzip(response.body.to_s)
+    )['results']['bindings']
   end
 
   def self.decompress_gzip(data)
     Zlib::GzipReader.new(StringIO.new(data)).read
   end
 
-  def self.read_from(file_path)
-    jsonld = JSON.parse(File.read(file_path))
-    jsonld.dig('results', 'bindings')
-  end
-
   def each
     if ENV['NO_DATA']
       []
     else
-      super(self.class.fetch("#{@settings.flow_key}/#{@settings.key}"))
+      super(@settings.datas)
     end
   end
 
   def map_updated_at(feat)
-    feat['lastUpdate']
+    feat.dig('updated_at', 'value')
+  end
+
+  def map_source(feat)
+    feat.dig('type', 'value').split('#').last
   end
 
   def map_destination_id(_feat)
@@ -78,23 +58,32 @@ class DatatourismeSource < Source
   def map_geometry(feat)
     {
       type: 'Point',
-      coordinates: [feat['Longitude'].to_f, feat['Latitude'].to_f],
+      coordinates: [feat.dig('Longitude', 'value')&.to_f, feat.dig('Latitude', 'value')&.to_f],
     }
   end
 
   def map_tags(feat)
     {
-      'name' => { 'fr' => feat['publisher_name'] },
-      'addr' => {
-        'street' => feat['street_address'],
-        'postcode' => feat['postalcode_address'],
-        'city' => feat['city_address'],
+      'name' => {
+        'fr' => feat.dig('label', 'value'),
       },
+      'addr' => {
+        'street' => feat.dig('street_address', 'value') || '',
+        'postcode' => feat.dig('postalcode_address', 'value') || '',
+        'city' => feat.dig('city_address', 'value') || '',
+        'country' => feat.dig('country_address', 'value') || '',
+      },
+      'email' => [feat.dig('contact_email', 'value')].compact,
+      'phone' => [feat.dig('contact_phone', 'value')].compact,
+      'website' => [feat.dig('contact_website', 'value')].compact,
+      'wheelchair' => [feat.dig('wheelchair', 'value')].compact,
+      'image' => [feat.dig('image', 'value')].compact,
+      'description' => [feat.dig('description', 'value')].compact,
     }
   end
 
   def map_id(feat)
-    feat['dc:identifier']
+    feat.dig('identifier', 'value')
   end
 end
 
@@ -111,8 +100,8 @@ _sparql = <<~SPARQL
   SELECT ?identifier ?type ?label
       ?email ?full_name ?Latitude ?Longitude
       ?street_address ?postalcode_address ?city_address ?updated_at
-      ?publisher_name (GROUP_CONCAT(DISTINCT ?phone; SEPARATOR=",") AS ?contact_phone)
-      (GROUP_CONCAT(DISTINCT ?email; SEPARATOR=",") AS ?contact_email) ?wheelchair ?image ?contact_website ?description
+      ?publisher_name ?contact_phone
+      ?contact_email ?wheelchair ?image ?contact_website ?description
   WHERE {
     ?elem rdf:type ?type;
       dc:identifier ?identifier;
@@ -145,6 +134,8 @@ _sparql = <<~SPARQL
         ?elem :hasContact ?agent_contact.
         ?agent_contact schema:telephone ?phone.
     }
+
+    # Get only one data for phone, email and image instead of multiple (array of data)
     OPTIONAL {
         ?elem :hasBookingContact ?agent_contact.
         ?agent_contact schema:telephone ?phone.
@@ -172,9 +163,5 @@ _sparql = <<~SPARQL
       ?representation ebucore:hasRelatedResource ?relatedResource.
       ?relatedResource ebucore:locator ?image.
     }
-
   }
-  GROUP BY ?identifier ?type ?label ?email ?full_name ?Latitude ?Longitude
-          ?street_address ?postalcode_address ?city_address ?updated_at
-          ?publisher_name ?wheelchair ?image ?contact_website ?description
 SPARQL
