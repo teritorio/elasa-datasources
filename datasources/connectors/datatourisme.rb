@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 # typed: true
 
+require 'async'
 require 'sorbet-runtime'
 
 require_relative 'connector'
@@ -22,20 +23,22 @@ class Datatourisme < Connector
       ]
     }))
 
-    # datas = DatatourismeSource.fetch("#{@settings['flow_key']}/#{@settings['key']}")
+    DatatourismeSource.fetch("#{@settings['flow_key']}/#{@settings['key']}")
+                      .select { |data| @source_filter.nil? || data.dig('type', 'value').start_with?(@source_filter) }
+                      .group_by { |h| h.dig('type', 'value') }
+                      .map do |key, data|
+      Async do
+        destination_id = "#{@job_id}-#{key.split('#').last}"
+        name = { 'fr' => 'Datatourisme' }
 
-
-    # each(datas) do |data|
-    #   destination_id = "#{data['identifier']}-#{data['publisher_name']}"
-    #   name = { 'fr' => data['publisher_name'] }
-
-    kiba.source(
-      self.class.source_class,
-      @job_id,
-      @job_id,
-      { 'fr' => 'Datatourisme' },
-      self.class.source_class.const_get(:Settings).from_hash(@settings.merge({ 'destination_id' => @job_id })),
-    )
-    # end
+        kiba.source(
+          self.class.source_class,
+          @job_id,
+          destination_id,
+          name,
+          self.class.source_class::Settings.from_hash(@settings.merge({ 'destination_id' => destination_id, 'datas' => data })),
+        )
+      end
+    end.each(&:wait)
   end
 end
