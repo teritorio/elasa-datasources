@@ -87,8 +87,7 @@ class OpenAgendaSource < Source
   end
 
   def self.fetch_event(path, query)
-    Time.zone = 'Europe/Paris'
-    url = T.let(build_url(path, query.merge({ 'timings[gte]' => Time.zone.today })), T.nilable(String))
+    url = T.let(build_url(path, query.merge({ 'timings[gte]' => Date.today })), T.nilable(String))
     response = HTTP.follow.get(url)
     raise [url, response].inspect unless response.status.success?
 
