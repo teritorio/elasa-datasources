@@ -18,7 +18,7 @@ class DerivatedTagTransformer < Transformer
 
   sig { params(settings: SettingsType).void }
   def initialize(settings)
-    super(settings)
+    super
     @property = settings.property.to_sym
     @key = settings.key.to_sym
     @lambda_value = eval(settings.value)

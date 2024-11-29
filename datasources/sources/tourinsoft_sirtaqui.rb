@@ -188,7 +188,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
   end
 
   def select(feat)
-    super(feat) && (feat.first != :feature ||
+    super && (feat.first != :feature ||
       !feat.last['PHOTO'].nil? &&
       (
         feat.last['ObjectTypeName'] != 'Fêtes et manifestations' || (
@@ -268,7 +268,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
   end
 
   def map_tags(type_feat)
-    r = super(type_feat)
+    r = super
     return r if !r.nil?
 
     type, feat = type_feat

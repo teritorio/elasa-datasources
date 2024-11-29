@@ -16,7 +16,7 @@ class OsmTags < Transformer
 
   sig { params(settings: SettingsType).void }
   def initialize(settings)
-    super(settings)
+    super
     @multiple = @@multiple_base + settings.extra_multiple
   end
 
