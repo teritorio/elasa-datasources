@@ -19,13 +19,13 @@ class OpenAgenda < Connector
     }))
 
     agenda_uid = @settings['agenda_uid'].to_s
+    print(agenda_uid)
     if agenda_uid.empty?
       agendas = OpenAgendaSource.fetch('agendas', {
         key: @settings['key']
       }, 'agendas')
       agendas.map do |agenda|
         agenda_uid = agenda['uid']
-        logger.info(agenda_uid)
         _call(kiba, agenda_uid)
       end
     else
@@ -38,8 +38,8 @@ class OpenAgenda < Connector
     events = OpenAgendaSource.fetch("agendas/#{agenda_uid}/events", {
       key: @settings['key']
     })
+
     events.each do |event|
-      logger.info(event['uid'])
       destination_id = "#{agenda_uid}-#{event['uid']}-#{event['title']['fr']}"
       name = event['title']
 

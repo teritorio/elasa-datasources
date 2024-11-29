@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 # typed: false
 
+require 'date'
 require 'json'
 require 'http'
 require 'active_support/all'
@@ -82,11 +83,11 @@ class OpenAgendaSource < Source
       raise "Not all results fetched. Expected #{total}, got #{results.size}"
     end
 
-    results
+    results.to_a
   end
 
   def self.fetch_event(path, query)
-    url = T.let(build_url(path, query), T.nilable(String))
+    url = T.let(build_url(path, query.merge({ 'timings[gte]' => Date.today })), T.nilable(String))
     response = HTTP.follow.get(url)
     raise [url, response].inspect unless response.status.success?
 
@@ -100,8 +101,6 @@ class OpenAgendaSource < Source
     date_end = jp_first(periode, 'firstTiming.end')&.[](0..9)
     hour_start = jp_first(periode, 'firstTiming.begin')&.[](11..15)
     hour_end = jp_first(periode, 'firstTiming.end')&.[](11..15)
-
-    logger.info([date_start, date_end, [hour_start, hour_end].compact.join(' - ')])
 
     [date_start, date_end, [hour_start, hour_end].compact.join(' - ')]
   end
@@ -161,9 +160,12 @@ class OpenAgendaSource < Source
           },
           'agenda' => {
             'type' => 'object',
-            'properties' => {
-              'id' => { 'type' => 'string' },
-              'name' => { 'type' => 'string' },
+            'additionalProperties' => {
+              'type' => 'objects',
+              'properties' => {
+                'id' => { 'type' => 'string' },
+                'name' => { 'type' => 'string' },
+              },
             },
           },
           'keywords' => {
@@ -221,7 +223,7 @@ class OpenAgendaSource < Source
     [
       jp_first(feat, 'location.email'),
       jp_first(feat, 'registration[?(@.type == "email")].value'),
-      jp_first(feat, 'longDescription.fr').match(email_regex)&.to_s
+      jp_first(feat, 'longDescription.fr')&.match(email_regex)&.to_s
   ].compact_blank
   end
 

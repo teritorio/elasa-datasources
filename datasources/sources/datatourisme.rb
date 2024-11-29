@@ -26,9 +26,9 @@ class DatatourismeSource < Source
 
     return [url, response].inspect unless response.status.success?
 
-    JSON.parse(
+    Set.new(JSON.parse(
       decompress_gzip(response.body.to_s)
-    )['results']['bindings']
+    )['results']['bindings']).to_a
   end
 
   def self.decompress_gzip(data)
