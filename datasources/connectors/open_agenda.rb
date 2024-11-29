@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 # typed: true
 
+require 'async'
 require 'sorbet-runtime'
 
 require_relative 'connector'
@@ -19,7 +20,6 @@ class OpenAgenda < Connector
     }))
 
     agenda_uid = @settings['agenda_uid'].to_s
-    print(agenda_uid)
     if agenda_uid.empty?
       agendas = OpenAgendaSource.fetch('agendas', {
         key: @settings['key']
@@ -36,20 +36,23 @@ class OpenAgenda < Connector
   def _call(kiba, agenda_uid)
     @settings['agenda_uid'] = agenda_uid
     events = OpenAgendaSource.fetch("agendas/#{agenda_uid}/events", {
-      key: @settings['key']
+      key: @settings['key'],
+      'timings[gte]' => Date.today,
     })
 
-    events.each do |event|
-      destination_id = "#{agenda_uid}-#{event['uid']}-#{event['title']['fr']}"
-      name = event['title']
+    events.map do |event|
+      Async do
+        destination_id = "#{agenda_uid}-#{event['uid']}-#{event['title']['fr']}"
+        name = event['title']
 
-      kiba.source(
-        OpenAgendaSource,
-        @job_id,
-        destination_id,
-        name,
-        OpenAgendaSource::Settings.from_hash(@settings.merge({ 'event_uid' => event['uid'].to_s, 'agenda_uid' => agenda_uid })),
-      )
-    end
+        kiba.source(
+          OpenAgendaSource,
+          @job_id,
+          destination_id,
+          name,
+          OpenAgendaSource::Settings.from_hash(@settings.merge({ 'event_uid' => event['uid'].to_s, 'agenda_uid' => agenda_uid })),
+        )
+      end
+    end.each(&:wait)
   end
 end
