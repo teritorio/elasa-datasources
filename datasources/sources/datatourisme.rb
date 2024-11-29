@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+# typed: true
+
 require 'active_support/all'
 require 'cgi'
 require 'http'
