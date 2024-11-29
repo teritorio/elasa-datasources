@@ -1,0 +1,450 @@
+[
+    {
+        "longDescription": {
+            "fr": "L'UFA Don Bosco de Wittenheim organise ses portes ouvertes, afin de faire découvrir les formations proposées, dont le CAP AEPE en un en apprentissage.  \nDe plus un job dating apprentissage aura lieu."
+        },
+        "country": {
+            "de": "Frankreich (Metropolitan)",
+            "code": "FR",
+            "oc": "França (Metropolitana)",
+            "en": "France (Metropolitan)",
+            "it": "Francia (continente)",
+            "fr": "France (Métropole)",
+            "es": "Francia (Metropolitana)"
+        },
+        "featured": false,
+        "private": 0,
+        "keywords": {},
+        "accessibility": {
+            "ii": false,
+            "hi": false,
+            "vi": false,
+            "pi": false,
+            "mi": false
+        },
+        "dateRange": {
+            "ar": "السبت ٢٢ مارس ٢٠٢٥, 09:00",
+            "de": "Samstag 22 März 2025, 09:00",
+            "en": "Saturday 22 March 2025, 09:00",
+            "it": "Sabato 22 marzo 2025, 09:00",
+            "fr": "Samedi 22 mars 2025, 09h00",
+            "es": "Sábado 22 marzo 2025, 09:00"
+        },
+        "timezone": "Europe/Paris",
+        "imageCredits": null,
+        "originAgenda": {
+            "uid": 41648,
+            "image": "https://cibul.s3.amazonaws.com/agenda41648.jpg?__ts=1664443597781",
+            "description": "Du 16 au 23 mars 2024, tous ensemble pour l'éveil du tout-petit ! \nUne semaine d'ateliers & activités à travers toute la France, pour réunir le trio parent-enfant-professionnel.",
+            "title": "La Semaine Nationale de la Petite Enfance",
+            "slug": "semainepetiteenfance",
+            "url": "https://www.semainepetiteenfance.fr",
+            "_agg": "eyJ1aWQiOjQxNjQ4LCJ0aXRsZSI6IkxhIFNlbWFpbmUgTmF0aW9uYWxlIGRlIGxhIFBldGl0ZSBFbmZhbmNlIiwiaW1hZ2UiOiJodHRwczovL2NpYnVsLnMzLmFtYXpvbmF3cy5jb20vYWdlbmRhNDE2NDguanBnP19fdHM9MTY2NDQ0MzU5Nzc4MSIsInVybCI6Imh0dHBzOi8vd3d3LnNlbWFpbmVwZXRpdGVlbmZhbmNlLmZyIiwic2x1ZyI6InNlbWFpbmVwZXRpdGVlbmZhbmNlIn0="
+        },
+        "description": {
+            "fr": "Venez découvrir notre CAP AEPE et discuter avec des professionnels / des jeunes en apprentissage dans ce domaine."
+        },
+        "title": {
+            "fr": "Journée portes ouvertes"
+        },
+        "type-de-lieu-organisateur": 15,
+        "onlineAccessLink": null,
+        "createdAt": "2024-11-18T09:32:00.000Z",
+        "uid": 55340530,
+        "motive": null,
+        "draft": 0,
+        "timings": [
+            {
+                "begin": "2025-03-22T09:00:00+01:00",
+                "end": "2025-03-22T12:00:00+01:00"
+            }
+        ],
+        "firstTiming": {
+            "end": "2025-03-22T12:00:00.000+01:00",
+            "begin": "2025-03-22T09:00:00.000+01:00"
+        },
+        "links": [],
+        "state": 2,
+        "slug": "journee-portes-ouvertes-3397144",
+        "updatedAt": "2024-11-18T10:28:32.000Z",
+        "addMethod": "contribution",
+        "image": {
+            "filename": "6a2f848c28c94dae89215b032f192a3f.base.image.jpg",
+            "size": {
+                "width": 700,
+                "height": 990
+            },
+            "variants": [
+                {
+                    "filename": "6a2f848c28c94dae89215b032f192a3f.full.image.jpg",
+                    "size": {
+                        "width": 1414,
+                        "height": 2000
+                    },
+                    "type": "full"
+                },
+                {
+                    "filename": "6a2f848c28c94dae89215b032f192a3f.thumb.image.jpg",
+                    "size": {
+                        "width": 200,
+                        "height": 200
+                    },
+                    "type": "thumbnail"
+                }
+            ],
+            "base": "https://cibul.s3.amazonaws.com/"
+        },
+        "attendanceMode": 1,
+        "sourceAgendas": [],
+        "evenement-ouvert-au-public": [
+            8
+        ],
+        "creatorUid": 643506,
+        "lastTiming": {
+            "end": "2025-03-22T12:00:00.000+01:00",
+            "begin": "2025-03-22T09:00:00.000+01:00"
+        },
+        "registration": [],
+        "location": {
+            "disqualifiedDuplicates": null,
+            "access": {},
+            "city": "Wittenheim",
+            "timezone": "Europe/Paris",
+            "postalCode": "68270",
+            "latitude": 47.812697,
+            "imageCredits": null,
+            "description": {},
+            "setUid": null,
+            "uid": 13907654,
+            "createdAt": "2024-02-27T16:23:24.000Z",
+            "duplicateCandidates": null,
+            "countryCode": "FR",
+            "adminLevel5": "Cité Sainte-Barbe",
+            "links": [],
+            "state": 0,
+            "extId": null,
+            "department": "Haut-Rhin",
+            "slug": "institution-don-bosco_9722188",
+            "email": null,
+            "longitude": 7.340124,
+            "updatedAt": "2024-02-27T16:23:24.000Z",
+            "image": null,
+            "website": null,
+            "address": "60 rue d'ensisheim - wittenheim",
+            "adminLevel3": null,
+            "agendaUid": 41648,
+            "adminLevel4": "Wittenheim",
+            "adminLevel1": "Grand Est",
+            "adminLevel2": "Haut-Rhin",
+            "mergedIn": null,
+            "_agg": "eyJ1aWQiOjEzOTA3NjU0LCJuYW1lIjoiSW5zdGl0dXRpb24gRG9uIEJvc2NvIn0=",
+            "tags": null,
+            "insee": "68376",
+            "phone": null,
+            "district": "Cité Sainte-Barbe",
+            "name": "Institution Don Bosco",
+            "region": "Grand Est"
+        },
+        "ownerUid": 643506,
+        "conditions": {},
+        "age": {
+            "min": null,
+            "max": null
+        },
+        "status": 1,
+        "nextTiming": {
+            "begin": "2025-03-22T09:00:00+01:00",
+            "end": "2025-03-22T12:00:00+01:00"
+        }
+    },
+    {
+        "longDescription": {
+            "fr": "Une semaine de conférences ouverte au public (sur inscription).  \nThèmes abordés :  \n\\- L'école de la Nature par TZAMA  \n\\- La psychologie active par A. Weider  \n\\- La philosophie Pickler par la pouponnière de l'Ermittage  \n\\- La communication non violente par N.Krason  \n\\- Le Baby Yoga et la motricité libre par la Souris Verte."
+        },
+        "country": {
+            "de": "Frankreich (Metropolitan)",
+            "code": "FR",
+            "oc": "França (Metropolitana)",
+            "en": "France (Metropolitan)",
+            "it": "Francia (continente)",
+            "fr": "France (Métropole)",
+            "es": "Francia (Metropolitana)"
+        },
+        "featured": false,
+        "private": 0,
+        "keywords": {},
+        "accessibility": {
+            "ii": false,
+            "hi": false,
+            "vi": false,
+            "pi": false,
+            "mi": false
+        },
+        "dateRange": {
+            "ar": "٧ أبريل - ٨ مايو ٢٠٢٥",
+            "de": "7 April - 8 Mai 2025",
+            "en": "7 April - 8 May 2025",
+            "it": "7 aprile - 8 maggio 2025",
+            "fr": "7 avril - 8 mai 2025",
+            "es": "7 abril - 8 mayo 2025"
+        },
+        "timezone": "Europe/Paris",
+        "imageCredits": null,
+        "originAgenda": {
+            "uid": 41648,
+            "image": "https://cibul.s3.amazonaws.com/agenda41648.jpg?__ts=1664443597781",
+            "description": "Du 16 au 23 mars 2024, tous ensemble pour l'éveil du tout-petit ! \nUne semaine d'ateliers & activités à travers toute la France, pour réunir le trio parent-enfant-professionnel.",
+            "title": "La Semaine Nationale de la Petite Enfance",
+            "slug": "semainepetiteenfance",
+            "url": "https://www.semainepetiteenfance.fr",
+            "_agg": "eyJ1aWQiOjQxNjQ4LCJ0aXRsZSI6IkxhIFNlbWFpbmUgTmF0aW9uYWxlIGRlIGxhIFBldGl0ZSBFbmZhbmNlIiwiaW1hZ2UiOiJodHRwczovL2NpYnVsLnMzLmFtYXpvbmF3cy5jb20vYWdlbmRhNDE2NDguanBnP19fdHM9MTY2NDQ0MzU5Nzc4MSIsInVybCI6Imh0dHBzOi8vd3d3LnNlbWFpbmVwZXRpdGVlbmZhbmNlLmZyIiwic2x1ZyI6InNlbWFpbmVwZXRpdGVlbmZhbmNlIn0="
+        },
+        "description": {
+            "fr": "Conférences sur le thème de la petite enfance (Sur inscription)"
+        },
+        "title": {
+            "fr": "Semaine de la petite enfance"
+        },
+        "type-de-lieu-organisateur": 15,
+        "onlineAccessLink": null,
+        "createdAt": "2024-11-18T09:37:08.000Z",
+        "uid": 5582992,
+        "motive": null,
+        "draft": 0,
+        "timings": [
+            {
+                "begin": "2025-04-07T09:00:00+02:00",
+                "end": "2025-04-07T12:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-07T13:00:00+02:00",
+                "end": "2025-04-07T17:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-08T09:00:00+02:00",
+                "end": "2025-04-08T12:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-08T13:00:00+02:00",
+                "end": "2025-04-08T17:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-10T09:00:00+02:00",
+                "end": "2025-04-10T12:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-10T13:00:00+02:00",
+                "end": "2025-04-10T17:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-11T09:00:00+02:00",
+                "end": "2025-04-11T12:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-14T09:00:00+02:00",
+                "end": "2025-04-14T12:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-14T13:00:00+02:00",
+                "end": "2025-04-14T17:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-15T09:00:00+02:00",
+                "end": "2025-04-15T12:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-15T13:00:00+02:00",
+                "end": "2025-04-15T17:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-17T09:00:00+02:00",
+                "end": "2025-04-17T12:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-17T13:00:00+02:00",
+                "end": "2025-04-17T17:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-18T09:00:00+02:00",
+                "end": "2025-04-18T12:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-21T09:00:00+02:00",
+                "end": "2025-04-21T12:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-21T13:00:00+02:00",
+                "end": "2025-04-21T17:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-22T09:00:00+02:00",
+                "end": "2025-04-22T12:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-22T13:00:00+02:00",
+                "end": "2025-04-22T17:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-24T09:00:00+02:00",
+                "end": "2025-04-24T12:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-24T13:00:00+02:00",
+                "end": "2025-04-24T17:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-25T09:00:00+02:00",
+                "end": "2025-04-25T12:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-28T09:00:00+02:00",
+                "end": "2025-04-28T12:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-28T13:00:00+02:00",
+                "end": "2025-04-28T17:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-29T09:00:00+02:00",
+                "end": "2025-04-29T12:00:00+02:00"
+            },
+            {
+                "begin": "2025-04-29T13:00:00+02:00",
+                "end": "2025-04-29T17:00:00+02:00"
+            },
+            {
+                "begin": "2025-05-01T09:00:00+02:00",
+                "end": "2025-05-01T12:00:00+02:00"
+            },
+            {
+                "begin": "2025-05-01T13:00:00+02:00",
+                "end": "2025-05-01T17:00:00+02:00"
+            },
+            {
+                "begin": "2025-05-02T09:00:00+02:00",
+                "end": "2025-05-02T12:00:00+02:00"
+            },
+            {
+                "begin": "2025-05-05T09:00:00+02:00",
+                "end": "2025-05-05T12:00:00+02:00"
+            },
+            {
+                "begin": "2025-05-05T13:00:00+02:00",
+                "end": "2025-05-05T17:00:00+02:00"
+            },
+            {
+                "begin": "2025-05-06T09:00:00+02:00",
+                "end": "2025-05-06T12:00:00+02:00"
+            },
+            {
+                "begin": "2025-05-06T13:00:00+02:00",
+                "end": "2025-05-06T17:00:00+02:00"
+            },
+            {
+                "begin": "2025-05-08T09:00:00+02:00",
+                "end": "2025-05-08T12:00:00+02:00"
+            },
+            {
+                "begin": "2025-05-08T13:00:00+02:00",
+                "end": "2025-05-08T17:00:00+02:00"
+            }
+        ],
+        "firstTiming": {
+            "end": "2025-04-07T12:00:00.000+02:00",
+            "begin": "2025-04-07T09:00:00.000+02:00"
+        },
+        "links": [],
+        "state": 2,
+        "slug": "semaine-de-la-petite-enfance-1669621",
+        "updatedAt": "2024-11-18T09:37:09.000Z",
+        "addMethod": "contribution",
+        "image": {
+            "filename": "b0e94334390146bd92edf19c394647e6.base.image.jpg",
+            "size": {
+                "width": 700,
+                "height": 265
+            },
+            "variants": [
+                {
+                    "filename": "b0e94334390146bd92edf19c394647e6.full.image.jpg",
+                    "size": {
+                        "width": 2000,
+                        "height": 757
+                    },
+                    "type": "full"
+                },
+                {
+                    "filename": "b0e94334390146bd92edf19c394647e6.thumb.image.jpg",
+                    "size": {
+                        "width": 200,
+                        "height": 200
+                    },
+                    "type": "thumbnail"
+                }
+            ],
+            "base": "https://cibul.s3.amazonaws.com/"
+        },
+        "attendanceMode": 1,
+        "sourceAgendas": [],
+        "evenement-ouvert-au-public": [
+            8
+        ],
+        "creatorUid": 643506,
+        "lastTiming": {
+            "end": "2025-05-08T17:00:00.000+02:00",
+            "begin": "2025-05-08T13:00:00.000+02:00"
+        },
+        "registration": [],
+        "location": {
+            "disqualifiedDuplicates": null,
+            "access": {},
+            "city": "Wittenheim",
+            "timezone": "Europe/Paris",
+            "postalCode": "68270",
+            "latitude": 47.812697,
+            "imageCredits": null,
+            "description": {},
+            "setUid": null,
+            "uid": 13907654,
+            "createdAt": "2024-02-27T16:23:24.000Z",
+            "duplicateCandidates": null,
+            "countryCode": "FR",
+            "adminLevel5": "Cité Sainte-Barbe",
+            "links": [],
+            "state": 0,
+            "extId": null,
+            "department": "Haut-Rhin",
+            "slug": "institution-don-bosco_9722188",
+            "email": null,
+            "longitude": 7.340124,
+            "updatedAt": "2024-02-27T16:23:24.000Z",
+            "image": null,
+            "website": null,
+            "address": "60 rue d'ensisheim - wittenheim",
+            "adminLevel3": null,
+            "agendaUid": 41648,
+            "adminLevel4": "Wittenheim",
+            "adminLevel1": "Grand Est",
+            "adminLevel2": "Haut-Rhin",
+            "mergedIn": null,
+            "_agg": "eyJ1aWQiOjEzOTA3NjU0LCJuYW1lIjoiSW5zdGl0dXRpb24gRG9uIEJvc2NvIn0=",
+            "tags": null,
+            "insee": "68376",
+            "phone": null,
+            "district": "Cité Sainte-Barbe",
+            "name": "Institution Don Bosco",
+            "region": "Grand Est"
+        },
+        "ownerUid": 643506,
+        "conditions": {},
+        "age": {
+            "min": null,
+            "max": null
+        },
+        "status": 1,
+        "nextTiming": {
+            "begin": "2025-04-07T09:00:00+02:00",
+            "end": "2025-04-07T12:00:00+02:00"
+        }
+    }
+]
