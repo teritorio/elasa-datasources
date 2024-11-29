@@ -21,7 +21,7 @@ class JoinTransformer < Transformer
 
   sig { params(settings: SettingsType).void }
   def initialize(settings)
-    super(settings)
+    super
     @path = "$.#{settings.key}"
 
     @rows = {}

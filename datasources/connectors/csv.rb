@@ -14,7 +14,7 @@ class CsvConnector < Connector
   end
 
   def setup(kiba)
-    super(kiba)
+    super
     kiba.transform(OsmTags, OsmTags::Settings.from_hash(@settings))
   end
 end

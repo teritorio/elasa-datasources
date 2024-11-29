@@ -23,7 +23,7 @@ class OverpassSelect < Connector
       ]
     }))
 
-    super(kiba)
+    super
 
     kiba.transform(OsmTags, OsmTags::Settings.from_hash(@settings))
 

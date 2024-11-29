@@ -8,7 +8,7 @@ class HashExcep < Hash
   def [](key)
     raise "Missing key \"#{key}\" in Hash at #{caller_locations[0]}" if !key?(key)
 
-    super(key)
+    super
   end
 end
 

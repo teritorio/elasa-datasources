@@ -10,7 +10,7 @@ class RefsIntegrityTransformer < Transformer
 
   sig { params(settings: SettingsType).void }
   def initialize(settings)
-    super(settings)
+    super
     @ids = []
     @refs = []
   end

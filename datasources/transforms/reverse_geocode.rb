@@ -15,7 +15,7 @@ class ReverseGeocode < Transformer
 
   sig { params(settings: SettingsType).void }
   def initialize(settings)
-    super(settings)
+    super
     @rows = []
   end
 

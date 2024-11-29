@@ -13,7 +13,7 @@ class ValidateTransformer < Transformer
 
   sig { params(settings: SettingsType).void }
   def initialize(settings)
-    super(settings)
+    super
 
     @i18n = {}
 

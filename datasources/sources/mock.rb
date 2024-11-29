@@ -19,7 +19,7 @@ class MockSource < Source
 
   sig { returns(SchemaRow) }
   def schema
-    super().deep_merge_array({
+    super.deep_merge_array({
       'schema' => @settings.schema,
       'i18n' => @settings.i18n,
   }.compact)
@@ -28,7 +28,7 @@ class MockSource < Source
   sig { returns(OsmTagsRow) }
   def osm_tags
     if @settings.osm_tags
-      super().deep_merge_array(OsmTagsRow.new(data: @settings.osm_tags))
+      super.deep_merge_array(OsmTagsRow.new(data: @settings.osm_tags))
     else
       super
     end

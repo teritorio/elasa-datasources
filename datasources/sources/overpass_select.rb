@@ -86,13 +86,13 @@ out center meta;
 
   sig { returns(OsmTagsRow) }
   def osm_tags
-    return super() if !@settings.with_osm_tags
+    return super if !@settings.with_osm_tags
 
     if !@settings.query.nil?
       tree = OverpassParser.parse(T.must(@settings.query))
       selects = deep_select(tree)
 
-      super().deep_merge_array({
+      super.deep_merge_array({
         'data' => selects.collect{ |select|
           {
             'select' => [select],
@@ -102,7 +102,7 @@ out center meta;
         }
       })
     elsif @selectors.present?
-      super().deep_merge_array({
+      super.deep_merge_array({
         'data' => @selectors.collect{ |selector|
           {
             'select' => selector.is_a?(Array) ? selector : [selector],

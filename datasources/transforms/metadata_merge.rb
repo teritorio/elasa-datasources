@@ -18,7 +18,7 @@ class MetadataMerge < Transformer
 
   sig { params(settings: SettingsType).void }
   def initialize(settings)
-    super(settings)
+    super
     destination_id = settings.destination_id
 
     @destinations_metadata = Source::MetadataRow.new(
