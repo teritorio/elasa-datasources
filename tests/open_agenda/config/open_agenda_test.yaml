@@ -1,0 +1,6 @@
+project:
+  OpenAgenda:
+    type: OpenAgenda
+    key: test
+    agenda_uid: 41648
+    attribution: "OpenAgenda"

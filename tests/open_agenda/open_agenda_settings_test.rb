@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'test/unit'
-require 'dotenv/load'
 require_relative '../../datasources/sources/open_agenda'
 
 

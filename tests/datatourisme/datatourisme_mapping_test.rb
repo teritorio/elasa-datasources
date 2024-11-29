@@ -5,8 +5,8 @@ require 'fileutils'
 require 'mocha/test_unit'
 require 'tmpdir'
 require 'kiba'
-require_relative '../../datasources/sources/open_agenda'
-require_relative '../../datasources/connectors/open_agenda'
+require_relative '../../datasources/sources/datatourisme'
+require_relative '../../datasources/connectors/datatourisme'
 require_relative '../../datasources/jobs/job'
 require_relative '../../datasources/logging'
 require_relative '../../datasources/hash'
@@ -17,14 +17,10 @@ class OpenAgendaMappingTest < Test::Unit::TestCase
     @temp_dir = Dir.mktmpdir
     fixtures_dir = File.expand_path('./fixtures', __dir__)
     config_dir = File.expand_path('./config', __dir__)
-    agendas_results_path = File.join(fixtures_dir, 'open_agenda_agendas_results.json')
-    event_results_path = File.join(fixtures_dir, 'open_agenda_event_results.json')
+    results_path = File.join(fixtures_dir, 'datatourisme_results.json')
 
-    OpenAgendaSource.stubs(:fetch).returns(
-      JSON.parse(File.read(agendas_results_path))
-    )
-    OpenAgendaSource.stubs(:fetch_event).returns(
-      JSON.parse(File.read(event_results_path))
+    DatatourismeSource.stubs(:fetch).returns(
+      JSON.parse(File.read(results_path))
     )
 
     @config = load_config_dir(File.join(config_dir, '*.yaml'))
@@ -49,7 +45,7 @@ class OpenAgendaMappingTest < Test::Unit::TestCase
     assert(generated_files.any? { |file| file.end_with?('.i18n.json') }, 'No i18n files were generated')
   end
 
-  def test_open_agenda_files_have_correct_schema
+  def test_datatourisme_files_have_correct_schema
     # Run the connector
     @config.each_value do |jobs|
       jobs.each do |job_id, job|
@@ -60,11 +56,17 @@ class OpenAgendaMappingTest < Test::Unit::TestCase
     # Check that the files have the correct schema
     generated_files = Dir.glob(File.join(@temp_dir, '*'))
     generated_files.each do |file|
-      next unless file.end_with?('41648-55340530-Journée portes ouvertes.json')
+      next unless file.end_with?('project-WineCellar.json')
 
+      schema_file = file.gsub('.json', '.schema.json')
+      schema = JSON.parse(File.read(schema_file))
       data = JSON.parse(File.read(file))
-      schema = JSON.parse(File.read(file.sub('.json', '.schema.json')))
-      assert(data.all? { |d| schema.all? { |s| d.keys.include?(s) } }, 'Data does not match schema')
+
+      assert(data.is_a?(Array), 'Data is not an array')
+      data.each do |item|
+        assert(item.is_a?(Hash), 'Item is not a hash')
+        assert(item.keys.all? { |key| schema['properties'].key?(key) }, 'Item has keys not in the schema')
+      end
     end
   end
 
