@@ -29,6 +29,11 @@
                 "information"
             ]
         },
+        "information": {
+            "enum": [
+                "office"
+            ]
+        },
         "natural": {
             "enum": [
                 "bay",
@@ -38,7 +43,15 @@
         },
         "amenity": {
             "enum": [
-                "fuel"
+                "fuel",
+                "church",
+                "camping",
+                "picnic_site"
+            ]
+        },
+        "religion": {
+            "enum": [
+                "christian"
             ]
         },
         "shop": {

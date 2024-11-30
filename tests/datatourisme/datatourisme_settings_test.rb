@@ -5,16 +5,16 @@ require './datasources/sources/datatourisme'
 
 class TestDatatourismeSettings < Test::Unit::TestCase
   def test_datatourisme_expected_settings
-    settings = DatatourismeSource::Settings.new({ key: 'key', flow_key: 'id', destination_id: 'id', datas: [] })
+    settings = DatatourismeSource::Settings.new({ app_key: 'app_key', source_id: 'id' })
     instance_vars = settings.instance_variables.map(&:to_s)
 
-    expected_vars = %w[@key @flow_key]
+    expected_vars = %w[@app_key @source_id]
     assert((expected_vars - instance_vars).empty?)
   end
 
   def test_datatourisme_with_unexpected_settings
     assert_raise(ArgumentError) do
-      DatatourismeSource::Settings.new({ key: 'key', flow_key: 'id', unexpected: 'unexpected' })
+      DatatourismeSource::Settings.new({ app_key: 'app_key', source_id: 'id', unexpected: 'unexpected' })
     end
   end
 
