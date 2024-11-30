@@ -1,4 +1,4 @@
-# FROM ruby:3.0-bullseye
+# FROM ruby:3.2-bullseye
 
 # RUN apt update -y && apt install -y \
 #     build-essential \
@@ -6,7 +6,7 @@
 #     ruby-json
 
 # Use GDAL as base as debian not yet include GDAL 3.7 required for GTFS
-FROM ghcr.io/osgeo/gdal:ubuntu-small-3.7.2
+FROM ghcr.io/osgeo/gdal:ubuntu-small-3.10.0
 
 RUN apt update -y && apt install -y \
     build-essential \

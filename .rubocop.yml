@@ -1,6 +1,6 @@
 AllCops:
   NewCops: enable
-  TargetRubyVersion: 3.0
+  TargetRubyVersion: 3.2
   Exclude:
     - bin/*
     - '**/Rakefile.rb'
@@ -112,4 +112,10 @@ Rails/Output:
   Enabled: false
 
 Style/MultilineTernaryOperator:
+  Enabled: false
+
+Style/HashSyntax:
+  Enabled: false
+
+Style/ArgumentsForwarding:
   Enabled: false
