@@ -14,10 +14,8 @@ require_relative 'source'
 
 class DatatourismeSource < Source
   class Settings < Source::SourceSettings
-    const :key, String, name: 'key' # API key
-    const :flow_key, String, name: 'flow_key' # Flow key
-    const :destination_id, T.nilable(String), name: 'destination_id' # Destination ID
-    const :datas, T.nilable(T::Array[T::Hash[String, T.untyped]]), name: 'datas' # Datas
+    const :app_key, String
+    const :source_id, String
   end
 
   extend T::Generic
@@ -27,7 +25,7 @@ class DatatourismeSource < Source
     url = "https://diffuseur.datatourisme.fr/webservice/#{path}"
     response = HTTP.follow.get(url)
 
-    return [url, response].inspect unless response.status.success?
+    raise [url, response].inspect unless response.status.success?
 
     Set.new(JSON.parse(
       decompress_gzip(response.body.to_s)
@@ -39,23 +37,15 @@ class DatatourismeSource < Source
   end
 
   def each
-    if ENV['NO_DATA']
-      []
-    else
-      super(@settings.datas)
-    end
+    super(ENV['NO_DATA'] ? [] : self.class.fetch("#{@settings.source_id}/#{@settings.app_key}"))
   end
 
   def map_updated_at(feat)
     feat.dig('updated_at', 'value')
   end
 
-  def map_source(feat)
+  def map_destination_id(feat)
     feat.dig('type', 'value').split('#').last
-  end
-
-  def map_destination_id(_feat)
-    @settings.destination_id
   end
 
   def map_geometry(feat)
@@ -64,6 +54,18 @@ class DatatourismeSource < Source
       coordinates: [feat.dig('Longitude', 'value')&.to_f, feat.dig('Latitude', 'value')&.to_f],
     }
   end
+
+  TYPE = HashExcep[{
+    # 'Place' => {},
+    'Camping' => { amenity: 'camping' },
+    'Church' => { amenity: 'place_of_worship', religion: 'christian' },
+    'Restaurant' => { amenity: 'restaurant' },
+    'LocalTouristOffice' => { tourism: 'information', information: 'office' },
+    'Museum' => { tourism: 'museum' },
+    'PointOfView' => { tourism: 'viewpoint' },
+    'PicnicArea' => { amenity: 'picnic_site' },
+    'WineCellar' => { tourism: 'wine cellar' },
+  }]
 
   def map_tags(feat)
     {
@@ -82,7 +84,7 @@ class DatatourismeSource < Source
       'wheelchair' => [feat.dig('wheelchair', 'value')].compact,
       'image' => [feat.dig('image', 'value')].compact,
       'description' => [feat.dig('description', 'value')].compact,
-    }
+    }.merge(TYPE[feat['type']['value'].split('#').last])
   end
 
   def map_id(feat)
@@ -90,7 +92,7 @@ class DatatourismeSource < Source
   end
 end
 
-# requête SPARQL pour récupérer les données de Datatourisme
+# SPARQL query
 _sparql = <<~SPARQL
   PREFIX : <https://www.datatourisme.fr/ontology/core#>
   PREFIX dc: <http://purl.org/dc/elements/1.1/>

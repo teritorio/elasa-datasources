@@ -64,6 +64,18 @@
             }
         }
     },
+    "information": {
+        "@default": {
+            "fr": "information"
+        },
+        "values": {
+            "office": {
+                "@default:full": {
+                    "fr": "bureau d'information"
+                }
+            }
+        }
+    },
     "natural": {
         "@default": {
             "fr": "nature"
@@ -94,6 +106,33 @@
             "fuel": {
                 "@default:full": {
                     "fr": "station services"
+                }
+            },
+            "church": {
+                "@default:full": {
+                    "fr": "église"
+                }
+            },
+            "camping": {
+                "@default:full": {
+                    "fr": "camping"
+                }
+            },
+            "picnic_site": {
+                "@default:full": {
+                    "fr": "aire de pique-nique"
+                }
+            }
+        }
+    },
+    "religion": {
+        "@default": {
+            "fr": "religion"
+        },
+        "values": {
+            "christian": {
+                "@default:full": {
+                    "fr": "chrétien"
                 }
             }
         }
