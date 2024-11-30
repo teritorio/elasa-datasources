@@ -13,15 +13,16 @@ require 'sorbet-runtime'
 require_relative 'source'
 require_relative 'open_agenda_mixin'
 
+# https://developers.openagenda.com/10-lecture/
+
 class OpenAgendaSource < Source
   # OpenAgendaSource::Settings
-  # url for lecture requires an API key, agenda UID
+  # url for reading requires an API key, agenda UID
   include OpenAgendaMixin
 
   class Settings < Source::SourceSettings
     const :key, String, name: 'key' # API key
     const :agenda_uid, T.nilable(String), name: 'agenda_uid' # Agenda UID
-    const :event_uid, T.nilable(String), name: 'event_uid' # Event UID
   end
 
   extend T::Generic
@@ -46,9 +47,7 @@ class OpenAgendaSource < Source
     "https://api.openagenda.com/v2/#{path}?#{query_string}"
   end
 
-  def self.fetch(path, query, key = 'events', size = 100, **kwargs)
-    max_retry = kwargs[:max_retry] || 10
-    sleeping_time = kwargs[:sleeping_time] || 0.3
+  def self.fetch(path, query, key = 'events', size = 100, max_retry: 10, sleeping_time: 0.3)
     results = T.let(Set.new, T::Set[T.untyped])
     retries = T.let(0, Integer)
 
@@ -85,14 +84,6 @@ class OpenAgendaSource < Source
     end
 
     results.to_a
-  end
-
-  def self.fetch_event(path, query)
-    url = T.let(build_url(path, query), T.nilable(String))
-    response = HTTP.follow.get(url)
-    raise [url, response].inspect unless response.status.success?
-
-    [JSON.parse(response.body)['event']]
   end
 
   def openning(periode)
@@ -255,11 +246,11 @@ class OpenAgendaSource < Source
       hearing_impairment: hearing_impairment(feat),
       psychic_impairment: psychic_impairment(feat),
       agenda: {
-        id: @settings.agenda_uid.to_s,
+        id: @settings.agenda_uid,
         name: jp_first(feat, 'originAgenda.title'),
       },
       long_description: jp_first(feat, 'longDescription'),
-      keywords: jp(feat, 'keywords'),
+      keywords: jp(feat, 'keywords.fr').flatten.compact_blank,
     })
   end
 
@@ -267,10 +258,13 @@ class OpenAgendaSource < Source
     if ENV['NO_DATA']
       []
     else
-      event = self.class.fetch_event("agendas/#{@settings.agenda_uid}/events/#{@settings.event_uid}", {
-        key: @settings.key
+      events = self.class.fetch("agendas/#{@settings.agenda_uid}/events", {
+        key: @settings.key,
+        detailed: 1,
+        longDescriptionFormat: 'HTML',
+        'timings[gte]' => Time.now.utc.to_date,
       })
-      super(event)
+      super(events)
     end
   end
 end
