@@ -30,12 +30,6 @@ class Geotrek < Connector
       ]
     }))
 
-    kiba.source(
-      self.class.source_class,
-      @job_id,
-      @job_id,
-      { 'en' => 'geotrek' },
-      self.class.source_class.const_get(:Settings).from_hash(@settings),
-    )
+    super
   end
 end

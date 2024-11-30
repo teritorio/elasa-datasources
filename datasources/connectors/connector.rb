@@ -18,12 +18,20 @@ class Connector
 
   def self.source_class; end
 
+  def slug
+    s = self.class.source_class.name
+    if s.end_with?('Source')
+      s = s[0..-7]
+    end
+    { 'en' => s.parameterize }
+  end
+
   def setup(kiba)
     kiba.source(
       self.class.source_class,
       @job_id,
       @job_id,
-      @settings['name'],
+      @settings['name'] || slug,
       self.class.source_class.const_get(:Settings).from_hash(@settings),
     )
   end
