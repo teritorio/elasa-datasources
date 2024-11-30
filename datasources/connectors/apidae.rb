@@ -8,7 +8,8 @@ require_relative '../sources/apidae'
 
 
 class Apidae < Connector
-  def slugify(s)
+  def slugify(str)
+    s = str
     s = s.gsub(/\s+/, ' ')
     s.strip!
     s.gsub!(' ', '-')
