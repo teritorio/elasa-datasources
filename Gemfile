@@ -23,6 +23,7 @@ gem 'sorbet-runtime'
 gem 'yaml'
 
 group :development do
+  gem 'mocha'
   gem 'rake'
   gem 'rubocop', require: false
   gem 'rubocop-rails', require: false
