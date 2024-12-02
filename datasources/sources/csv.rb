@@ -16,6 +16,7 @@ class CsvSource < Source
     const :url, String
     const :uncompress, T.nilable(String)
     const :col_sep, String, default: ','
+    const :quote_char, String, default: '"'
     const :id, T::Array[String]
     const :lon, String
     const :lat, String
@@ -25,7 +26,7 @@ class CsvSource < Source
   extend T::Generic
   SettingsType = type_member{ { upper: Settings } } # Generic param
 
-  def fetch(url, col_sep)
+  def fetch(url, col_sep, quote_char)
     resp = HTTP.follow.get(url)
     if !resp.status.success?
       raise [url, resp].inspect
@@ -36,11 +37,11 @@ class CsvSource < Source
       reader = Bzip2::FFI::Reader.read(StringIO.new(reader))
     end
 
-    CSV.parse(reader, headers: true, col_sep: col_sep, quote_char: nil).each(&:to_h)
+    CSV.parse(reader, headers: true, col_sep: col_sep, quote_char: quote_char).each(&:to_h)
   end
 
   def each
-    super(ENV['NO_DATA'] ? [] : fetch(@settings.url, @settings.col_sep))
+    super(ENV['NO_DATA'] ? [] : fetch(@settings.url, @settings.col_sep, @settings.quote_char))
   end
 
   def map_id(feat)
