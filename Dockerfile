@@ -21,6 +21,10 @@ ADD Gemfile.lock .
 RUN bundle config --global silence_root_warning 1
 RUN bundle install
 
+# Why ?
+RUN cd /var/lib/gems/3.2.0/bundler/gems/overpass_parser-rb-0937495e2eba/ext/overpass_parser/ && \
+    make
+
 ADD *.rb ./
 ADD datasources datasources
 
