@@ -64,7 +64,20 @@ class Source
     const :attribution, T.nilable(String)
     const :allow_partial_source, T::Boolean, default: false
     const :native_properties, T.nilable(T::Hash[String, T.untyped])
+    const :exclusion_filter, T.nilable(String)
     const :metadata, Metadata, default: Metadata.from_hash({})
+
+    @exclusion_filter_proc = T.let(nil, T.nilable(T.proc.params(_: T.untyped).returns(T::Boolean)))
+
+    def exclusion_filter_call(row)
+      return if exclusion_filter.nil?
+
+      if @exclusion_filter_proc.nil?
+        @exclusion_filter_proc = eval(T.must(exclusion_filter))
+      end
+
+      @exclusion_filter_proc.call(row)
+    end
   end
 
   extend T::Generic
@@ -145,6 +158,11 @@ class Source
   end
 
   def one(row, bad)
+    if !@settings.exclusion_filter.nil? && @settings.exclusion_filter_call(row)
+      bad[:exclusion_filter] += 1
+      return [nil, bad]
+    end
+
     if !select(row)
       bad[:filtered_out] += 1
       return [nil, bad]
@@ -235,6 +253,7 @@ class Source
     log += ' +osm_tags' if osm_tags_data.data.present?
     logger.info(log)
     bad = T.let({
+      exclusion_filter: 0,
       filtered_out: 0,
       missing_id: 0,
       missing_updated_at: 0,
