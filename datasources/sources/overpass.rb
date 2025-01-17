@@ -35,8 +35,8 @@ class OverpassSource < Source
     JSON.parse(fetch(url))['elements']
   end
 
-  def each
-    super(ENV['NO_DATA'] ? [] : overpass(@settings.query))
+  def each(&block)
+    loop(ENV['NO_DATA'] ? [] : overpass(@settings.query), &block)
   end
 
   def map_id(feat)

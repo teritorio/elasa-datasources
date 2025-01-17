@@ -253,9 +253,9 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     end
   end
 
-  def each
+  def each(&block)
     if ENV['NO_DATA']
-      super([])
+      loop([], &block)
     else
       features = self.class.fetch(@settings.client, @settings.syndication).collect{ |feat| [:feature, feat] }
       features_steps = features.collect { |feature|
@@ -263,7 +263,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
         feature.last['step_ids'] = feature_steps.pluck('SyndicObjectID')
         [feature] + feature_steps.collect{ |feat| [:step, feat] }
       }.flatten(1)
-      super(features_steps)
+      loop(features_steps, &block)
     end
   end
 

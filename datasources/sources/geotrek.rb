@@ -72,7 +72,7 @@ class GeotrekSource < Source
     end
   end
 
-  def each
+  def each(&block)
     @difficulties = fetch_difficulties
     @practices = fetch_practices
     treks = fetch
@@ -81,7 +81,7 @@ class GeotrekSource < Source
     }
     poi_ids_all = treks.pluck('poi_ids').flatten.uniq
     pois = fetch_pois(poi_ids_all)
-    super(ENV['NO_DATA'] ? [] : (treks.collect{ |trek| [:trek, trek] } + pois.collect{ |poi| [:poi, poi] }))
+    loop(ENV['NO_DATA'] ? [] : (treks.collect{ |trek| [:trek, trek] } + pois.collect{ |poi| [:poi, poi] }), &block)
   end
 
   def practice_slug(practice)

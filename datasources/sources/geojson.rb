@@ -35,8 +35,8 @@ class GeoJsonSource < Source
     JSON.parse(body)['features']
   end
 
-  def each
-    super(ENV['NO_DATA'] ? [] : fetch(@settings.url))
+  def each(&block)
+    loop(ENV['NO_DATA'] ? [] : fetch(@settings.url), &block)
   end
 
   def map_id(feat)

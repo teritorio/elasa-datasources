@@ -36,8 +36,8 @@ class DatatourismeSource < Source
     Zlib::GzipReader.new(StringIO.new(data)).read
   end
 
-  def each
-    super(ENV['NO_DATA'] ? [] : self.class.fetch("#{@settings.source_id}/#{@settings.app_key}"))
+  def each(&block)
+    loop(ENV['NO_DATA'] ? [] : self.class.fetch("#{@settings.source_id}/#{@settings.app_key}"), &block)
   end
 
   def map_updated_at(feat)

@@ -254,9 +254,9 @@ class OpenAgendaSource < Source
     })
   end
 
-  def each
+  def each(&block)
     if ENV['NO_DATA']
-      []
+      loop([], &block)
     else
       events = self.class.fetch("agendas/#{@settings.agenda_uid}/events", {
         key: @settings.key,
@@ -264,7 +264,7 @@ class OpenAgendaSource < Source
         longDescriptionFormat: 'HTML',
         'timings[gte]' => Time.now.utc.to_date,
       })
-      super(events)
+      loop(events, &block)
     end
   end
 end

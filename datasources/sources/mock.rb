@@ -34,7 +34,7 @@ class MockSource < Source
     end
   end
 
-  def each
-    super([])
+  def each(&block)
+    loop([], &block)
   end
 end

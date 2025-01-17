@@ -317,16 +317,16 @@ class ApidaeSource < Source
     } || {}
   end
 
-  def each
+  def each(&block)
     if ENV['NO_DATA']
-      []
+      loop([], &block)
     else
-      super(self.class.fetch_paged('recherche/list-objets-touristiques', {
+      loop(self.class.fetch_paged('recherche/list-objets-touristiques', {
         projetId: @settings.projet_id,
         apiKey: @settings.api_key,
         selectionIds: [@settings.selection_id],
         responseFields: ['@default', 'gestion', 'ouverture', 'multimedias'], # '@all' for debug with all fields
-      }))
+      }), &block)
     end
   end
 

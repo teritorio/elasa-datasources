@@ -47,7 +47,7 @@ class MetadataSource < Source
     })
   end
 
-  def each
-    super([])
+  def each(&block)
+    loop([], &block)
   end
 end

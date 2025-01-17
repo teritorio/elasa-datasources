@@ -40,8 +40,8 @@ class CsvSource < Source
     CSV.parse(reader, headers: true, col_sep: col_sep, quote_char: quote_char).each(&:to_h)
   end
 
-  def each
-    super(ENV['NO_DATA'] ? [] : fetch(@settings.url, @settings.col_sep, @settings.quote_char))
+  def each(&block)
+    loop(ENV['NO_DATA'] ? [] : fetch(@settings.url, @settings.col_sep, @settings.quote_char), &block)
   end
 
   def map_id(feat)

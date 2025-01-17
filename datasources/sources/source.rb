@@ -236,7 +236,20 @@ class Source
     [properties, bad]
   end
 
-  def each(raw)
+  sig {
+    params(
+      block: T.proc.params(_: [Symbol, T.untyped]).void,
+    ).void
+  }
+  def each(&block); end
+
+  sig {
+    params(
+      raw: T::Enumerable[T::Hash[String, String]],
+      _block: T.proc.params(_: [Symbol, T.untyped]).void,
+    ).void
+  }
+  def loop(raw, &_block)
     metadata_datas = metadatas
     metadata_datas.each{ |metadata_data|
       yield [:metadata, metadata_data]
@@ -246,12 +259,6 @@ class Source
     osm_tags_data = osm_tags
     yield [:osm_tags, osm_tags_data]
 
-    log = "    > #{self.class.name}, #{@destination_id.inspect}: #{raw.size}"
-    log += ' +metadata' if metadata_datas.present?
-    log += ' +schema' if schema_data.schema.present?
-    log += ' +i18n' if schema_data.i18n.present?
-    log += ' +osm_tags' if osm_tags_data.data.present?
-    logger.info(log)
     bad = T.let({
       exclusion_filter: 0,
       filtered_out: 0,
@@ -263,14 +270,24 @@ class Source
       pass: 0,
     }, T.untyped)
 
+    raw_count = 0
     raw.each{ |row|
+      raw_count += 1
       properties, bad = one(row, bad)
       if !properties.nil?
         yield [:data, properties]
       end
     }
+
+    log = "    > #{self.class.name}, #{@destination_id.inspect}: #{raw.size}"
+    log += ' +metadata' if metadata_datas.present?
+    log += ' +schema' if schema_data.schema.present?
+    log += ' +i18n' if schema_data.i18n.present?
+    log += ' +osm_tags' if osm_tags_data.data.present?
+    logger.info(log)
+
     bad = bad.select{ |_k, v| v != 0 }.to_h.compact_blank
-    return unless !bad.empty? && bad[:pass] != raw.size
+    return unless !bad.empty? && bad[:pass] != raw_count
 
     logger.info("    ! #{bad.inspect}")
   end

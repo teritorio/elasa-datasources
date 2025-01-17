@@ -279,8 +279,8 @@ class TourismSystemSource < Source
   #   }&.compact&.inject(:merge) || {}
   # end
 
-  def each
-    super(ENV['NO_DATA'] ? [] : self.class.fetch_data(@settings.basic_auth, "/content/ts/#{@settings.id}/#{@settings.playlist_id}"))
+  def each(&block)
+    loop(ENV['NO_DATA'] ? [] : self.class.fetch_data(@settings.basic_auth, "/content/ts/#{@settings.id}/#{@settings.playlist_id}"), &block)
   end
 
   def map_id(feat)

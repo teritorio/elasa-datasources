@@ -55,8 +55,8 @@ class TourinsoftV3Source < Source
     JSON.parse(resp.body)['value']
   end
 
-  def each
-    super(ENV['NO_DATA'] ? [] : self.class.fetch(@settings.client, @settings.syndication))
+  def each(&block)
+    loop(ENV['NO_DATA'] ? [] : self.class.fetch(@settings.client, @settings.syndication), &block)
   end
 
   def map_id(feat)
