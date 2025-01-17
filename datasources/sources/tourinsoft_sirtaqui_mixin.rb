@@ -8,6 +8,7 @@ module TourinsoftSirtaquiMixin
   CUISINES = HashExcep[{
     # Cuisine
     'Burger' => { amenity: 'restaurant', cuisine: ['burger'] },
+    'Brunch' => { amenity: 'restaurant', cuisine: ['brunch'] },
     'Cuisine africaine' => { amenity: 'restaurant', cuisine: ['african'] },
     'Cuisine asiatique' => { amenity: 'restaurant', cuisine: ['asian'] },
     'Cuisine bistronomique' => { amenity: 'restaurant', cuisine: ['bistronomique'] },
