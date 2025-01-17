@@ -7,7 +7,6 @@ require 'http'
 require 'json'
 require 'sorbet-runtime'
 require 'stringio'
-require 'zip'
 require 'zlib'
 
 require_relative 'source'
