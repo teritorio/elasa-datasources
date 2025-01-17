@@ -51,7 +51,7 @@ class Source
   end
 
   class OsmTags < MergeableInexactStruct
-    const :select, T::Array[String]
+    const :select, T.nilable(T::Array[String])
     const :interest, T.nilable(T::Hash[String, nil.class])
     const :sources, T::Array[String]
   end

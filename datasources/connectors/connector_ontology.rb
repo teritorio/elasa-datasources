@@ -55,11 +55,11 @@ class ConnectorOntology < Connector
         end
       }
     }.flatten(2).compact.collect{ |osm_selector, properties_extra, label, origin|
-      splits = osm_selector.collect{ |osm_tag|
+      splits = osm_selector&.collect{ |osm_tag|
         osm_tag[1..-2].split('][').collect{ |ot|
           ot.split(/(=|~=|=~|!=|!~|~)/, 2).collect{ |s| unquote(s) }
         }
-      }
+      } || []
       properties_extras += properties_extra
       [osm_selector, properties_extra, splits, label, origin]
     }

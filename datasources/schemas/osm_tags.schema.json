@@ -2,9 +2,6 @@
     "type": "array",
     "items": {
         "type": "object",
-        "required": [
-            "select"
-        ],
         "additionalProperties": false,
         "properties": {
             "name": {
