@@ -27,7 +27,7 @@ class TeritorioOntology < ConnectorOntology
         'properties' => schema,
       },
       'i18n' => i18n,
-      'osm_tags' => osm_tags,
+      'osm_selector' => osm_tags,
     }))
 
     kiba.source(MetadataSource, @job_id, nil, nil, MetadataSource::Settings.from_hash({
@@ -50,17 +50,17 @@ class TeritorioOntology < ConnectorOntology
       source_filter = @source_filter.split('-').reverse.inject(nil){ |sum, i| { i => sum } }
     end
 
-    ontology['superclass'].select{ |superclass_id, _superclasses|
+    ontology['group'].select{ |superclass_id, _superclasses|
       !source_filter ||
         source_filter.key?(superclass_id)
     }.each{ |superclass_id, superclasses|
-      superclasses['class'].select{ |class_id, _classes|
+      superclasses['group'].select{ |class_id, _classes|
         !source_filter ||
           !source_filter[superclass_id] ||
           source_filter[superclass_id].key?(class_id)
       }.each{ |class_id, classes|
-        if classes['subclass']
-          classes['subclass'].select{ |subclass_id, _subclasses|
+        if classes['group']
+          classes['group'].select{ |subclass_id, _subclasses|
             !source_filter ||
               !source_filter[superclass_id] ||
               !source_filter[superclass_id][class_id] ||
@@ -71,7 +71,7 @@ class TeritorioOntology < ConnectorOntology
               @job_id,
               "#{output_prefix}#{superclass_id}-#{class_id}-#{subclass_id}",
               subclasses['label'],
-              OverpassSelectSource::Settings.from_hash(@settings.merge({ 'select' => subclasses['osm_tags'], 'with_osm_tags' => false })),
+              OverpassSelectSource::Settings.from_hash(@settings.merge({ 'select' => subclasses['osm_selector'], 'with_osm_tags' => false })),
             )
           }
         else
@@ -80,7 +80,7 @@ class TeritorioOntology < ConnectorOntology
             @job_id,
             "#{output_prefix}#{superclass_id}-#{class_id}",
             classes['label'],
-            OverpassSelectSource::Settings.from_hash(@settings.merge({ 'select' => classes['osm_tags'], 'with_osm_tags' => false })),
+            OverpassSelectSource::Settings.from_hash(@settings.merge({ 'select' => classes['osm_selector'], 'with_osm_tags' => false })),
           )
         end
       }
