@@ -29,7 +29,7 @@ end
 
 class ConnectorOntology < Connector
   def fetch_ontology_tags(source_filter)
-    ontology = JSON.parse(HTTP.follow.get(@settings['url']).body)
+    ontology = JSON.parse(HTTP.follow.get(@settings['ontology_url']).body)
 
     properties_extras = T.let([], T::Array[T.untyped])
     ontology_tags = ontology['group'].select{ |superclass_id, _superclasses|
