@@ -20,7 +20,7 @@ class InseeBpeSource < CsvSource
     super + @settings.code_labels.collect{ |code, name|
       MetadataRow.new({
         data: {
-          "#{@destination_id}-#{code}" => Metadata.from_hash({
+          "#{code[0]}-#{code[0..1]}-#{code}" => Metadata.from_hash({
             'name' => name,
             'attribution' => @settings.metadata.attribution,
           })
@@ -30,7 +30,7 @@ class InseeBpeSource < CsvSource
   end
 
   def map_destination_id(feat)
-    "#{@destination_id}-#{feat['TYPEQU']}"
+    "#{feat['TYPEQU'][0]}-#{feat['TYPEQU'][0..1]}-#{feat['TYPEQU']}"
   end
 
   def select(feat)
