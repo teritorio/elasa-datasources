@@ -25,7 +25,7 @@ end
 
 def load_config_dir(glob)
   Dir[glob].to_h{ |path|
-    project = T.must(path.split('/')[-1]).split('.', -2)[0]
+    project = T.must(path.split('/')[-1]).split('.')[..-2]&.join('.')
     [project, YAML.safe_load_file(path)]
   }
 end
@@ -36,8 +36,9 @@ end
 @source_filter = ARGV[2]
 
 @config.select { |project, _jobs|
-  !@project || project == @project
+  (!@project && !/.manual$/.match?(project)) || project.split('.')[0] == @project
 }.each { |project, jobs|
+  project = project.split('.')[0]
   dir = "data/#{project}"
   if @datasource.nil? # Full run, drop and recreate
     dir += '_temp'
