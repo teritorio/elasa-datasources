@@ -3,7 +3,7 @@
 
 require 'yaml'
 require 'kiba'
-require 'http'
+require 'iostreams'
 
 
 require 'sorbet-runtime'
@@ -29,7 +29,7 @@ end
 
 class ConnectorOntology < Connector
   def fetch_ontology_tags(source_filter)
-    ontology = JSON.parse(HTTP.follow.get(@settings['ontology_url']).body)
+    ontology = JSON.parse(IOStreams.path(@settings['ontology_url']).read)
 
     properties_extras = T.let([], T::Array[T.untyped])
     ontology_tags = ontology['group'].select{ |superclass_id, _superclasses|
