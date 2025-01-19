@@ -27,7 +27,7 @@ class TeritorioOntology < ConnectorOntology
         'properties' => schema,
       },
       'i18n' => i18n,
-      'osm_selector' => osm_tags,
+      'osm_tags' => osm_tags,
     }))
 
     kiba.source(MetadataSource, @job_id, nil, nil, MetadataSource::Settings.from_hash({
