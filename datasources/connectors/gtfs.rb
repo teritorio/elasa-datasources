@@ -28,7 +28,7 @@ class Gtfs < Connector
       GtfsShapeSource,
       @job_id,
       "#{@job_id}-shape",
-      @settings['name'] || { 'en' => 'gtfs-shape' },
+      @settings['name'] || { 'en-US' => 'gtfs-shape' },
       GtfsShapeSource::Settings.from_hash(@settings),
     )
 
@@ -36,7 +36,7 @@ class Gtfs < Connector
       GtfsStopSource,
       @job_id,
       "#{@job_id}-stop",
-      @settings['name'] || { 'en' => 'gtfs-stop' },
+      @settings['name'] || { 'en-US' => 'gtfs-stop' },
       GtfsStopSource::Settings.from_hash(@settings),
     )
 

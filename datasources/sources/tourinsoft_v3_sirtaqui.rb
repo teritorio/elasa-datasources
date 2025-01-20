@@ -55,13 +55,13 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
     super.with(
       i18n: {
         'route' => {
-          'values' => TourinsoftSirtaquiMixin::PRACTICES.compact.to_a.to_h(&:reverse).transform_values{ |v| { '@default:full' => { 'fr' => v } } }
+          'values' => TourinsoftSirtaquiMixin::PRACTICES.compact.to_a.to_h(&:reverse).transform_values{ |v| { '@default:full' => { 'fr-FR' => v } } }
         }
       }.merge(
         *TourinsoftSirtaquiMixin::PRACTICES.values.collect { |practice|
           {
             "route:#{practice}:difficulty" => {
-              'values' => TourinsoftSirtaquiMixin::DIFFICULTIES.compact.to_a.to_h(&:reverse).transform_values{ |v| { '@default:full' => { 'fr' => v } } }
+              'values' => TourinsoftSirtaquiMixin::DIFFICULTIES.compact.to_a.to_h(&:reverse).transform_values{ |v| { '@default:full' => { 'fr-FR' => v } } }
             }
           }
         }
@@ -91,9 +91,9 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
 
   def pdfs(feat)
     {
-      'en' => jp(feat, '.Fichierss[*].FichePDFGB.Url')&.first,
-      'fr' => jp(feat, '.Fichierss[*].FichePDFFR.Url')&.first,
-      'es' => jp(feat, '.Fichierss[*].FichePDFES.Url')&.first,
+      'en-US' => jp(feat, '.Fichierss[*].FichePDFGB.Url')&.first,
+      'fr-FR' => jp(feat, '.Fichierss[*].FichePDFFR.Url')&.first,
+      'es-ES' => jp(feat, '.Fichierss[*].FichePDFES.Url')&.first,
     }.compact_blank
   end
 
@@ -159,10 +159,10 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
       ref: {
         'FR:CRTA': id,
       },
-      name: { fr: r['SyndicObjectName'] }.compact_blank,
-      description: { fr: jp_first(r, '.DescriptionsCommercialess[*].Descriptioncommerciale') }.compact_blank,
+      name: { 'fr-FR' => r['SyndicObjectName'] }.compact_blank,
+      description: { 'fr-FR' => jp_first(r, '.DescriptionsCommercialess[*].Descriptioncommerciale') }.compact_blank,
       website: jp(r, '.MoyensDeComs[*][?(@.TypedaccesTelecom.ThesLibelle=="Site web (URL)")]')&.pluck('CoordonneesTelecom')&.compact_blank,
-      'website:details': { fr: @settings.website_details_url&.gsub('{{id}}', r['SyndicObjectID']) }.compact_blank,
+      'website:details': { 'fr-FR' => @settings.website_details_url&.gsub('{{id}}', r['SyndicObjectID']) }.compact_blank,
       phone: jp(r, '.MoyensDeComs[*][?(@.TypedaccesTelecom.ThesLibelle=="Téléphone filaire" || @.TypedaccesTelecom.ThesLibelle=="Téléphone cellulaire")]')&.pluck('CoordonneesTelecom')&.compact_blank,
       email: jp(r, '.MoyensDeComs[*][?(@.TypedaccesTelecom.ThesLibelle=="Mél")]')&.pluck('CoordonneesTelecom')&.compact_blank,
       facebook: valid_url(id, :facebook, jp_first(r, '.ReseauxSociauxs[*].Facebook')),

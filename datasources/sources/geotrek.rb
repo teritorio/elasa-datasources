@@ -109,7 +109,7 @@ class GeotrekSource < Source
       MetadataRow.new({
         data: {
           'geotrek-poi' => Metadata.from_hash({
-            'name' => { 'en' => 'POI' },
+            'name' => { 'en-US' => 'POI' },
             'attribution' => @settings.attribution,
           })
         }

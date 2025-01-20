@@ -23,7 +23,7 @@ class Connector
     if s.end_with?('Source')
       s = s[0..-7]
     end
-    { 'en' => s.parameterize }
+    { 'en-US' => s.parameterize }
   end
 
   def setup(kiba)

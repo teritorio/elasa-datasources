@@ -49,7 +49,7 @@ class TourismSystem < Connector
         TourismSystemSource,
         @job_id,
         name,
-        { 'fr' => name },
+        { 'fr-FR' => name },
         TourismSystemSource::Settings.from_hash(tourism_system_settings),
       )
     }

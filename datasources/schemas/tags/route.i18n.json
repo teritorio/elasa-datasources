@@ -1,237 +1,237 @@
 {
     "route": {
         "@default": {
-            "fr": "route"
+            "fr-FR": "route"
         },
         "values": {
             "hiking": {
                 "@default:full": {
-                    "fr": "à pied"
+                    "fr-FR": "à pied"
                 }
             },
             "mtb": {
                 "@default:full": {
-                    "fr": "à vtt"
+                    "fr-FR": "à vtt"
                 }
             },
             "bicycle": {
                 "@default:full": {
-                    "fr": "à vélo"
+                    "fr-FR": "à vélo"
                 }
             },
             "road": {
                 "@default:full": {
-                    "fr": "en voiture"
+                    "fr-FR": "en voiture"
                 }
             },
             "canoe": {
                 "@default:full": {
-                    "fr": "en canoë"
+                    "fr-FR": "en canoë"
                 }
             },
             "horse": {
                 "@default:full": {
-                    "fr": "à cheval"
+                    "fr-FR": "à cheval"
                 }
             }
         }
     },
     "route:gpx_trace": {
         "@default": {
-            "fr": "Trace GPS"
+            "fr-FR": "Trace GPS"
         },
         "@long": {
-            "fr": "Le parcours (trace GPS) au format GPX"
+            "fr-FR": "Le parcours (trace GPS) au format GPX"
         }
     },
     "route:pdf": {
         "@default": {
-            "fr": "Fiche PDF"
+            "fr-FR": "Fiche PDF"
         },
         "@long": {
-            "fr": "La fiche complète au format PDF"
+            "fr-FR": "La fiche complète au format PDF"
         }
     },
     "route:hiking:difficulty": {
         "@default": {
-            "fr": "difficulté"
+            "fr-FR": "difficulté"
         },
         "values": {
             "easy": {
                 "@default:full": {
-                    "fr": "facile"
+                    "fr-FR": "facile"
                 }
             },
             "normal": {
                 "@default:full": {
-                    "fr": "normal"
+                    "fr-FR": "normal"
                 }
             },
             "hard": {
                 "@default:full": {
-                    "fr": "difficile"
+                    "fr-FR": "difficile"
                 }
             }
         }
     },
     "route:mtb:difficulty": {
         "@default": {
-            "fr": "difficulté"
+            "fr-FR": "difficulté"
         },
         "values": {
             "easy": {
                 "@default:full": {
-                    "fr": "facile"
+                    "fr-FR": "facile"
                 }
             },
             "normal": {
                 "@default:full": {
-                    "fr": "normal"
+                    "fr-FR": "normal"
                 }
             },
             "hard": {
                 "@default:full": {
-                    "fr": "difficile"
+                    "fr-FR": "difficile"
                 }
             }
         }
     },
     "route:bicycle:difficulty": {
         "@default": {
-            "fr": "difficulté"
+            "fr-FR": "difficulté"
         },
         "values": {
             "easy": {
                 "@default:full": {
-                    "fr": "facile"
+                    "fr-FR": "facile"
                 }
             },
             "normal": {
                 "@default:full": {
-                    "fr": "normal"
+                    "fr-FR": "normal"
                 }
             },
             "hard": {
                 "@default:full": {
-                    "fr": "difficile"
+                    "fr-FR": "difficile"
                 }
             }
         }
     },
     "route:road:difficulty": {
         "@default": {
-            "fr": "difficulté"
+            "fr-FR": "difficulté"
         },
         "values": {
             "easy": {
                 "@default:full": {
-                    "fr": "facile"
+                    "fr-FR": "facile"
                 }
             },
             "normal": {
                 "@default:full": {
-                    "fr": "normal"
+                    "fr-FR": "normal"
                 }
             },
             "hard": {
                 "@default:full": {
-                    "fr": "difficile"
+                    "fr-FR": "difficile"
                 }
             }
         }
     },
     "route:canoe:difficulty": {
         "@default": {
-            "fr": "difficulté"
+            "fr-FR": "difficulté"
         },
         "values": {
             "easy": {
                 "@default:full": {
-                    "fr": "facile"
+                    "fr-FR": "facile"
                 }
             },
             "normal": {
                 "@default:full": {
-                    "fr": "normal"
+                    "fr-FR": "normal"
                 }
             },
             "hard": {
                 "@default:full": {
-                    "fr": "difficile"
+                    "fr-FR": "difficile"
                 }
             }
         }
     },
     "route:horse:difficulty": {
         "@default": {
-            "fr": "difficulté"
+            "fr-FR": "difficulté"
         },
         "values": {
             "easy": {
                 "@default:full": {
-                    "fr": "facile"
+                    "fr-FR": "facile"
                 }
             },
             "normal": {
                 "@default:full": {
-                    "fr": "normal"
+                    "fr-FR": "normal"
                 }
             },
             "hard": {
                 "@default:full": {
-                    "fr": "difficile"
+                    "fr-FR": "difficile"
                 }
             }
         }
     },
     "route:hiking:duration": {
         "@default": {
-            "fr": "durée"
+            "fr-FR": "durée"
         }
     },
     "route:mtb:duration": {
         "@default": {
-            "fr": "durée"
+            "fr-FR": "durée"
         }
     },
     "route:bicycle:duration": {
         "@default": {
-            "fr": "durée"
+            "fr-FR": "durée"
         }
     },
     "route:road:duration": {
         "@default": {
-            "fr": "durée"
+            "fr-FR": "durée"
         }
     },
     "route:canoe:duration": {
         "@default": {
-            "fr": "durée"
+            "fr-FR": "durée"
         }
     },
     "route:hiking:length": {
         "@default": {
-            "fr": "distance"
+            "fr-FR": "distance"
         }
     },
     "route:mtb:length": {
         "@default": {
-            "fr": "distance"
+            "fr-FR": "distance"
         }
     },
     "route:bicycle:length": {
         "@default": {
-            "fr": "distance"
+            "fr-FR": "distance"
         }
     },
     "route:road:length": {
         "@default": {
-            "fr": "distance"
+            "fr-FR": "distance"
         }
     },
     "route:canoe:length": {
         "@default": {
-            "fr": "distance"
+            "fr-FR": "distance"
         }
     }
 }

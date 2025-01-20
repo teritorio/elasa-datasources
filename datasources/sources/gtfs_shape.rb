@@ -52,8 +52,8 @@ class GtfsShapeSource < GdalSource
       # type: :route,
       # route: :bus,
       ref: { ref: ref }.compact_blank,
-      name: { fr: r['route_long_name'] }.compact_blank,
-      description: { fr: r['route_desc'] }.compact_blank,
+      name: { 'fr-FR' => r['route_long_name'] }.compact_blank,
+      description: { 'fr-FR' => r['route_desc'] }.compact_blank,
       colour: r['route_color'] ? "##{r['route_color']}" : nil,
       # route_text_color
       # FIXME temp route:gpx_trace

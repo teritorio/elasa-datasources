@@ -173,13 +173,13 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     super.with(
       i18n: {
         'route' => {
-          'values' => TourinsoftSirtaquiMixin::PRACTICES.compact.to_a.to_h(&:reverse).transform_values{ |v| { '@default:full' => { 'fr' => v } } }
+          'values' => TourinsoftSirtaquiMixin::PRACTICES.compact.to_a.to_h(&:reverse).transform_values{ |v| { '@default:full' => { 'fr-FR' => v } } }
         }
       }.merge(
         *TourinsoftSirtaquiMixin::PRACTICES.values.collect { |practice|
           {
             "route:#{practice}:difficulty" => {
-              'values' => TourinsoftSirtaquiMixin::DIFFICULTIES.compact.to_a.to_h(&:reverse).transform_values{ |v| { '@default:full' => { 'fr' => v } } }
+              'values' => TourinsoftSirtaquiMixin::DIFFICULTIES.compact.to_a.to_h(&:reverse).transform_values{ |v| { '@default:full' => { 'fr-FR' => v } } }
             }
           }
         }
@@ -212,7 +212,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       k.start_with?('DOCPDF') && !v.nil?
     }.to_h{ |k, v|
       c = k[-2..].downcase
-      [c == 'gb' ? 'en' : c, "#{@settings.photo_base_url}#{v}"]
+      [c == 'gb' ? 'en-US' : c, "#{@settings.photo_base_url}#{v}"]
     }
   end
 
@@ -236,7 +236,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       MetadataRow.new({
         data: {
           "#{@destination_id}-steps" => Metadata.from_hash({
-            'name' => { 'en' => "#{@destination_id}-steps" },
+            'name' => { 'en-US' => "#{@destination_id}-steps" },
             'attribution' => @settings.attribution,
           })
         }.compact_blank
@@ -282,8 +282,8 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       ref: {
         'FR:CRTA.step': id,
       },
-      name: { fr: r['name'] }.compact_blank,
-      description: { fr: r['description'] }.compact_blank,
+      name: { 'fr-FR' => r['name'] }.compact_blank,
+      description: { 'fr-FR' => r['description'] }.compact_blank,
       image: [r['image']].compact,
       # image_description
       # image_source
@@ -300,10 +300,10 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       ref: {
         'FR:CRTA': id,
       },
-      name: { fr: r['NOMOFFRE'] }.compact_blank,
-      description: { fr: r['DESCRIPTIF'] }.compact_blank,
+      name: { 'fr-FR' => r['NOMOFFRE'] }.compact_blank,
+      description: { 'fr-FR' => r['DESCRIPTIF'] }.compact_blank,
       website: multiple_split(r, %w[URL URLCOMPLET], 0),
-      'website:details': { fr: @settings.website_details_url&.gsub('{{id}}', r['SyndicObjectID']) }.compact_blank,
+      'website:details': { 'fr-FR' => @settings.website_details_url&.gsub('{{id}}', r['SyndicObjectID']) }.compact_blank,
       phone: multiple_split(r, %w[TEL TELCOMPLET TELMOB TELMOBCOMPLET], 0),
       email: multiple_split(r, %w[MAIL MAILCOMPLET], 0),
       facebook: valid_url(id, :facebook, r['FACEBOOK']),

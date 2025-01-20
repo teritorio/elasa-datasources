@@ -121,27 +121,27 @@ class OpenAgendaSource < Source
       i18n: {
         'long_description' => {
           '@default' => {
-            'fr' => 'Description longue'
+            'fr-FR' => 'Description longue'
           }
         },
         'agenda' => {
           '@default' => {
-            'fr' => "Nom de l'agenda"
+            'fr-FR' => "Nom de l'agenda"
           },
         },
         'agenda:id' => {
           '@default' => {
-            'fr' => "Identifiant de l'agenda"
+            'fr-FR' => "Identifiant de l'agenda"
           },
         },
         'agenda:name' => {
           '@default' => {
-            'fr' => "Nom de l'agenda"
+            'fr-FR' => "Nom de l'agenda"
           },
         },
         'keywords' => {
           '@default' => {
-            'fr' => 'Mots-clés'
+            'fr-FR' => 'Mots-clés'
           }
         }
       }.merge(OpenAgendaMixin::I18N_IMPAIREMENT),

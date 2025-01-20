@@ -1,176 +1,176 @@
 {
     "tourism": {
         "@default": {
-            "fr": "intérêt touristique"
+            "fr-FR": "intérêt touristique"
         },
         "values": {
             "hotel": {
                 "@default:full": {
-                    "fr": "hôtel"
+                    "fr-FR": "hôtel"
                 }
             }
         }
     },
     "stars": {
         "@default": {
-            "fr": "nombre d'étoiles"
+            "fr-FR": "nombre d'étoiles"
         },
         "values": {
             "1": {
                 "@default:full": {
-                    "fr": "1"
+                    "fr-FR": "1"
                 }
             },
             "1S": {
                 "@default:full": {
-                    "fr": "1S"
+                    "fr-FR": "1S"
                 }
             },
             "1.5": {
                 "@default:full": {
-                    "fr": "1.5"
+                    "fr-FR": "1.5"
                 }
             },
             "2": {
                 "@default:full": {
-                    "fr": "2"
+                    "fr-FR": "2"
                 }
             },
             "2S": {
                 "@default:full": {
-                    "fr": "2S"
+                    "fr-FR": "2S"
                 }
             },
             "2.5": {
                 "@default:full": {
-                    "fr": "2.5"
+                    "fr-FR": "2.5"
                 }
             },
             "3": {
                 "@default:full": {
-                    "fr": "3"
+                    "fr-FR": "3"
                 }
             },
             "3S": {
                 "@default:full": {
-                    "fr": "3S"
+                    "fr-FR": "3S"
                 }
             },
             "3.5": {
                 "@default:full": {
-                    "fr": "3.5"
+                    "fr-FR": "3.5"
                 }
             },
             "4": {
                 "@default:full": {
-                    "fr": "4"
+                    "fr-FR": "4"
                 }
             },
             "4S": {
                 "@default:full": {
-                    "fr": "4S"
+                    "fr-FR": "4S"
                 }
             },
             "4.5": {
                 "@default:full": {
-                    "fr": "4.5"
+                    "fr-FR": "4.5"
                 }
             },
             "5": {
                 "@default:full": {
-                    "fr": "5"
+                    "fr-FR": "5"
                 }
             },
             "5S": {
                 "@default:full": {
-                    "fr": "5S"
+                    "fr-FR": "5S"
                 }
             }
         }
     },
     "award:tournesol": {
         "@default": {
-            "fr": "Tournesol"
+            "fr-FR": "Tournesol"
         }
     },
     "award:soleil": {
         "@default": {
-            "fr": "Soleil"
+            "fr-FR": "Soleil"
         }
     },
     "award:epi": {
         "@default": {
-            "fr": "Épi"
+            "fr-FR": "Épi"
         }
     },
     "award:cle": {
         "@default": {
-            "fr": "Clé"
+            "fr-FR": "Clé"
         }
     },
     "award:toque": {
         "@default": {
-            "fr": "Toque"
+            "fr-FR": "Toque"
         }
     },
     "award:fleurs": {
         "@default": {
-            "fr": "Fleurs"
+            "fr-FR": "Fleurs"
         }
     },
     "award:cheminee": {
         "@default": {
-            "fr": "Cheminée"
+            "fr-FR": "Cheminée"
         }
     },
     "award:lutin_bleu": {
         "@default": {
-            "fr": "Lutin Bleu"
+            "fr-FR": "Lutin Bleu"
         }
     },
     "award:lutin_blanc": {
         "@default": {
-            "fr": "Lutin Blanc"
+            "fr-FR": "Lutin Blanc"
         }
     },
     "award:lutin_rouge": {
         "@default": {
-            "fr": "Lutin Rouge"
+            "fr-FR": "Lutin Rouge"
         }
     },
     "capacity": {
         "@default": {
-            "fr": "capacité"
+            "fr-FR": "capacité"
         }
     },
     "capacity:beds": {
         "@default": {
-            "fr": "nombre de lits"
+            "fr-FR": "nombre de lits"
         }
     },
     "capacity:rooms": {
         "@default": {
-            "fr": "nombre de chambres"
+            "fr-FR": "nombre de chambres"
         }
     },
     "capacity:persons": {
         "@default": {
-            "fr": "capacité en nombre de persones"
+            "fr-FR": "capacité en nombre de persones"
         }
     },
     "capacity:caravans": {
         "@default": {
-            "fr": "nombre de places pour caravanes"
+            "fr-FR": "nombre de places pour caravanes"
         }
     },
     "capacity:cabins": {
         "@default": {
-            "fr": "nombre de chalets"
+            "fr-FR": "nombre de chalets"
         }
     },
     "capacity:pitches": {
         "@default": {
-            "fr": "nombre de places"
+            "fr-FR": "nombre de places"
         }
     }
 }

@@ -5,22 +5,22 @@ module OpenAgendaMixin
   I18N_IMPAIREMENT = HashExcep[{
     'visual_impairment' => {
       '@default': {
-        'fr' => 'accéssible aux personnes malvoyantes'
+        'fr-FR' => 'accéssible aux personnes malvoyantes'
       }
     },
     'hearing_impairment' => {
       '@default' => {
-        'fr' => 'Accessibilité auditive'
+        'fr-FR' => 'Accessibilité auditive'
       }
     },
     'cognitive_impairment' => {
       '@default' => {
-        'fr' => 'Accessibilité cognitive'
+        'fr-FR' => 'Accessibilité cognitive'
       }
     },
     'psychic_impairment' => {
       '@default' => {
-        'fr' => 'Accessibilité psychique'
+        'fr-FR' => 'Accessibilité psychique'
       }
     },
   }]
@@ -30,17 +30,17 @@ module OpenAgendaMixin
       'values' => {
         'yes' => {
           '@default' => {
-            'fr' => 'accéssible aux personnes malvoyantes'
+            'fr-FR' => 'accéssible aux personnes malvoyantes'
           }
         },
         'no' => {
           '@default' => {
-            'fr' => 'non accéssible aux personnes malvoyantes'
+            'fr-FR' => 'non accéssible aux personnes malvoyantes'
           }
         },
         'limited' => {
           '@default' => {
-            'fr' => 'accéssible aux personnes malvoyantes avec limitations'
+            'fr-FR' => 'accéssible aux personnes malvoyantes avec limitations'
           }
         }
       }
@@ -49,17 +49,17 @@ module OpenAgendaMixin
       'values' => {
         'yes' => {
           '@default' => {
-            'fr' => 'accéssible aux personnes malentendantes'
+            'fr-FR' => 'accéssible aux personnes malentendantes'
           }
         },
         'no' => {
           '@default' => {
-            'fr' => 'non accéssible aux personnes malentendantes'
+            'fr-FR' => 'non accéssible aux personnes malentendantes'
           }
         },
         'limited' => {
           '@default' => {
-            'fr' => 'accéssible aux personnes malentendantes avec limitations'
+            'fr-FR' => 'accéssible aux personnes malentendantes avec limitations'
           }
         }
       }
@@ -68,17 +68,17 @@ module OpenAgendaMixin
       'values' => {
         'yes' => {
           '@default' => {
-            'fr' => 'accéssible aux personnes en situation de handicap cognitif'
+            'fr-FR' => 'accéssible aux personnes en situation de handicap cognitif'
           },
         },
         'no' => {
           '@default' => {
-            'fr' => 'non accéssible aux personnes en situation de handicap cognitif'
+            'fr-FR' => 'non accéssible aux personnes en situation de handicap cognitif'
           },
         },
         'limited' => {
           '@default' => {
-            'fr' => 'accéssible aux personnes en situation de handicap cognitif avec limitations'
+            'fr-FR' => 'accéssible aux personnes en situation de handicap cognitif avec limitations'
           },
         },
       },
@@ -87,17 +87,17 @@ module OpenAgendaMixin
       'values' => {
         'yes' => {
           '@default' => {
-            'fr' => 'accéssible aux personnes en situation de handicap psychique'
+            'fr-FR' => 'accéssible aux personnes en situation de handicap psychique'
           },
         },
         'no' => {
           '@default' => {
-            'fr' => 'non accéssible aux personnes en situation de handicap psychique'
+            'fr-FR' => 'non accéssible aux personnes en situation de handicap psychique'
           },
         },
         'limited' => {
           '@default' => {
-            'fr' => 'accéssible aux personnes en situation de handicap psychique avec limitations'
+            'fr-FR' => 'accéssible aux personnes en situation de handicap psychique avec limitations'
           },
         },
       },

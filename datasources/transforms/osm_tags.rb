@@ -102,8 +102,8 @@ class OsmTags < Transformer
 
       # else
       # tags[key] = (tags[key] || {}).merge({ '' => value })
-      if !value.nil? && (@@names + %i[description]).include?(key) && !tags.dig(key, 'fr')
-        tags[key] = (tags[key] || {}).merge({ 'fr' => value })
+      if !value.nil? && (@@names + %i[description]).include?(key) && !tags.dig(key, 'fr-FR')
+        tags[key] = (tags[key] || {}).merge({ 'fr-FR' => value })
       end
       # else
       # tags[key] = (tags[key] || {}).merge({ '' => value })

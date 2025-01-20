@@ -44,7 +44,7 @@ class GtfsStopSource < GdalSource
   def map_tags(feat)
     r = feat['properties']
     {
-      name: { fr: r['stop_name'] }.compact_blank,
+      name: { 'fr-FR' => r['stop_name'] }.compact_blank,
       colour: r['route_color'] ? "##{r['route_color']}" : nil,
       route_ref: r['route_ref'].split(',')
     }

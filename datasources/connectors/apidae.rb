@@ -46,7 +46,7 @@ class Apidae < Connector
       @source_filter.nil? || selection['nom'].start_with?(@source_filter)
     }.each{ |selection|
       destination_id = "#{selection['id']}-#{slugify(selection['nom'])}"
-      name = selection['libelle'].transform_keys{ |key| key[('libelle'.size)..].downcase }
+      name = { 'fr-FR' => selection['libelle'].transform_keys{ |key| key[('libelle'.size)..].downcase }['fr'] }
 
       kiba.source(
         ApidaeSource,

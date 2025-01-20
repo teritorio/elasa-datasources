@@ -1,199 +1,199 @@
 {
     "boundary": {
         "@default": {
-            "fr": "frontière"
+            "fr-FR": "frontière"
         },
         "values": {
             "protected_area": {
                 "@default:full": {
-                    "fr": "zone protégée"
+                    "fr-FR": "zone protégée"
                 }
             }
         }
     },
     "leisure": {
         "@default": {
-            "fr": "loisirs"
+            "fr-FR": "loisirs"
         },
         "values": {
             "nature_reserve": {
                 "@default:full": {
-                    "fr": "réserve naturelle"
+                    "fr-FR": "réserve naturelle"
                 }
             }
         }
     },
     "water": {
         "@default": {
-            "fr": "eau"
+            "fr-FR": "eau"
         },
         "values": {
             "lake": {
                 "@default:full": {
-                    "fr": "lac"
+                    "fr-FR": "lac"
                 }
             }
         }
     },
     "protect_class": {
         "@default": {
-            "fr": "niveau de protection"
+            "fr-FR": "niveau de protection"
         },
         "values": {
             "4": {
                 "@default:full": {
-                    "fr": "biotope"
+                    "fr-FR": "biotope"
                 }
             }
         }
     },
     "tourism": {
         "@default": {
-            "fr": "intérêt touristique"
+            "fr-FR": "intérêt touristique"
         },
         "values": {
             "viewpoint": {
                 "@default:full": {
-                    "fr": "point de vue"
+                    "fr-FR": "point de vue"
                 }
             },
             "information": {
                 "@default:full": {
-                    "fr": "information touristique"
+                    "fr-FR": "information touristique"
                 }
             }
         }
     },
     "information": {
         "@default": {
-            "fr": "information"
+            "fr-FR": "information"
         },
         "values": {
             "office": {
                 "@default:full": {
-                    "fr": "bureau d'information"
+                    "fr-FR": "bureau d'information"
                 }
             }
         }
     },
     "natural": {
         "@default": {
-            "fr": "nature"
+            "fr-FR": "nature"
         },
         "values": {
             "bay": {
                 "@default:full": {
-                    "fr": "baie"
+                    "fr-FR": "baie"
                 }
             },
             "mountain_range": {
                 "@default:full": {
-                    "fr": "cordillère"
+                    "fr-FR": "cordillère"
                 }
             },
             "water": {
                 "@default:full": {
-                    "fr": "plan d'eau"
+                    "fr-FR": "plan d'eau"
                 }
             }
         }
     },
     "amenity": {
         "@default": {
-            "fr": "équipement"
+            "fr-FR": "équipement"
         },
         "values": {
             "fuel": {
                 "@default:full": {
-                    "fr": "station services"
+                    "fr-FR": "station services"
                 }
             },
             "church": {
                 "@default:full": {
-                    "fr": "église"
+                    "fr-FR": "église"
                 }
             },
             "camping": {
                 "@default:full": {
-                    "fr": "camping"
+                    "fr-FR": "camping"
                 }
             },
             "picnic_site": {
                 "@default:full": {
-                    "fr": "aire de pique-nique"
+                    "fr-FR": "aire de pique-nique"
                 }
             }
         }
     },
     "religion": {
         "@default": {
-            "fr": "religion"
+            "fr-FR": "religion"
         },
         "values": {
             "christian": {
                 "@default:full": {
-                    "fr": "chrétien"
+                    "fr-FR": "chrétien"
                 }
             }
         }
     },
     "highway": {
         "@default": {
-            "fr": "voirie"
+            "fr-FR": "voirie"
         }
     },
     "shop": {
         "@default": {
-            "fr": "commerce"
+            "fr-FR": "commerce"
         },
         "values": {
             "chemist": {
                 "@default:full": {
-                    "fr": "droguerie"
+                    "fr-FR": "droguerie"
                 }
             },
             "gas": {
                 "@default:full": {
-                    "fr": "vente de bouteille de gaz"
+                    "fr-FR": "vente de bouteille de gaz"
                 }
             }
         }
     },
     "craft": {
         "@default": {
-            "fr": "artisans"
+            "fr-FR": "artisans"
         },
         "values": {
             "bakery": {
                 "@default:full": {
-                    "fr": "boulanger"
+                    "fr-FR": "boulanger"
                 }
             },
             "beekeeper": {
                 "@default:full": {
-                    "fr": "apiculteur"
+                    "fr-FR": "apiculteur"
                 }
             },
             "winery": {
                 "@default:full": {
-                    "fr": "chai"
+                    "fr-FR": "chai"
                 }
             }
         }
     },
     "healthcare": {
         "@default": {
-            "fr": "équipement de santé"
+            "fr-FR": "équipement de santé"
         },
         "values": {
             "pharmacy": {
                 "@default:full": {
-                    "fr": "pharmacy"
+                    "fr-FR": "pharmacy"
                 }
             },
             "doctor": {
                 "@default:full": {
-                    "fr": "médecin"
+                    "fr-FR": "médecin"
                 }
             }
         }

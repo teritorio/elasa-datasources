@@ -36,7 +36,7 @@ class Tourinsoft < Connector
         self.class.source_class,
         @job_id,
         name,
-        { 'fr' => name },
+        { 'fr-FR' => name },
         self.class.source_class.const_get(:Settings).from_hash(@settings.merge({ 'syndication' => syndication })),
       )
     }

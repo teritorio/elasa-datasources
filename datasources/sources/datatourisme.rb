@@ -69,7 +69,7 @@ class DatatourismeSource < Source
   def map_tags(feat)
     {
       'name' => {
-        'fr' => feat.dig('label', 'value'),
+        'fr-FR' => feat.dig('label', 'value'),
       },
       'addr' => {
         'street' => feat.dig('street_address', 'value') || '',

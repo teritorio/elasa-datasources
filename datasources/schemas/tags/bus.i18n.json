@@ -3,162 +3,162 @@
         "values": {
             "bus": {
                 "@default:full": {
-                    "fr": "ligne de bus"
+                    "fr-FR": "ligne de bus"
                 }
             }
         }
     },
     "colour": {
         "@default": {
-            "fr": "couleur"
+            "fr-FR": "couleur"
         }
     },
     "highway": {
         "values": {
             "bus_stop": {
                 "@default:full": {
-                    "fr": "arrêt de bus"
+                    "fr-FR": "arrêt de bus"
                 }
             }
         }
     },
     "public_transport": {
         "@default": {
-            "fr": "transport public"
+            "fr-FR": "transport public"
         },
         "values": {
             "platform": {
                 "@default:full": {
-                    "fr": "quai"
+                    "fr-FR": "quai"
                 }
             },
             "stop_position": {
                 "@default:full": {
-                    "fr": "arrêt"
+                    "fr-FR": "arrêt"
                 }
             },
             "station": {
                 "@default:full": {
-                    "fr": "station"
+                    "fr-FR": "station"
                 }
             }
         }
     },
     "bus": {
         "@default": {
-            "fr": "bus"
+            "fr-FR": "bus"
         },
         "values": {
             "yes": {
                 "@default:full": {
-                    "fr": "bus"
+                    "fr-FR": "bus"
                 }
             }
         }
     },
     "shelter": {
         "@default": {
-            "fr": "abri"
+            "fr-FR": "abri"
         },
         "values": {
             "yes": {
                 "@default:full": {
-                    "fr": "avec abri"
+                    "fr-FR": "avec abri"
                 }
             },
             "no": {
                 "@default:full": {
-                    "fr": "sans abri"
+                    "fr-FR": "sans abri"
                 }
             }
         }
     },
     "bench": {
         "@default": {
-            "fr": "banc"
+            "fr-FR": "banc"
         },
         "values": {
             "yes": {
                 "@default:full": {
-                    "fr": "avec bancs"
+                    "fr-FR": "avec bancs"
                 }
             },
             "no": {
                 "@default:full": {
-                    "fr": "pas de banc"
+                    "fr-FR": "pas de banc"
                 }
             },
             "stand_up_bench": {
                 "@default:full": {
-                    "fr": "banc debout"
+                    "fr-FR": "banc debout"
                 }
             },
             "wave_lounger": {
                 "@default:full": {
-                    "fr": "banc couché"
+                    "fr-FR": "banc couché"
                 }
             }
         }
     },
     "bin": {
         "@default": {
-            "fr": "poupelle d'appoint"
+            "fr-FR": "poupelle d'appoint"
         },
         "values": {
             "yes": {
                 "@default:full": {
-                    "fr": "avec poubelle d'appoint"
+                    "fr-FR": "avec poubelle d'appoint"
                 }
             },
             "no": {
                 "@default:full": {
-                    "fr": "sans poubelle d'appoint"
+                    "fr-FR": "sans poubelle d'appoint"
                 }
             }
         }
     },
     "lit": {
         "@default": {
-            "fr": "éclairage"
+            "fr-FR": "éclairage"
         },
         "values": {
             "yes": {
                 "@default:full": {
-                    "fr": "lieu éclairé"
+                    "fr-FR": "lieu éclairé"
                 }
             },
             "no": {
                 "@default:full": {
-                    "fr": "lieu non éclairé"
+                    "fr-FR": "lieu non éclairé"
                 }
             }
         }
     },
     "covered": {
         "@default": {
-            "fr": "couvert"
+            "fr-FR": "couvert"
         },
         "values": {
             "yes": {
                 "@default:full": {
-                    "fr": "couvert"
+                    "fr-FR": "couvert"
                 }
             },
             "no": {
                 "@default:full": {
-                    "fr": "non couvert"
+                    "fr-FR": "non couvert"
                 }
             }
         }
     },
     "route_ref": {
         "@default": {
-            "fr": "lignes desservant cet arrêt"
+            "fr-FR": "lignes desservant cet arrêt"
         }
     },
     "network": {
         "@default": {
-            "fr": "réseau"
+            "fr-FR": "réseau"
         }
     }
 }

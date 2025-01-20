@@ -168,10 +168,10 @@ class TourinsoftCdt50Source < TourinsoftSource
   def map_feature_tags(feat)
     r = feat
     {
-      name: { fr: r['NomOffre'] }.compact_blank,
-      description: { fr: r['Descriptif'] }.compact_blank,
+      name: { 'fr-FR' => r['NomOffre'] }.compact_blank,
+      description: { 'fr-FR' => r['Descriptif'] }.compact_blank,
       website: multiple_split(r, %w[SiteWeb], 0),
-      'website:details': { fr: @settings.website_details_url&.gsub('{{id}}', r['SyndicObjectID']) }.compact_blank,
+      'website:details': { 'fr-FR' => @settings.website_details_url&.gsub('{{id}}', r['SyndicObjectID']) }.compact_blank,
       phone: multiple_split(r, %w[TelephoneFilaire TelephoneMobile], 0),
       image: multiple_split(r, %w[Photo], 0),
       addr: {
@@ -181,7 +181,7 @@ class TourinsoftCdt50Source < TourinsoftSource
       }.compact_blank,
       route: r['ObjectTypeName'] == 'Itinéraires touristiques' && route(r)&.inject({
         gpx_trace: r['FichierGPX'],
-        pdf: { fr: r['FichierPDF'] }.compact_blank,
+        pdf: { 'fr-FR' => r['FichierPDF'] }.compact_blank,
       }, :merge)&.compact_blank,
       start_date: r['ObjectTypeName'] == 'Fêtes et manifestations' && r['DateDebut']&.split('/')&.reverse&.join('-'),
       end_date: r['ObjectTypeName'] == 'Fêtes et manifestations' && r['DateFin']&.split('/')&.reverse&.join('-'),

@@ -32,13 +32,13 @@ class TestOsmTags < Test::Unit::TestCase
   end
 
   def test_name
-    assert_equal({ name: { 'fr' => 'a' } }, map({ 'name' => 'a' }))
-    assert_equal({ name: { 'fr' => 'a' } }, map({ 'name:fr' => 'a' }))
+    assert_equal({ name: { 'fr-FR' => 'a' } }, map({ 'name' => 'a' }))
+    assert_equal({ name: { 'fr-FR' => 'a' } }, map({ 'name:fr-FR' => 'a' }))
   end
 
   def test_default_name
-    assert_equal({ name: { 'fr' => 'a' }, alt_name: { 'fr' => 'a' } }, map({ 'alt_name' => 'a' }))
-    assert_equal({ name: { 'fr' => 'a', 'de' => 'b' }, alt_name: { 'de' => 'b' } }, map({ 'name:fr' => 'a', 'alt_name:de' => 'b' }))
+    assert_equal({ name: { 'fr-FR' => 'a' }, alt_name: { 'fr-FR' => 'a' } }, map({ 'alt_name' => 'a' }))
+    assert_equal({ name: { 'fr-FR' => 'a', 'de-DE' => 'b' }, alt_name: { 'de-DE' => 'b' } }, map({ 'name:fr-FR' => 'a', 'alt_name:de-DE' => 'b' }))
   end
 
   def test_url_formatter

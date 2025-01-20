@@ -1,181 +1,181 @@
 {
     "ref": {
         "@default": {
-            "fr": "référence"
+            "fr-FR": "référence"
         }
     },
     "source": {
         "@default": {
-            "fr": "source"
+            "fr-FR": "source"
         }
     },
     "description": {
         "@default": {
-            "fr": "description"
+            "fr-FR": "description"
         }
     },
     "email": {
         "@default": {
-            "fr": "email"
+            "fr-FR": "email"
         }
     },
     "name": {
         "@default": {
-            "fr": "nom"
+            "fr-FR": "nom"
         }
     },
     "alt_name": {
         "@default": {
-            "fr": "nom alternatif"
+            "fr-FR": "nom alternatif"
         }
     },
     "loc_name": {
         "@default": {
-            "fr": "appellation locale"
+            "fr-FR": "appellation locale"
         }
     },
     "official_name": {
         "@default": {
-            "fr": "appellation officielle"
+            "fr-FR": "appellation officielle"
         }
     },
     "opening_hours": {
         "@default": {
-            "fr": "horaires d’ouverture"
+            "fr-FR": "horaires d’ouverture"
         }
     },
     "phone": {
         "@default": {
-            "fr": "téléphone"
+            "fr-FR": "téléphone"
         }
     },
     "website": {
         "@default": {
-            "fr": "web"
+            "fr-FR": "web"
         }
     },
     "facebook": {
         "@default": {
-            "fr": "Facebook"
+            "fr-FR": "Facebook"
         }
     },
     "linkedin": {
         "@default": {
-            "fr": "LinkedIn"
+            "fr-FR": "LinkedIn"
         }
     },
     "pinterest": {
         "@default": {
-            "fr": "Pinterest"
+            "fr-FR": "Pinterest"
         }
     },
     "addr": {
         "@default": {
-            "fr": "adresse"
+            "fr-FR": "adresse"
         }
     },
     "addr:street": {
         "@default": {
-            "fr": "rue"
+            "fr-FR": "rue"
         }
     },
     "addr:hamlet": {
         "@default": {
-            "fr": "hameau"
+            "fr-FR": "hameau"
         }
     },
     "addr:postcode": {
         "@default": {
-            "fr": "code postal"
+            "fr-FR": "code postal"
         }
     },
     "addr:city": {
         "@default": {
-            "fr": "ville"
+            "fr-FR": "ville"
         }
     },
     "addr:country": {
         "@default": {
-            "fr": "pays"
+            "fr-FR": "pays"
         }
     },
     "instagram": {
         "@default": {
-            "fr": "Instagram"
+            "fr-FR": "Instagram"
         }
     },
     "twitter": {
         "@default": {
-            "fr": "Twitter"
+            "fr-FR": "Twitter"
         }
     },
     "image": {
         "@default": {
-            "fr": "image"
+            "fr-FR": "image"
         }
     },
     "mapillary": {
         "@default": {
-            "fr": "photo Mapillary"
+            "fr-FR": "photo Mapillary"
         }
     },
     "website:details": {
         "@default": {
-            "fr": "lien vers le detail"
+            "fr-FR": "lien vers le detail"
         }
     },
     "start_date": {
         "@default": {
-            "fr": "date de début"
+            "fr-FR": "date de début"
         }
     },
     "end_date": {
         "@default": {
-            "fr": "date de fin"
+            "fr-FR": "date de fin"
         }
     },
     "wheelchair": {
         "@default": {
-            "fr": "accès en fauteuil roulant"
+            "fr-FR": "accès en fauteuil roulant"
         },
         "values": {
             "yes": {
                 "@default:full": {
-                    "fr": "accessible en fauteuil roulant"
+                    "fr-FR": "accessible en fauteuil roulant"
                 }
             },
             "no": {
                 "@default:full": {
-                    "fr": "non accessible en fauteuil roulant"
+                    "fr-FR": "non accessible en fauteuil roulant"
                 }
             },
             "limited": {
                 "@default:full": {
-                    "fr": "accès en fauteuil roulant limité (partiel)"
+                    "fr-FR": "accès en fauteuil roulant limité (partiel)"
                 }
             }
         }
     },
     "internet_access": {
         "@default": {
-            "fr": "accès internet"
+            "fr-FR": "accès internet"
         },
         "values": {
             "wlan": {
                 "@default:full": {
-                    "fr": "wifi"
+                    "fr-FR": "wifi"
                 }
             },
             "no": {
                 "@default:full": {
-                    "fr": "pas d'accès à internet"
+                    "fr-FR": "pas d'accès à internet"
                 }
             }
         }
     },
     "brand": {
         "@default": {
-            "fr": "enseigne"
+            "fr-FR": "enseigne"
         }
     }
 }
