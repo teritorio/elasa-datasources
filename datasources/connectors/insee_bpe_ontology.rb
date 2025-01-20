@@ -64,7 +64,7 @@ class InseeBpeOntology < ConnectorOntology
       InseeBpeSource,
       @job_id,
       'bpe',
-      { 'fr' => @settings.dig('metadata', 'name') || 'BPE' },
+      @settings.dig('metadata', 'name') || { 'fr' => 'BPE' },
       InseeBpeSource::Settings.from_hash(@settings.merge({
         'code_labels' => code_labels,
       }))
