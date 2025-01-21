@@ -100,7 +100,12 @@ class GeotrekSource < Source
       MetadataRow.new({
         data: {
           practice_slug(practice_id) => Metadata.from_hash({
-            'name' => practice['name'],
+            'name' => {
+              'en-US' => practice['name']['en'],
+              'fr-FR' => practice['name']['fr'],
+              'es-ES' => practice['name']['es'],
+              'de-DE' => practice['name']['de'],
+            }.compact_blank,
             'attribution' => @settings.attribution,
           })
         }.compact_blank
