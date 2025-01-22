@@ -70,7 +70,15 @@ class ApidaeSource < Source
   end
 
   def i18n_keys(object)
-    object&.transform_keys{ |key| key.gsub('libelle', '').downcase }
+    tr = object&.transform_keys{ |key| key.gsub('libelle', '').downcase }
+    return if tr.nil?
+
+    {
+      'en-US': tr['en'],
+      'es-ES': tr['es'],
+      'fr-FR': tr['fr'],
+      'de-DE': tr['de'],
+    }.compact_blank
   end
 
   @@month = %w[Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec]
