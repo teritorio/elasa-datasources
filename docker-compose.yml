@@ -2,6 +2,7 @@ version: '3.3'
 services:
   datasources:
     build: .
+    image: ghcr.io/teritorio/elasa-datasources:master
     environment:
       SENTRY_DSN: ${SENTRY_DSN}
     volumes:

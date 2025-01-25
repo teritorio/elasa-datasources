@@ -2,3 +2,4 @@ sorbet
 bin/tapioca
 data
 config
+.github
