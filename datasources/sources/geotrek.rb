@@ -173,6 +173,21 @@ class GeotrekSource < Source
     }&.pluck('url')&.compact_blank
   end
 
+  @@lang = HashExcep[{
+    'fr' => 'fr-FR',
+    'en' => 'en-US',
+    'es' => 'es-ES',
+    'it' => 'it-IT',
+    'de' => 'de-DE',
+    'nl' => 'nl-NL',
+  }]
+
+  def self.lang(trans)
+    return if trans.nil?
+
+    trans.transform_keys{ |k| @@lang[k] }
+  end
+
   def map_trek_tags(feat)
     r = feat
     name = r['name']&.compact_blank
@@ -192,9 +207,9 @@ class GeotrekSource < Source
 
     practice = practice_slug(r['practice'])
     {
-      name: name,
-      description: r['description_teaser'].compact_blank,
-      'website:details': website_details,
+      name: self.class.lang(name),
+      description: self.class.lang(r['description_teaser'].compact_blank),
+      'website:details': self.class.lang(website_details),
       route: {
         "#{practice}": {
           difficulty: difficulty(@difficulties, r['difficulty']),
@@ -202,7 +217,7 @@ class GeotrekSource < Source
           length: r['length_2d'].to_f / 1000,
         }.compact_blank,
         gpx_trace: r['gpx'],
-        pdf: r['pdf']&.compact_blank,
+        pdf: self.class.lang(r['pdf']&.compact_blank),
       }.compact_blank,
       image: image(r['attachments']),
     }
@@ -211,8 +226,8 @@ class GeotrekSource < Source
   def map_poi_tags(feat)
     r = feat
     {
-      name: r['name']&.compact_blank,
-      description: r['description'].compact_blank,
+      name: self.class.lang(r['name']&.compact_blank),
+      description: self.class.lang(r['description'].compact_blank),
       website: [r['url']].compact_blank,
       image: image(r['attachments']),
     }

@@ -261,6 +261,20 @@ class TourismSystemSource < Source
     }
   end
 
+  @@lang = HashExcep[{
+    'fr' => 'fr-FR',
+    'en' => 'en-US',
+    'es' => 'es-ES',
+    'it' => 'it-IT',
+    'de' => 'de-DE',
+    'nl' => 'nl-NL',
+  }]
+
+  def self.lang(trans)
+    return if trans.nil?
+
+    trans.transform_keys{ |k| @@lang[k] }
+  end
 
   # @@tags = {
   #   # Patrimoine naturel
@@ -309,8 +323,8 @@ class TourismSystemSource < Source
     event = f.dig('data', 'dublinCore', 'classifications')&.pluck('classification')&.include?('02.01.03') # Fêtes et Manifestations
     date_on, date_off, osm_openning_hours = !f.dig('data', 'periods').nil? && self.class.openning(f['data']['periods'])
     {
-      name: f['data']['businessNames'],
-      description: f.dig('data', 'dublinCore', 'description'),
+      name: self.class.lang(f['data']['businessNames']),
+      description: self.class.lang(f.dig('data', 'dublinCore', 'description')),
       phone: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="04.02.01")]')&.pluck('particular')&.compact_blank,
       email: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="04.02.04")]')&.pluck('particular')&.compact_blank,
       website: jp(f, '.contacts[*][?(@.type=="04.03.13")]..communicationMeans[*][?(@.type=="04.02.05")]')&.pluck('particular')&.compact_blank,
