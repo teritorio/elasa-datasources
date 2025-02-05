@@ -21,6 +21,11 @@
             "fr-FR": "couleur"
         }
     },
+    "colour:text": {
+        "@default": {
+            "fr-FR": "couleur du texte"
+        }
+    },
     "highway": {
         "values": {
             "bus_stop": {

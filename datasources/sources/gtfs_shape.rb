@@ -30,7 +30,7 @@ class GtfsShapeSource < GdalSource
           routes.route_id = trips.route_id
       GROUP BY
         routes.route_id
-    " /vsicurl_streaming/{{url}}?.zip', override: true
+    " "/vsicurl_streaming/{{url}}"', override: true
     const :path, String # TMP FIXME to be removed
   end
 
@@ -55,8 +55,8 @@ class GtfsShapeSource < GdalSource
       name: { 'fr-FR' => r['route_long_name'] }.compact_blank,
       description: { 'fr-FR' => r['route_desc'] }.compact_blank,
       colour: r['route_color'] ? "##{r['route_color']}" : nil,
-      # route_text_color
-      # FIXME temp route:gpx_trace
+      'colour:text' => r['route_text_color'] ? "##{r['route_text_color']}" : nil,
+      # FIXME: temp route:gpx_trace
       route: {
         gpx_trace: "#{@settings.path}/#{@destination_id&.gsub('/', '_')}-#{ref}.gpx"
       },

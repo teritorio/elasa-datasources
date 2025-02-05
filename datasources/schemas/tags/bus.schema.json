@@ -11,6 +11,9 @@
         "colour": {
             "type": "string"
         },
+        "colour:text": {
+            "type": "string"
+        },
         "highway": {
             "enum": [
                 "bus_stop"
