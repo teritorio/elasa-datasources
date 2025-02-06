@@ -154,6 +154,14 @@ class TourinsoftCdt50Source < TourinsoftSource
     'Wifi#Wifi' => 'wlan',
   }]
 
+  def each(&block)
+    if ENV['NO_DATA']
+      loop([], &block)
+    else
+      features = self.class.fetch(@settings.client, @settings.syndication).collect{ |feat| [:feature, feat] }
+      loop(features, &block)
+    end
+  end
 
   def map_geometry(feat)
     {
