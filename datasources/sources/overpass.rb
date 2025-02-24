@@ -24,6 +24,7 @@ class OverpassSource < Source
     if !resp.status.success?
       raise [url, resp].inspect
     end
+    
     json = JSON.parse(resp.body)
     if !json['remark'].nil?
       raise [url, json['remark']].inspect
