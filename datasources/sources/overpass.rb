@@ -24,7 +24,7 @@ class OverpassSource < Source
     if !resp.status.success?
       raise [url, resp].inspect
     end
-    if JSON.parse(resp.body)['remark'] && JSON.parse(resp.body)['remark']
+    if JSON.parse(resp.body).key?('remark') && JSON.parse(resp.body)['remark']
       raise [url, JSON.parse(resp.body)['remark']].inspect
     end
 
