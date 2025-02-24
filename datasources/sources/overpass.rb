@@ -25,14 +25,19 @@ class OverpassSource < Source
       raise [url, resp].inspect
     end
 
-    resp.body
+    json = JSON.parse(resp.body)
+    if !json['remark'].nil?
+      raise [url, json['remark']].inspect
+    end
+
+    json
   end
 
   def overpass(overpass_query)
     raw_query = CGI.escape(overpass_query)
     url = "#{@settings.overpass}?data=#{raw_query}"
 
-    JSON.parse(fetch(url))['elements']
+    fetch(url)['elements']
   end
 
   def each(&block)
