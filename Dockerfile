@@ -12,6 +12,7 @@ RUN apt update -y && apt install -y \
     build-essential \
     bundler \
     git \
+    libgeos-dev \
     libyaml-dev \
     ruby-dev \
     ruby-json
