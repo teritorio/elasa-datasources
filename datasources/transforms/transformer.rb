@@ -39,7 +39,16 @@ class Transformer
     data
   end
 
-  sig { params(row: T.untyped).returns(T.untyped) }
+  Row = T.type_alias {
+    {
+      destination_id: String,
+      type: String,
+      properties: T.nilable(T::Hash[T.untyped, T.untyped]),
+      geometry: T.nilable(T::Hash[T.untyped, T.untyped]),
+    }
+  }
+
+  sig { params(row: Row).returns(T.untyped) }
   def process_data(row); end
 
   def process(row)
