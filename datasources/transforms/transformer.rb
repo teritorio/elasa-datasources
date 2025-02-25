@@ -9,6 +9,8 @@ class Transformer
   class TransformerSettings < T::InexactStruct
   end
 
+  Settings = TransformerSettings
+
   extend T::Generic
   SettingsType = type_member{ { upper: TransformerSettings } } # Generic param
 
