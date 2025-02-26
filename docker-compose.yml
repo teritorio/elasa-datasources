@@ -10,6 +10,7 @@ services:
       - ./data:/data
       - ./update.rb:/update.rb
       - ./datasources:/datasources
+      - ./cache:/cache
     restart: unless-stopped
 
   nginx:

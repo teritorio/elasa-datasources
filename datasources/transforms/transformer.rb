@@ -1,12 +1,17 @@
 # frozen_string_literal: true
 # typed: true
 
+require 'moneta'
+require 'digest/sha1'
+
+
 class Transformer
   extend T::Sig
   extend T::Helpers
   abstract!
 
   class TransformerSettings < T::InexactStruct
+    const :cache_data, T.nilable(Integer)
   end
 
   Settings = TransformerSettings
@@ -24,6 +29,10 @@ class Transformer
     @has_osm_tags = false
     @count_input_row = 0
     @count_output_row = 0
+
+    return unless @settings.cache_data
+
+    @cache = Moneta::Adapters::File.new(dir: '/cache')
   end
 
   sig { params(data: Source::MetadataRow).returns(T.nilable(Source::MetadataRow)) }
@@ -49,6 +58,11 @@ class Transformer
       geometry: T.nilable(T::Hash[T.untyped, T.untyped]),
     }
   }
+
+  sig { params(row: Row).returns(String) }
+  def process_data_cache_key(row)
+    Digest::SHA1.hexdigest([row[:destination_id], row[:geometry], @settings].to_json)
+  end
 
   sig { params(row: Row).returns(T.untyped) }
   def process_data(row); end
@@ -77,7 +91,19 @@ class Transformer
       end
     when :data
       @count_input_row += 1
-      d = process_data(data)
+
+      if !@cache.nil? && !(cache_key = process_data_cache_key(data)).nil? && @cache&.key?(cache_key)
+        d = T.cast(JSON.parse(@cache.load(cache_key)), Hash)
+        d = d.transform_keys(&:to_sym)
+        d[:properties] = d[:properties].transform_keys(&:to_sym)
+        d[:properties][:tags] = d[:properties][:tags].transform_keys(&:to_sym) if d[:properties][:tags].present?
+        d[:properties][:natives] = d[:properties][:natives].transform_keys(&:to_sym) if d[:properties][:natives].present?
+      else
+        d = process_data(data)
+
+        @cache&.store(cache_key, d.to_json, expires: @settings.cache_data)
+      end
+
       if !d.nil?
         @count_output_row += 1
         [type, d]
