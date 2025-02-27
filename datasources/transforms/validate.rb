@@ -104,7 +104,7 @@ class ValidateTransformer < Transformer
     @properties_schema['$defs'] = (@properties_schema['$defs'] || {}).merge(@properties_tags_schema['$defs'] || {})
 
     JSON::Validator.validate!(@i18n_schema, schema.i18n)
-    validate_schema_i18n([], @properties_tags_schema['properties'], schema.i18n)
+    validate_schema_i18n([], @properties_tags_schema['properties'], schema.i18n) if !@properties_tags_schema['properties'].nil?
     @schema = schema.schema
     @i18n = schema.i18n
     schema
