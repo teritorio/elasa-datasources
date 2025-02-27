@@ -93,11 +93,17 @@ class Transformer
       @count_input_row += 1
 
       if !@cache.nil? && !(cache_key = process_data_cache_key(data)).nil? && @cache&.key?(cache_key)
-        d = T.cast(JSON.parse(@cache.load(cache_key)), Hash)
-        d = d.transform_keys(&:to_sym)
-        d[:properties] = d[:properties].transform_keys(&:to_sym)
-        d[:properties][:tags] = d[:properties][:tags].transform_keys(&:to_sym) if d[:properties][:tags].present?
-        d[:properties][:natives] = d[:properties][:natives].transform_keys(&:to_sym) if d[:properties][:natives].present?
+        d = T.cast(JSON.parse(@cache.load(cache_key)), T.any(Hash, T::Array[Hash]))
+        if !d.is_a?(Array)
+          d = [d]
+        end
+        d = d.collect{ |dd|
+          dd = dd.transform_keys(&:to_sym)
+          dd[:properties] = dd[:properties].transform_keys(&:to_sym)
+          dd[:properties][:tags] = dd[:properties][:tags].transform_keys(&:to_sym) if dd[:properties][:tags].present?
+          dd[:properties][:natives] = dd[:properties][:natives].transform_keys(&:to_sym) if dd[:properties][:natives].present?
+          dd
+        }
       else
         d = process_data(data)
 
@@ -105,8 +111,12 @@ class Transformer
       end
 
       if !d.nil?
-        @count_output_row += 1
-        [type, d]
+        d = [d] if !d.is_a?(Array)
+        d.each{ |dd|
+          @count_output_row += 1
+          yield [type, dd]
+        }
+        nil # Return nothing as we already yielded the data
       end
     else raise "Not support stream item #{type}"
     end
