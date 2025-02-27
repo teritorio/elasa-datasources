@@ -106,6 +106,8 @@ class Destination
         logger.info("    < #{self.class.name}: #{destination_id}: #{rows.size}")
         close_data(destination_id, rows)
       }
+      lost_destination_ids = @destinations_data.keys - all_destination_ids
+      raise "Missing medatadata for destination ids: #{lost_destination_ids.join(', ')}" if lost_destination_ids.present?
     end
 
     @destinations_schema.each{ |destination_id, row|
