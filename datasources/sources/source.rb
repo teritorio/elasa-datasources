@@ -279,7 +279,7 @@ class Source
       end
     }
 
-    log = "    > #{self.class.name}, #{@destination_id.inspect}: #{raw.size}"
+    log = "    > #{self.class.name}, #{@destination_id.inspect}: #{raw_count}"
     log += ' +metadata' if metadata_datas.present?
     log += ' +schema' if schema_data.schema.present?
     log += ' +i18n' if schema_data.i18n.present?
