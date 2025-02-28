@@ -80,7 +80,9 @@
         },
         "addr": {
             "type": "object",
-            "additionalProperties": false,
+            "additionalProperties": {
+                "type": "string"
+            },
             "properties": {
                 "street": {
                     "type": "string"
