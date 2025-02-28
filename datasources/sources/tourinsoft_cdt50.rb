@@ -17,6 +17,7 @@ class TourinsoftCdt50Source < TourinsoftSource
     'Bistrot / bar à vin' => { amenity: 'restaurant', cuisine: ['bistro'] },
     'Bistrot gastronomique' => { amenity: 'restaurant', cuisine: ['bistronomique'] },
     'Brasserie' => { amenity: 'restaurant', cuisine: ['brasserie'] },
+    'Brunch' => { amenity: 'restaurant', cuisine: ['brunch'] },
     'Cuisine gastronomique' => { amenity: 'restaurant', cuisine: ['gastronomique'] },
     'Café' => { amenity: 'cafe' },
     'Cafétéria' => { amenity: 'fast_food', fast_food: 'cafeteria' },
