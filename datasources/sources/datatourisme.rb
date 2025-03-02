@@ -43,17 +43,6 @@ class DatatourismeSource < Source
     feat.dig('updated_at', 'value')
   end
 
-  def map_destination_id(feat)
-    feat.dig('type', 'value').split('#').last
-  end
-
-  def map_geometry(feat)
-    {
-      type: 'Point',
-      coordinates: [feat.dig('Longitude', 'value')&.to_f, feat.dig('Latitude', 'value')&.to_f],
-    }
-  end
-
   TYPE = HashExcep[{
     # 'Place' => {},
     'Camping' => { amenity: 'camping' },
@@ -66,23 +55,60 @@ class DatatourismeSource < Source
     'WineCellar' => { tourism: 'wine cellar' },
   }]
 
+  TYPE_NAME = HashExcep[{
+    'Place' => { 'fr-FR' => 'Lieu' },
+    'Camping' => { 'fr-FR' => 'Camping' },
+    'Church' => { 'fr-FR' => 'Église' },
+    'Restaurant' => { 'fr-FR' => 'Restaurant' },
+    'LocalTouristOffice' => { 'fr-FR' => 'Office de tourisme' },
+    'Museum' => { 'fr-FR' => 'Musée' },
+    'PointOfView' => { 'fr-FR' => 'Point de vue' },
+    'PicnicArea' => { 'fr-FR' => 'Aire de pique-nique' },
+    'WineCellar' => { 'fr-FR' => 'Cave à vin' },
+  }]
+
+  sig { returns(T::Array[MetadataRow]) }
+  def metadatas
+    super + TYPE.keys.collect{ |type|
+      MetadataRow.new({
+        data: {
+          type => Metadata.from_hash({
+            'name' => TYPE_NAME[type],
+            'attribution' => @settings.attribution,
+          })
+        }.compact_blank
+      })
+    }
+  end
+
+  def map_destination_id(feat)
+    feat.dig('type', 'value').split('#').last
+  end
+
+  def map_geometry(feat)
+    {
+      type: 'Point',
+      coordinates: [feat.dig('Longitude', 'value')&.to_f, feat.dig('Latitude', 'value')&.to_f],
+    }
+  end
+
   def map_tags(feat)
     {
       'name' => {
         'fr-FR' => feat.dig('label', 'value'),
-      },
+      }.compact_blank,
       'addr' => {
-        'street' => feat.dig('street_address', 'value') || '',
-        'postcode' => feat.dig('postalcode_address', 'value') || '',
-        'city' => feat.dig('city_address', 'value') || '',
-        'country' => feat.dig('country_address', 'value') || '',
-      },
-      'email' => [feat.dig('contact_email', 'value')].compact,
-      'phone' => [feat.dig('contact_phone', 'value')].compact,
-      'website' => [feat.dig('contact_website', 'value')].compact,
-      'wheelchair' => [feat.dig('wheelchair', 'value')].compact,
-      'image' => [feat.dig('image', 'value')].compact,
-      'description' => [feat.dig('description', 'value')].compact,
+        'street' => feat.dig('street_address', 'value'),
+        'postcode' => feat.dig('postalcode_address', 'value'),
+        'city' => feat.dig('city_address', 'value'),
+        'country' => feat.dig('country_address', 'value'),
+      }.compact_blank,
+      'email' => [feat.dig('contact_email', 'value')].compact_blank,
+      'phone' => [feat.dig('contact_phone', 'value')].compact_blank,
+      'website' => [feat.dig('contact_website', 'value')].compact_blank,
+      'wheelchair' => [feat.dig('wheelchair', 'value')].compact_blank,
+      'image' => [feat.dig('image', 'value')].compact_blank,
+      'description' => [feat.dig('description', 'value')].compact_blank,
     }.merge(TYPE[feat['type']['value'].split('#').last])
   end
 
