@@ -16,7 +16,8 @@ class GtfsStopSource < GdalSource
       SELECT
         stops.*,
         routes.route_color,
-        group_concat(DISTINCT routes.route_short_name) AS route_ref
+        group_concat(DISTINCT routes.route_short_name) AS route_ref,
+        group_concat(DISTINCT routes.route_id||\'~\') AS route_ids
       FROM
         stops
         JOIN stop_times ON
@@ -49,5 +50,9 @@ class GtfsStopSource < GdalSource
       'colour:text' => r['route_text_color'] ? "##{r['route_text_color']}" : nil,
       route_ref: r['route_ref'].split(',')
     }
+  end
+
+  def map_refs(feat)
+    feat['properties']['route_ids']&.[](..-2)&.split('~,')
   end
 end
