@@ -48,7 +48,7 @@ class JoinTransformer < Transformer
       out[:sources] = (out[:sources] || {}).merge(sources)
     end
 
-    out
+    out.compact_blank
   end
 
   def process_data(row)
