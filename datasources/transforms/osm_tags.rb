@@ -121,6 +121,20 @@ class OsmTags < Transformer
       end
     }
 
+    # Deals with locale variants
+    (@@names + %i[description]).each{ |key|
+      # FIXME: should be the opposite
+
+      if tags.dig(key, 'fr-FR').nil? && !tags.dig(key, 'fr').nil?
+        tags[key]['fr-FR'] = tags[key].delete('fr')
+
+      end
+
+      if tags.dig(key, 'fr-FR') == tags.dig(key, 'fr')
+        tags[key]&.delete('fr')
+      end
+    }
+
     # Move mobile to phone
     phone = (tags[:phone] || []) + (tags.delete(:mobile) || [])
     tags[:phone] = phone if phone.present?
