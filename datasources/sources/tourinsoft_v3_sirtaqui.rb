@@ -107,13 +107,25 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
     'dimanche' => 'Su',
   }]
 
-  def self.openning(periode_ouvertures)
-    return nil if periode_ouvertures.blank?
-
-    periode_ouverture = periode_ouvertures.find{ |periode| (!periode['Datededebut'].nil? && periode['Datedefin'].nil?) || (!periode['Datedefin'].nil? && periode['Datedefin'].[](0..9) >= Time.current.strftime('%Y-%m-%d')) }
+  def self.date_on_off(periode_ouvertures)
+    current_time = Time.current.strftime('%Y-%m-%d')
+    periode_ouverture = periode_ouvertures.find{ |periode|
+      datededebut = periode['Datededebut']
+      datedefin = periode['Datedefin']
+      (!datededebut.nil? && datedefin.nil?) ||
+        (!datedefin.nil? && datedefin[0..9] >= current_time)
+    }
 
     date_on = periode_ouverture['Datededebut']&.[](0..9)
     date_off = periode_ouverture['Datedefin']&.[](0..9)
+
+    [periode_ouverture, date_on, date_off]
+  end
+
+  def self.openning(periode_ouvertures)
+    return nil if periode_ouvertures.blank?
+
+    periode_ouverture, date_on, date_off = date_on_off(periode_ouvertures)
 
     # close_days = convert(periode_ouvertures['Joursdefermeture']) ## TODO
 

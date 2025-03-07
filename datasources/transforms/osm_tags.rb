@@ -81,20 +81,7 @@ class OsmTags < Transformer
     tags
   end
 
-  def process_tags(tags)
-    # There is an adresse defined by addr:* ?
-    has_flat_addr = tags.keys.find{ |k| k.start_with?('addr:') }
-
-    tags = tags.collect{ |k, v|
-      k = k.to_sym
-      k = remove_contact_prefix(tags, k, has_flat_addr)
-
-      # Split multi-values fields
-      [k, @multiple.include?(k) ? v.split(';').collect(&:strip) : v]
-    }.select{ |k, _v| !k.nil? }.to_h
-
-    tags = tags_to_url(tags)
-
+  def process_tags_name_description(tags)
     (@@names + %i[addr ref description source]).each{ |key|
       value = tags.delete(key)
       tags = group(key, tags)
@@ -135,10 +122,18 @@ class OsmTags < Transformer
       end
     }
 
+    tags
+  end
+
+  def process_tags_phone(tags)
     # Move mobile to phone
     phone = (tags[:phone] || []) + (tags.delete(:mobile) || [])
     tags[:phone] = phone if phone.present?
 
+    tags
+  end
+
+  def process_tags_street(tags)
     # Move housenumber, housename, place, unit... to street
     if tags[:addr]
       tags[:addr].delete('full') # Remove full
@@ -146,6 +141,10 @@ class OsmTags < Transformer
       tags[:addr]['street'] = street if street.present?
     end
 
+    tags
+  end
+
+  def process_tags_capacities(tags)
     @@capacities.each { |key|
       capacity = tags.delete(key.to_sym)
       if capacity
@@ -158,6 +157,25 @@ class OsmTags < Transformer
     }
 
     tags
+  end
+
+  def process_tags(tags)
+    # There is an adresse defined by addr:* ?
+    has_flat_addr = tags.keys.find{ |k| k.start_with?('addr:') }
+
+    tags = tags.collect{ |k, v|
+      k = k.to_sym
+      k = remove_contact_prefix(tags, k, has_flat_addr)
+
+      # Split multi-values fields
+      [k, @multiple.include?(k) ? v.split(';').collect(&:strip) : v]
+    }.select{ |k, _v| !k.nil? }.to_h
+
+    tags = tags_to_url(tags)
+    tags = process_tags_name_description(tags)
+    tags = process_tags_phone(tags)
+    tags = process_tags_street(tags)
+    process_tags_capacities(tags)
   end
 
   def process_data(row)
