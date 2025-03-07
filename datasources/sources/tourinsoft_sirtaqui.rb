@@ -208,12 +208,11 @@ class TourinsoftSirtaquiSource < TourinsoftSource
   end
 
   def pdfs(feat)
-    feat.select{ |k, v|
-      k.start_with?('DOCPDF') && !v.nil?
-    }.to_h{ |k, v|
-      c = k[-2..].downcase
-      [c == 'gb' ? 'en-US' : c, "#{@settings.photo_base_url}#{v}"]
-    }
+    {
+      'en-US' => feat['DOCPDFGB'].nil? ? nil : "#{@settings.photo_base_url}#{feat['DOCPDFGB']}",
+      'fr-FR' => feat['DOCPDFFR'].nil? ? nil : "#{@settings.photo_base_url}#{feat['DOCPDFFR']}",
+      'es-ES' => feat['DOCPDFES'].nil? ? nil : "#{@settings.photo_base_url}#{feat['DOCPDFES']}",
+    }.compact_blank
   end
 
   def ouverture(feat)
