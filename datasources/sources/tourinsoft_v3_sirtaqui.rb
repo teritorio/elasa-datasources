@@ -110,7 +110,7 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
   def self.openning(periode_ouvertures)
     return nil if periode_ouvertures.blank?
 
-    periode_ouverture = periode_ouvertures[0]
+    periode_ouverture = periode_ouvertures.find{ |periode| periode['Datedefin']&.[](0..9)&. >= Time.current.strftime('%Y-%m-%d') }
 
     date_on = periode_ouverture['Datededebut']&.[](0..9)
     date_off = periode_ouverture['Datedefin']&.[](0..9)
