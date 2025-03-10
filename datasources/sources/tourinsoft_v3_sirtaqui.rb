@@ -109,15 +109,24 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
 
   def self.date_on_off(periode_ouvertures)
     current_time = Time.current.strftime('%Y-%m-%d')
-    periode_ouverture = periode_ouvertures.find{ |periode|
-      datededebut = periode['Datededebut']
-      datedefin = periode['Datedefin']
-      (!datededebut.nil? && datedefin.nil?) ||
-        (!datedefin.nil? && datedefin[0..9] >= current_time)
+    periode_ouvertures_actives = periode_ouvertures.select{ |periode|
+      datedefin = periode['Datedefin'] || periode['Datefin']
+
+      datedefin && datedefin >= current_time
     }
 
-    date_on = periode_ouverture['Datededebut']&.[](0..9)
-    date_off = periode_ouverture['Datedefin']&.[](0..9)
+    periode_ouverture = (
+      if periode_ouvertures_actives.any?
+        periode_ouvertures_actives.min_by { |periode| periode['Datedefin'] || periode['Datefin'] }
+      else
+        periode_ouvertures.compact.max_by { |periode| periode['Datedefin'] || periode['Datefin'] }
+      end
+    )
+
+    # return nil if periode_ouverture.blank?
+
+    date_on = (periode_ouverture['Datededebut'] || periode_ouverture['Datedebut'])&.[](0..9)
+    date_off = (periode_ouverture['Datedefin'] || periode_ouverture['Datefin'])&.[](0..9)
 
     [periode_ouverture, date_on, date_off]
   end
