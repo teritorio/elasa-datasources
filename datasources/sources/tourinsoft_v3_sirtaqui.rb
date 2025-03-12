@@ -109,24 +109,24 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
 
   def self.date_on_off(periode_ouvertures)
     current_time = Time.current.strftime('%Y-%m-%d')
-    periode_ouvertures_actives = periode_ouvertures.select{ |periode|
-      datedefin = periode['Datedefin'] || periode['Datefin']
-
-      datedefin && datedefin >= current_time
+    periode_ouverture_next = periode_ouvertures.collect{ |periode_ouverture|
+      [
+        periode_ouverture['Datededebut'] || periode_ouverture['Datedebut'],
+        periode_ouverture['Datedefin'] || periode_ouverture['Datefin'],
+        periode_ouverture,
+      ]
+    }.select{ |datededebut, datedefin, _periode_ouverture|
+      !(datededebut.nil? && datedefin.nil?) &&
+        (datedefin.nil? || datedefin[0..9] >= current_time)
+    }.min_by{ |datededebut, datedefin, _periode_ouverture|
+      [datededebut || '0', datedefin || '9999']
     }
 
-    periode_ouverture = (
-      if periode_ouvertures_actives.any?
-        periode_ouvertures_actives.min_by { |periode| periode['Datedefin'] || periode['Datefin'] }
-      else
-        periode_ouvertures.compact.max_by { |periode| periode['Datedefin'] || periode['Datefin'] }
-      end
-    )
+    return if periode_ouverture_next.nil?
 
-    # return nil if periode_ouverture.blank?
-
-    date_on = (periode_ouverture['Datededebut'] || periode_ouverture['Datedebut'])&.[](0..9)
-    date_off = (periode_ouverture['Datedefin'] || periode_ouverture['Datefin'])&.[](0..9)
+    date_on = periode_ouverture_next[0]&.[](0..9)
+    date_off = periode_ouverture_next[1]&.[](0..9)
+    periode_ouverture = periode_ouverture_next[2]
 
     [periode_ouverture, date_on, date_off]
   end
@@ -135,6 +135,8 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
     return nil if periode_ouvertures.blank?
 
     periode_ouverture, date_on, date_off = date_on_off(periode_ouvertures)
+
+    return nil if periode_ouverture.nil?
 
     # close_days = convert(periode_ouvertures['Joursdefermeture']) ## TODO
 
