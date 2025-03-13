@@ -1,5 +1,8 @@
 geotrek:
   connector:
+    metadata:
+      name:
+        fr-FR: Randonnées
     type: Geotrek
     url: https://demo-admin.geotrek.fr/api/v2
     attribution: Geotrek
