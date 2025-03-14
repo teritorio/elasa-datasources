@@ -106,7 +106,7 @@ module TourinsoftSirtaquiMixin
     # BusinessEvent
     'Atelier/Stage' => 'TrainingWorkshop',
     # '' => 'ExecutiveBoardMeeting',
-    # '' => 'Congress',
+    'Conférence / Colloque' => 'Congress',
     # '' => 'BoardMeeting',
     # '' => 'WorkMeeting',
     # '' => 'Seminar',
@@ -119,7 +119,7 @@ module TourinsoftSirtaquiMixin
     # '' => 'PilgrimageAndProcession',
     'Évènement religieux' => 'ReligiousEvent',
     # CulturalEvent
-    # '' => 'CulturalEvent', # Culturelle, Generic
+    'Loisir culturel' => 'CulturalEvent', # Culturelle, Generic
     'Commémoration' => 'Commemoration',
     'Concert' => 'Concert',
     'Conférence' => 'Conference',
@@ -130,8 +130,8 @@ module TourinsoftSirtaquiMixin
     # '' => 'Reading',
     'Opéra' => 'Opera',
     'Théâtre' => 'TheaterEvent',
-    # '' => 'ScreeningEvent',
-    # '' => 'Recital',
+    'Projection / Retransmission' => 'ScreeningEvent',
+    'Récital' => 'Recital',
     # '' => 'VisualArtsEvent',
     'Spectacle' => 'ShowEvent',
     # '' => 'CircusEvent',
@@ -152,6 +152,7 @@ module TourinsoftSirtaquiMixin
     'Fête de ville, village, quartier' => 'Other', # FIXME
     'Meeting' => 'Other', # FIXME
     'Visite' => 'Other', # FIXME
+    'Rendez-vous numérique' => 'Other', # FIXME
   }.freeze
 
   MONTH = %w[Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec].freeze
