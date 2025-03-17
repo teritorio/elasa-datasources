@@ -174,13 +174,28 @@ class OpenAgendaSource < Source
     )
   end
 
+  @@lang = HashExcep[{
+    'fr' => 'fr-FR',
+    'en' => 'en-US',
+    'es' => 'es-ES',
+    'it' => 'it-IT',
+    'de' => 'de-DE',
+    'nl' => 'nl-NL',
+  }]
+
+  def i18n_keys(trans)
+    return if trans.nil?
+
+    trans.transform_keys{ |k| @@lang[k] }
+  end
+
   def map_tags(feat)
     r = feat
     date_start, date_end, hour = openning(r)
 
     {
-      name: jp_first(r, 'title'),
-      description: jp_first(r, 'description'),
+      name: i18n_keys(jp_first(r, 'title')),
+      description: i18n_keys(jp_first(r, 'description')),
       addr: {
         street: jp_first(r, 'location.address'),
         postcode: jp_first(r, 'location.postalCode'),
@@ -249,7 +264,7 @@ class OpenAgendaSource < Source
         id: @settings.agenda_uid,
         name: jp_first(feat, 'originAgenda.title'),
       },
-      long_description: jp_first(feat, 'longDescription'),
+      long_description: i18n_keys(jp_first(feat, 'longDescription')),
       keywords: jp(feat, 'keywords.fr').flatten.compact_blank,
     })
   end
