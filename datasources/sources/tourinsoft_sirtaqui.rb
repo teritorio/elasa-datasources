@@ -164,6 +164,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       step['LON'] = step['LON']&.to_f
       step['LAT'] = step['LAT']&.to_f
       step['Updated'] = feature['Updated']
+      step['waypoint:type'] = 'waypoint'
       step.compact
     } || []
   end
@@ -286,6 +287,9 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       image: [r['image']].compact,
       # image_description
       # image_source
+      route: {
+        'waypoint:type': r['waypoint:type'],
+      },
     }
   end
 

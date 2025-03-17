@@ -52,6 +52,33 @@
             "fr-FR": "La fiche complète au format PDF"
         }
     },
+    "route:waypoint:type": {
+        "@default": {
+            "fr-FR": "Type de point de passage"
+        },
+        "values": {
+            "parking": {
+                "@default:full": {
+                    "fr-FR": "Parking"
+                }
+            },
+            "start": {
+                "@default:full": {
+                    "fr-FR": "Départ"
+                }
+            },
+            "end": {
+                "@default:full": {
+                    "fr-FR": "Arrivée"
+                }
+            },
+            "waypoint": {
+                "@default:full": {
+                    "fr-FR": "Point de passage"
+                }
+            }
+        }
+    },
     "route:hiking:difficulty": {
         "@default": {
             "fr-FR": "difficulté"
