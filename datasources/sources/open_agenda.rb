@@ -201,7 +201,7 @@ class OpenAgendaSource < Source
         postcode: jp_first(r, 'location.postalCode'),
         city: jp_first(r, 'location.city'),
         country: jp_first(r, 'country.fr') || jp_first(r, 'location.countryCode'),
-      },
+      }.compact_blank,
       website: [jp_first(r, 'location.website').to_s, jp_first(r, 'originAgenda.url').to_s].compact_blank,
       phone: phone(r),
       email: email(r),
