@@ -23,6 +23,7 @@ class OpenAgendaSource < Source
   class Settings < Source::SourceSettings
     const :key, String, name: 'key' # API key
     const :agenda_uid, T.nilable(String), name: 'agenda_uid' # Agenda UID
+    const :website_details_url, T.nilable(String)
   end
 
   extend T::Generic
@@ -203,6 +204,7 @@ class OpenAgendaSource < Source
         country: jp_first(r, 'country.fr') || jp_first(r, 'location.countryCode'),
       }.compact_blank,
       website: [jp_first(r, 'location.website').to_s, jp_first(r, 'originAgenda.url').to_s].compact_blank,
+      'website:details': { 'fr-FR' => @settings.website_details_url&.gsub('{{id}}', r['uid'].to_s) }.compact_blank,
       phone: phone(r),
       email: email(r),
       wheelchair: wheelchair(r),
