@@ -230,9 +230,15 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     end
   end
 
+  def features
+    @features_cache ||= self.class.fetch(@settings.client, @settings.syndication).collect{ |feat| [:feature, feat] }
+    @features_cache
+  end
+
   sig { returns(T::Array[MetadataRow]) }
   def metadatas
-    super + [
+    has_steps = features.first&.last&.key?('ETAPE')
+    super + (has_steps ? [
       MetadataRow.new({
         data: {
           "#{@destination_id}-steps" => Metadata.from_hash({
@@ -241,7 +247,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
           })
         }.compact_blank
       })
-    ]
+    ] : [])
   end
 
   def map_destination_id(type_feat)
@@ -257,7 +263,6 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     if ENV['NO_DATA']
       loop([], &block)
     else
-      features = self.class.fetch(@settings.client, @settings.syndication).collect{ |feat| [:feature, feat] }
       features_steps = features.collect { |feature|
         feature_steps = extract_steps_from_feature(feature.last)
         feature.last['step_ids'] = feature_steps.pluck('SyndicObjectID')
