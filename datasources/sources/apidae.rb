@@ -83,6 +83,13 @@ class ApidaeSource < Source
 
   @@month = %w[Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec]
 
+  @@lang = HashExcep[{
+    'fr' => 'fr-FR',
+    'en' => 'en-US',
+    'es' => 'es-ES',
+    'de' => 'de-DE',
+  }]
+
   def self.date(date)
     month = @@month[date[5..6].to_i - 1]
     day = date[8..9]
@@ -381,7 +388,7 @@ class ApidaeSource < Source
       }.compact_blank,
       route: {
         gpx_trace: jp(r, 'multimedias[*].traductionFichiers[*][?(@.extension=="gpx")].url').first,
-        pdf: practices.nil? ? nil : jp(r, 'multimedias[*].traductionFichiers[*][?(@.extension=="pdf")]').to_h{ |t| [t['locale'], t['url']] },
+        pdf: practices.nil? ? nil : jp(r, 'multimedias[*].traductionFichiers[*][?(@.extension=="pdf")]').to_h{ |t| [@@lang[t['locale']], t['url']] },
       }.merge(route(practices, r)).compact_blank,
       'capacity:persons': (jp(r, 'informationsHebergementLocatif.capacite.capaciteHebergement').first || jp(r, 'informationsHebergementLocatif.capacite.capaciteMaximumPossible').first)&.nonzero?,
       'capacity:rooms': (jp(r, 'informationsHebergementLocatif.capacite.nombreChambres').first || jp(r, 'informationsHotellerie.capacite.nombreChambresDeclareesHotelier').first)&.nonzero?,
