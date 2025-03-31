@@ -46,9 +46,11 @@ class GtfsStopSource < GdalSource
     r = feat['properties']
     {
       name: { 'fr-FR' => r['stop_name'] }.compact_blank,
-      colour: r['route_color'] ? "##{r['route_color']}" : nil,
-      'colour:text' => r['route_text_color'] ? "##{r['route_text_color']}" : nil,
       route_ref: r['route_ref'].split(',')
+
+      # A stop is deserved by multiple routes, so we can't set the colour
+      # colour: r['route_color'] ? "##{r['route_color']}" : nil,
+      # 'colour:text' => r['route_text_color'] ? "##{r['route_text_color']}" : nil,
     }
   end
 
