@@ -332,6 +332,15 @@ class ApidaeSource < Source
     } || {}
   end
 
+  def capacity(feat)
+    {
+      'capacity:persons': (jp(feat, 'informationsHebergementLocatif.capacite.capaciteHebergement').first || jp(feat, 'informationsHebergementLocatif.capacite.capaciteMaximumPossible').first)&.nonzero?,
+      'capacity:rooms': (jp(feat, 'informationsHebergementLocatif.capacite.nombreChambres').first || jp(feat, 'informationsHotellerie.capacite.nombreChambresDeclareesHotelier').first)&.nonzero?,
+      'capacity:beds': [jp(feat, 'informationsHebergementLocatif.capacite.nombreLitsSimples').first, jp(feat, 'informationsHebergementLocatif.capacite.nombreLitsDoubles').first].compact_blank.presence&.sum&.nonzero?,
+      'capacity:pitches': jp(feat, 'informationsHotelleriePleinAir.capacite.nombreEmplacementsClasses').first&.nonzero?,
+    }
+  end
+
   def each(&block)
     if ENV['NO_DATA']
       loop([], &block)
@@ -390,10 +399,6 @@ class ApidaeSource < Source
         gpx_trace: jp(r, 'multimedias[*].traductionFichiers[*][?(@.extension=="gpx")].url').first,
         pdf: practices.nil? ? nil : jp(r, 'multimedias[*].traductionFichiers[*][?(@.extension=="pdf")]').to_h{ |t| [@@lang[t['locale']], t['url']] },
       }.merge(route(practices, r)).compact_blank,
-      'capacity:persons': (jp(r, 'informationsHebergementLocatif.capacite.capaciteHebergement').first || jp(r, 'informationsHebergementLocatif.capacite.capaciteMaximumPossible').first)&.nonzero?,
-      'capacity:rooms': (jp(r, 'informationsHebergementLocatif.capacite.nombreChambres').first || jp(r, 'informationsHotellerie.capacite.nombreChambresDeclareesHotelier').first)&.nonzero?,
-      'capacity:beds': [jp(r, 'informationsHebergementLocatif.capacite.nombreLitsSimples').first, jp(r, 'informationsHebergementLocatif.capacite.nombreLitsDoubles').first].compact_blank.presence&.sum&.nonzero?,
-      'capacity:pitches': jp(r, 'informationsHotelleriePleinAir.capacite.nombreEmplacementsClasses').first&.nonzero?,
       opening_hours: osm_openning_hours,
       start_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_on : nil,
       end_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_off : nil,
@@ -403,7 +408,7 @@ class ApidaeSource < Source
         r.dig('informationsHotelleriePleinAir', 'classement', 'ordre')
       ),
       # event: r.dig('informationsFeteEtManifestation', 'typesManifestation').nil? ? nil : self.class.event(r.dig('informationsFeteEtManifestation', 'typesManifestation'))
-    }
+    }.merge(capacity(r))
   end
 
   def map_native_properties(feat, properties)
