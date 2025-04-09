@@ -41,8 +41,8 @@ class InseeBpeSource < CsvSource
     r = feat.to_h.transform_values{ |v| v == '_Z' ? nil : v }
 
     {
-      name: { 'fr-FR' => r['CNOMRS'] }.compact_blank,
-      official_name: { 'fr-FR' => r['NOMRS'] }.compact_blank,
+      name: { 'fr-FR' => r['NOMRS'] }.compact_blank,
+      official_name: { 'fr-FR' => r['CNOMRS'] }.compact_blank,
       addr: {
         street: [r['NUMVOIE'], r['TYPVOIE'], r['LIBVOIE']].compact_blank.join(' '),
         postcode: r['CODPOS'],
