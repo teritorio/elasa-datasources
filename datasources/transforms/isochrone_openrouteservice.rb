@@ -5,7 +5,7 @@ require_relative 'transformer'
 require 'rgeo/geo_json'
 
 
-class IsochroneTransformer < Transformer
+class IsochroneOpenrouteserviceTransformer < Transformer
   extend T::Sig
   class Settings < Transformer::TransformerSettings
     const :open_route_service_key, String
