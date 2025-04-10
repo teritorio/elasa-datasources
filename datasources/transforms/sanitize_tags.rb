@@ -31,7 +31,9 @@ class SanitizeTagsTransformer < Transformer
   end
 
   def process_data(row)
-    row[:properties][:tags] = deep_apply(row[:properties][:tags]) { |o| sanitize(o) }
+    if !row[:properties][:tags].nil?
+      row[:properties][:tags] = deep_apply(row[:properties][:tags]) { |o| sanitize(o) }
+    end
     if !row[:properties][:natives].nil?
       row[:properties][:natives] = deep_apply(row[:properties][:natives]) { |o| sanitize(o) }
     end

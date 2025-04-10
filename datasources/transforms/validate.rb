@@ -162,7 +162,7 @@ class ValidateTransformer < Transformer
         end
       }
 
-      validate_i18n(row[:properties][:tags])
+      validate_i18n(row[:properties][:tags]) if !row[:properties][:tags].nil?
     rescue StandardError => e
       logger.debug(row.inspect)
       raise e

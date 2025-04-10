@@ -16,7 +16,7 @@ class EndDateTransformer < Transformer
   end
 
   def process_data(row)
-    end_date = row[:properties][:tags][:end_date]
+    end_date = row.dig(:properties, :tags, :end_date)
     return row if !end_date || end_date >= @today
 
     nil
