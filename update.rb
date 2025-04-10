@@ -26,7 +26,7 @@ end
 def load_config_dir(glob)
   Dir[glob].to_h{ |path|
     project = T.must(path.split('/')[-1]).split('.')[..-2]&.join('.')
-    [project, YAML.safe_load_file(path)]
+    [project, YAML.safe_load_file(path, aliases: true)]
   }
 end
 
