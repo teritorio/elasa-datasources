@@ -47,7 +47,8 @@ class TeritorioOntology < ConnectorOntology
     }))
 
     if @source_filter.present?
-      source_filter = @source_filter.split('-').reverse.inject(nil){ |sum, i| { i => sum } }
+      keys = @source_filter.split('-')
+      source_filter = keys.reverse.inject(source_filter.dig(*keys)){ |sum, i| { i => sum } }
     end
 
     ontology['group'].select{ |superclass_id, _superclasses|
@@ -71,7 +72,9 @@ class TeritorioOntology < ConnectorOntology
               @job_id,
               "#{output_prefix}#{superclass_id}-#{class_id}-#{subclass_id}",
               subclasses['label'],
-              OverpassSelectSource::Settings.from_hash(@settings.merge({ 'select' => subclasses['osm_selector'], 'with_osm_tags' => false })),
+              OverpassSelectSource::Settings.from_hash(@settings
+                .merge({ 'select' => subclasses['osm_selector'], 'with_osm_tags' => false })
+                .merge(source_filter[superclass_id][class_id][subclass_id] || {})),
             )
           }
         else
@@ -80,7 +83,9 @@ class TeritorioOntology < ConnectorOntology
             @job_id,
             "#{output_prefix}#{superclass_id}-#{class_id}",
             classes['label'],
-            OverpassSelectSource::Settings.from_hash(@settings.merge({ 'select' => classes['osm_selector'], 'with_osm_tags' => false })),
+            OverpassSelectSource::Settings.from_hash(@settings
+              .merge({ 'select' => classes['osm_selector'], 'with_osm_tags' => false })
+              .merge(source_filter[superclass_id][class_id] || {})),
           )
         end
       }
