@@ -74,7 +74,7 @@ class TeritorioOntology < ConnectorOntology
               subclasses['label'],
               OverpassSelectSource::Settings.from_hash(@settings
                 .merge({ 'select' => subclasses['osm_selector'], 'with_osm_tags' => false })
-                .merge(source_filter[superclass_id][class_id][subclass_id] || {})),
+                .merge(source_filter.dig(superclass_id, class_id, subclass_id) || {})),
             )
           }
         else
@@ -85,7 +85,7 @@ class TeritorioOntology < ConnectorOntology
             classes['label'],
             OverpassSelectSource::Settings.from_hash(@settings
               .merge({ 'select' => classes['osm_selector'], 'with_osm_tags' => false })
-              .merge(source_filter[superclass_id][class_id] || {})),
+              .merge(source_filter.dig(superclass_id, class_id) || {})),
           )
         end
       }
