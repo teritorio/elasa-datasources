@@ -55,7 +55,7 @@ class IsochroneCartowayTransformer < Transformer
     isochrones.collect{ |thresold, isochrone|
       r = T.cast(Marshal.load(Marshal.dump(row)), Row)
       r[:geometry] = isochrone['geometry']
-      r[:properties][:id] << ",#{thresold}"
+      r[:properties][:id] += ",#{thresold}"
       r[:properties][:natives] ||= {}
       r[:properties][:natives][:isochrones_thresolds] = thresold
       r
