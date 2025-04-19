@@ -155,11 +155,12 @@ class TourinsoftSirtaquiSource < TourinsoftSource
   end
 
   def extract_steps_from_feature(feature)
-    feature['ETAPE']&.split('#')&.each_with_index&.collect{ |step, index|
-      step = %w[SyndicObjectID name description _ _ LON LAT image image_description image_source].zip(
+    feature['ETAPE']&.split('#')&.collect{ |step|
+      %w[SyndicObjectID name description _ _ LON LAT image image_description image_source].zip(
         step.split('|').collect(&:presence)
       ).to_h
-      step['SyndicObjectID'] = "#{map_id([nil, feature])}.#{index}"
+    }&.select{ |step| !step['LON'].nil? && !step['LAT'].nil? }&.each_with_index&.collect{ |step, index|
+      step['SyndicObjectID'] = "#{map_id([nil, feature])}.#{@destination_id}.#{index}"
       step['name'] = [step['id'], step['name']].compact.join(' - ') if !step['id'].nil? && !step['name'].nil?
       step['LON'] = step['LON']&.to_f
       step['LAT'] = step['LAT']&.to_f
