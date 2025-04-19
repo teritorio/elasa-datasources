@@ -159,6 +159,13 @@ class OsmTags < Transformer
     tags
   end
 
+  def process_tags_units(tags)
+    # Remove unit from length
+    tags[:length] = tags[:length].strip if !tags[:length].nil? && tags[:length][-1] == 'm'
+
+    tags
+  end
+
   def process_tags(tags)
     # There is an adresse defined by addr:* ?
     has_flat_addr = tags.keys.find{ |k| k.start_with?('addr:') }
@@ -175,7 +182,12 @@ class OsmTags < Transformer
     tags = process_tags_name_description(tags)
     tags = process_tags_phone(tags)
     tags = process_tags_street(tags)
-    process_tags_capacities(tags)
+    tags = process_tags_capacities(tags)
+    tags = process_tags_units(tags)
+
+    tags.delete(:type) if tags[:type] == 'multipolygon'
+
+    tags
   end
 
   def process_data(row)
