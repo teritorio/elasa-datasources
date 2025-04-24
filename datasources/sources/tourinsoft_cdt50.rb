@@ -57,6 +57,18 @@ class TourinsoftCdt50Source < TourinsoftSource
     'Difficile' => 'hard',
   }]
 
+  def dates_to_oh(dates)
+    dates.collect{ |date|
+      _year, month, day = date.split('-')
+      "#{TourinsoftSirtaquiMixin::MONTH[month.to_i - 1]} #{day}"
+    }
+  end
+
+  def parse_dates(dates)
+    dates = dates.split('<br />').collect{ |d| d.split('/').reverse.join('-') }
+    [dates.min, dates.max, dates_to_oh(dates)]
+  end
+
   def route(feat)
     types = multiple_split(feat, ['Type'])
     length = feat['LongueurKM']&.to_f || 0
@@ -176,6 +188,15 @@ class TourinsoftCdt50Source < TourinsoftSource
 
   def map_feature_tags(feat)
     r = feat
+
+    date_debut = r['ObjectTypeName'] == 'Fêtes et manifestations' && parse_dates(r['DateDebut'])
+    date_fin = r['ObjectTypeName'] == 'Fêtes et manifestations' && parse_dates(r['DateFin'])
+    start_date = [date_debut&.at(0), date_fin&.at(0)].compact.min
+    end_date = [date_debut&.at(1), date_fin&.at(1)].compact.max
+    opening_hours = (date_debut&.at(2) || []).zip(date_fin&.at(2) || []).collect{ |dates|
+      dates.compact.uniq.join('-')
+    }.join(';')
+
     {
       name: { 'fr-FR' => r['NomOffre'] }.compact_blank,
       description: { 'fr-FR' => r['Descriptif'] }.compact_blank,
@@ -192,8 +213,9 @@ class TourinsoftCdt50Source < TourinsoftSource
         gpx_trace: r['FichierGPX'],
         pdf: { 'fr-FR' => r['FichierPDF'] }.compact_blank,
       }, :merge)&.compact_blank,
-      start_date: r['ObjectTypeName'] == 'Fêtes et manifestations' && r['DateDebut']&.split('/')&.reverse&.join('-'),
-      end_date: r['ObjectTypeName'] == 'Fêtes et manifestations' && r['DateFin']&.split('/')&.reverse&.join('-'),
+      opening_hours: opening_hours,
+      start_date: start_date,
+      end_date: end_date,
       event: r['ObjectTypeName'] == 'Fêtes et manifestations' ? multiple_split(r, ['Type']).collect{ |t| [@@event_type[t]] }.flatten.compact : nil,
       wheelchair: @@bool[r['AccesPMR']],
       capacity: Integer(r['CapaciteHLOChambresHOTEmplacementsHPA'], exception: false),
