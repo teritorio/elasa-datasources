@@ -106,7 +106,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
   def self.openning(ouvertures, openning_days)
     date_ons = []
     date_offs = []
-    opennings = ouvertures.split('#').collect{ |ouverture|
+    hours = ouvertures.split('#').collect{ |ouverture|
       parts = ouverture.split('|')
       date_on, date_off = parts[0..1].collect(&:presence)
       date_on, date_off = (
@@ -121,15 +121,9 @@ class TourinsoftSirtaquiSource < TourinsoftSource
 
       dates = TourinsoftSirtaquiMixin::FORMAT_MONTH_RANGE.call(date_on, date_off)
 
-      days_hours = method(openning_days).call(parts[2..]&.collect(&:presence) || [])
-      days_hours&.collect{ |days_hour|
-        [dates, days_hour].compact.join(' ')
-      }
-    }.flatten(1)
-    hours = opennings.join(';').presence
-    if hours.nil?
-      hours = TourinsoftSirtaquiMixin::FORMAT_MONTH_RANGE.call(date_ons.compact.min, date_offs.compact.max)
-    end
+      days_hours = method(openning_days).call(parts[2..]&.collect(&:presence) || []).presence
+      [dates, days_hours&.join(',')].compact.join(' ')
+    }.compact_blank.join(';').presence
     [date_ons.compact.min, date_offs.compact.max, hours]
   end
 
