@@ -37,16 +37,6 @@ class IsochroneCartowayTransformer < Transformer
     data
   end
 
-  @@isochrone_name = HashExcep[{
-    900 => 'Accessibilité 15 minutes',
-    1800 => 'Accessibilité 30 minutes',
-  }]
-
-  @@isochrone_description = HashExcep[{
-    900 => 'Calcul de l\'accessibilité de chaque POI à 15 minutes',
-    1800 => 'Calcul de l\'accessibilité de chaque POI à 30 minutes',
-  }]
-
   @@isochrone_colour = HashExcep[{
     900 => '#00C500',
     1800 => '#FFAC00',
@@ -72,8 +62,14 @@ class IsochroneCartowayTransformer < Transformer
       r[:geometry] = isochrone['geometry']
       r[:properties][:id] += ",#{thresold}"
       r[:properties][:tags] ||= {}
-      r[:properties][:tags][:name] = { 'fr-FR' => @@isochrone_name[thresold] }
-      r[:properties][:tags][:description] = { 'fr-FR' => @@isochrone_description[thresold] }
+      r[:properties][:tags][:name] = {
+        'fr-FR' => "Accessibilité #{thresold / 60} minutes",
+        'en-US' => "Accessibility #{thresold / 60} minutes",
+      }
+      r[:properties][:tags][:description] = {
+        'fr-FR' => "Calcul de l'accessibilité de chaque POI à #{thresold / 60} minutes",
+        'en-US' => "Calculation of the accessibility of each POI at #{thresold / 60} minutes",
+      }
       r[:properties][:tags][:colour] = @@isochrone_colour[thresold]
       r[:properties][:natives] ||= {}
       r[:properties][:natives][:isochrones_thresolds] = thresold
