@@ -63,12 +63,12 @@ class IsochroneCartowayTransformer < Transformer
       r[:properties][:id] += ",#{thresold}"
       r[:properties][:tags] ||= {}
       r[:properties][:tags][:name] = {
-        'fr-FR' => "Accessibilité #{thresold / 60} minutes",
-        'en-US' => "Accessibility #{thresold / 60} minutes",
+        'fr-FR' => "Zone à mois de #{thresold / 60} min en voiture",
+        'en-US' => "Zone within #{thresold / 60} min by car",
       }
       r[:properties][:tags][:description] = {
-        'fr-FR' => "Calcul de l'accessibilité de chaque POI à #{thresold / 60} minutes",
-        'en-US' => "Calculation of the accessibility of each POI at #{thresold / 60} minutes",
+        'fr-FR' => "Calcul de l'accessibilité de tous POI à moins de #{thresold / 60} minutes en voiture.",
+        'en-US' => "Calculation of the accessibility of all POIs within #{thresold / 60} minutes by car.",
       }
       r[:properties][:tags][:colour] = @@isochrone_colour[thresold]
       r[:properties][:natives] ||= {}
