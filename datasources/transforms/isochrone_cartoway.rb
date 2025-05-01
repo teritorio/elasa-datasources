@@ -37,10 +37,7 @@ class IsochroneCartowayTransformer < Transformer
     data
   end
 
-  @@isochrone_colour = HashExcep[{
-    900 => '#00C500',
-    1800 => '#FFAC00',
-  }]
+  @@isochrone_colour = ['#00C500', '#FFAC00']
 
   def process_data(row)
     geo = RGeo::GeoJSON.decode(row[:geometry].to_json)
@@ -57,20 +54,20 @@ class IsochroneCartowayTransformer < Transformer
     isochrones = fetch(point.x, point.y)
     return nil if isochrones.nil?
 
-    isochrones.collect{ |thresold, isochrone|
+    isochrones.each_with_index.collect{ |(thresold, isochrone), index|
       r = T.cast(Marshal.load(Marshal.dump(row)), Row)
       r[:geometry] = isochrone['geometry']
       r[:properties][:id] += ",#{thresold}"
       r[:properties][:tags] ||= {}
       r[:properties][:tags][:name] = {
-        'fr-FR' => "Zone à mois de #{thresold / 60} min en voiture",
+        'fr-FR' => "Zone à moins de #{thresold / 60} min en voiture",
         'en-US' => "Zone within #{thresold / 60} min by car",
       }
       r[:properties][:tags][:description] = {
         'fr-FR' => "Calcul de l'accessibilité de tous POI à moins de #{thresold / 60} minutes en voiture.",
         'en-US' => "Calculation of the accessibility of all POIs within #{thresold / 60} minutes by car.",
       }
-      r[:properties][:tags][:colour] = @@isochrone_colour[thresold]
+      r[:properties][:tags][:colour] = @@isochrone_colour[index % @@isochrone_colour.size]
       r[:properties][:natives] ||= {}
       r[:properties][:natives][:isochrones_thresolds] = thresold
       r
