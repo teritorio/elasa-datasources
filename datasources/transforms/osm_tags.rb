@@ -186,6 +186,7 @@ class OsmTags < Transformer
     tags = process_tags_units(tags)
 
     tags.delete(:type) if tags[:type] == 'multipolygon'
+    tags.delete(:colour) if tags[:type] != 'route'
 
     tags
   end
