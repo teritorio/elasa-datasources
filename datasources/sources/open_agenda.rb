@@ -120,9 +120,9 @@ class OpenAgendaSource < Source
   def schema
     super.with(
       i18n: {
-        'long_description' => {
+        'description' => {
           '@default' => {
-            'fr-FR' => 'Description longue'
+            'fr-FR' => 'Description'
           }
         },
         'agenda' => {
@@ -148,7 +148,7 @@ class OpenAgendaSource < Source
       }.merge(OpenAgendaMixin::I18N_IMPAIREMENT),
       schema: {
         'properties' => {
-          'long_description' => {
+          'description' => {
             '$ref' => '#/$defs/multilingual',
           },
           'agenda' => {
@@ -196,7 +196,7 @@ class OpenAgendaSource < Source
 
     {
       name: i18n_keys(jp_first(r, 'title')),
-      description: i18n_keys(jp_first(r, 'description')),
+      description: i18n_keys(jp_first(r, 'longDescription')),
       addr: {
         street: jp_first(r, 'location.address'),
         postcode: jp_first(r, 'location.postalCode'),
@@ -219,20 +219,16 @@ class OpenAgendaSource < Source
   end
 
   def phone(feat)
-    # phone_regex = /^(?:(?:(?:\+|00)33\D?(?:\D?\(0\)\D?)?)|0){1}[1-9]{1}(?:\D?\d{2}){4}$/m
     [
       jp_first(feat, 'location.phone'),
       jp_first(feat, 'registration[?(@.type == "phone")].value'),
-      # jp_first(feat, 'longDescription.fr').match(phone_regex)&.to_s
     ].compact_blank
   end
 
   def email(feat)
-    email_regex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z]{2,}\b/i
     [
       jp_first(feat, 'location.email'),
       jp_first(feat, 'registration[?(@.type == "email")].value'),
-      jp_first(feat, 'longDescription.fr')&.match(email_regex)&.to_s
   ].compact_blank
   end
 
@@ -266,7 +262,7 @@ class OpenAgendaSource < Source
         id: @settings.agenda_uid,
         name: jp_first(feat, 'originAgenda.title'),
       },
-      long_description: i18n_keys(jp_first(feat, 'longDescription')),
+      short_description: i18n_keys(jp_first(feat, 'description')),
       keywords: jp(feat, 'keywords.fr').flatten.compact_blank,
     })
   end
