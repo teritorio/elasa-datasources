@@ -189,8 +189,8 @@ class TourinsoftCdt50Source < TourinsoftSource
   def map_feature_tags(feat)
     r = feat
 
-    date_debut = r['ObjectTypeName'] == 'Fêtes et manifestations' && parse_dates(r['DateDebut'])
-    date_fin = r['ObjectTypeName'] == 'Fêtes et manifestations' && parse_dates(r['DateFin'])
+    date_debut = r['ObjectTypeName'] == 'Fêtes et manifestations' ? parse_dates(r['DateDebut']) : nil
+    date_fin = r['ObjectTypeName'] == 'Fêtes et manifestations' ? parse_dates(r['DateFin']) : nil
     start_date = [date_debut&.at(0), date_fin&.at(0)].compact.min
     end_date = [date_debut&.at(1), date_fin&.at(1)].compact.max
     opening_hours = (date_debut&.at(2) || []).zip(date_fin&.at(2) || []).collect{ |dates|
