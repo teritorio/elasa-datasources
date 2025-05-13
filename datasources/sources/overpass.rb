@@ -63,11 +63,18 @@ class OverpassSource < Source
       end
     )
 
-    return if coordinates.nil?
+    if !coordinates.nil?
+      return {
+        type: 'Point',
+        coordinates: coordinates,
+      }
+    end
+
+    return if feat['geometry'].nil?
 
     {
-      type: 'Point',
-      coordinates: coordinates,
+      type: 'LineString',
+      coordinates: feat['geometry'].collect{ |g| [g['lon'], g['lat']] },
     }
   end
 
