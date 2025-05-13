@@ -119,6 +119,11 @@
             "fr-FR": "photo Mapillary"
         }
     },
+    "panoramax": {
+        "@default": {
+            "fr-FR": "photo Panoramax"
+        }
+    },
     "website:details": {
         "@default": {
             "fr-FR": "lien vers le detail"

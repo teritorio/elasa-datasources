@@ -78,6 +78,9 @@
         "mapillary": {
             "type": "string"
         },
+        "panoramax": {
+            "type": "string"
+        },
         "addr": {
             "type": "object",
             "additionalProperties": {
