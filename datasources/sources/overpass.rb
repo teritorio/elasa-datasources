@@ -45,7 +45,7 @@ class OverpassSource < Source
   end
 
   def map_id(feat)
-    feat['type'][0] + feat['id'].to_s
+    (feat['tags']['osm_type'] || feat['type'])[0] + feat['id'].to_s
   end
 
   def map_updated_at(feat)
