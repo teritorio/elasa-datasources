@@ -10,7 +10,7 @@ require 'sorbet-runtime'
 require_relative 'source'
 
 
-class GeoJsonSource < Source
+class GeoJsonTagsNativesSource < Source
   class Settings < Source::SourceSettings
     const :url, String
   end

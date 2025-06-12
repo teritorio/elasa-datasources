@@ -7,11 +7,11 @@ require 'active_support/all'
 
 require 'cgi'
 require 'sorbet-runtime'
-require_relative 'geojson'
+require_relative 'geojson_tags_natives'
 
 
-class GdalSource < GeoJsonSource
-  class Settings < GeoJsonSource::Settings
+class GdalSource < GeoJsonTagsNativesSource
+  class Settings < GeoJsonTagsNativesSource::Settings
     const :gdal_command, String, default: 'ogr2ogr -f GeoJSON {{tmp_geojson}} /vsicurl/{{url}}'
   end
 

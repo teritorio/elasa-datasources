@@ -22,11 +22,11 @@ class Join < Connector
         }))
 
         kiba.source(
-          GeoJsonSource,
+          GeoJsonTagsNativesSource,
           @job_id,
           destination_id,
           nil,
-          GeoJsonSource::Settings.from_hash({
+          GeoJsonTagsNativesSource::Settings.from_hash({
             'url' => "file://./#{@path}/#{source}.geojson",
             'metadata' => JSON.parse(File.read("./#{@path}/#{source_config['metadata']}.metadata.json"))[source]
           })
