@@ -56,7 +56,7 @@ class GeoJsonTagsNativesSource < Source
   end
 
   def map_tags(feat)
-    feat['properties']['tags']
+    feat['properties']['tags'].transform_keys(&:to_sym)
   end
 
   def map_native_properties(feat, _properties)
