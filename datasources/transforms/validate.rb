@@ -150,14 +150,14 @@ class ValidateTransformer < Transformer
         if Integer(path[-1].to_s, exception: false).nil?
           # Collected the faulty value
           @missing_enum_value[path[-1]][row[:properties].dig(*path)] += 1
-          # Remothe the attribute
+          # Remove the attribute
           row[:properties].dig(*path[..-2]).delete(path[-1])
         else
           index = Integer(path.pop.to_s)
 
           # Collected the faulty value
           @missing_enum_value[path[-1]][row[:properties].dig(*path)[index]] += 1
-          # Remothe the attribute
+          # Remove the attribute
           row[:properties].dig(*path).delete_at(index)
         end
       }
