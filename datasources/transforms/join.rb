@@ -54,7 +54,7 @@ class JoinTransformer < Transformer
   def process_data(row)
     return row if @settings.destination_id != row[:destination_id]
 
-    key = JsonPath.on(row[:properties][:tags], @path)
+    key = JsonPath.on(row[:properties][:tags].transform_keys(&:to_s), @path)
     if key.present?
       if @rows.key?(key)
         @rows[key][:properties][:tags] = process_tags(
