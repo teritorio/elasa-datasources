@@ -206,15 +206,15 @@ class Source
       return [nil, bad]
     end
 
-    if check && tags.blank?
-      bad[:missing_tags] += 1
-      return [nil, bad]
-    end
-
     begin
       native_properties = map_native_properties(row, @settings.native_properties || {})
     rescue RuntimeError
       one_error('Error mapping native properties', row)
+      return [nil, bad]
+    end
+
+    if check && tags.blank? && native_properties.blank?
+      bad[:missing_tags_natives] += 1
       return [nil, bad]
     end
 
@@ -266,7 +266,7 @@ class Source
       missing_updated_at: 0,
       missing_geometry: 0,
       null_island_geometry: 0,
-      missing_tags: 0,
+      missing_tags_natives: 0,
       pass: 0,
     }, T.untyped)
 
