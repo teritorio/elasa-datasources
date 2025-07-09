@@ -160,6 +160,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       step['LAT'] = step['LAT']&.to_f
       step['Updated'] = feature['Updated']
       step['waypoint:type'] = 'waypoint'
+      step['image'] = "#{@settings.photo_base_url}#{step['image']}" if step['image']
       step.compact
     } || []
   end
