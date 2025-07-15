@@ -184,7 +184,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     )
   end
 
-  def select(feat)
+  def select?(feat)
     super && (feat.first != :feature ||
       !feat.last['PHOTO'].nil? &&
       (

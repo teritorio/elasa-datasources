@@ -131,7 +131,7 @@ class GeotrekSource < Source
     end
   end
 
-  def select(type_feat)
+  def select?(type_feat)
     type, feat = type_feat
     type != :trek || feat['portal'].include?(@settings.portal_id) && feat['practice'] && feat['published']['fr']
   end

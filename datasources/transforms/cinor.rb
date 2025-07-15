@@ -97,8 +97,7 @@ class CinorTransformer < Transformer
     # "nom_categorie" : "Hôtel"
     # "nom_sous_categorie" : "Hôtel"
 
-    row[:properties][:natives] = cinor.select{ |k, _v| %w[en_ligne zone labels recommandation_oti].include?(k) }.to_h.compact_blank
-
+    row[:properties][:natives] = cinor.slice('en_ligne', 'zone', 'labels', 'recommandation_oti').compact_blank
     row
   end
 end

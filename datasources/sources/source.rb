@@ -119,7 +119,7 @@ class Source
     )
   end
 
-  def select(_feat)
+  def select?(_feat)
     true
   end
 
@@ -163,7 +163,7 @@ class Source
       return [nil, bad]
     end
 
-    if !select(row)
+    if !select?(row)
       bad[:filtered_out] += 1
       return [nil, bad]
     end

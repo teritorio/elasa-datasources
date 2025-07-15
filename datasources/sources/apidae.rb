@@ -354,7 +354,7 @@ class ApidaeSource < Source
     end
   end
 
-  def select(feat)
+  def select?(feat)
     feat.dig('ouverture', 'fermeTemporairement') != 'FERME_TEMPORAIREMENT'
   end
 

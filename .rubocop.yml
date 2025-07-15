@@ -8,7 +8,7 @@ AllCops:
     - 'vendor/**/*'
     - assert_migration.rb
 
-require:
+plugins:
  - rubocop-rake
  - rubocop-rails
 

@@ -43,5 +43,5 @@ group :development do
   gem 'yard'
 end
 
-gem "rdf", "~> 3.3"
-gem "rdf-turtle", "~> 3.3"
+gem 'rdf', '~> 3.3'
+gem 'rdf-turtle', '~> 3.3'
