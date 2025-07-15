@@ -26,3 +26,6 @@ ADD *.rb ./
 ADD datasources datasources
 
 RUN date -u +"%Y-%m-%dT%H:%M:%SZ" > .build
+
+ENV LC_ALL=C.utf8
+ENV LANG=C.utf8

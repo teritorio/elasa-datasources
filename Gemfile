@@ -8,6 +8,7 @@ ruby '>= 3'
 
 gem 'activesupport'
 gem 'bzip2-ffi'
+gem 'csv'
 gem 'http'
 gem 'iostreams'
 gem 'json'
@@ -18,6 +19,8 @@ gem 'logging'
 gem 'moneta'
 gem 'nokogiri'
 gem 'overpass_parser', git: 'https://github.com/teritorio/overpass_parser-rb.git'
+gem 'rdf', '~> 3.3'
+gem 'rdf-turtle', '~> 3.3'
 gem 'rgeo'
 gem 'rgeo-geojson'
 gem 'rubyzip'
@@ -42,6 +45,3 @@ group :development do
   gem 'rbi'
   gem 'yard'
 end
-
-gem 'rdf', '~> 3.3'
-gem 'rdf-turtle', '~> 3.3'

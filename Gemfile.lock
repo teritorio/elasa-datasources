@@ -35,6 +35,7 @@ GEM
       highline (~> 3.0.0)
     concurrent-ruby (1.3.5)
     connection_pool (2.5.3)
+    csv (3.3.5)
     date (3.4.1)
     domain_name (0.6.20240107)
     drb (2.2.3)
@@ -239,6 +240,7 @@ PLATFORMS
 DEPENDENCIES
   activesupport
   bzip2-ffi
+  csv
   http
   iostreams
   json
