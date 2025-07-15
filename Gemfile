@@ -42,3 +42,6 @@ group :development do
   gem 'rbi'
   gem 'yard'
 end
+
+gem "rdf", "~> 3.3"
+gem "rdf-turtle", "~> 3.3"
