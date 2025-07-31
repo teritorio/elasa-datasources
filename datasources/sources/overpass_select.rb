@@ -59,10 +59,12 @@ class OverpassSelectSource < OverpassSource
             end
           }.join("\n")
         )
-        area_ids = T.must(settings.relation_ids).collect{ |id| 3_600_000_000 + id }.collect(&:to_s).join(',')
+        area_ids = T.must(settings.relation_ids).collect{ |id| 3_600_000_000 + id }
+        area_ids_join = area_ids.collect(&:to_s).join(',')
         "
 [out:json][timeout:25];
-area(id:#{area_ids})->.a;
+area(id:#{area_ids_join})->.a;
+.a out center meta;
 (
 #{query_selectors}
 );
@@ -71,7 +73,7 @@ out center meta;
       end
     )
 
-    super(job_id, destination_id, name, settings.with(query: query))
+    super(job_id, destination_id, name, settings.with(query: query, assert_and_omit_area_ids: area_ids))
   end
 
   def deep_select(object, &block)

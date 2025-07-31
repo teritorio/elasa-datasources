@@ -14,6 +14,7 @@ class OverpassSource < Source
 
     const :overpass, String, default: 'https://overpass-api.de/api/interpreter'
     const :query, String
+    const :assert_and_omit_area_ids, T.nilable(T::Array[Integer]), default: nil
   end
 
   extend T::Generic
@@ -37,7 +38,21 @@ class OverpassSource < Source
     raw_query = CGI.escape(overpass_query)
     url = "#{@settings.overpass}?data=#{raw_query}"
 
-    fetch(url)['elements']
+    elements = fetch(url)['elements']
+
+    if !@settings.assert_and_omit_area_ids.nil?
+      g = elements.group_by{ |e|
+        e['type'] == 'area' && @settings.assert_and_omit_area_ids.include?(e['id'])
+      }
+      g[true] ||= []
+      if g[true].size != @settings.assert_and_omit_area_ids.size
+        missing = @settings.assert_and_omit_area_ids - g[true]
+        raise "Missing configured enclosing OSM area: #{missing.join(', ')}"
+      end
+      elements = g[false] || []
+    end
+
+    elements
   end
 
   def each(&block)
