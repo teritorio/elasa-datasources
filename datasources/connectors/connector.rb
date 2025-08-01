@@ -9,11 +9,10 @@ class Connector
   extend T::Helpers
   abstract!
 
-  def initialize(job_id, settings, source_filter, path)
+  def initialize(job_id, settings, source_filter)
     @job_id = job_id
     @settings = settings
     @source_filter = source_filter
-    @path = path
   end
 
   def self.source_class; end

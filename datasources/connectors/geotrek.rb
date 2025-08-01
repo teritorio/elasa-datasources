@@ -15,18 +15,18 @@ class Geotrek < Connector
   def setup(kiba)
     kiba.source(MetadataSource, @job_id, @job_id, { 'en-US' => 'geotrek' }, MetadataSource::Settings.from_hash({
       'schema' => [
-        'datasources/schemas/tags/base.schema.json',
-        'datasources/schemas/tags/event.schema.json',
-        'datasources/schemas/tags/hosting.schema.json',
-        'datasources/schemas/tags/restaurant.schema.json',
-        'datasources/schemas/tags/route.schema.json',
+        '../../datasources/schemas/tags/base.schema.json',
+        '../../datasources/schemas/tags/event.schema.json',
+        '../../datasources/schemas/tags/hosting.schema.json',
+        '../../datasources/schemas/tags/restaurant.schema.json',
+        '../../datasources/schemas/tags/route.schema.json',
       ],
       'i18n' => [
-        'datasources/schemas/tags/base.i18n.json',
-        'datasources/schemas/tags/event.i18n.json',
-        'datasources/schemas/tags/hosting.i18n.json',
-        'datasources/schemas/tags/restaurant.i18n.json',
-        'datasources/schemas/tags/route.i18n.json',
+        '../../datasources/schemas/tags/base.i18n.json',
+        '../../datasources/schemas/tags/event.i18n.json',
+        '../../datasources/schemas/tags/hosting.i18n.json',
+        '../../datasources/schemas/tags/restaurant.i18n.json',
+        '../../datasources/schemas/tags/route.i18n.json',
       ]
     }))
 

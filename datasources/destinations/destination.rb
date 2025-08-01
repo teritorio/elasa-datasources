@@ -8,8 +8,7 @@ class Destination
   extend T::Helpers
   abstract!
 
-  def initialize(path, metadata_only: false)
-    @path = path
+  def initialize(metadata_only: false)
     @metadata_only = metadata_only
 
     @destinations_metadata = T.let(Hash.new { |h, k|
@@ -62,7 +61,7 @@ class Destination
     destination = destination_id.nil? ? '' : "#{destination_id.gsub('/', '_')}."
     data.data.delete(nil)
     content = T.cast(data.data.transform_keys{ |key| key&.gsub('/', '_') }, T::Hash[String, Source::Metadata])
-    File.write("#{@path}/#{destination}metadata.json", JSON.pretty_generate(content))
+    File.write("#{destination}metadata.json", JSON.pretty_generate(content))
 
     column_names = content.values.collect{ |source| source.name&.keys }.compact.flatten.uniq
     content_csv = CSV.generate { |csv|
@@ -71,20 +70,20 @@ class Destination
         csv << [id] + column_names.collect{ |lang| source.name&.[](lang) } + [source.attribution]
       }
     }
-    File.write("#{@path}/#{destination}metadata.csv", content_csv)
+    File.write("#{destination}metadata.csv", content_csv)
   end
 
   sig { params(destination_id: T.nilable(String), data: Source::SchemaRow).void }
   def close_schema(destination_id, data)
     destination = destination_id.nil? ? '' : "#{destination_id.gsub('/', '_')}."
-    File.write("#{@path}/#{destination}schema.json", JSON.pretty_generate(data.schema))
-    File.write("#{@path}/#{destination}i18n.json", JSON.pretty_generate(data.i18n))
+    File.write("#{destination}schema.json", JSON.pretty_generate(data.schema))
+    File.write("#{destination}i18n.json", JSON.pretty_generate(data.i18n))
   end
 
   sig { params(destination_id: T.nilable(String), data: Source::OsmTagsRow).void }
   def close_osm_tags(destination_id, data)
     destination = destination_id.nil? ? '' : "#{destination_id.gsub('/', '_')}."
-    File.write("#{@path}/#{destination}osm_tags.json", JSON.pretty_generate(data.data.collect{ |t| t.serialize.compact_blank }))
+    File.write("#{destination}osm_tags.json", JSON.pretty_generate(data.data.collect{ |t| t.serialize.compact_blank }))
   end
 
   sig { abstract.params(destination_id: String, rows: T.untyped).void }

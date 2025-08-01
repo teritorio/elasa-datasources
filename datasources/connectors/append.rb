@@ -19,7 +19,7 @@ class Append < Connector
           destination_id,
           append['metadata']['name'],
           GeoJsonTagsNativesSource::Settings.from_hash({
-            'url' => "file://./#{@path}/#{source}.geojson",
+            'url' => "file://./#{source}.geojson",
             # 'metadata' => Source::Metadata.from_hash(append['metadata']),
             'metadata' => append['metadata'],
           })

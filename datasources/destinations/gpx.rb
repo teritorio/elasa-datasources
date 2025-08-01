@@ -28,7 +28,7 @@ class Gpx < Destination
       }
 
       ref = feat[:properties][:tags][:ref]
-      File.write("#{@path}/#{destination_id.gsub('/', '_')}-#{ref[:ref]}.gpx", builder.to_xml) if !ref.nil?
+      File.write("#{destination_id.gsub('/', '_')}-#{ref[:ref]}.gpx", builder.to_xml) if !ref.nil?
     }
   end
 end

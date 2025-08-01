@@ -25,15 +25,15 @@ class ValidateTransformer < Transformer
     }
     @missing_enum_value = Hash.new { |h, k| h[k] = Hash.new { |hh, kk| hh[kk] = 0 } }
 
-    @metadata_schema = JSON.parse(File.new('datasources/schemas/metadata.schema.json').read)
+    @metadata_schema = JSON.parse(File.new('../../datasources/schemas/metadata.schema.json').read)
 
-    @i18n_schema = JSON.parse(File.new('datasources/schemas/i18n.schema.json').read)
+    @i18n_schema = JSON.parse(File.new('../../datasources/schemas/i18n.schema.json').read)
     @i18n_schema['properties'] = { destination_id: { type: 'string' } }
 
-    @i18n_osm_tags = JSON.parse(File.new('datasources/schemas/osm_tags.schema.json').read)
+    @i18n_osm_tags = JSON.parse(File.new('../../datasources/schemas/osm_tags.schema.json').read)
 
     # Schema from https://geojson.org/schema/Feature.json
-    @geojson_schema = JSON.parse(File.new('datasources/schemas/geojson-feature.schema.json').read)
+    @geojson_schema = JSON.parse(File.new('../../datasources/schemas/geojson-feature.schema.json').read)
   end
 
   sig { params(metadata: Source::MetadataRow).returns(T.nilable(Source::MetadataRow)) }
@@ -99,7 +99,7 @@ class ValidateTransformer < Transformer
   sig { params(schema: Source::SchemaRow).returns(T.nilable(Source::SchemaRow)) }
   def process_schema(schema)
     @properties_tags_schema = schema.schema || {}
-    @properties_schema = JSON.parse(File.new('datasources/schemas/properties.schema.json').read)
+    @properties_schema = JSON.parse(File.new('../../datasources/schemas/properties.schema.json').read)
     @properties_schema['properties']['tags'] = @properties_tags_schema
     @properties_schema['$defs'] = (@properties_schema['$defs'] || {}).merge(@properties_tags_schema['$defs'] || {})
 

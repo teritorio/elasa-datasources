@@ -13,14 +13,14 @@ class Gtfs < Connector
   def setup(kiba)
     kiba.source(MetadataSource, @job_id, @job_id, nil, MetadataSource::Settings.from_hash({
       'schema' => [
-        'datasources/schemas/tags/base.schema.json',
-        # 'datasources/schemas/tags/bus.schema.json',
-        'datasources/schemas/tags/bus-gtfs.schema.json', # TEMP FIXME to be removed
+        '../../datasources/schemas/tags/base.schema.json',
+        # '../../datasources/schemas/tags/bus.schema.json',
+        '../../datasources/schemas/tags/bus-gtfs.schema.json', # TEMP FIXME to be removed
       ],
       'i18n' => [
-        'datasources/schemas/tags/base.i18n.json',
-        # 'datasources/schemas/tags/bus.i18n.json',
-        'datasources/schemas/tags/bus-gtfs.i18n.json', # TEMP FIXME to be removed
+        '../../datasources/schemas/tags/base.i18n.json',
+        # '../../datasources/schemas/tags/bus.i18n.json',
+        '../../datasources/schemas/tags/bus-gtfs.i18n.json', # TEMP FIXME to be removed
       ],
     }))
 
@@ -40,6 +40,6 @@ class Gtfs < Connector
       GtfsStopSource::Settings.from_hash(@settings),
     )
 
-    kiba.destination(Gpx, @path)
+    kiba.destination(Gpx)
   end
 end

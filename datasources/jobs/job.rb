@@ -36,7 +36,7 @@ require './datasources/transforms/validate'
 
 
 class Job
-  def initialize(job_id, tasks, source_filter, path)
+  def initialize(job_id, tasks, source_filter)
     tasks = tasks.collect{ |taks_id, task|
       {
           id: taks_id,
@@ -58,7 +58,6 @@ class Job
             job_id,
             connector[:settings],
             source_filter,
-            path,
           )
           # Define source()
           # self as Kiba context
@@ -76,7 +75,7 @@ class Job
       transform(SanitizeTagsTransformer, Transformer::TransformerSettings.from_hash({}))
       transform(ValidateTransformer, Transformer::TransformerSettings.from_hash({}))
       transform(RefsIntegrityTransformer, Transformer::TransformerSettings.from_hash({}))
-      destination(GeoJson, path)
+      destination(GeoJson)
     end
     Kiba.run(job)
   end

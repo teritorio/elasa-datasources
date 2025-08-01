@@ -10,6 +10,6 @@ class GeoJson < Destination
       type: 'FeatureCollection',
       features: rows,
     }
-    File.write("#{@path}/#{destination_id.gsub('/', '_')}.geojson", JSON.pretty_generate(fc))
+    File.write("#{destination_id.gsub('/', '_')}.geojson", JSON.pretty_generate(fc))
   end
 end

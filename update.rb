@@ -46,8 +46,11 @@ end
     FileUtils.makedirs(dir)
   end
 
+  old_dir = Dir.pwd
+  Dir.chdir(dir)
+
   logging_appender = Logging.appenders.file(
-    "#{dir}/log.txt",
+    'log.txt',
     truncate: true,
     layout: Logging.layouts.pattern(
       pattern: '%m\n'
@@ -62,20 +65,23 @@ end
     jobs&.to_a&.select{ |id, _job|
       !@datasource || id == @datasource
     }&.each { |job_id, job|
-      Job.new(job_id, job, @source_filter, dir)
+      Job.new(job_id, job, @source_filter)
     }
 
     logger.info('  - Conflate metadata')
     job = Kiba.parse do
       source(MetadataSource, nil, nil, nil, MetadataSource::Settings.from_hash({
-        'meta' => Dir.glob("#{dir}/*.metadata.json"),
-        'schema' => Dir.glob("#{dir}/*.schema.json"),
-        'i18n' => Dir.glob("#{dir}/*.i18n.json"),
-        'osm_tags' => Dir.glob("#{dir}/*.osm_tags.json"),
+        'meta' => Dir.glob('*.metadata.json'),
+        'schema' => Dir.glob('*.schema.json'),
+        'i18n' => Dir.glob('*.i18n.json'),
+        'osm_tags' => Dir.glob('*.osm_tags.json'),
       }))
-      destination(GeoJson, dir, metadata_only: true)
+      destination(GeoJson, metadata_only: true)
     end
     Kiba.run(job)
+
+    Dir.chdir(old_dir)
+    old_dir = nil
 
     if @datasource.nil? # Full run, drop and recreate
       dir_finnal = "data/#{project}"
@@ -86,6 +92,10 @@ end
     Sentry.capture_exception(e)
     logger.error(e.message)
     logger.error(e.backtrace&.join("\n"))
+  end
+
+  if !old_dir.nil?
+    Dir.chdir(old_dir)
   end
 
   Logging.logger.root.remove_appenders(logging_appender)

@@ -32,17 +32,17 @@ class TeritorioOntology < ConnectorOntology
 
     kiba.source(MetadataSource, @job_id, nil, nil, MetadataSource::Settings.from_hash({
       'schema' => [
-        'datasources/schemas/tags/base.schema.json',
-        'datasources/schemas/tags/hosting.schema.json',
-        'datasources/schemas/tags/restaurant.schema.json',
-        'datasources/schemas/tags/osm.schema.json',
-        'datasources/schemas/tags/any.schema.json',
+        '../../datasources/schemas/tags/base.schema.json',
+        '../../datasources/schemas/tags/hosting.schema.json',
+        '../../datasources/schemas/tags/restaurant.schema.json',
+        '../../datasources/schemas/tags/osm.schema.json',
+        '../../datasources/schemas/tags/any.schema.json',
       ],
       'i18n' => [
-        'datasources/schemas/tags/base.i18n.json',
-        'datasources/schemas/tags/hosting.i18n.json',
-        'datasources/schemas/tags/restaurant.i18n.json',
-        'datasources/schemas/tags/osm.i18n.json',
+        '../../datasources/schemas/tags/base.i18n.json',
+        '../../datasources/schemas/tags/hosting.i18n.json',
+        '../../datasources/schemas/tags/restaurant.i18n.json',
+        '../../datasources/schemas/tags/osm.i18n.json',
       ]
     }))
 
