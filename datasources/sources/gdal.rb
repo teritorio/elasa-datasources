@@ -23,9 +23,16 @@ class GdalSource < GeoJsonTagsNativesSource
       tmp_geojson.close
       path = T.must(tmp_geojson.path)
       tmp_geojson.unlink
-      command = @settings.gdal_command.gsub('{{tmp_geojson}}', path).gsub('{{url}}', @settings.url)
-      `#{command}`
-      super("file://#{path}")
+
+      ext = @settings.url.split('.').last
+      Tempfile.open(['foo', ".#{ext}"]) { |temp_input|
+        temp_input.write(HTTP.get(@settings.url).body)
+        temp_input.close
+
+        command = @settings.gdal_command.gsub('{{tmp_geojson}}', path).gsub('{{temp_input}}', T.must(temp_input.path))
+        `#{command}`
+        super("file://#{path}")
+      }
     }
   end
 

@@ -13,22 +13,33 @@ require_relative 'gdal'
 class GtfsStopSource < GdalSource
   class Settings < GdalSource::Settings
     const :gdal_command, String, default: 'ogr2ogr -f GeoJSON {{tmp_geojson}} -dialect SQLITE -sql "
+      WITH
+      _stops AS (
       SELECT
         stops.*,
-        routes.route_color,
-        group_concat(DISTINCT routes.route_short_name) AS route_ref,
-        group_concat(DISTINCT routes.route_id||\'~\') AS route_ids
+        trip_id
       FROM
         stops
         JOIN stop_times ON
           stop_times.stop_id = stops.stop_id
+      GROUP BY
+        stops.stop_id,
+        stop_times.trip_id
+      )
+      SELECT
+        _stops.*,
+        routes.route_color,
+        group_concat(DISTINCT routes.route_short_name) AS route_ref,
+        group_concat(DISTINCT routes.route_id||\'~\') AS route_ids
+      FROM
+        _stops
         JOIN trips ON
-          trips.trip_id = stop_times.trip_id
+          trips.trip_id = _stops.trip_id
         JOIN routes ON
           routes.route_id = trips.route_id
       GROUP BY
-        stops.stop_id
-    " "/vsicurl_streaming/{{url}}"', override: true
+        _stops.stop_id
+    " "{{temp_input}}"', override: true
   end
 
   extend T::Generic
