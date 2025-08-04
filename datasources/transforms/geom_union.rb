@@ -7,6 +7,7 @@ require 'rgeo/geo_json'
 
 class GeomUnionTransformer < Transformer
   extend T::Generic
+
   class Settings < Transformer::TransformerSettings
     const :group_by, T.nilable(T::Array[String])
   end

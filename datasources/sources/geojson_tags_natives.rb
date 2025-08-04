@@ -16,6 +16,7 @@ class GeoJsonTagsNativesSource < Source
   end
 
   extend T::Generic
+
   SettingsType = type_member{ { upper: Settings } } # Generic param
 
   def fetch(url)

@@ -8,6 +8,7 @@ require 'digest/sha1'
 class Transformer
   extend T::Sig
   extend T::Helpers
+
   abstract!
 
   class TransformerSettings < T::InexactStruct
@@ -17,6 +18,7 @@ class Transformer
   Settings = TransformerSettings
 
   extend T::Generic
+
   SettingsType = type_member{ { upper: TransformerSettings } } # Generic param
 
   sig { params(settings: SettingsType).void }

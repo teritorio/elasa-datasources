@@ -6,6 +6,7 @@ require 'csv'
 class Destination
   extend T::Sig
   extend T::Helpers
+
   abstract!
 
   def initialize(metadata_only: false)

@@ -26,6 +26,7 @@ class OverpassSelectSource < OverpassSource
   end
 
   extend T::Generic
+
   SettingsType = type_member{ { upper: Settings } } # Generic param
 
   sig { params(job_id: T.nilable(String), destination_id: T.nilable(String), name: T.nilable(T::Hash[String, String]), settings: SettingsType).void }

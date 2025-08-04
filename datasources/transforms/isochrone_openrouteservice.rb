@@ -7,6 +7,7 @@ require 'rgeo/geo_json'
 
 class IsochroneOpenrouteserviceTransformer < Transformer
   extend T::Sig
+
   class Settings < Transformer::TransformerSettings
     const :open_route_service_key, String
     const :profile, String, default: 'driving-car'
@@ -16,6 +17,7 @@ class IsochroneOpenrouteserviceTransformer < Transformer
   end
 
   extend T::Generic
+
   SettingsType = type_member{ { upper: Settings } } # Generic param
 
   sig { params(coord_x: Float, coord_y: Float).returns(T.untyped) }

@@ -6,6 +6,7 @@ require_relative 'transformer'
 
 class SanitizeTagsTransformer < Transformer
   extend T::Generic
+
   SettingsType = type_member{ { upper: Transformer::TransformerSettings } } # Generic param
 
   def deep_apply(object, &proc)

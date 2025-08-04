@@ -27,6 +27,7 @@ class OpenAgendaSource < Source
   end
 
   extend T::Generic
+
   SettingsType = type_member{ { upper: Settings } }
 
   def jp(object, path)

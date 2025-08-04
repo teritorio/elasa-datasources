@@ -11,6 +11,7 @@ require_relative 'tourinsoft'
 
 class TourinsoftCdt50Source < TourinsoftSource
   extend T::Generic
+
   SettingsType = type_member{ { upper: TourinsoftSource::Settings } } # Generic param
 
   @@cuisines = HashExcep[{

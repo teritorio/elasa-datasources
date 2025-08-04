@@ -13,6 +13,7 @@ require_relative 'source'
 class TourinsoftSource < Source
   extend T::Sig
   extend T::Helpers
+
   abstract!
 
   class Settings < Source::SourceSettings
@@ -22,6 +23,7 @@ class TourinsoftSource < Source
   end
 
   extend T::Generic
+
   SettingsType = type_member{ { upper: Settings } } # Generic param
 
   def self.fetch(client, syndication)

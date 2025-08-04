@@ -16,6 +16,7 @@ class MetadataSource < Source
   end
 
   extend T::Generic
+
   SettingsType = type_member{ { upper: Settings } } # Generic param
 
   sig{ params(urls: T.nilable(T::Array[String])).returns(T.nilable(T::Array[Object])) }

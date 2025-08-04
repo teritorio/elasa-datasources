@@ -17,6 +17,7 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
   end
 
   extend T::Generic
+
   SettingsType = type_member{ { upper: Settings } } # Generic param
 
   def valid_url(id, tag, url)

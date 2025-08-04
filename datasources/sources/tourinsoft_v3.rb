@@ -13,6 +13,7 @@ require_relative 'source'
 class TourinsoftV3Source < Source
   extend T::Sig
   extend T::Helpers
+
   abstract!
 
   class Settings < Source::SourceSettings
@@ -22,6 +23,7 @@ class TourinsoftV3Source < Source
   end
 
   extend T::Generic
+
   SettingsType = type_member{ { upper: Settings } } # Generic param
 
   def jp(object, path)

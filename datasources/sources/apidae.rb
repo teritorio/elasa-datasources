@@ -20,6 +20,7 @@ class ApidaeSource < Source
   end
 
   extend T::Generic
+
   SettingsType = type_member{ { upper: Settings } } # Generic param
 
   def jp(object, path)
@@ -57,7 +58,6 @@ class ApidaeSource < Source
         raise [next_url, resp].inspect
       end
 
-      next_url = nil
       json = JSON.parse(resp.body)
       if json['objetsTouristiques']
         results += json['objetsTouristiques']

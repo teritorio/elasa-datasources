@@ -7,6 +7,7 @@ require 'sorbet-runtime'
 class Connector
   extend T::Sig
   extend T::Helpers
+
   abstract!
 
   def initialize(job_id, settings, source_filter)

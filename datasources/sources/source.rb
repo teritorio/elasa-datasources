@@ -15,6 +15,7 @@ end
 class Source
   extend T::Sig
   extend T::Helpers
+
   abstract!
 
   class MergeableInexactStruct < T::InexactStruct
@@ -81,6 +82,7 @@ class Source
   end
 
   extend T::Generic
+
   SettingsType = type_member{ { upper: SourceSettings } } # Generic param
 
   sig { params(job_id: T.nilable(String), destination_id: T.nilable(String), name: T.nilable(T::Hash[String, String]), settings: SettingsType).void }

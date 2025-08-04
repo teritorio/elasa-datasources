@@ -18,6 +18,7 @@ class DatatourismeSource < Source
   end
 
   extend T::Generic
+
   SettingsType = type_member{ { upper: Settings } }
 
   def self.fetch(path)

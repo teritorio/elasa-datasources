@@ -4,6 +4,7 @@
 require 'logging'
 
 include Logging.globally
+
 Logging.logger.root.appenders = Logging.appenders.stdout(
   layout: Logging.layouts.pattern(
     pattern: '%m\n'

@@ -6,6 +6,7 @@ require_relative 'transformer'
 
 class RefsIntegrityTransformer < Transformer
   extend T::Generic
+
   SettingsType = type_member{ { upper: Transformer::TransformerSettings } } # Generic param
 
   sig { params(settings: SettingsType).void }

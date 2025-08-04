@@ -43,6 +43,7 @@ class GtfsStopSource < GdalSource
   end
 
   extend T::Generic
+
   SettingsType = type_member{ { upper: Settings } } # Generic param
 
   def map_id(feat)
