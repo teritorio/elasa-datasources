@@ -11,6 +11,7 @@ FROM ghcr.io/osgeo/gdal:ubuntu-small-3.10.0
 RUN apt update -y && apt install -y \
     build-essential \
     bundler \
+    clang \
     git \
     libgeos-dev \
     libyaml-dev \

@@ -3,9 +3,7 @@
 
 require 'active_support/all'
 require 'cgi'
-require 'overpass_parser'
-require 'overpass_parser/nodes/query_objects'
-require 'overpass_parser/nodes/selectors'
+require 'overpass_parser_ruby'
 
 require 'sorbet-runtime'
 
@@ -77,16 +75,6 @@ out center meta;
     super(job_id, destination_id, name, settings.with(query: query, assert_and_omit_area_ids: area_ids))
   end
 
-  def deep_select(object, &block)
-    if object.is_a?(OverpassParser::Nodes::QueryObjects)
-      object.selectors&.to_overpass
-    elsif object.is_a?(OverpassParser::Nodes::Request) || object.is_a?(OverpassParser::Nodes::QueryUnion)
-      object.queries.collect{ |o|
-        deep_select(o, &block)
-      }.flatten(1).compact
-    end
-  end
-
   sig { returns(OsmTagsRow) }
   def osm_tags
     return super if !@settings.with_osm_tags
@@ -102,8 +90,8 @@ out center meta;
         }
       })
     elsif !@settings.query.nil?
-      tree = OverpassParser.parse(T.must(@settings.query))
-      selects = deep_select(tree)
+      tree = OverpassParserRuby.parse(T.must(@settings.query))
+      selects = tree.all_selectors.collect(&:to_overpass)
 
       super.deep_merge_array({
         'data' => selects.collect{ |select|
