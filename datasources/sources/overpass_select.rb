@@ -44,6 +44,7 @@ class OverpassSelectSource < OverpassSource
           end
           selects.collect{ |select|
             if select.is_a?(String)
+              @selectors << select
               "nwr#{select}(area.a);"
             else
               selector = T.cast(select, T::Hash[String, T.untyped]).collect{ |k, v|
@@ -90,7 +91,17 @@ out center meta;
   def osm_tags
     return super if !@settings.with_osm_tags
 
-    if !@settings.query.nil?
+    if @selectors.present?
+      super.deep_merge_array({
+        'data' => @selectors.collect{ |selector|
+          {
+            'select' => selector.is_a?(Array) ? selector : [selector],
+            'interest' => @settings.interest&.to_h{ |key| [key, nil] },
+            'sources' => [@job_id, @destination_id].uniq
+          }
+        }
+      })
+    elsif !@settings.query.nil?
       tree = OverpassParser.parse(T.must(@settings.query))
       selects = deep_select(tree)
 
@@ -99,16 +110,6 @@ out center meta;
           {
             'select' => [select],
             'interest' => (@settings.interest&.to_h{ |key| [key, nil] }) || {},
-            'sources' => [@job_id, @destination_id].uniq
-          }
-        }
-      })
-    elsif @selectors.present?
-      super.deep_merge_array({
-        'data' => @selectors.collect{ |selector|
-          {
-            'select' => selector.is_a?(Array) ? selector : [selector],
-            'interest' => @settings.interest&.to_h{ |key| [key, nil] },
             'sources' => [@job_id, @destination_id].uniq
           }
         }
