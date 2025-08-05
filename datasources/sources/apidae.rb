@@ -63,8 +63,8 @@ class ApidaeSource < Source
         results += json['objetsTouristiques']
         first += count
         query = query.merge({ first: first, count: count })
-        next_url = build_url(path, query)
       end
+      next_url = results.size < json['numFound'] ? build_url(path, query) : nil
     end
     results
   end
