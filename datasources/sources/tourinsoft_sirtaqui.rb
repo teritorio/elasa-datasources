@@ -155,7 +155,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
         step.split('|').collect(&:presence)
       ).to_h
     }&.select{ |step| !step['LON'].nil? && !step['LAT'].nil? }&.each_with_index&.collect{ |step, index|
-      step['SyndicObjectID'] = "#{map_id([nil, feature])}.#{@destination_id}.#{index}"
+      step['SyndicObjectID'] = "#{map_id([nil, feature])}.#{index}"
       step['name'] = [step['id'], step['name']].compact.join(' - ') if !step['id'].nil? && !step['name'].nil?
       step['LON'] = step['LON']&.to_f
       step['LAT'] = step['LAT']&.to_f
