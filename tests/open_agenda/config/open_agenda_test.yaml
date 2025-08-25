@@ -3,4 +3,4 @@ project:
     type: OpenAgenda
     key: test
     agenda_uid: 41648
-    attribution: "OpenAgenda"
+    attribution: <a href="https://openagenda.com/">OpenAgenda</a>

@@ -33,6 +33,7 @@ require './datasources/transforms/metadata_merge'
 require './datasources/transforms/refs_integrity'
 require './datasources/transforms/sanitize_tags'
 require './datasources/transforms/validate'
+require './datasources/transforms/validate_attribution'
 
 
 class Job
@@ -74,6 +75,7 @@ class Job
       transform(MetadataMerge, MetadataMerge::Settings.from_hash({ 'destination_id' => job_id })) # Merge before validate
       transform(SanitizeTagsTransformer, Transformer::TransformerSettings.from_hash({}))
       transform(ValidateTransformer, Transformer::TransformerSettings.from_hash({}))
+      transform(ValidateAttributionTransformer, Transformer::TransformerSettings.from_hash({}))
       transform(RefsIntegrityTransformer, Transformer::TransformerSettings.from_hash({}))
       destination(GeoJson)
     end
