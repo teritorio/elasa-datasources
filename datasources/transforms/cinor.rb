@@ -76,7 +76,7 @@ class CinorTransformer < Transformer
     }.compact_blank
   end
 
-  sig { params(row: Row).returns(T.untyped) }
+  sig { override.params(row: Row).returns(T.untyped) }
   def process_data(row)
     tags, cinor = parse_cinor(row[:properties].delete(:natives).compact_blank)
     cinor_tags = cinor_to_osm(cinor)

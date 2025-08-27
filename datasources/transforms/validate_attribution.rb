@@ -25,4 +25,9 @@ class ValidateAttributionTransformer < Transformer
     }
     metadata
   end
+
+  sig { override.params(row: Row).returns(T.untyped) }
+  def process_data(row)
+    row
+  end
 end

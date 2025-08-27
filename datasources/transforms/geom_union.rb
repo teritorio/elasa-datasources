@@ -21,7 +21,7 @@ class GeomUnionTransformer < Transformer
     @rows = Hash.new { |h, k| h[k] = [] }
   end
 
-  sig { params(row: Row).returns(T.untyped) }
+  sig { override.params(row: Row).returns(T.untyped) }
   def process_data(row)
     @rows[row[:destination_id]] << row
     nil

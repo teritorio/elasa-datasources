@@ -66,7 +66,7 @@ class Transformer
     Digest::SHA1.hexdigest([row[:destination_id], row[:geometry], @settings].to_json)
   end
 
-  sig { params(row: Row).returns(T.untyped) }
+  sig { abstract.params(row: Row).returns(T.untyped) }
   def process_data(row); end
 
   def process(row)
