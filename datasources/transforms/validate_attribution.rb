@@ -14,7 +14,7 @@ class ValidateAttributionTransformer < Transformer
 
   sig { params(metadata: Source::MetadataRow).returns(T.nilable(Source::MetadataRow)) }
   def process_metadata(metadata)
-    metadata.data.collect{ |k, m| [k, m.attribution] }.filter{ |k, attribution| !attribution.nil? }.each{ |k, attribution|
+    metadata.data.collect{ |k, m| [k, m.attribution] }.compact.each{ |k, attribution|
       a = T.must(attribution)
       if !a.start_with?('<a') || !a.end_with?('</a>')
         raise "#{k}: attribution should starts with \"<a\" and ends with \"</a>\""
