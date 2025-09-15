@@ -378,7 +378,7 @@ class ApidaeSource < Source
     practices = self.class.practices(jp(r, 'informationsEquipement.activites[*]')) if jp(r, 'informationsEquipement.itineraire')&.compact_blank.present?
     {
       name: i18n_keys(r['nom']),
-      description: i18n_keys(r.dig('presentation', 'descriptifCourt')),
+      description: i18n_keys(r.dig('presentation', 'descriptifCourt'))&.transform_values{ |d| d&.gsub("\r\n", "\n")&.gsub("\n", "<br />\n") },
       website: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Site web (URL)")].coordonnees.fr'),
       'website:details': { 'fr-FR' => @settings.website_details_url&.gsub('{{id}}', r['id'].to_s) }.compact_blank,
       phone: jp(r, 'informations.moyensCommunication[*][?(@.type.libelleFr=="Téléphone")].coordonnees.fr'),

@@ -59,10 +59,10 @@ class CinorTransformer < Transformer
       website: [cinor['site_web']].compact_blank,
 
       short_description: {
-        'fr-FR' => cinor['accroche'],
+        'fr-FR' => cinor['accroche']&.gsub("\r\n", "\n")&.gsub("\n", "<br />\n"),
       }.compact_blank,
       description: {
-        'fr-FR' => cinor['descriptif'],
+        'fr-FR' => cinor['descriptif']&.gsub("\r\n", "\n")&.gsub("\n", "<br />\n"),
       }.compact_blank,
       addr: {
         'street' => [
