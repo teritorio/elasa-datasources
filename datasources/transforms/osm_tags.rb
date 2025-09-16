@@ -150,7 +150,8 @@ class OsmTags < Transformer
       capacity = tags.delete(key.to_sym)
       if capacity
         begin
-          tags[key] = Integer(capacity)
+          c = Integer(capacity)
+          tags[key] = c if c > 0
         rescue StandardError => _e
           logger.info("Fails conver to integer #{key}=#{capacity}")
         end
