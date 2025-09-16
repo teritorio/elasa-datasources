@@ -44,7 +44,7 @@ class OsmTags < Transformer
     healthcare:speciality
   ]
 
-  @@capacities = ['capacity', 'capacity:beds', 'capacity:rooms', 'capacity:persons', 'capacity:caravans', 'capacity:cabins', 'capacity:pitches']
+  @@capacities = ['capacity', 'capacity:beds', 'capacity:rooms', 'capacity:persons', 'capacity:caravans', 'capacity:cabins', 'capacity:pitches', 'capacity:disabled']
 
   def group(prefix, tags)
     match, not_match = tags.to_a.partition{ |k, _v|
