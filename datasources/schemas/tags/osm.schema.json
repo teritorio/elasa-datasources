@@ -72,6 +72,9 @@
                 "pharmacy",
                 "doctor"
             ]
+        },
+        "capacity:disabled": {
+            "type": "integer"
         }
     }
 }
