@@ -197,5 +197,10 @@
                 }
             }
         }
+    },
+    "capacity:disabled": {
+        "@default": {
+            "fr-FR": "nombre de places réservées (PMR...)"
+        }
     }
 }
