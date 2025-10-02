@@ -21,6 +21,8 @@ class Apidae < Connector
   end
 
   def setup(kiba)
+    select_filter = @settings['filter']
+
     kiba.source(MetadataSource, @job_id, @job_id, nil, MetadataSource::Settings.from_hash({
       'schema' => [
         '../../datasources/schemas/tags/base.schema.json',
@@ -43,7 +45,8 @@ class Apidae < Connector
     selections = ApidaeSource.fetch('referentiel/selections', { apiKey: api_key, projetId: projet_id })
 
     selections.select{ |selection|
-      @source_filter.nil? || selection['nom'].start_with?(@source_filter)
+      (select_filter.nil? || selection['nom'].start_with?(select_filter)) &&
+        (@source_filter.nil? || selection['nom'].start_with?(@source_filter))
     }.each{ |selection|
       destination_id = "#{selection['id']}-#{slugify(selection['nom'])}"
       name = { 'fr-FR' => selection['libelle'].transform_keys{ |key| key[('libelle'.size)..].downcase }['fr'] }
