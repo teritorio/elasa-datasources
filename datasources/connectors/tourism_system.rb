@@ -36,8 +36,10 @@ class TourismSystem < Connector
     TourismSystemSource.fetch_data(basic_auth, "/content/ts/#{id}").collect { |playlist|
       [playlist['metadata']['name'], playlist['metadata']['id']]
     }.select{ |name, _id|
-      playlists.include?(name) &&
+      playlists.blank? || (
+        playlists.include?(name) &&
         (@source_filter.nil? || name.start_with?(@source_filter))
+      )
     }.each{ |name, playlist_id|
       tourism_system_settings = @settings.merge({
         'playlist_id' => playlist_id,
