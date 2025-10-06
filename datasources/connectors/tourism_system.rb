@@ -37,11 +37,7 @@ class TourismSystem < Connector
       [playlist['metadata']['name'], playlist['metadata']['id']]
     }.select{ |name, id|
       playlists.value?(id) &&
-        if @source_filter.nil?
-          name.start_with?('Teritorio')
-        else
-          name.start_with?("Teritorio - #{@source_filter}")
-        end
+        (@source_filter.nil? || name.start_with?(@source_filter))
     }.each{ |name, playlist_id|
       tourism_system_settings = @settings.merge({
         'playlist_id' => playlist_id,
