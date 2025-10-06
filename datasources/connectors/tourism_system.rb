@@ -28,6 +28,7 @@ class TourismSystem < Connector
 
     id = @settings['id']
     basic_auth = @settings['basic_auth']
+    playlists = @settings['playlists']
 
     thesaurus_fr = TourismSystemSource.fetch(basic_auth, "/thesaurus/ts/#{id}/tree/fr")
     thesaurus = HashExcep[parse_thesaurus(thesaurus_fr).to_h]
@@ -35,11 +36,7 @@ class TourismSystem < Connector
     TourismSystemSource.fetch_data(basic_auth, "/content/ts/#{id}").collect { |playlist|
       [playlist['metadata']['name'], playlist['metadata']['id']]
     }.select{ |name, _id|
-      if @source_filter.nil?
-        name.start_with?('Teritorio')
-      else
-        name.start_with?("Teritorio - #{@source_filter}")
-      end
+      (playlists.blank? || playlists.include?(name)) && (@source_filter.nil? || name.start_with?(@source_filter))
     }.each{ |name, playlist_id|
       tourism_system_settings = @settings.merge({
         'playlist_id' => playlist_id,
