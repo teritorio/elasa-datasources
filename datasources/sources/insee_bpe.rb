@@ -39,7 +39,7 @@ class InseeBpeSource < CsvSource
   end
 
   def map_tags(feat)
-    r = feat.to_h.transform_values{ |v| v == '_Z' ? nil : v }
+    r = feat
 
     {
       name: { 'fr-FR' => r['NOMRS'] }.compact_blank,
@@ -54,8 +54,6 @@ class InseeBpeSource < CsvSource
   end
 
   def map_native_properties(feat, _properties)
-    feat = feat.to_h.transform_values{ |v| v == '_Z' ? nil : v }
-
     feat
       .except(@settings.id, @settings.lon, @settings.lat, @settings.timestamp)
       .except('STATUT_DIFFUSION', 'LAMBERT_X', 'LAMBERT_Y', 'EPSG')

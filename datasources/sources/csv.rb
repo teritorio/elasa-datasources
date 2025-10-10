@@ -16,6 +16,7 @@ class CsvSource < Source
     const :url, String
     const :col_sep, String, default: ','
     const :quote_char, String, default: '"'
+    const :nil_value, String, default: ''
     const :id, T::Array[String]
     const :lon, String
     const :lat, String
@@ -31,15 +32,16 @@ class CsvSource < Source
       url: String,
       col_sep: String,
       quote_char: String,
+      nil_value: String,
     ).returns(T::Enumerable[T::Hash[String, String]])
   }
-  def fetch(url, col_sep, quote_char)
+  def fetch(url, col_sep, quote_char, nil_value)
     reader = IOStreams.path(url)
 
     Enumerator.new { |yielder|
       header = T.let(nil, T.nilable(T::Array[T.nilable(String)]))
       reader.each{ |line|
-        a = CSV.parse_line(line, col_sep: col_sep, quote_char: quote_char)
+        a = CSV.parse_line(line, col_sep: col_sep, quote_char: quote_char, nil_value: nil_value)
         if header.nil?
           header = a
         elsif !a.nil?
@@ -50,7 +52,7 @@ class CsvSource < Source
   end
 
   def each(&block)
-    loop(ENV['NO_DATA'] ? [] : fetch(@settings.url, @settings.col_sep, @settings.quote_char), &block)
+    loop(ENV['NO_DATA'] ? [] : fetch(@settings.url, @settings.col_sep, @settings.quote_char, @settings.nil_value), &block)
   end
 
   def map_id(feat)
