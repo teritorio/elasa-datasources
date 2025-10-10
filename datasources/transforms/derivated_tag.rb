@@ -9,8 +9,7 @@ class DerivatedTagTransformer < Transformer
 
   class Settings < Transformer::TransformerSettings
     const :property, String
-    const :key, String
-    const :value, String
+    const :values, T::Hash[String, String]
   end
 
   extend T::Generic
@@ -21,13 +20,14 @@ class DerivatedTagTransformer < Transformer
   def initialize(settings)
     super
     @property = settings.property.to_sym
-    @key = settings.key.to_sym
-    @lambda_value = eval(settings.value)
+    @lambda_values = settings.values.transform_values{ |v| eval(v) }
   end
 
   def process_data(row)
     row[:properties][@property] ||= {}
-    row[:properties][@property][@key] = @lambda_value.call(row[:properties])
+    @lambda_values.each{ |key, lambda_value|
+      row[:properties][@property][key] = lambda_value.call(row[:properties])
+    }
     row
   end
 end
