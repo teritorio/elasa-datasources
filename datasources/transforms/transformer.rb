@@ -63,7 +63,7 @@ class Transformer
 
   sig { params(row: Row).returns(String) }
   def process_data_cache_key(row)
-    Digest::SHA1.hexdigest([row[:destination_id], row[:geometry], @settings].to_json)
+    Digest::SHA1.hexdigest([row, @settings].to_json)
   end
 
   sig { abstract.params(row: Row).returns(T.untyped) }

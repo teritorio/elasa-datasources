@@ -20,6 +20,11 @@ class ReverseGeocode < Transformer
     @rows = []
   end
 
+  sig { params(row: Row).returns(String) }
+  def process_data_cache_key(row)
+    Digest::SHA1.hexdigest([row[:geometry], @settings].to_json)
+  end
+
   def process_data(row)
     @rows << row
     nil

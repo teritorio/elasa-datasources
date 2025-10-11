@@ -39,6 +39,11 @@ class IsochroneOpenrouteserviceTransformer < Transformer
     JSON.parse(resp.body)['features']
   end
 
+  sig { params(row: Row).returns(String) }
+  def process_data_cache_key(row)
+    Digest::SHA1.hexdigest([row[:geometry], @settings].to_json)
+  end
+
   sig { params(data: Source::MetadataRow).returns(T.nilable(Source::MetadataRow)) }
   def process_metadata(data)
     data.data.transform_values { |metadata|
