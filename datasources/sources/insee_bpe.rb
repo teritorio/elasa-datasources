@@ -30,10 +30,6 @@ class InseeBpeSource < CsvSource
     }
   end
 
-  def map_destination_id(feat)
-    "#{feat['TYPEQU'][0]}-#{feat['TYPEQU'][0..1]}-#{feat['TYPEQU']}"
-  end
-
   def select?(feat)
     super && @settings.code_labels.include?(feat['TYPEQU'])
   end
