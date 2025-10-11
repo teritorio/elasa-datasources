@@ -8,8 +8,10 @@ class DerivatedTagTransformer < Transformer
   extend T::Sig
 
   class Settings < Transformer::TransformerSettings
-    const :tags, T.nilable(T::Hash[String, String])
-    const :natives, T.nilable(T::Hash[String, String])
+    const :replace_tags, T::Boolean, default: false
+    const :replace_natives, T::Boolean, default: false
+    const :tags, T.nilable(T::Hash[String, T.any(String, T::Array[String])])
+    const :natives, T.nilable(T::Hash[String, T.any(String, T::Array[String])])
   end
 
   extend T::Generic
@@ -19,18 +21,43 @@ class DerivatedTagTransformer < Transformer
   sig { params(settings: SettingsType).void }
   def initialize(settings)
     super
-    @lambda_tags, @lambda_natives = [@settings.tags, @settings.natives].collect{ |prop|
-      prop&.transform_values{ |v| eval(v) }
+    @map_tags, @map_natives = [@settings.tags, @settings.natives].collect{ |prop|
+      prop&.transform_values{ |v|
+        if v.is_a?(String) && v.start_with?('->')
+          eval(v)
+        elsif v.is_a?(String)
+          v.to_sym
+        else
+          v.collect(&:to_sym)
+        end
+      }
     }
   end
 
   def process_data(row)
-    { tags: @lambda_tags, natives: @lambda_natives }.select{ |property, lambda_props|
-      !lambda_props.nil? && row[:properties][property].present?
-    }.each{ |property, lambda_props|
-      lambda_props.each{ |key, lambda_prop|
-        row[:properties][property][key] = lambda_prop.call(row[:properties])
+    if @settings.replace_tags
+      row[:properties][:tags] = {}
+    end
+
+    if @settings.replace_natives
+      row[:properties][:natives] = {}
+    end
+
+    { tags: @map_tags, natives: @mpa_natives }.select{ |property, map_props|
+      !map_props.nil? && row[:properties][property].present?
+    }.each{ |property, map_props|
+      map_props.each{ |key, map_prop|
+        row[:properties][property][key] = (
+          if map_prop.is_a?(Proc)
+            map_prop.call(row[:properties]).compact_blank
+          elsif map_prop.is_a?(Array)
+            map_prop.collect{ |k| row[:properties][property][k] }.compact.join(' ')
+          else
+            row[:properties][property][map_prop]
+          end
+        )
       }
+      row[:properties][property] = row[:properties][property].compact_blank
     }
     row
   end

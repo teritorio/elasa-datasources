@@ -38,21 +38,6 @@ class InseeBpeSource < CsvSource
     super && @settings.code_labels.include?(feat['TYPEQU'])
   end
 
-  def map_tags(feat)
-    r = feat
-
-    {
-      name: { 'fr-FR' => r['NOMRS'] }.compact_blank,
-      official_name: { 'fr-FR' => r['CNOMRS'] }.compact_blank,
-      addr: {
-        street: [r['NUMVOIE'], r['TYPVOIE'], r['LIBVOIE']].compact_blank.join(' '),
-        postcode: r['CODPOS'],
-        city: r['LIBCOM'],
-      }.compact_blank,
-      'ref:FR:SIRET' => r['SIRET'],
-    }
-  end
-
   def map_native_properties(feat, _properties)
     feat
       .except(@settings.id, @settings.lon, @settings.lat, @settings.timestamp)
