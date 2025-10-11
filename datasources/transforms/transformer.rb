@@ -12,7 +12,7 @@ class Transformer
   abstract!
 
   class TransformerSettings < T::InexactStruct
-    const :cache_data, T.nilable(Integer)
+    const :cache_duration, T.nilable(Integer)
   end
 
   Settings = TransformerSettings
@@ -32,7 +32,7 @@ class Transformer
     @count_input_row = 0
     @count_output_row = 0
 
-    return unless @settings.cache_data
+    return unless @settings.cache_duration
 
     @cache = Moneta::Adapters::File.new(dir: '/cache')
   end
@@ -109,7 +109,7 @@ class Transformer
       else
         d = process_data(data)
 
-        @cache&.store(cache_key, d.to_json, expires: @settings.cache_data)
+        @cache&.store(cache_key, d.to_json, expires: @settings.cache_duration)
       end
 
       if !d.nil?
