@@ -61,7 +61,7 @@ class Transformer
     }
   }
 
-  sig { params(row: Row).returns(String) }
+  sig { params(row: Row).returns(T.nilable(String)) }
   def process_data_cache_key(row)
     Digest::SHA1.hexdigest([row, @settings].to_json)
   end
@@ -95,21 +95,23 @@ class Transformer
       @count_input_row += 1
 
       if !@cache.nil? && !(cache_key = process_data_cache_key(data)).nil? && @cache&.key?(cache_key)
-        d = T.cast(JSON.parse(@cache.load(cache_key)), T.any(Hash, T::Array[Hash]))
-        if !d.is_a?(Array)
-          d = [d]
+        d = T.cast(JSON.parse(@cache.load(cache_key)), T.any(NilClass, Hash, T::Array[Hash]))
+        if !d.nil?
+          if !d.is_a?(Array)
+            d = [d]
+          end
+          d = d.collect{ |dd|
+            dd = dd.transform_keys(&:to_sym)
+            dd[:properties] = dd[:properties].transform_keys(&:to_sym)
+            dd[:properties][:tags] = dd[:properties][:tags].transform_keys(&:to_sym) if dd[:properties][:tags].present?
+            dd[:properties][:natives] = dd[:properties][:natives].transform_keys(&:to_sym) if dd[:properties][:natives].present?
+            dd
+          }
         end
-        d = d.collect{ |dd|
-          dd = dd.transform_keys(&:to_sym)
-          dd[:properties] = dd[:properties].transform_keys(&:to_sym)
-          dd[:properties][:tags] = dd[:properties][:tags].transform_keys(&:to_sym) if dd[:properties][:tags].present?
-          dd[:properties][:natives] = dd[:properties][:natives].transform_keys(&:to_sym) if dd[:properties][:natives].present?
-          dd
-        }
       else
         d = process_data(data)
 
-        @cache&.store(cache_key, d.to_json, expires: @settings.cache_duration)
+        @cache&.store(cache_key, d.to_json, expires: @settings.cache_duration) if !cache_key.nil?
       end
 
       if !d.nil?
@@ -158,6 +160,11 @@ class Transformer
     close_data { |data|
       if !data.nil?
         @count_output_row += 1
+
+        if !@cache.nil? && !(cache_key = process_data_cache_key(data)).nil?
+          @cache&.store(cache_key, data.to_json, expires: @settings.cache_duration)
+        end
+
         yield [:data, data]
       end
     }
