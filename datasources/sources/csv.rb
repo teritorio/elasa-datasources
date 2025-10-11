@@ -21,6 +21,7 @@ class CsvSource < Source
     const :lon, String
     const :lat, String
     const :timestamp, String
+    const :properties, String, default: 'natives'
   end
 
   extend T::Generic
@@ -74,6 +75,14 @@ class CsvSource < Source
   end
 
   def map_tags(feat)
+    return unless @settings.properties == 'tags'
+
+    feat.to_h.except(@settings.id, @settings.lon, @settings.lat, @settings.timestamp)
+  end
+
+  def map_native_properties(feat, _properties)
+    return unless @settings.properties == 'natives'
+
     feat.to_h.except(@settings.id, @settings.lon, @settings.lat, @settings.timestamp)
   end
 end
