@@ -18,8 +18,8 @@ class CsvSource < Source
     const :quote_char, String, default: '"'
     const :nil_value, String, default: ''
     const :id, T::Array[String]
-    const :lon, String
-    const :lat, String
+    const :lon, T.nilable(String)
+    const :lat, T.nilable(String)
     const :timestamp, String
     const :properties, String, default: 'natives'
   end
@@ -65,6 +65,8 @@ class CsvSource < Source
   end
 
   def map_geometry(feat)
+    return if feat[@settings.lon].blank? || feat[@settings.lat].blank?
+
     {
       type: 'Point',
       coordinates: [
