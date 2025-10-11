@@ -62,6 +62,7 @@ class Source
   end
 
   class SourceSettings < MergeableInexactStruct
+    const :destination_id, T.nilable(String)
     const :attribution, T.nilable(String)
     const :allow_partial_source, T::Boolean, default: false
     const :native_properties, T.nilable(T::Hash[String, T.untyped])
@@ -88,7 +89,7 @@ class Source
   sig { params(job_id: T.nilable(String), destination_id: T.nilable(String), name: T.nilable(T::Hash[String, String]), settings: SettingsType).void }
   def initialize(job_id, destination_id, name, settings)
     @job_id = job_id
-    @destination_id = destination_id
+    @destination_id = settings.destination_id || destination_id
     @name = name
     T.assert_type!(settings, SourceSettings) # FIXME: Manually assert type, because type is not asserted automatically, because of genereics ? (why?)
     @settings = settings
