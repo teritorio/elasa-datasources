@@ -14,6 +14,7 @@ require_relative 'source'
 class CsvSource < Source
   class Settings < Source::SourceSettings
     const :url, String
+    const :url_options, T.nilable([String, T::Hash[String, T.untyped]])
     const :col_sep, String, default: ','
     const :quote_char, String, default: '"'
     const :nil_value, String, default: ''
@@ -31,17 +32,20 @@ class CsvSource < Source
   sig {
     params(
       url: String,
+      url_options: T.nilable([String, T::Hash[String, T.untyped]]),
       col_sep: String,
       quote_char: String,
       nil_value: String,
     ).returns(T::Enumerable[T::Hash[String, String]])
   }
-  def fetch(url, col_sep, quote_char, nil_value)
+  def fetch(url, url_options, col_sep, quote_char, nil_value)
     reader = IOStreams.path(url)
+    reader.option(url_options[0].to_sym, **url_options[1].transform_keys(&:to_sym)) if !url_options.nil?
 
     Enumerator.new { |yielder|
       header = T.let(nil, T.nilable(T::Array[T.nilable(String)]))
       reader.each{ |line|
+        line = line.force_encoding('utf-8')
         a = CSV.parse_line(line, col_sep: col_sep, quote_char: quote_char, nil_value: nil_value)
         if header.nil?
           header = a
@@ -53,7 +57,7 @@ class CsvSource < Source
   end
 
   def each(&block)
-    loop(ENV['NO_DATA'] ? [] : fetch(@settings.url, @settings.col_sep, @settings.quote_char, @settings.nil_value), &block)
+    loop(ENV['NO_DATA'] ? [] : fetch(@settings.url, @settings.url_options, @settings.col_sep, @settings.quote_char, @settings.nil_value), &block)
   end
 
   def map_id(feat)
