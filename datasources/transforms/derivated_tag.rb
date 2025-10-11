@@ -10,6 +10,8 @@ class DerivatedTagTransformer < Transformer
   class Settings < Transformer::TransformerSettings
     const :replace_tags, T::Boolean, default: false
     const :replace_natives, T::Boolean, default: false
+    const :exclude_tags, T.nilable(T::Array[String])
+    const :exclude_natives, T.nilable(T::Array[String])
     const :tags, T.nilable(T::Hash[String, T.any(String, T::Array[String])])
     const :natives, T.nilable(T::Hash[String, T.any(String, T::Array[String])])
   end
@@ -59,6 +61,14 @@ class DerivatedTagTransformer < Transformer
       }
       row[:properties][property] = row[:properties][property].compact_blank
     }
+
+    if @settings.exclude_tags && row[:properties][:tags].present?
+      row[:properties][:tags] = row[:properties][:tags].except(*@settings.exclude_tags)
+    end
+    if @settings.exclude_natives && row[:properties][:natives].present?
+      row[:properties][:natives] = row[:properties][:natives].except(*@settings.exclude_natives)
+    end
+
     row
   end
 end

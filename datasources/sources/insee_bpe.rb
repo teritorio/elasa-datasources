@@ -37,14 +37,4 @@ class InseeBpeSource < CsvSource
   def select?(feat)
     super && @settings.code_labels.include?(feat['TYPEQU'])
   end
-
-  def map_native_properties(feat, _properties)
-    feat
-      .except(@settings.id, @settings.lon, @settings.lat, @settings.timestamp)
-      .except('STATUT_DIFFUSION', 'LAMBERT_X', 'LAMBERT_Y', 'EPSG')
-      .except('DEPCOM', 'DEP', 'REG', 'EPCI')
-      .except('DCIRIS', 'QUALI_IRIS', 'IRISEE')
-      .except('DOM', 'SDOM', 'TYPEQU')
-      .except('CNOMRS', 'NOMRS', 'NUMVOIE', 'TYPVOIE', 'LIBVOIE', 'CODPOS', 'LIBCOM', 'SIRET')
-  end
 end
