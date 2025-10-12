@@ -21,6 +21,7 @@ class OverpassSelectSource < OverpassSource
       T::Array[T::Hash[String, T.any(String, T::Boolean)]],
     ))
     const :relation_ids, T.nilable(T::Array[Integer])
+    const :polygon, T.nilable(T::Array[String])
     const :interest, T.nilable(T::Array[String])
     const :with_osm_tags, T::Boolean, default: true
   end
@@ -35,6 +36,23 @@ class OverpassSelectSource < OverpassSource
       if settings.query
         settings.query
       else
+        filters = ''
+        if !settings.relation_ids.nil?
+          area = (
+
+            area_ids = T.must(settings.relation_ids).collect{ |id| 3_600_000_000 + id }
+            area_ids_join = area_ids.collect(&:to_s).join(',')
+            "
+area(id:#{area_ids_join})->.a;
+.a out center meta;
+"
+          )
+          filters += '(area.a)'
+        end
+        if !settings.polygon.nil?
+          filters += "(poly:\"#{settings.polygon}\")"
+        end
+
         @selectors = []
         query_selectors = (
           selects = settings.select
@@ -44,7 +62,7 @@ class OverpassSelectSource < OverpassSource
           selects.collect{ |select|
             if select.is_a?(String)
               @selectors << select
-              "nwr#{select}(area.a);"
+              "nwr#{select}#{filters};"
             else
               selector = T.cast(select, T::Hash[String, T.untyped]).collect{ |k, v|
                 if v.nil?
@@ -55,16 +73,13 @@ class OverpassSelectSource < OverpassSource
                 end
               }.join
               @selectors << selector
-              "nwr#{selector}(area.a);"
+              "nwr#{selector}#{filters};"
             end
           }.join("\n")
         )
-        area_ids = T.must(settings.relation_ids).collect{ |id| 3_600_000_000 + id }
-        area_ids_join = area_ids.collect(&:to_s).join(',')
         "
 [out:json][timeout:25];
-area(id:#{area_ids_join})->.a;
-.a out center meta;
+#{area}
 (
 #{query_selectors}
 );
