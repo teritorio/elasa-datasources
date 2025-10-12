@@ -65,7 +65,14 @@ end
     jobs&.to_a&.select{ |id, _job|
       !@datasource || id == @datasource
     }&.each { |job_id, job|
-      Job.new(job_id, job, @source_filter)
+      begin
+        Job.new(job_id, job, @source_filter)
+      rescue StandardError => e
+        Sentry.set_tags(project: project, job: job_id)
+        Sentry.capture_exception(e)
+        Sentry.set_tags(project: nil, job: nil)
+        raise
+      end
     }
 
     logger.info('  - Conflate metadata')
@@ -89,7 +96,6 @@ end
       FileUtils.mv(dir, dir_finnal)
     end
   rescue StandardError => e
-    Sentry.capture_exception(e)
     logger.error(e.message)
     logger.error(e.backtrace&.join("\n"))
   end
