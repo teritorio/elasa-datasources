@@ -72,7 +72,7 @@ class DerivatedTagTransformer < Transformer
       map_props.each{ |key, map_prop|
         row[:properties][property_to][key] = (
           if map_prop.is_a?(Proc)
-            map_prop.call(row[:properties]).compact_blank
+            map_prop.call(row[:properties])&.compact_blank
           elsif map_prop.is_a?(Array)
             map_prop.collect{ |k| row[:properties][property_from][k] }.compact.join(' ')
           else
