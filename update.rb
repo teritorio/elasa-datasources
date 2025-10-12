@@ -43,10 +43,10 @@ end
   if @datasource.nil? # Full run, drop and recreate
     dir += '_temp'
     FileUtils.rm_rf(dir)
-    FileUtils.makedirs(dir)
   end
 
   old_dir = Dir.pwd
+  FileUtils.makedirs(dir)
   Dir.chdir(dir)
 
   logging_appender = Logging.appenders.file(
