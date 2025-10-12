@@ -40,7 +40,7 @@ class CsvSource < Source
   }
   def fetch(url, url_options, col_sep, quote_char, nil_value)
     reader = IOStreams.path(url)
-    reader.option(url_options[0].to_sym, **url_options[1].transform_keys(&:to_sym)) if !url_options.nil?
+    reader.stream(url_options[0].to_sym, **url_options[1].transform_keys(&:to_sym)) if !url_options.nil?
 
     Enumerator.new { |yielder|
       header = T.let(nil, T.nilable(T::Array[T.nilable(String)]))
