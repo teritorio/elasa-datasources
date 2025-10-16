@@ -367,8 +367,6 @@ class TourismSystemSource < Source
   end
 
   def map_native_properties(feat, _properties)
-    results = {}
-
     criterion = jp(feat, '$.data.dublinCore.criteria..criterion')
 
     results = criterion.collect{ |t|
@@ -390,7 +388,6 @@ class TourismSystemSource < Source
       "#{nature}-#{segmentation}".parameterize
     }
 
-    results = results.merge(r)
-    results
+    results.merge(r)
   end
 end
