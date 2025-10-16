@@ -367,9 +367,11 @@ class TourismSystemSource < Source
   end
 
   def map_native_properties(feat, _properties)
+    results = {}
+
     criterion = jp(feat, '$.data.dublinCore.criteria..criterion')
 
-    criterion.collect{ |t|
+    r = criterion.collect{ |t|
       std = t[0] == '0' ? t : t.split('.', 2)[1]
       [std.split('.')[0..3], @settings.thesaurus[t]]
     }.group_by(&:first).transform_values{ |values| values.collect(&:last) }.transform_keys{ |key|
@@ -377,5 +379,20 @@ class TourismSystemSource < Source
       segmentation = @settings.thesaurus[key.join('.')]
       "#{nature}-#{segmentation}".parameterize
     }
+
+    results.merge!(r)
+
+    type = jp(feat, '$.data.ratings.simpleLabels..type')
+    r = type.collect{ |t|
+      std = t[0] == '0' ? t : t.split('.', 2)[1]
+      [std.split('.')[0..2], @settings.thesaurus[t]]
+    }.group_by(&:first).transform_values{ |values| values.collect(&:last) }.transform_keys{ |key|
+      nature = @settings.thesaurus[key[0..1].join('.')]
+      segmentation = @settings.thesaurus[key.join('.')]
+      "#{nature}-#{segmentation}".parameterize
+    }
+
+    results.merge!(r)
+    results
   end
 end
