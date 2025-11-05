@@ -23,13 +23,6 @@ class GeocoderTransformer < Transformer
 
   ADDR_FIELDS = %w[street hamlet postcode city country].freeze
 
-  sig { params(row: Row).returns(T.nilable(String)) }
-  def process_data_cache_key(row)
-    return if row[:properties][:tags][:addr].nil?
-
-    Digest::SHA1.hexdigest([row[:properties][:tags][:addr].to_a.sort, @settings].to_json)
-  end
-
   def process_data(row)
     @rows << row
     nil
