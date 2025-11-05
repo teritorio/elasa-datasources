@@ -49,12 +49,16 @@ class GeocoderTransformer < Transformer
         ADDR_FIELDS.collect{ |k| addr[k] }.compact.join(' ')
       ]
     }
+    reject = []
     geocode_query(addrs).zip(features).each { |addr, f|
       if !addr['latitude'].presence || !addr['longitude'].presence
+        reject << [:no_result, addr.to_h.compact, f]
         @geocode_errors[:no_result] += 1
       elsif !%w[locality street housenumber].include?(addr['result_type'])
+        reject << [:bad_level_of_detail, addr.to_h.compact, f]
         @geocode_errors[:bad_level_of_detail] += 1
       elsif !(addr['result_score']&.to_f&.>= 0.7)
+        reject << [:low_score, addr.to_h.compact, f]
         @geocode_errors[:low_score] += 1
       else
         f[:geometry] = {
@@ -70,6 +74,8 @@ class GeocoderTransformer < Transformer
 
       block.call(f)
     }
+
+    reject
   end
 
   def geocode_query(addrs)
@@ -98,7 +104,10 @@ class GeocoderTransformer < Transformer
     @geocode_errors[:without_addr] = without_addr.size if without_addr.any?
     without_addr.each(&block)
 
-    geocode(with_addr, &block)
+    reject = geocode(with_addr, &block)
+    reject.each{ |row|
+      logger.debug(['Geocoding fails', JSON.dump(row)].join("\n"))
+    }
   end
 
   def close
