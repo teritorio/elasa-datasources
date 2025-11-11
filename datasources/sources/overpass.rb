@@ -69,29 +69,44 @@ class OverpassSource < Source
   end
 
   def map_geometry(feat)
-    coordinates = (
-      if !feat['lon'].nil?
-        [feat['lon'], feat['lat']]
-      elsif !feat.dig('center', 'lon').nil?
-        [feat['center']['lon'], feat['center']['lat']]
-      elsif !feat.dig('tags', 'lon').nil?
-        [feat['tags']['lon'].to_f, feat['tags']['lat'].to_f]
-      end
-    )
+    if feat['type'] == 'relation'
+      linestrings = feat['members'].select{ |m|
+        m['type'] == 'way'
+      }.collect{ |m|
+        m['geometry']
+      }.compact.collect { |g|
+        g.collect{ |g| [g['lon'], g['lat']] }
+      }
 
-    if !coordinates.nil?
-      return {
-        type: 'Point',
-        coordinates: coordinates,
+      {
+        type: 'MultiLineString',
+        coordinates: linestrings
+      }
+    else
+      coordinates = (
+        if !feat['lon'].nil?
+          [feat['lon'], feat['lat']]
+        elsif !feat.dig('center', 'lon').nil?
+          [feat['center']['lon'], feat['center']['lat']]
+        elsif !feat.dig('tags', 'lon').nil?
+          [feat['tags']['lon'].to_f, feat['tags']['lat'].to_f]
+        end
+      )
+
+      if !coordinates.nil?
+        return {
+          type: 'Point',
+          coordinates: coordinates,
+        }
+      end
+
+      return if feat['geometry'].nil?
+
+      {
+        type: 'LineString',
+        coordinates: feat['geometry'].collect{ |g| [g['lon'], g['lat']] },
       }
     end
-
-    return if feat['geometry'].nil?
-
-    {
-      type: 'LineString',
-      coordinates: feat['geometry'].collect{ |g| [g['lon'], g['lat']] },
-    }
   end
 
   def map_tags(feat)
