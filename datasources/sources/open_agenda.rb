@@ -254,7 +254,7 @@ class OpenAgendaSource < Source
   end
 
   def map_native_properties(feat, properties)
-    properties.merge({
+    feat.slice(*(properties&.keys || [])).merge({
       cognitive_impairment: cognitive_impairment(feat),
       visual_impairment: visual_impairment(feat),
       hearing_impairment: hearing_impairment(feat),
