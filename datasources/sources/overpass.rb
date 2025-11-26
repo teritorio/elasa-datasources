@@ -88,7 +88,8 @@ class OverpassSource < Source
 
     if feat['type'] == 'relation'
       linestrings = feat['members'].select{ |m|
-        m['type'] == 'way'
+        m['type'] == 'way' &&
+          !%w[stop platform].include?(m['role'])
       }.collect{ |m|
         m['geometry']
       }.compact.collect { |g|
