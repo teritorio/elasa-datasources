@@ -86,23 +86,22 @@ class OverpassSource < Source
       }
     end
 
-    if feat['type'] == 'relation'
-      linestrings = feat['members'].select{ |m|
-        m['type'] == 'way' &&
-          !%w[stop platform].include?(m['role'])
-      }.collect{ |m|
-        m['geometry']
-      }.compact.collect { |g|
-        g.collect{ |g| [g['lon'], g['lat']] }
-      }
+    return if feat['geometry'].nil?
 
-      {
-        type: 'MultiLineString',
-        coordinates: linestrings
-      }
+    if feat['geometry'].is_a?(Hash) && feat['geometry']['type'] == 'GeometryCollection'
+      if feat['type'] == 'relation'
+        linestrings = feat['geometry']['geometries'].select{ |g|
+          g['type'] == 'LineString'
+        }.collect{ |ls|
+          ls['coordinates']
+        }
+
+        {
+          type: 'MultiLineString',
+          coordinates: linestrings
+        }
+      end
     else
-      return if feat['geometry'].nil?
-
       {
         type: 'LineString',
         coordinates: feat['geometry'].collect{ |g| [g['lon'], g['lat']] },
