@@ -88,13 +88,15 @@ class OsmTags < Transformer
       tags = group(key, tags)
       tags = tags.transform_keys(&:to_sym)
 
-      # else
-      # tags[key] = (tags[key] || {}).merge({ '' => value })
-      if !value.nil? && (@@names + %i[description]).include?(key) && !tags.dig(key, 'fr-FR')
-        tags[key] = (tags[key] || {}).merge({ 'fr-FR' => value })
+      next if value.nil?
+
+      if (@@names + %i[description]).include?(key)
+        if !tags.dig(key, 'fr-FR')
+          tags[key] = (tags[key] || {}).merge({ 'fr-FR' => value })
+        end
+      elsif %i[ref source].include?(key)
+        tags[key] = (tags[key] || {}).merge({ '' => value })
       end
-      # else
-      # tags[key] = (tags[key] || {}).merge({ '' => value })
     }
 
     # Fill default name
