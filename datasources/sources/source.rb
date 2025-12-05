@@ -33,6 +33,11 @@ class Source
     delegate :to_json, to: :serialize
   end
 
+  class ReportIssue < MergeableInexactStruct
+    const :url_template, String
+    const :value_extractors, T.nilable(T::Hash[String, String])
+  end
+
   class Row < MergeableInexactStruct
     const :destination_id, T.nilable(String)
   end
@@ -40,6 +45,7 @@ class Source
   class Metadata < MergeableInexactStruct
     const :name, T.nilable(T::Hash[String, String])
     const :attribution, T.nilable(String)
+    const :report_issue, T.nilable(ReportIssue)
   end
 
   class MetadataRow < Row
@@ -67,6 +73,7 @@ class Source
     const :destination_id, T.nilable(String)
     const :destination_internal, T.nilable(T::Boolean)
     const :attribution, T.nilable(String)
+    const :report_issue, T.nilable(ReportIssue)
     const :allow_partial_source, T::Boolean, default: false
     const :native_properties, T.nilable(T::Hash[String, T.untyped])
     const :natives_schema, T.nilable(T::Hash[String, T.untyped])
@@ -107,7 +114,8 @@ class Source
       data: {
         @destination_id => Metadata.from_hash({
           'name' => @name,
-          'attribution' => @settings.attribution
+          'attribution' => @settings.attribution,
+          'report_issue' => @settings.report_issue&.serialize,
         }).deep_merge_array(@settings.metadata)
       }.compact_blank
     )]
