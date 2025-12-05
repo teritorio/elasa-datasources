@@ -39,7 +39,9 @@ class IsochroneCartowayTransformer < Transformer
   sig { params(data: Source::MetadataRow).returns(T.nilable(Source::MetadataRow)) }
   def process_metadata(data)
     data.data.transform_values { |metadata|
-      metadata.with(attribution: '<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>')
+      metadata.with(
+        attribution: '<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>',
+      )
     }
     data
   end

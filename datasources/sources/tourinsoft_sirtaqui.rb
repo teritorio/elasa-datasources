@@ -374,6 +374,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
           "#{@destination_id}-steps" => Metadata.from_hash({
             'name' => { 'en-US' => "#{@destination_id}-steps" },
             'attribution' => @settings.attribution,
+            'report_issue' => @settings.report_issue&.serialize,
           })
         }.compact_blank
       })
