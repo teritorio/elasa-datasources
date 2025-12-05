@@ -87,9 +87,9 @@ class Destination
 
     column_names = content.values.collect{ |source| source.name&.keys }.compact.flatten.uniq
     content_csv = CSV.generate { |csv|
-      csv << ['id'] + column_names.collect{ |lang| "name:#{lang}" } + ['attribution']
+      csv << ['id'] + column_names.collect{ |lang| "name:#{lang}" } + %w[attribution report_issue_url_template]
       content.each { |id, source|
-        csv << [id] + column_names.collect{ |lang| source.name&.[](lang) } + [source.attribution]
+        csv << [id] + column_names.collect{ |lang| source.name&.[](lang) } + [source.attribution, source.report_issue&.url_template]
       }
     }
     File.write("#{destination}metadata.csv", content_csv)

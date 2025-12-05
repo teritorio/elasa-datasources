@@ -13,6 +13,23 @@
             },
             "attribution": {
                 "type": "string"
+            },
+            "report_issue": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "url_template": {
+                        "type": "string",
+                        "format": "uri-template"
+                    },
+                    "value_extractors": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string",
+                            "description": "JSON Path to extract values"
+                        }
+                    }
+                }
             }
         }
     },
