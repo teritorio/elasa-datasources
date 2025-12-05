@@ -13,6 +13,10 @@
             },
             "attribution": {
                 "type": "string"
+            },
+            "report_issue_url_template": {
+                "type": "string",
+                "format": "uri-template"
             }
         }
     },

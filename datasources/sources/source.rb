@@ -40,6 +40,7 @@ class Source
   class Metadata < MergeableInexactStruct
     const :name, T.nilable(T::Hash[String, String])
     const :attribution, T.nilable(String)
+    const :report_issue_url_template, T.nilable(String)
   end
 
   class MetadataRow < Row
@@ -64,6 +65,7 @@ class Source
   class SourceSettings < MergeableInexactStruct
     const :destination_id, T.nilable(String)
     const :attribution, T.nilable(String)
+    const :report_issue_url_template, T.nilable(String)
     const :allow_partial_source, T::Boolean, default: false
     const :native_properties, T.nilable(T::Hash[String, T.untyped])
     const :exclusion_filter, T.nilable(String)
@@ -101,7 +103,8 @@ class Source
       data: {
         @destination_id => Metadata.from_hash({
           'name' => @name,
-          'attribution' => @settings.attribution
+          'attribution' => @settings.attribution,
+          'report_issue_url_template' => @settings.report_issue_url_template,
         }).deep_merge_array(@settings.metadata)
       }.compact_blank
     )]
