@@ -33,7 +33,7 @@ class TourismSystemSource < Source
 
     uri_options = {}
     if !uri.userinfo.nil?
-      uri_options[:http_basic_authentication] = [CGI.unescape(uri.user), CGI.unescape(uri.password)]
+      uri_options[:http_basic_authentication] = [CGI.unescape(T.must(uri.user)), CGI.unescape(T.must(uri.password))]
       uri.user = nil
       uri.password = nil
     end

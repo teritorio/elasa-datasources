@@ -41,13 +41,14 @@ class OverpassSource < Source
 
     elements = fetch(url)['elements']
 
-    if !@settings.assert_and_omit_area_ids.nil?
+    assert_and_omit_area_ids = @settings.assert_and_omit_area_ids
+    if !assert_and_omit_area_ids.nil?
       g = elements.group_by{ |e|
-        e['type'] == 'area' && @settings.assert_and_omit_area_ids.include?(e['id'])
+        e['type'] == 'area' && assert_and_omit_area_ids.include?(e['id'])
       }
       g[true] ||= []
-      if g[true].size != @settings.assert_and_omit_area_ids.size
-        missing = @settings.assert_and_omit_area_ids - g[true]
+      if g[true].size != assert_and_omit_area_ids.size
+        missing = assert_and_omit_area_ids - g[true]
         raise "Missing configured enclosing OSM area: #{missing.join(', ')}"
       end
       elements = g[false] || []
