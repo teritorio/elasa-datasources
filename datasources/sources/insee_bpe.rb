@@ -24,6 +24,7 @@ class InseeBpeSource < CsvSource
           "#{code[0]}-#{code[0..1]}-#{code}" => Metadata.from_hash({
             'name' => name,
             'attribution' => @settings.metadata.attribution,
+            'report_issue' => @settings.metadata.report_issue,
           })
         }.compact_blank
       })

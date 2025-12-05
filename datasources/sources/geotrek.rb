@@ -108,6 +108,7 @@ class GeotrekSource < Source
               'de-DE' => practice['name']['de'],
             }.compact_blank,
             'attribution' => @settings.attribution,
+            'report_issue' => @settings.report_issue&.serialize,
           })
         }.compact_blank
       })
@@ -117,6 +118,7 @@ class GeotrekSource < Source
           'geotrek-poi' => Metadata.from_hash({
             'name' => { 'en-US' => 'POI' },
             'attribution' => @settings.attribution,
+            'report_issue' => @settings.report_issue&.serialize,
           })
         }
       })

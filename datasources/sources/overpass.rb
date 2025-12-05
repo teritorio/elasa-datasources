@@ -11,6 +11,13 @@ class OverpassSource < Source
 
   class Settings < Source::SourceSettings
     const :attribution, String, default: '<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>', override: true
+    const :report_issue, Source::ReportIssue, default: Source::ReportIssue.from_hash({
+      'url_template' => 'https://www.openstreetmap.org/note/new#map=19/{lat}/{lon}',
+      'value_extractors' => {
+        'lon' => '[[geom.lon]]',
+        'lat' => '[[geom.lat]]',
+      }
+    }), override: true
 
     const :overpass, String, default: 'https://overpass-api.de/api/interpreter'
     const :query, String
