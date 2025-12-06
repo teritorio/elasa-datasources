@@ -28,43 +28,43 @@
         },
         "award:tournesol": {
             "title": "Non OSM",
-            "type": "string"
+            "type": "integer"
         },
         "award:soleil": {
             "title": "Non OSM",
-            "type": "string"
+            "type": "integer"
         },
         "award:epi": {
             "title": "Non OSM",
-            "type": "string"
+            "type": "integer"
         },
         "award:cle": {
             "title": "Non OSM",
-            "type": "string"
+            "type": "integer"
         },
         "award:toque": {
             "title": "Non OSM",
-            "type": "string"
+            "type": "integer"
         },
         "award:fleurs": {
             "title": "Non OSM",
-            "type": "string"
+            "type": "integer"
         },
         "award:cheminee": {
             "title": "Non OSM",
-            "type": "string"
+            "type": "integer"
         },
         "award:lutin_bleu": {
             "title": "Non OSM",
-            "type": "string"
+            "type": "integer"
         },
         "award:lutin_blanc": {
             "title": "Non OSM",
-            "type": "string"
+            "type": "integer"
         },
         "award:lutin_rouge": {
             "title": "Non OSM",
-            "type": "string"
+            "type": "integer"
         },
         "capacity": {
             "type": "integer"

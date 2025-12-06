@@ -88,7 +88,7 @@ class TourismSystemSource < Source
             raise [level, award].inspect
           end
 
-          ["award:#{symb_award[0]}", level]
+          ["award:#{symb_award[0]}", level.to_i]
         end
       end
     }.compact.uniq.to_h
