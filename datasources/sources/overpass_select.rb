@@ -113,7 +113,7 @@ out center meta;
         'data' => selects.collect{ |select|
           {
             'select' => [select],
-            'interest' => (@settings.interest&.to_h{ |key| [key, nil] }) || {},
+            'interest' => @settings.interest.nil? ? {} : @settings.interest&.to_h{ |key| [key, nil] },
             'sources' => [@job_id, @destination_id].uniq
           }
         }
