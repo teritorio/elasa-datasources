@@ -40,11 +40,12 @@
         "website": {
             "type": "array",
             "items": {
-                "type": "string"
+                "type": "string",
+                "format": "uri"
             }
         },
         "website:details": {
-            "$ref": "#/$defs/multilingual"
+            "$ref": "#/$defs/multilingual-uri"
         },
         "phone": {
             "type": "array",
@@ -55,7 +56,8 @@
         "email": {
             "type": "array",
             "items": {
-                "type": "string"
+                "type": "string",
+                "format": "email"
             }
         },
         "facebook": {
@@ -71,22 +73,26 @@
             "format": "uri"
         },
         "linkedin": {
-            "type": "string"
+            "type": "string",
+            "format": "uri"
         },
         "pinterest": {
-            "type": "string"
+            "type": "string",
+            "format": "uri"
         },
         "image": {
             "type": "array",
             "items": {
-                "type": "string"
+                "type": "string",
+                "format": "uri"
             }
         },
         "mapillary": {
-            "type": "string"
+            "type": "integer"
         },
         "panoramax": {
-            "type": "string"
+            "type": "string",
+            "format": "uuid"
         },
         "addr": {
             "type": "object",
@@ -144,6 +150,13 @@
             "type": "object",
             "additionalProperties": {
                 "type": "string"
+            }
+        },
+        "multilingual-uri": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "string",
+                "format": "uri"
             }
         }
     }
