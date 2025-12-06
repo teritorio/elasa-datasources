@@ -28,43 +28,81 @@
         },
         "award:tournesol": {
             "title": "Non OSM",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3
         },
-        "award:soleil": {
+        "award:soleil_camping": {
             "title": "Non OSM",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3
         },
-        "award:epi": {
+        "award:soleil_locatif": {
             "title": "Non OSM",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4
+        },
+        "award:epi_camping": {
+            "title": "Non OSM",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4
+        },
+        "award:epi_locatif": {
+            "title": "Non OSM",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+        },
+        "award:epi_gite": {
+            "title": "Non OSM",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
         },
         "award:cle": {
             "title": "Non OSM",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
         },
         "award:toque": {
             "title": "Non OSM",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 5
         },
-        "award:fleurs": {
+        "award:fleurs_locatif": {
             "title": "Non OSM",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
         },
         "award:cheminee": {
             "title": "Non OSM",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3
         },
         "award:lutin_bleu": {
             "title": "Non OSM",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3
         },
         "award:lutin_blanc": {
             "title": "Non OSM",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3
         },
         "award:lutin_rouge": {
             "title": "Non OSM",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3
         },
         "capacity": {
             "type": "integer"

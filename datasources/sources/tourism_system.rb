@@ -63,33 +63,52 @@ class TourismSystemSource < Source
   end
 
   @@awards = {
-    tournesol: %w[tournesol tournesols],
-    soleil: %w[soleil soleils],
-    epi: %(épi épis),
-    cle: %(clé clés),
-    toque: %(toque toques),
-    fleurs: %(fleur fleurs),
-    cheminee: %(cheminée cheminées),
-    lutin_bleu: ['Lutin bleu (simple)', 'Lutins bleus (variés)'],
-    lutin_blanc: ['Lutin blanc (simple)', 'Lutins blancs (variés)'],
-    lutin_rouge: ['Lutin rouge (simple et complets)', 'Lutins rouges (trés bon et complets)'],
+    '06.03.06.12' => 'stars', # Étoile Michelin, 1-3
+    '06.04.01.01' => 'stars', # Préfectoral, 1-5
+    '99.06.04.01.01' => 'stars', # Préfectoral, 1-5 (idem, juste pour 5)
+    '06.04.01.02' => 'stars', # Campings, 1-5
+    '99.06.04.01.02' => 'stars', # Campings, 1-5 (idem, juste pour 5)
+    '06.04.01.03' => 'stars', # Hôtels, 1-5
+    '99.06.04.01.03' => 'stars', # Hôtels, 1-5 (idem, juste pour 5)
+    '06.04.01.04' => 'stars', # Locatifs, 1-5
+    '193.06.04.01.05' => 'stars', # Restaurants, 1-4
+    '99.06.04.01.06' => 'stars', # Hébergement d'accueil collectif, 1-5
+    '06.03.01.01' => 'tournesol',
+    '06.03.01.02' => 'soleil_camping',
+    '99.06.03.02.03' => 'soleil_locatif',
+    '06.03.01.03' => 'epi_camping',
+    '99.06.03.02.22' => 'epi_locatif',
+    '06.03.02.01' => 'epi_gite',
+    '06.03.02.02' => 'cle',
+    '99.06.03.06.05' => 'toque',
+    '99.06.03.02.18' => 'fleurs_fleurs_locatif',
+    '06.03.03.01' => 'cheminee',
+    # lutin_bleu: ['Lutin bleu (simple)', 'Lutins bleus (variés)'],
+    # lutin_blanc: ['Lutin blanc (simple)', 'Lutins blancs (variés)'],
+    # lutin_rouge: ['Lutin rouge (simple et complets)', 'Lutins rouges (trés bon et complets)'],
   }
 
   def ratings(ratings)
     ((jp(ratings, '.officials..ratingLevel') || []) + (jp(ratings, '.labels..ratingLevel') || [])).collect{ |level|
-      @settings.thesaurus[level]&.split(' ', 2)
-    }.collect{ |level, award|
-      if level.to_i.to_s == level && level != '0'
-        if award.start_with?('étoile')
-          ['stars', award == 'étoiles Luxe' ? '4S' : level]
-        else
-          symb_award = @@awards.find{ |_symb, matches| matches.include?(award) }
-          if symb_award.nil?
-            raise [level, award].inspect
-          end
+      award = @@awards[level.split('.')[..-2].join('.')]
+      next if award.nil?
 
-          ["award:#{symb_award[0]}", level.to_i]
+      [award, level]
+    }.compact.collect{ |award, level|
+      [award, @settings.thesaurus[level]]
+    }.collect{ |award, level|
+      level0 = level.split[0]
+      if award == 'stars'
+        if level == '4 étoiles Luxe'
+          level0 = '4S'
+        elsif level0.to_i.to_s != level0 || level0 == '0'
+          next
         end
+        ['stars', level0]
+      else
+        next if level0.to_i.to_s != level0 || level0 == '0'
+
+        ["award:#{award}", level.to_i]
       end
     }.compact.uniq.to_h
   end
