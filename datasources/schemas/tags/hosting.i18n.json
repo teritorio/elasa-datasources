@@ -93,12 +93,27 @@
             "fr-FR": "Tournesol"
         }
     },
-    "award:soleil": {
+    "award:soleil_camping": {
         "@default": {
             "fr-FR": "Soleil"
         }
     },
-    "award:epi": {
+    "award:soleil_locatif": {
+        "@default": {
+            "fr-FR": "Soleil"
+        }
+    },
+    "award:epi_camping": {
+        "@default": {
+            "fr-FR": "Épi"
+        }
+    },
+    "award:epi_gite": {
+        "@default": {
+            "fr-FR": "Épi"
+        }
+    },
+    "award:epi_locatif": {
         "@default": {
             "fr-FR": "Épi"
         }
@@ -113,7 +128,7 @@
             "fr-FR": "Toque"
         }
     },
-    "award:fleurs": {
+    "award:fleurs_locatif": {
         "@default": {
             "fr-FR": "Fleurs"
         }
