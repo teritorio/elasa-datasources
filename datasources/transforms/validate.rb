@@ -100,7 +100,7 @@ class ValidateTransformer < Transformer
 
   sig { params(schema: Source::SchemaRow).returns(T.nilable(Source::SchemaRow)) }
   def process_schema(schema)
-    @properties_tags_schema = schema.schema || {}
+    @properties_tags_schema = schema.schema || { type: 'object', additionalProperties: false }
     @properties_schema = JSON.parse(File.new('../../datasources/schemas/properties.schema.json').read)
     @properties_schema['properties']['tags'] = @properties_tags_schema
     @properties_schema['$defs'] = (@properties_schema['$defs'] || {}).merge(@properties_tags_schema['$defs'] || {})
