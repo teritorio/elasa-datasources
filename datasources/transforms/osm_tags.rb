@@ -170,6 +170,29 @@ class OsmTags < Transformer
     tags
   end
 
+  def process_tags_mapillary(tags)
+    if tags[:mapillary]
+      i = tags[:mapillary].to_i
+      if i.to_s == tags[:mapillary]
+        tags[:mapillary] = i
+      else
+        tags.delete(:mapillary)
+      end
+    end
+
+    tags
+  end
+
+  UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
+
+  def process_tags_panoramax(tags)
+    if tags[:panoramax] && !UUID_REGEX.match?(tags[:panoramax])
+      tags.delete(:panoramax)
+    end
+
+    tags
+  end
+
   def process_tags(tags)
     # There is an adresse defined by addr:* ?
     has_flat_addr = tags.keys.find{ |k| k.start_with?('addr:') }
@@ -188,6 +211,8 @@ class OsmTags < Transformer
     tags = process_tags_street(tags)
     tags = process_tags_capacities(tags)
     tags = process_tags_units(tags)
+    tags = process_tags_mapillary(tags)
+    tags = process_tags_panoramax(tags)
 
     tags.delete(:type) if tags[:type] == 'multipolygon'
     tags.delete(:colour) if tags[:type] != 'route'
