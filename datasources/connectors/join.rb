@@ -17,7 +17,7 @@ class Join < Connector
         kiba.source(MetadataSource, @job_id, @job_id, nil, MetadataSource::Settings.from_hash({
           'tags_schema_file' => ["./#{source_config['metadata']}.tags_schema.json"],
           'natives_schema_file' => ["./#{source_config['metadata']}.natives_schema.json"],
-          'i18n' => ["./#{source_config['metadata']}.i18n.json"],
+          'i18n_file' => ["./#{source_config['metadata']}.i18n.json"],
           'osm_tags' => source_config['osm_tags'] ? ["./#{source_config['osm_tags']}.osm_tags.json"] : nil,
         }))
 
