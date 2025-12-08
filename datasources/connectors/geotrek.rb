@@ -14,7 +14,7 @@ class Geotrek < Connector
 
   def setup(kiba)
     kiba.source(MetadataSource, @job_id, @job_id, { 'en-US' => 'geotrek' }, MetadataSource::Settings.from_hash({
-      'schema' => [
+      'tags_schema_file' => [
         '../../datasources/schemas/tags/base.schema.json',
         '../../datasources/schemas/tags/event.schema.json',
         '../../datasources/schemas/tags/hosting.schema.json',

@@ -81,7 +81,7 @@ class Transformer
     when :schema
       d = process_schema(data)
       if d.present?
-        @has_schema = data.schema.present?
+        @has_schema = data.tags_schema.present? || data.natives_schema.present?
         @has_i18n = data.i18n.present?
         [type, d]
       end
@@ -144,7 +144,7 @@ class Transformer
 
     close_schema { |data|
       if data.present?
-        @has_schema = data.schema.present?
+        @has_schema = data.tags_schema.present? || data.natives_schema.present?
         @has_i18n = data.i18n.present?
         yield [:schema, data]
       end
