@@ -9,8 +9,18 @@ class LogTransformer < Transformer
 
   SettingsType = type_member{ { upper: Transformer::TransformerSettings } } # Generic param
 
+  def process_metadata(data)
+    puts "Metadata: #{data.inspect}"
+    data
+  end
+
+  def process_schema(data)
+    puts "Schema: #{data.inspect}"
+    data
+  end
+
   def process_data(row)
-    puts row.inspect
+    puts "Data: #{row.inspect.inspect}"
     row
   end
 end
