@@ -18,7 +18,7 @@ class OpenAgenda < Connector
         '../../datasources/schemas/tags/base.schema.json',
         '../../datasources/schemas/tags/event.schema.json',
       ],
-      'i18n' => [
+      'i18n_file' => [
         '../../datasources/schemas/tags/base.i18n.json',
         '../../datasources/schemas/tags/event.i18n.json',
       ]

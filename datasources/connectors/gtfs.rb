@@ -16,7 +16,7 @@ class Gtfs < Connector
         # '../../datasources/schemas/tags/bus.schema.json',
         '../../datasources/schemas/tags/bus-gtfs.schema.json', # TEMP FIXME to be removed
       ],
-      'i18n' => [
+      'i18n_file' => [
         '../../datasources/schemas/tags/base.i18n.json',
         # '../../datasources/schemas/tags/bus.i18n.json',
         '../../datasources/schemas/tags/bus-gtfs.i18n.json', # TEMP FIXME to be removed

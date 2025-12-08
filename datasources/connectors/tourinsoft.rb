@@ -17,7 +17,7 @@ class Tourinsoft < Connector
         '../../datasources/schemas/tags/restaurant.schema.json',
         '../../datasources/schemas/tags/route.schema.json',
       ],
-      'i18n' => [
+      'i18n_file' => [
         '../../datasources/schemas/tags/base.i18n.json',
         '../../datasources/schemas/tags/event.i18n.json',
         '../../datasources/schemas/tags/hosting.i18n.json',
