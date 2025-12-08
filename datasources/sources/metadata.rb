@@ -12,7 +12,7 @@ class MetadataSource < Source
     const :meta, T.nilable(T::Array[String])
     const :tags_schema_file, T.nilable(T::Array[String])
     const :natives_schema_file, T.nilable(T::Array[String])
-    const :i18n, T.nilable(T::Array[String])
+    const :i18n_file, T.nilable(T::Array[String])
     const :osm_tags, T.nilable(T::Array[String])
   end
 
@@ -39,7 +39,7 @@ class MetadataSource < Source
     super.deep_merge_array({
       'tags_schema' => load(@settings.tags_schema_file)&.inject({}, &:deep_merge_array),
       'natives_schema' => load(@settings.natives_schema_file)&.compact&.inject({}, &:deep_merge_array),
-      'i18n' => load(@settings.i18n)&.inject({}, &:deep_merge_array),
+      'i18n' => load(@settings.i18n_file)&.inject({}, &:deep_merge_array),
     })
   end
 
