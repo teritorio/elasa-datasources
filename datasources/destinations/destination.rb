@@ -98,7 +98,8 @@ class Destination
   sig { params(destination_id: T.nilable(String), data: Source::SchemaRow).void }
   def close_schema(destination_id, data)
     destination = destination_path_base(destination_id, nil)
-    File.write("#{destination}schema.json", JSON.pretty_generate(data.schema))
+    File.write("#{destination}tags_schema.json", JSON.pretty_generate(data.tags_schema))
+    File.write("#{destination}natives_schema.json", JSON.pretty_generate(data.natives_schema))
     File.write("#{destination}i18n.json", JSON.pretty_generate(data.i18n))
   end
 
@@ -137,7 +138,8 @@ class Destination
     @destinations_schema.each{ |destination_id, row|
       next if row.blank?
 
-      logger.info("    < #{self.class.name}:#{internal_log(destination_id)} #{destination_id}: +tags_schema") if row.schema.present?
+      logger.info("    < #{self.class.name}:#{internal_log(destination_id)} #{destination_id}: +tags_schema") if row.tags_schema.present?
+      logger.info("    < #{self.class.name}:#{internal_log(destination_id)} #{destination_id}: +natives_schema") if row.natives_schema.present?
       logger.info("    < #{self.class.name}:#{internal_log(destination_id)} #{destination_id}: +i18n") if row.i18n.present?
       close_schema(destination_id, row)
     }
