@@ -2,105 +2,131 @@
 # typed: true
 
 module OpenAgendaMixin
-  I18N_IMPAIREMENT = HashExcep[{
+  I18N_IMPAIREMENT = {
+    'cognitive_impairment' => {
+      '@default': {
+        'fr-FR' => 'accessibilité cognitive'
+      },
+      'values' => {
+        'yes' => {
+          '@default:full' => {
+            'fr-FR' => 'accéssible aux personnes en situation de handicap cognitif'
+          }
+        },
+        'no' => {
+          '@default:full' => {
+            'fr-FR' => 'non accéssible aux personnes en situation de handicap cognitif'
+          }
+        },
+        'limited' => {
+          '@default:full' => {
+            'fr-FR' => 'accéssible aux personnes en situation de handicap cognitif avec limitations'
+          }
+        }
+      }
+    },
     'visual_impairment' => {
       '@default': {
         'fr-FR' => 'accéssible aux personnes malvoyantes'
-      }
-    },
-    'hearing_impairment' => {
-      '@default' => {
-        'fr-FR' => 'Accessibilité auditive'
-      }
-    },
-    'cognitive_impairment' => {
-      '@default' => {
-        'fr-FR' => 'Accessibilité cognitive'
-      }
-    },
-    'psychic_impairment' => {
-      '@default' => {
-        'fr-FR' => 'Accessibilité psychique'
-      }
-    },
-  }]
-
-  SCHEMA_IMPAIREMENT = HashExcep[{
-    'visual_impairment' => {
+      },
       'values' => {
         'yes' => {
-          '@default' => {
+          '@default:full' => {
             'fr-FR' => 'accéssible aux personnes malvoyantes'
           }
         },
         'no' => {
-          '@default' => {
+          '@default:full' => {
             'fr-FR' => 'non accéssible aux personnes malvoyantes'
           }
         },
         'limited' => {
-          '@default' => {
+          '@default:full' => {
             'fr-FR' => 'accéssible aux personnes malvoyantes avec limitations'
           }
         }
       }
     },
     'hearing_impairment' => {
+      '@default' => {
+        'fr-FR' => 'Accessibilité auditive'
+      },
       'values' => {
         'yes' => {
-          '@default' => {
+          '@default:full' => {
             'fr-FR' => 'accéssible aux personnes malentendantes'
           }
         },
         'no' => {
-          '@default' => {
+          '@default:full' => {
             'fr-FR' => 'non accéssible aux personnes malentendantes'
           }
         },
         'limited' => {
-          '@default' => {
+          '@default:full' => {
             'fr-FR' => 'accéssible aux personnes malentendantes avec limitations'
           }
         }
       }
     },
-    'cognitive_impairment' => {
-      'values' => {
-        'yes' => {
-          '@default' => {
-            'fr-FR' => 'accéssible aux personnes en situation de handicap cognitif'
-          },
-        },
-        'no' => {
-          '@default' => {
-            'fr-FR' => 'non accéssible aux personnes en situation de handicap cognitif'
-          },
-        },
-        'limited' => {
-          '@default' => {
-            'fr-FR' => 'accéssible aux personnes en situation de handicap cognitif avec limitations'
-          },
-        },
-      },
-    },
     'psychic_impairment' => {
+      '@default' => {
+        'fr-FR' => 'Accessibilité psychique'
+      },
       'values' => {
         'yes' => {
-          '@default' => {
+          '@default:full' => {
             'fr-FR' => 'accéssible aux personnes en situation de handicap psychique'
           },
         },
         'no' => {
-          '@default' => {
+          '@default:full' => {
             'fr-FR' => 'non accéssible aux personnes en situation de handicap psychique'
           },
         },
         'limited' => {
-          '@default' => {
+          '@default:full' => {
             'fr-FR' => 'accéssible aux personnes en situation de handicap psychique avec limitations'
           },
         },
       },
     },
-  }]
+    'short_description' => {
+      '@default' => {
+        'fr-FR' => 'description courte'
+      },
+    },
+  }.freeze
+
+  SCHEMA_IMPAIREMENT = {
+    'properties' => {
+      'cognitive_impairment' => {
+        'type' => 'string',
+        'enum' => %w[yes no limited],
+      },
+      'visual_impairment' => {
+        'type' => 'string',
+        'enum' => %w[yes no limited],
+      },
+      'hearing_impairment' => {
+        'type' => 'string',
+        'enum' => %w[yes no limited],
+      },
+      'psychic_impairment' => {
+        'type' => 'string',
+        'enum' => %w[yes no limited],
+      },
+      'agenda' => {
+        'type' => 'object',
+        'additionalProperties' => false,
+        'properties' => {
+          'id' => { 'type' => 'integer' },
+          'name' => { 'type' => 'string' },
+        }
+      },
+      'short_description' => {
+        '$ref' => '#/$defs/multilingual',
+      },
+    }
+  }.freeze
 end

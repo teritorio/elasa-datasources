@@ -145,9 +145,9 @@ class OpenAgendaSource < Source
           '@default' => {
             'fr-FR' => 'Mots-clés'
           }
-        }
+        },
       }.merge(OpenAgendaMixin::I18N_IMPAIREMENT),
-      schema: {
+      tags_schema: {
         'properties' => {
           'description' => {
             '$ref' => '#/$defs/multilingual',
@@ -171,8 +171,9 @@ class OpenAgendaSource < Source
               },
             }
           }
-        }.merge(OpenAgendaMixin::SCHEMA_IMPAIREMENT),
-      }
+        },
+      },
+      natives_schema: OpenAgendaMixin::SCHEMA_IMPAIREMENT
     )
   end
 

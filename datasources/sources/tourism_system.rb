@@ -394,7 +394,7 @@ class TourismSystemSource < Source
     }.group_by(&:first).transform_values{ |values| values.collect(&:last) }.transform_keys{ |key|
       nature = @settings.thesaurus[key[0..2].join('.')]
       segmentation = @settings.thesaurus[key.join('.')]
-      "#{nature}-#{segmentation}".parameterize
+      "#{nature}-#{segmentation}".parameterize.to_sym
     }
 
     type = jp(feat, '$.data.ratings.simpleLabels..type')
