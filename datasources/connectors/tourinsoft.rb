@@ -10,7 +10,7 @@ require_relative '../sources/tourinsoft'
 class Tourinsoft < Connector
   def setup(kiba)
     kiba.source(MetadataSource, @job_id, nil, nil, MetadataSource::Settings.from_hash({
-      'schema' => [
+      'tags_schema_file' => [
         '../../datasources/schemas/tags/base.schema.json',
         '../../datasources/schemas/tags/event.schema.json',
         '../../datasources/schemas/tags/hosting.schema.json',

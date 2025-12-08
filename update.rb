@@ -79,7 +79,8 @@ end
     job = Kiba.parse do
       source(MetadataSource, nil, nil, nil, MetadataSource::Settings.from_hash({
         'meta' => Dir.glob('*.metadata.json'),
-        'schema' => Dir.glob('*.schema.json'),
+        'tags_schema_file' => Dir.glob('*.tags_schema.json'),
+        'natives_schema_file' => Dir.glob('*.natives_schema.json'),
         'i18n' => Dir.glob('*.i18n.json'),
         'osm_tags' => Dir.glob('*.osm_tags.json'),
       }))

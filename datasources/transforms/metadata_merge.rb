@@ -49,7 +49,8 @@ class MetadataMerge < Transformer
   def process_schema(data)
     data = data.serialize.except('destination_id')
     # Remove nil destination data
-    data['schema']&.delete(nil)
+    data['tags_schema']&.delete(nil)
+    data['natives_schema']&.delete(nil)
     data['i18n']&.delete(nil)
     @destinations_schema = @destinations_schema.deep_merge_array(data)
     nil

@@ -145,34 +145,17 @@ class OpenAgendaSource < Source
           '@default' => {
             'fr-FR' => 'Mots-clés'
           }
-        }
+        },
       }.merge(OpenAgendaMixin::I18N_IMPAIREMENT),
-      schema: {
+      tags_schema: {
         'properties' => {
           'description' => {
             '$ref' => '#/$defs/multilingual',
           },
-          'agenda' => {
-            'type' => 'object',
-            'additionalProperties' => {
-              'type' => 'objects',
-              'properties' => {
-                'id' => { 'type' => 'string' },
-                'name' => { 'type' => 'string' },
-              },
-            },
-          },
-          'keywords' => {
-            'type' => 'object',
-            'additionalProperties' => {
-              'type' => 'array',
-              'items' => {
-                'type' => 'string',
-              },
-            }
-          }
-        }.merge(OpenAgendaMixin::SCHEMA_IMPAIREMENT),
-      }
+        },
+        '$defs' => OpenAgendaMixin::DEFS,
+      },
+      natives_schema: OpenAgendaMixin::NATIVES_SCHEMA,
     )
   end
 

@@ -48,7 +48,8 @@ class Source
   end
 
   class SchemaRow < Row
-    const :schema, T.nilable(T::Hash[String, T.untyped])
+    const :tags_schema, T.nilable(T::Hash[String, T.untyped])
+    const :natives_schema, T.nilable(T::Hash[String, T.untyped])
     const :i18n, T.nilable(T::Hash[String, T.untyped])
   end
 
@@ -68,6 +69,7 @@ class Source
     const :attribution, T.nilable(String)
     const :allow_partial_source, T::Boolean, default: false
     const :native_properties, T.nilable(T::Hash[String, T.untyped])
+    const :natives_schema, T.nilable(T::Hash[String, T.untyped])
     const :exclusion_filter, T.nilable(String)
     const :metadata, Metadata, default: Metadata.from_hash({})
 
@@ -114,6 +116,7 @@ class Source
   def schema
     SchemaRow.new(
       destination_id: @destination_id,
+      natives_schema: @settings.natives_schema,
     )
   end
 
@@ -287,7 +290,8 @@ class Source
 
     log = "    > #{self.class.name}, #{@destination_id.inspect}: #{raw_count}"
     log += ' +metadata' if metadata_datas.present?
-    log += ' +schema' if schema_data.schema.present?
+    log += ' +tags_schema' if schema_data.tags_schema.present?
+    log += ' +natives_schema' if schema_data.natives_schema.present?
     log += ' +i18n' if schema_data.i18n.present?
     log += ' +osm_tags' if osm_tags_data.data.present?
     logger.info(log)
