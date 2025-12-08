@@ -31,7 +31,7 @@ class InseeBpeOntology < ConnectorOntology
         '../../datasources/schemas/tags/base.schema.json',
         '../../datasources/schemas/tags/any.schema.json',
       ],
-      'i18n' => [
+      'i18n_file' => [
         '../../datasources/schemas/tags/base.i18n.json',
       ]
     }))

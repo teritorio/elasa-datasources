@@ -81,7 +81,7 @@ end
         'meta' => Dir.glob('*.metadata.json'),
         'tags_schema_file' => Dir.glob('*.tags_schema.json'),
         'natives_schema_file' => Dir.glob('*.natives_schema.json'),
-        'i18n' => Dir.glob('*.i18n.json'),
+        'i18n_file' => Dir.glob('*.i18n.json'),
         'osm_tags' => Dir.glob('*.osm_tags.json'),
       }))
       destination(GeoJson, metadata_only: true)
