@@ -11,7 +11,7 @@ require_relative '../sources/gtfs_stop'
 class Gtfs < Connector
   def setup(kiba)
     kiba.source(MetadataSource, @job_id, @job_id, nil, MetadataSource::Settings.from_hash({
-      'schema' => [
+      'tags_schema_file' => [
         '../../datasources/schemas/tags/base.schema.json',
         # '../../datasources/schemas/tags/bus.schema.json',
         '../../datasources/schemas/tags/bus-gtfs.schema.json', # TEMP FIXME to be removed

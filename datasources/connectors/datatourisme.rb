@@ -14,7 +14,7 @@ class Datatourisme < Connector
 
   def setup(kiba)
     kiba.source(MetadataSource, @job_id, @job_id, nil, MetadataSource::Settings.from_hash({
-      'schema' => [
+      'tags_schema_file' => [
         '../../datasources/schemas/tags/base.schema.json',
         '../../datasources/schemas/tags/hosting.schema.json',
         '../../datasources/schemas/tags/restaurant.schema.json',

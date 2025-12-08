@@ -21,7 +21,7 @@ class TeritorioOntology < ConnectorOntology
 
     ontology, schema, i18n, osm_tags = parse_ontology(source_filter)
     kiba.source(MockSource, @job_id, nil, nil, MockSource::Settings.from_hash({
-      'schema' => {
+      'tags_schema' => {
         'type' => 'object',
         'additionalProperties' => false,
         'properties' => schema,
@@ -31,7 +31,7 @@ class TeritorioOntology < ConnectorOntology
     }))
 
     kiba.source(MetadataSource, @job_id, nil, nil, MetadataSource::Settings.from_hash({
-      'schema' => [
+      'tags_schema_file' => [
         '../../datasources/schemas/tags/base.schema.json',
         '../../datasources/schemas/tags/hosting.schema.json',
         '../../datasources/schemas/tags/restaurant.schema.json',

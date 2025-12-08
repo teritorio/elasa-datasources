@@ -24,7 +24,7 @@
             "type": "string"
         },
         "natives": {
-            "type": "object"
+            "$ref": "datasources/transforms/validate-properties-natives.schema.json"
         },
         "tags": {
             "$ref": "datasources/transforms/validate-properties-tags.schema.json"

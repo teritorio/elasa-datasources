@@ -24,7 +24,7 @@ class Apidae < Connector
     select_filter = @settings['filter']
 
     kiba.source(MetadataSource, @job_id, @job_id, nil, MetadataSource::Settings.from_hash({
-      'schema' => [
+      'tags_schema_file' => [
         '../../datasources/schemas/tags/base.schema.json',
         '../../datasources/schemas/tags/event.schema.json',
         '../../datasources/schemas/tags/hosting.schema.json',

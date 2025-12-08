@@ -100,14 +100,17 @@ class ValidateTransformer < Transformer
 
   sig { params(schema: Source::SchemaRow).returns(T.nilable(Source::SchemaRow)) }
   def process_schema(schema)
-    @properties_tags_schema = schema.schema || { type: 'object', additionalProperties: false }
+    @properties_tags_schema = schema.tags_schema || { type: 'object', additionalProperties: false }
+    @properties_natives_schema = schema.natives_schema || { type: 'object', additionalProperties: false }
     @properties_schema = JSON.parse(File.new('../../datasources/schemas/properties.schema.json').read)
     @properties_schema['properties']['tags'] = @properties_tags_schema
+    @properties_schema['properties']['natives'] = @properties_natives_schema
     @properties_schema['$defs'] = (@properties_schema['$defs'] || {}).merge(@properties_tags_schema['$defs'] || {})
 
     JSON::Validator.validate!(@i18n_schema, schema.i18n)
     validate_schema_i18n([], @properties_tags_schema['properties'], schema.i18n) if !@properties_tags_schema['properties'].nil?
-    @schema = schema.schema
+    @tags_schema = schema.tags_schema
+    @natives_schema = schema.natives_schema
     @i18n = schema.i18n
     schema
   end

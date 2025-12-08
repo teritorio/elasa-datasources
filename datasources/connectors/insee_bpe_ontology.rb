@@ -17,7 +17,7 @@ class InseeBpeOntology < ConnectorOntology
 
     ontology, _schema, i18n, _osm_tags = parse_ontology(source_filter)
     kiba.source(MockSource, @job_id, nil, nil, MockSource::Settings.from_hash({
-      'schema' => {
+      'tags_schema_file' => {
         'type' => 'object',
         # 'additionalProperties' => false,
         'properties' => {}, # schema,
@@ -27,7 +27,7 @@ class InseeBpeOntology < ConnectorOntology
     }))
 
     kiba.source(MetadataSource, @job_id, nil, nil, MetadataSource::Settings.from_hash({
-      'schema' => [
+      'tags_schema_file' => [
         '../../datasources/schemas/tags/base.schema.json',
         '../../datasources/schemas/tags/any.schema.json',
       ],
