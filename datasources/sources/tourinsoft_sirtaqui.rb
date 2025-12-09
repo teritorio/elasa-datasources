@@ -25,7 +25,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
   def valid_url(id, tag, url)
     return if url.blank?
 
-    valid = url =~ URI::DEFAULT_PARSER.make_regexp && url.start_with?('https://') && url.split('/')[2].include?('.') && !url.split('/')[2].include?(' ')
+    valid = url =~ URI::RFC2396_PARSER.make_regexp && url.start_with?('https://') && url.split('/')[2].include?('.') && !url.split('/')[2].include?(' ')
     if !valid
       logger.info("Invalid URL for #{id}: #{tag}=#{url}")
     end
@@ -307,8 +307,8 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       },
       name: { 'fr-FR' => r['NOMOFFRE'] }.compact_blank,
       description: { 'fr-FR' => r['DESCRIPTIF'] }.compact_blank,
-      website: multiple_split(r, %w[URL URLCOMPLET], 0),
-      'website:details': { 'fr-FR' => @settings.website_details_url&.gsub('{{id}}', r['SyndicObjectID']) }.compact_blank,
+      website: multiple_split(r, %w[URL URLCOMPLET], 0).collect{ |u| valid_url(id, :website, u) }.compact,
+      'website:details': { 'fr-FR' => valid_url(id, :'website:details', @settings.website_details_url&.gsub('{{id}}', r['SyndicObjectID'])) }.compact_blank,
       phone: multiple_split(r, %w[TEL TELCOMPLET TELMOB TELMOBCOMPLET], 0),
       email: multiple_split(r, %w[MAIL MAILCOMPLET], 0),
       facebook: valid_url(id, :facebook, r['FACEBOOK']),
