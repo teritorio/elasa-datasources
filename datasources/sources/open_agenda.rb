@@ -119,8 +119,8 @@ class OpenAgendaSource < Source
 
   sig { returns(SchemaRow) }
   def schema
-    super.with(
-      i18n: {
+    super.deep_merge_array({
+      'i18n' => {
         'description' => {
           '@default' => {
             'fr-FR' => 'Description'
@@ -147,7 +147,7 @@ class OpenAgendaSource < Source
           }
         },
       }.merge(OpenAgendaMixin::I18N_IMPAIREMENT),
-      tags_schema: {
+      'tags_schema' => {
         'properties' => {
           'description' => {
             '$ref' => '#/$defs/multilingual',
@@ -155,8 +155,8 @@ class OpenAgendaSource < Source
         },
         '$defs' => OpenAgendaMixin::DEFS,
       },
-      natives_schema: OpenAgendaMixin::NATIVES_SCHEMA,
-    )
+      'natives_schema' => OpenAgendaMixin::NATIVES_SCHEMA,
+    })
   end
 
   @@lang = HashExcep[{
