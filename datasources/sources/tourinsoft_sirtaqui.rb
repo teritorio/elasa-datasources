@@ -168,8 +168,8 @@ class TourinsoftSirtaquiSource < TourinsoftSource
 
   sig { returns(SchemaRow) }
   def schema
-    super.with(
-      i18n: {
+    super.deep_merge_array({
+      'i18n' => {
         'route' => {
           'values' => TourinsoftSirtaquiMixin::PRACTICES.compact.to_a.to_h(&:reverse).transform_values{ |v| { '@default:full' => { 'fr-FR' => v } } }
         }
@@ -182,7 +182,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
           }
         }
       )
-    )
+    })
   end
 
   def select?(feat)
