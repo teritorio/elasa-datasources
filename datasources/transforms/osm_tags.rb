@@ -73,10 +73,37 @@ class OsmTags < Transformer
     end
   end
 
+  def valid_url(tag, url)
+    return if url.blank?
+
+    valid = url =~ URI::RFC2396_PARSER.make_regexp && url.start_with?('https://') && url.split('/')[2].include?('.') && !url.split('/')[2].include?(' ')
+    if !valid
+      logger.info("Invalid URL: #{tag}=#{url}")
+    end
+    valid ? url : nil
+  end
+
   def tags_to_url(tags)
     @@url_format.each{ |key, formatter|
-      if tags.include?(key) && !tags[key].start_with?('http')
-        tags[key] = formatter.gsub('$1', tags[key])
+      if tags.include?(key)
+        val = tags[key]
+        if val.is_a?(Array)
+          a = val.each_with_index.collect { |v, i|
+            if !v.start_with?('http')
+              v = URI::Parser.new.escape(v)
+              tags[key][i] = formatter.gsub('$1', v)
+            end
+            valid_url(key, tags[key][i])
+          }.compact
+          tags.delete(key) if a.empty?
+        else
+          if !tags[key].start_with?('http')
+            v = URI::Parser.new.escape(tags[key])
+            tags[key] = formatter.gsub('$1', v)
+          end
+          tags.delete(key) if valid_url(key, tags[key]).nil?
+        end
+
       end
     }
     tags
@@ -273,5 +300,8 @@ class OsmTags < Transformer
     facebook: 'https://www.facebook.com/$1',
     twitter: 'https://twitter.com/$1',
     instagram: 'https://www.instagram.com/$1',
+    website: '$1',
+    'contact:website': '$1',
+    image: '$1',
   }
 end
