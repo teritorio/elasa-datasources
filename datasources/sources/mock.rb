@@ -10,7 +10,6 @@ class MockSource < Source
 
   class Settings < Source::SourceSettings
     const :tags_schema, T.nilable(T::Hash[String, T.untyped])
-    const :i18n, T.nilable(T::Hash[String, T.untyped])
     const :osm_tags, T.nilable(T::Array[Source::OsmTags])
   end
 
@@ -22,7 +21,6 @@ class MockSource < Source
   def schema
     super.deep_merge_array({
       'tags_schema' => @settings.tags_schema,
-      'i18n' => @settings.i18n,
   }.compact)
   end
 
