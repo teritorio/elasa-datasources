@@ -70,6 +70,7 @@ class Source
     const :allow_partial_source, T::Boolean, default: false
     const :native_properties, T.nilable(T::Hash[String, T.untyped])
     const :natives_schema, T.nilable(T::Hash[String, T.untyped])
+    const :i18n, T.nilable(T::Hash[String, T.untyped])
     const :exclusion_filter, T.nilable(String)
     const :metadata, Metadata, default: Metadata.from_hash({})
 
@@ -117,6 +118,7 @@ class Source
     SchemaRow.new(
       destination_id: @destination_id,
       natives_schema: @settings.natives_schema,
+      i18n: @settings.i18n,
     )
   end
 

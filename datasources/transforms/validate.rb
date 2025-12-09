@@ -109,6 +109,7 @@ class ValidateTransformer < Transformer
 
     JSON::Validator.validate!(@i18n_schema, schema.i18n)
     validate_schema_i18n([], @properties_tags_schema['properties'], schema.i18n) if !@properties_tags_schema['properties'].nil?
+    validate_schema_i18n([], @properties_natives_schema['properties'], schema.i18n) if !@properties_natives_schema['properties'].nil?
     @tags_schema = schema.tags_schema
     @natives_schema = schema.natives_schema
     @i18n = schema.i18n
@@ -121,9 +122,9 @@ class ValidateTransformer < Transformer
     data
   end
 
-  def validate_i18n(properties)
+  def validate_i18n(properties, properties_schema)
     missing = properties.collect{ |key, value|
-      if @properties_tags_schema.key?(key.to_s) && @i18n.key?(key.to_s) && @i18n[key.to_s].key?(:values) && !@i18n[key.to_s][:values].key?(value.to_s)
+      if properties_schema.key?(key.to_s) && @i18n.key?(key.to_s) && @i18n[key.to_s].key?(:values) && !@i18n[key.to_s][:values].key?(value.to_s)
         "#{key}=#{value}"
       end
     }.compact
@@ -147,7 +148,7 @@ class ValidateTransformer < Transformer
       JSON::Validator.validate!(@geojson_schema, row, errors_as_objects: true)
 
       errors = JSON::Validator.fully_validate(@properties_schema, row[:properties], errors_as_objects: true)
-      errors.reverse.each{ |error| # Reverse to remove values un array from the end
+      errors.reverse.each{ |error| # Reverse to remove values of array from the end
         raise(error[:message]) unless error[:failed_attribute] == 'Enum'
 
         # Extract the faulty path
@@ -169,7 +170,8 @@ class ValidateTransformer < Transformer
         end
       }
 
-      validate_i18n(row[:properties][:tags]) if !row[:properties][:tags].nil?
+      validate_i18n(row[:properties][:tags], @properties_tags_schema) if !row[:properties][:tags].nil?
+      validate_i18n(row[:properties][:natives], @properties_natives_schema) if !row[:properties][:natives].nil?
     rescue StandardError => e
       logger.debug(row.inspect)
       raise e
