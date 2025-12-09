@@ -70,6 +70,138 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     'Dimanche soir' => 'Su',
   }]
 
+  # JSON Schema
+  NATIVES_SCHEMA_ARRAY = {
+    'type' => 'array',
+    'items' => {
+      'type' => 'string',
+    },
+  }.freeze
+  NATIVES_SCHEMA = {
+    'type' => 'object',
+    'additionalProperties' => false,
+    'properties' => {
+      'tis_CLAS' => {
+        'type' => 'string',
+        'enum' => ['1 étoile', '2 étoiles', '3 étoiles', '4 étoiles', '5 étoiles', 'Non classé'],
+      },
+      'tis_CATRES' => {
+        'type' => 'array',
+        'items' => {
+          'type' => 'string',
+        }
+      },
+      'tis_TYPEFMA' => {
+        'type' => 'array',
+        'items' => {
+          'type' => 'string',
+          'enum' => [
+            'Animation et fête locale',
+            'Culturelle',
+            'Manifestation commerciale',
+            'Musique',
+            'Nature',
+            'Religieuse',
+            'Sports et loisirs',
+            'Traditions et folklore',
+          ]
+        }
+      },
+      'tis_HABTYPE' => NATIVES_SCHEMA_ARRAY,
+      'tis_EQUIP' => NATIVES_SCHEMA_ARRAY,
+      'tis_TYPE' => NATIVES_SCHEMA_ARRAY,
+      'tis_LABELS' => NATIVES_SCHEMA_ARRAY,
+      'tis_HANDICAPLABEL' => NATIVES_SCHEMA_ARRAY,
+      'tis_QUALIFICATIONCDT' => NATIVES_SCHEMA_ARRAY,
+      'tis_RESATYPE' => NATIVES_SCHEMA_ARRAY,
+      'tis_TYPELOI' => NATIVES_SCHEMA_ARRAY,
+      'tis_SPECIALITES' => NATIVES_SCHEMA_ARRAY,
+      'tis_TYPEACTIVSPORT' => NATIVES_SCHEMA_ARRAY,
+      'tis_CATFMA' => NATIVES_SCHEMA_ARRAY,
+      'tis_MONUMTYPE' => NATIVES_SCHEMA_ARRAY,
+      'tis_TYPEPRODUITS' => NATIVES_SCHEMA_ARRAY,
+      'tis_TYPEITI' => NATIVES_SCHEMA_ARRAY,
+      'tis_CATEGORIE' => { 'type' => 'string' }
+    }
+  }.freeze
+
+  NATIVE_I18N = {
+    'tis_CLAS' => {
+      '@default' => { 'fr-FR' => 'classement' },
+      'values' => {
+        '1 étoile' => { '@default:full' => { 'fr-FR' => '1 étoile' } },
+        '2 étoiles' => { '@default:full'  => { 'fr-FR' => '2 étoiles' } },
+        '3 étoiles' => { '@default:full'  => { 'fr-FR' => '3 étoiles' } },
+        '4 étoiles' => { '@default:full'  => { 'fr-FR' => '4 étoiles' } },
+        '5 étoiles' => { '@default:full'  => { 'fr-FR' => '5 étoiles' } },
+        'Non classé' => { '@default:full' => { 'fr-FR' => 'non classé' } },
+      }
+    },
+    'tis_CATRES' => {
+      '@default' => { 'fr-FR' => 'catégorie' },
+    },
+    'tis_TYPEFMA' => {
+      '@default' => { 'fr-FR' => 'type d\'activité' },
+      'values' => {
+        'Animation et fête locale' => { '@default:full' => { 'fr-FR' => 'animation et fête locale' } },
+        'Culturelle' => { '@default:full' => { 'fr-FR' => 'culturelle' } },
+        'Manifestation commerciale' => { '@default:full' => { 'fr-FR' => 'manifestation commerciale' } },
+        'Musique' => { '@default:full' => { 'fr-FR' => 'musique' } },
+        'Nature' => { '@default:full' => { 'fr-FR' => 'nature' } },
+        'Religieuse' => { '@default:full' => { 'fr-FR' => 'religieuse' } },
+        'Sports et loisirs' => { '@default:full' => { 'fr-FR' => 'sports et loisirs' } },
+        'Traditions et folklore' => { '@default:full' => { 'fr-FR' => 'traditions et folklore' } },
+      }
+    },
+    'tis_HABTYPE' => {
+      '@default' => { 'fr-FR' => 'type' },
+    },
+    'tis_EQUIP' => {
+      '@default' => { 'fr-FR' => 'équipement' },
+    },
+    'tis_TYPE' => {
+      '@default' => { 'fr-FR' => 'type d\'activité' },
+    },
+    'tis_LABELS' => {
+      '@default' => { 'fr-FR' => 'accueil vélo' },
+      '@long' => { 'fr-FR' => 'tourisme et Accueil vélo' },
+    },
+    'tis_HANDICAPLABEL' => {
+      '@default' => { 'fr-FR' => 'tourisme et Handicap' },
+      '@long' => { 'fr-FR' => 'label "Tourisme & Handicap"' },
+    },
+    'tis_QUALIFICATIONCDT' => {
+      '@default' => { 'fr-FR' => 'tourisme gourmand' },
+    },
+    'tis_RESATYPE' => {
+      '@default' => { 'fr-FR' => 'type' },
+    },
+    'tis_TYPELOI' => {
+      '@default' => { 'fr-FR' => 'type' },
+    },
+    'tis_SPECIALITES' => {
+      '@default' => { 'fr-FR' => 'spécialités' },
+    },
+    'tis_TYPEACTIVSPORT' => {
+      '@default' => { 'fr-FR' => 'type d\'activité' },
+    },
+    'tis_CATFMA' => {
+      '@default' => { 'fr-FR' => 'Type d\'activité' },
+    },
+    'tis_MONUMTYPE' => {
+      '@default' => { 'fr-FR' => 'type' },
+    },
+    'tis_TYPEPRODUITS' => {
+      '@default' => { 'fr-FR' => 'type de produits' },
+    },
+    'tis_TYPEITI' => {
+      '@default' => { 'fr-FR' => 'type' },
+    },
+    'tis_CATEGORIE' => {
+      '@default' => { 'fr-FR' => 'label' },
+    },
+  }.freeze
+
   def self.format_days_hours(open_days, open1, close1, open2, close2)
     hours = [
       if open1.nil?
@@ -169,6 +301,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
   sig { returns(SchemaRow) }
   def schema
     super.deep_merge_array({
+      'natives_schema' => NATIVES_SCHEMA,
       'i18n' => {
         'route' => {
           'values' => TourinsoftSirtaquiMixin::PRACTICES.compact.to_a.to_h(&:reverse).transform_values{ |v| { '@default:full' => { 'fr-FR' => v } } }
@@ -181,7 +314,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
             }
           }
         }
-      )
+      ).merge(NATIVE_I18N)
     })
   end
 
