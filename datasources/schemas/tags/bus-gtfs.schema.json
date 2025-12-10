@@ -9,10 +9,12 @@
             ]
         },
         "colour": {
-            "type": "string"
+            "type": "string",
+            "contentMediaType": "text/vnd.osm.html-color"
         },
         "colour:text": {
-            "type": "string"
+            "type": "string",
+            "contentMediaType": "text/vnd.osm.html-color"
         },
         "highway": {
             "enum": [
