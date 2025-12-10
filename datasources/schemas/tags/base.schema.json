@@ -43,7 +43,9 @@
         "phone": {
             "type": "array",
             "items": {
-                "type": "string"
+                "type": "string",
+                "contentMediaType": "text/vnd.phone-number",
+                "xContentRole": "phone"
             }
         },
         "email": {
@@ -77,7 +79,8 @@
             "type": "array",
             "items": {
                 "type": "string",
-                "format": "uri"
+                "format": "uri",
+                "xContentRole": "image"
             }
         },
         "mapillary": {
@@ -111,7 +114,9 @@
             }
         },
         "opening_hours": {
-            "type": "string"
+            "type": "string",
+            "contentMediaType": "text/vnd.osm.opening_hours",
+            "xContentRole": "opening_hours"
         },
         "start_date": {
             "type": "string",

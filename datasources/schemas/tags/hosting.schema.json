@@ -24,85 +24,99 @@
                 "4.5",
                 "5",
                 "5S"
-            ]
+            ],
+            "contentMediaType": "text/vnd.osm.stars"
         },
         "award:tournesol": {
             "title": "Non OSM",
             "type": "integer",
             "minimum": 1,
-            "maximum": 3
+            "maximum": 3,
+            "xContentRole": "rating-scale"
         },
         "award:soleil_camping": {
             "title": "Non OSM",
             "type": "integer",
             "minimum": 1,
-            "maximum": 3
+            "maximum": 3,
+            "xContentRole": "rating-scale"
         },
         "award:soleil_locatif": {
             "title": "Non OSM",
             "type": "integer",
             "minimum": 1,
-            "maximum": 4
+            "maximum": 4,
+            "xContentRole": "rating-scale"
         },
         "award:epi_camping": {
             "title": "Non OSM",
             "type": "integer",
             "minimum": 1,
-            "maximum": 4
+            "maximum": 4,
+            "xContentRole": "rating-scale"
         },
         "award:epi_locatif": {
             "title": "Non OSM",
             "type": "integer",
             "minimum": 1,
-            "maximum": 5
+            "maximum": 5,
+            "xContentRole": "rating-scale"
         },
         "award:epi_gite": {
             "title": "Non OSM",
             "type": "integer",
             "minimum": 1,
-            "maximum": 5
+            "maximum": 5,
+            "xContentRole": "rating-scale"
         },
         "award:cle": {
             "title": "Non OSM",
             "type": "integer",
             "minimum": 1,
-            "maximum": 5
+            "maximum": 5,
+            "xContentRole": "rating-scale"
         },
         "award:toque": {
             "title": "Non OSM",
             "type": "integer",
             "minimum": 0,
-            "maximum": 5
+            "maximum": 5,
+            "xContentRole": "rating-scale"
         },
         "award:fleurs_locatif": {
             "title": "Non OSM",
             "type": "integer",
             "minimum": 1,
-            "maximum": 5
+            "maximum": 5,
+            "xContentRole": "rating-scale"
         },
         "award:cheminee": {
             "title": "Non OSM",
             "type": "integer",
             "minimum": 1,
-            "maximum": 3
+            "maximum": 3,
+            "xContentRole": "rating-scale"
         },
         "award:lutin_bleu": {
             "title": "Non OSM",
             "type": "integer",
             "minimum": 1,
-            "maximum": 3
+            "maximum": 3,
+            "xContentRole": "rating-scale"
         },
         "award:lutin_blanc": {
             "title": "Non OSM",
             "type": "integer",
             "minimum": 1,
-            "maximum": 3
+            "maximum": 3,
+            "xContentRole": "rating-scale"
         },
         "award:lutin_rouge": {
             "title": "Non OSM",
             "type": "integer",
             "minimum": 1,
-            "maximum": 3
+            "maximum": 3,
+            "xContentRole": "rating-scale"
         },
         "capacity": {
             "type": "integer"
