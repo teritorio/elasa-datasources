@@ -1,5 +1,6 @@
-sorbet
-bin/tapioca
-data
-config
 .github
+bin/tapioca
+config
+data
+Dockerfile
+sorbet
