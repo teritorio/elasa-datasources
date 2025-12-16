@@ -15,12 +15,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install DuckDB
+        run: |
+          wget https://install.duckdb.org/v1.4.3/libduckdb-linux-amd64.zip &&
+          unzip libduckdb-linux-amd64.zip -d libduckdb &&
+          sudo mv libduckdb/duckdb.* /usr/local/include/ &&
+          sudo mv libduckdb/libduckdb.so /usr/local/lib &&
+          sudo ldconfig &&
+          rm -fr libduckdb-linux-amd64.zip libduckdb
+
       - uses: actions/checkout@v3
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.2'
           bundler-cache: true
+
+      - name: Install httpfs extension for DuckDB
+        run: |
+          bundle exec ruby -e "require 'duckdb'; DuckDB::Database.open.connect.query('INSTALL httpfs');"
 
       - name: Run rubocop
         run: bundle exec rubocop --parallel -c .rubocop.yml

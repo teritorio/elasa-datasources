@@ -1,12 +1,4 @@
-# FROM ruby:3.2-bullseye
-
-# RUN apt update -y && apt install -y \
-#     build-essential \
-#     ruby-dev \
-#     ruby-json
-
-# Use GDAL as base as debian not yet include GDAL 3.7 required for GTFS
-FROM ghcr.io/osgeo/gdal:ubuntu-small-3.10.0
+FROM ruby:3.2-trixie
 
 RUN apt update -y && apt install -y \
     build-essential \
@@ -16,12 +8,21 @@ RUN apt update -y && apt install -y \
     libgeos-dev \
     libyaml-dev \
     ruby-dev \
-    ruby-json
+    ruby-json \
+    unzip
+
+RUN wget https://install.duckdb.org/v1.4.3/libduckdb-linux-amd64.zip && \
+    unzip libduckdb-linux-amd64.zip -d libduckdb && \
+    mv libduckdb/duckdb.* /usr/local/include/ && \
+    mv libduckdb/libduckdb.so /usr/local/lib && \
+    rm -fr libduckdb-linux-amd64.zip libduckdb
 
 ADD Gemfile .
 ADD Gemfile.lock .
 RUN bundle config --global silence_root_warning 1
 RUN bundle install
+
+RUN bundle exec ruby -e "require 'duckdb'; DuckDB::Database.open.connect.query('INSTALL httpfs');"
 
 ADD *.rb ./
 ADD datasources datasources
