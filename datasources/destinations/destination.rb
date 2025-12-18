@@ -57,9 +57,14 @@ class Destination
     end
   end
 
+  sig { params(destination_id: T.nilable(String)).returns(String) }
+  def destination_path_base(destination_id)
+    destination_id.nil? ? '' : "#{destination_id.gsub('/', '_')}."
+  end
+
   sig { params(destination_id: T.nilable(String), data: Source::MetadataRow).void }
   def close_metadata(destination_id, data)
-    destination = destination_id.nil? ? '' : "#{destination_id.gsub('/', '_')}."
+    destination = destination_path_base(destination_id)
     data.data.delete(nil)
     content = T.cast(data.data.transform_keys{ |key| key&.gsub('/', '_') }, T::Hash[String, Source::Metadata])
     File.write("#{destination}metadata.json", JSON.pretty_generate(content))
@@ -76,14 +81,14 @@ class Destination
 
   sig { params(destination_id: T.nilable(String), data: Source::SchemaRow).void }
   def close_schema(destination_id, data)
-    destination = destination_id.nil? ? '' : "#{destination_id.gsub('/', '_')}."
+    destination = destination_path_base(destination_id)
     File.write("#{destination}schema.json", JSON.pretty_generate(data.schema))
     File.write("#{destination}i18n.json", JSON.pretty_generate(data.i18n))
   end
 
   sig { params(destination_id: T.nilable(String), data: Source::OsmTagsRow).void }
   def close_osm_tags(destination_id, data)
-    destination = destination_id.nil? ? '' : "#{destination_id.gsub('/', '_')}."
+    destination = destination_path_base(destination_id)
     File.write("#{destination}osm_tags.json", JSON.pretty_generate(data.data.collect{ |t| t.serialize.compact_blank }))
   end
 
