@@ -4,6 +4,7 @@ RUN apt update -y && apt install -y \
     build-essential \
     bundler \
     clang \
+    gdal-bin \
     git \
     libgeos-dev \
     libyaml-dev \
