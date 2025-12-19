@@ -39,7 +39,8 @@ class ValidateTransformer < Transformer
 
   sig { params(metadata: Source::MetadataRow).returns(T.nilable(Source::MetadataRow)) }
   def process_metadata(metadata)
-    JSON::Validator.validate!(@metadata_schema, metadata.data.to_json)
+    m = metadata.data.transform_values{ |m| m.serialize.except('destination_internal').compact_blank }
+    JSON::Validator.validate!(@metadata_schema, m.to_json)
     metadata
   end
 
