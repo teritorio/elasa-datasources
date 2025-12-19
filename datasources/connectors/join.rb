@@ -21,6 +21,8 @@ class Join < Connector
           'osm_tags' => source_config['osm_tags'] ? ["./#{source_config['osm_tags']}.osm_tags.json"] : nil,
         }))
 
+        metadata_path = "#{source_config['metadata']}.metadata.json"
+        metadata_path = "internal/#{metadata_path}" if File.exist?("internal/#{metadata_path}")
         kiba.source(
           GeoJsonTagsNativesSource,
           @job_id,
@@ -28,7 +30,7 @@ class Join < Connector
           nil,
           GeoJsonTagsNativesSource::Settings.from_hash({
             'url' => "file://./#{source}.geojson",
-            'metadata' => JSON.parse(File.read("./#{source_config['metadata']}.metadata.json"))[source]
+            'metadata' => JSON.parse(File.read(metadata_path))[source]
           })
         )
 

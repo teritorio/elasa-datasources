@@ -39,7 +39,8 @@ class ValidateTransformer < Transformer
 
   sig { params(metadata: Source::MetadataRow).returns(T.nilable(Source::MetadataRow)) }
   def process_metadata(metadata)
-    JSON::Validator.validate!(@metadata_schema, metadata.data.to_json)
+    m = metadata.data.transform_values{ |m| m.serialize.except('destination_internal').compact_blank }
+    JSON::Validator.validate!(@metadata_schema, m.to_json)
     metadata
   end
 
@@ -181,7 +182,7 @@ class ValidateTransformer < Transformer
     return if @missing_enum_value.empty?
 
     logger.info('    ! Missing values in schema for keys:')
-    @missing_enum_value.transform_values{ |counts|
+    @missing_enum_value.transform_keys(&:to_s).transform_values{ |counts|
       counts.to_a.sort_by{ |count| count[0].to_s }.collect{ |k, v| "#{k} x#{v}" }
     }.to_a.sort_by(&:first).collect{ |k, counts| counts.collect{ |count| "#{k}=#{count}" } }.flatten.each{ |log|
       logger.info("    !     #{log}")

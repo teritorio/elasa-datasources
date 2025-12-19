@@ -43,6 +43,7 @@ class Source
   end
 
   class MetadataRow < Row
+    const :destination_internal, T.nilable(T::Boolean)
     const :data, T::Hash[T.nilable(String), Metadata], default: {}
   end
 
@@ -63,6 +64,7 @@ class Source
 
   class SourceSettings < MergeableInexactStruct
     const :destination_id, T.nilable(String)
+    const :destination_internal, T.nilable(T::Boolean)
     const :attribution, T.nilable(String)
     const :allow_partial_source, T::Boolean, default: false
     const :native_properties, T.nilable(T::Hash[String, T.untyped])
@@ -98,6 +100,7 @@ class Source
   sig { returns(T::Array[MetadataRow]) }
   def metadatas
     [MetadataRow.new(
+      destination_internal: @settings.destination_internal,
       data: {
         @destination_id => Metadata.from_hash({
           'name' => @name,

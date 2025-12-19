@@ -5,13 +5,13 @@ require 'json'
 require_relative 'destination'
 
 class GeoJson < Destination
-  def close_data(destination_id, rows)
+  def close_data(destination_id, d_id, rows)
     fc = {
       type: 'FeatureCollection',
       features: rows,
     }
 
-    destination = destination_path_base(destination_id)
+    destination = destination_path_base(destination_id, d_id)
     File.write("#{destination}geojson", JSON.pretty_generate(fc))
   end
 end

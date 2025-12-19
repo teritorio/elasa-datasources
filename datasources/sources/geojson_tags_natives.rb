@@ -22,7 +22,8 @@ class GeoJsonTagsNativesSource < Source
   def fetch(url)
     body = (
       if url.start_with?('file://')
-        File.read(url[('file://'.size)..])
+        path = url[('file://'.size)..]
+        File.file?("internal/#{path}") ? File.read("internal/#{path}") : File.read(path)
       else
         resp = HTTP.follow.get(url)
         if !resp.status.success?

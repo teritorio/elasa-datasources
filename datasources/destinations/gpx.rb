@@ -5,7 +5,7 @@ require 'nokogiri'
 require_relative 'destination'
 
 class Gpx < Destination
-  def close_data(destination_id, rows)
+  def close_data(destination_id, d_id, rows)
     rows.each{ |feat|
       type = feat[:geometry]['type']
       next if type == 'Point'
@@ -28,7 +28,7 @@ class Gpx < Destination
       }
 
       ref = feat[:properties][:tags][:ref]
-      destination = destination_path_base(destination_id)[..-2]
+      destination = destination_path_base(destination_id, d_id)[..-2]
       File.write("#{destination}-#{ref[:ref]}.gpx", builder.to_xml) if !ref.nil?
     }
   end
