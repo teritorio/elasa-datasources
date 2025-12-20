@@ -148,7 +148,9 @@ class ValidateTransformer < Transformer
         raise(error[:message]) unless error[:failed_attribute] == 'Enum'
 
         # Extract the faulty path
-        path = error[:fragment][2..].split('/').collect(&:to_sym)
+        path = error[:fragment][2..].split('/')
+        path[0] = path[0].to_sym
+        path[1] = path[1].to_sym if path[0] == :tags
         if Integer(path[-1].to_s, exception: false).nil?
           # Collected the faulty value
           @missing_enum_value[path[-1]][row[:properties].dig(*path)] += 1
