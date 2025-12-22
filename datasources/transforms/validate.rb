@@ -149,7 +149,7 @@ class ValidateTransformer < Transformer
 
       errors = JSON::Validator.fully_validate(@properties_schema, row[:properties], errors_as_objects: true)
       errors.reverse.each{ |error| # Reverse to remove values of array from the end
-        raise(error[:message]) unless error[:failed_attribute] == 'Enum'
+        raise("#{error[:message]} in #{row[:properties].inspect}") unless error[:failed_attribute] == 'Enum'
 
         # Extract the faulty path
         path = error[:fragment][2..].split('/')
