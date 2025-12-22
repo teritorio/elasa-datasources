@@ -10,8 +10,9 @@ class Destination
 
   abstract!
 
-  def initialize(metadata_only: false)
-    @metadata_only = metadata_only
+  def initialize(include_metadata: true, include_data: true)
+    @include_metadata = include_metadata
+    @include_data = include_data
 
     @destinations_metadata = T.let(Hash.new { |h, k|
       h[k] = Source::MetadataRow.new
@@ -121,7 +122,7 @@ class Destination
 
       destination_ids = row.data.keys.compact.uniq
 
-      if !@metadata_only
+      if @include_data
         destination_ids.each{ |d_id|
           rows = @destinations_data[d_id] || []
           logger.info("    < #{self.class.name}:#{internal_log(destination_id)} #{destination_id} #{d_id}: #{rows.size}")
@@ -131,6 +132,8 @@ class Destination
 
       destination_ids
     }.flatten.compact.uniq
+
+    return if !@include_metadata
 
     lost_destination_ids = @destinations_data.keys - all_destination_ids
     raise "Missing medatadata for destination ids: #{lost_destination_ids.join(', ')}" if lost_destination_ids.present?
