@@ -7,6 +7,7 @@ require_relative 'datasources/hash'
 require 'yaml'
 require 'sorbet-runtime'
 require './datasources/sources/metadata'
+require './datasources/sources/geojson'
 require './datasources/jobs/job'
 require 'sentry-ruby'
 
@@ -87,6 +88,30 @@ end
       destination(GeoJson, include_data: false)
     end
     Kiba.run(job)
+
+    if @datasource.nil?
+      logger.info('  - Revalidate')
+      job = Kiba.parse do
+        metadata_source = JSON.parse(File.read('metadata.json'))
+        tags_schema = JSON.parse(File.read('tags_schema.json'))
+        natives_schema = JSON.parse(File.read('natives_schema.json'))
+        i18n = JSON.parse(File.read('i18n.json'))
+        Dir.glob('*.geojson').each { |geojson|
+          id = geojson.gsub(/\.geojson$/, '')
+
+          source(GeoJsonTagsNativesSource, id, id, metadata_source&.dig(id, 'name'), GeoJsonTagsNativesSource::Settings.from_hash({
+            'url' => "file://#{geojson}",
+            'tags_schema' => tags_schema,
+            'natives_schema' => natives_schema,
+            'i18n' => i18n,
+            **metadata_source[id]
+          }))
+        }
+        transform(ValidateTransformer, Transformer::TransformerSettings.from_hash({}))
+        destination(GeoJson, include_metadata: false)
+      end
+      Kiba.run(job)
+    end
 
     Dir.chdir(old_dir)
     old_dir = nil
