@@ -84,7 +84,7 @@ end
         'i18n_file' => Dir.glob('*.i18n.json'),
         'osm_tags' => Dir.glob('*.osm_tags.json'),
       }))
-      destination(GeoJson, metadata_only: true)
+      destination(GeoJson, include_data: false)
     end
     Kiba.run(job)
 
