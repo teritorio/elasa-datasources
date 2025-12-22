@@ -76,6 +76,7 @@ class Source
     const :report_issue, T.nilable(ReportIssue)
     const :allow_partial_source, T::Boolean, default: false
     const :native_properties, T.nilable(T::Hash[String, T.untyped])
+    const :tags_schema, T.nilable(T::Hash[String, T.untyped])
     const :natives_schema, T.nilable(T::Hash[String, T.untyped])
     const :i18n, T.nilable(T::Hash[String, T.untyped])
     const :exclusion_filter, T.nilable(String)
@@ -125,6 +126,7 @@ class Source
   def schema
     SchemaRow.new(
       destination_id: @destination_id,
+      tags_schema: @settings.tags_schema,
       natives_schema: @settings.natives_schema,
       i18n: @settings.i18n,
     )
