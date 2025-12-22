@@ -9,20 +9,12 @@ class MockSource < Source
   extend T::Sig
 
   class Settings < Source::SourceSettings
-    const :tags_schema, T.nilable(T::Hash[String, T.untyped])
     const :osm_tags, T.nilable(T::Array[Source::OsmTags])
   end
 
   extend T::Generic
 
   SettingsType = type_member{ { upper: Settings } } # Generic param
-
-  sig { returns(SchemaRow) }
-  def schema
-    super.deep_merge_array({
-      'tags_schema' => @settings.tags_schema,
-  }.compact)
-  end
 
   sig { returns(OsmTagsRow) }
   def osm_tags
