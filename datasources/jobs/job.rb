@@ -29,6 +29,7 @@ require './datasources/transforms/end_date'
 require './datasources/transforms/filter_by_values'
 require './datasources/transforms/geocode'
 require './datasources/transforms/geom_union'
+require './datasources/transforms/gpx'
 require './datasources/transforms/isochrone_cartoway'
 require './datasources/transforms/isochrone_openrouteservice'
 require './datasources/transforms/join'
@@ -75,6 +76,7 @@ class Job
       (tasks || []).select{ |task| ![ValidateTransformer].include?(task[:class]) }.each{ |task|
         transform(task[:class], task[:class].const_get(:Settings).from_hash(task[:settings]))
       }
+      transform(GpxTransformer, GpxTransformer::Settings.from_hash({}))
       transform(EndDateTransformer, Transformer::TransformerSettings.from_hash({}))
       transform(MetadataMerge, MetadataMerge::Settings.from_hash({ 'destination_id' => job_id })) # Merge before validate
       transform(SanitizeTagsTransformer, Transformer::TransformerSettings.from_hash({}))

@@ -8,14 +8,6 @@
             }
         }
     },
-    "route:gpx_trace": {
-        "@default": {
-            "fr-FR": "Trace GPS"
-        },
-        "@long": {
-            "fr-FR": "Le parcours (trace GPS) au format GPX"
-        }
-    },
     "colour": {
         "@default": {
             "fr-FR": "couleur"

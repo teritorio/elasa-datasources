@@ -4,7 +4,6 @@
 require 'sorbet-runtime'
 
 require_relative 'connector'
-require_relative '../destinations/gpx'
 require_relative '../sources/gtfs_shape'
 require_relative '../sources/gtfs_stop'
 
@@ -39,7 +38,5 @@ class Gtfs < Connector
       @settings['name'] || { 'en-US' => 'gtfs-stop' },
       GtfsStopSource::Settings.from_hash(@settings),
     )
-
-    kiba.destination(Gpx)
   end
 end

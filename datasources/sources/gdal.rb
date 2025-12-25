@@ -32,7 +32,7 @@ class GdalSource < GeoJsonTagsNativesSource
 
         command = @settings.gdal_command.gsub('{{tmp_geojson}}', path).gsub('{{temp_input}}', T.must(temp_input.path))
         `#{command}`
-        super("file://#{path}")
+        JSON.parse(File.read(path))['features']
       }
     }
   end
