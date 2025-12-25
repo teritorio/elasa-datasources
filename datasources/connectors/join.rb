@@ -4,7 +4,6 @@
 require 'sorbet-runtime'
 
 require_relative 'connector'
-require_relative '../destinations/gpx'
 require_relative '../sources/gtfs_shape'
 require_relative '../sources/gtfs_stop'
 

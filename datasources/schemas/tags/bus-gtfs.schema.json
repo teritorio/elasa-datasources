@@ -8,16 +8,6 @@
                 "bus"
             ]
         },
-        "route": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "gpx_trace": {
-                    "type": "string",
-                    "format": "uri"
-                }
-            }
-        },
         "colour": {
             "type": "string"
         },

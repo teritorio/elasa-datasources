@@ -42,7 +42,6 @@ class GtfsShapeSource < GdalSource
       GROUP BY
         routes.route_id
     " "{{temp_input}}"', override: true
-    const :path, String # TMP FIXME to be removed
   end
 
   extend T::Generic
@@ -68,10 +67,6 @@ class GtfsShapeSource < GdalSource
       description: { 'fr-FR' => r['route_desc'] }.compact_blank,
       colour: r['route_color'] ? "##{r['route_color']}" : nil,
       'colour:text' => r['route_text_color'] ? "##{r['route_text_color']}" : nil,
-      # FIXME: temp route:gpx_trace
-      route: {
-        gpx_trace: "#{@settings.path}/#{@destination_id&.gsub('/', '_')}-#{ref}.gpx"
-      },
     }
   end
 
