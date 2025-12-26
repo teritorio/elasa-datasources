@@ -5,7 +5,7 @@ require_relative 'transformer'
 
 
 class FilterByValuesTransformer < Transformer
-  extend T::Generic
+  extend T::Sig
 
   class Settings < Transformer::TransformerSettings
     const :tags, T.nilable(T::Hash[String, T::Array[String]])
