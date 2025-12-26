@@ -6,11 +6,13 @@ require 'rgeo/geo_json'
 
 
 class GeomUnionTransformer < Transformer
-  extend T::Generic
+  extend T::Sig
 
   class Settings < Transformer::TransformerSettings
     const :group_by, T.nilable(T::Array[String])
   end
+
+  extend T::Generic
 
   SettingsType = type_member{ { upper: Settings } } # Generic param
 
