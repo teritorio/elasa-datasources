@@ -5,6 +5,7 @@ require_relative 'transformer'
 
 
 class LogTransformer < Transformer
+  extend T::Sig
   extend T::Generic
 
   SettingsType = type_member{ { upper: Transformer::TransformerSettings } } # Generic param
