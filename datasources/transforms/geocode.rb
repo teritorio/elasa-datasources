@@ -10,6 +10,7 @@ require_relative 'transformer'
 
 
 class GeocoderTransformer < Transformer
+  extend T::Sig
   extend T::Generic
 
   SettingsType = type_member{ { upper: Transformer::TransformerSettings } } # Generic param

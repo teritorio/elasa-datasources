@@ -7,6 +7,7 @@ require_relative 'transformer'
 
 
 class GpxTransformer < Transformer
+  extend T::Sig
   extend T::Generic
 
   class Settings < Transformer::TransformerSettings
