@@ -112,7 +112,7 @@ class OsmTags < Transformer
   end
 
   def process_tags_name_description(tags)
-    (@@names + %i[addr ref description source]).each{ |key|
+    (@@names + %i[addr ref description source route]).each{ |key|
       value = tags.delete(key)
       tags = group(key, tags)
       tags = tags.transform_keys(&:to_sym)
