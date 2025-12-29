@@ -12,7 +12,7 @@ class OverpassSource < Source
   class Settings < Source::SourceSettings
     const :attribution, String, default: '<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>', override: true
 
-    const :overpass, String, default: 'https://overpass-api.de/api/interpreter'
+    const :overpass, String, default: [ENV.fetch('OVERPASS_API_URL_DEFAULT'), 'https://overpass-api.de/api/interpreter'].compact_blank.first
     const :query, String
     const :assert_and_omit_area_ids, T.nilable(T::Array[Integer]), default: nil
   end

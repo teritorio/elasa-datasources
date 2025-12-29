@@ -4,6 +4,7 @@ services:
     image: ghcr.io/teritorio/elasa-datasources:${VERSION:-dev}
     environment:
       SENTRY_DSN: ${SENTRY_DSN}
+      OVERPASS_API_URL_DEFAULT: ${OVERPASS_API_URL_DEFAULT:-}
     volumes:
       - ./config:/config
       - ./data:/data
