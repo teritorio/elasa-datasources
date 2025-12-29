@@ -36,6 +36,8 @@ class OsmTags < Transformer
     produce
     product
     crop
+    berries
+    vegetables
     sport
     shoes
     vending
