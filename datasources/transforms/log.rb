@@ -20,7 +20,7 @@ class LogTransformer < Transformer
   end
 
   def process_data(row)
-    puts "Data: #{row.inspect.inspect}"
+    puts "Data: #{row.inspect}"
     row
   end
 end
