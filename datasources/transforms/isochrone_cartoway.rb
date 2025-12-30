@@ -20,6 +20,24 @@ class IsochroneCartowayTransformer < Transformer
 
   SettingsType = type_member{ { upper: Settings } } # Generic param
 
+  sig { params(data: Source::SchemaRow).returns(T.nilable(Source::SchemaRow)) }
+  def process_schema(data)
+    data.deep_merge_array({
+      'natives_schema' => {
+        'properties' => {
+          'isochrones_thresolds' => { 'type' => 'integer' }
+        },
+      },
+      'i18n' => {
+        'isochrones_thresolds' => {
+          '@default' => {
+            'fr-FR' => "Seuils d'accessibilité"
+          }
+        },
+      },
+    })
+  end
+
   sig { params(coord_x: Float, coord_y: Float).returns(T.untyped) }
   def fetch(coord_x, coord_y)
     @settings.thresolds.to_h{ |thresold|
@@ -77,8 +95,9 @@ class IsochroneCartowayTransformer < Transformer
         'en-US' => "Calculation of the accessibility of all POIs within #{thresold / 60} minutes by car.",
       }
       r[:properties][:tags][:colour] = @@isochrone_colour[index % @@isochrone_colour.size]
-      r[:properties][:natives] ||= {}
-      r[:properties][:natives][:isochrones_thresolds] = thresold
+      r[:properties][:natives] = {
+        isochrones_thresolds: thresold,
+      }
       r
     }
   end
