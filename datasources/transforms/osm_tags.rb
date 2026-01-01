@@ -46,7 +46,30 @@ class OsmTags < Transformer
     healthcare:speciality
   ]
 
+  @@objects = %i[addr ref description source route]
+
   @@capacities = ['capacity', 'capacity:beds', 'capacity:rooms', 'capacity:persons', 'capacity:caravans', 'capacity:cabins', 'capacity:pitches', 'capacity:disabled']
+
+  sig { params(data: Source::SchemaRow).returns(T.nilable(Source::SchemaRow)) }
+  def process_schema(data)
+    tags_schema = data.tags_schema
+    if !tags_schema.nil?
+      i18n = data.i18n
+      (@@names + ['description'] + @@objects).each{ |key|
+        key = key.to_s
+        type = tags_schema.dig('properties', key, 'type')
+        if !type.nil? && type != 'object'
+          puts "delete #{key} from schema"
+          tags_schema['properties'].delete(key)
+          i18n&.delete(key)
+        end
+      }
+      data = data.with(tags_schema: tags_schema, i18n: i18n)
+    end
+
+    # puts data.inspect
+    data
+  end
 
   def group(prefix, tags)
     match, not_match = tags.to_a.partition{ |k, _v|
@@ -112,7 +135,7 @@ class OsmTags < Transformer
   end
 
   def process_tags_name_description(tags)
-    (@@names + %i[addr ref description source route]).each{ |key|
+    (@@names + @@objects).each{ |key|
       value = tags.delete(key)
       tags = group(key, tags)
       tags = tags.transform_keys(&:to_sym)
