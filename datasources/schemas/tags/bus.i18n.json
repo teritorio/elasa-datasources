@@ -1,13 +1,4 @@
 {
-    "route": {
-        "values": {
-            "bus": {
-                "@default:full": {
-                    "fr-FR": "ligne de bus"
-                }
-            }
-        }
-    },
     "colour": {
         "@default": {
             "fr-FR": "couleur"
