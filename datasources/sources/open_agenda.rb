@@ -148,6 +148,7 @@ class OpenAgendaSource < Source
         },
       }.merge(OpenAgendaMixin::I18N_IMPAIREMENT),
       'tags_schema' => {
+        'type' => 'object',
         'properties' => {
           'description' => {
             '$ref' => '#/$defs/multilingual',
