@@ -3,6 +3,7 @@
 
 require 'sorbet-runtime'
 require 'active_support/all'
+require_relative '../json_schema'
 
 class HashExcep < Hash
   def [](key)
@@ -54,9 +55,18 @@ class Source
   end
 
   class SchemaRow < Row
-    const :tags_schema, T.nilable(T::Hash[String, T.untyped])
-    const :natives_schema, T.nilable(T::Hash[String, T.untyped])
+    const :tags_schema, T.nilable(JsonSchema)
+    const :natives_schema, T.nilable(JsonSchema)
     const :i18n, T.nilable(T::Hash[String, T.untyped])
+
+    def deep_merge_array(other)
+      self.class.from_hash({
+        'destination_id' => destination_id,
+        'tags_schema' => (tags_schema || JsonSchema.new).deep_merge_array(other.tags_schema || JsonSchema.new),
+        'natives_schema' => (natives_schema || JsonSchema.new).deep_merge_array(other.natives_schema || JsonSchema.new),
+        'i18n' => (i18n || {}).deep_merge_array(other.i18n || {}),
+      })
+    end
   end
 
   class OsmTags < MergeableInexactStruct
@@ -126,8 +136,8 @@ class Source
   def schema
     SchemaRow.new(
       destination_id: @destination_id,
-      tags_schema: @settings.tags_schema,
-      natives_schema: @settings.natives_schema,
+      tags_schema: (JsonSchema.new(T.must(@settings.tags_schema)) if !@settings.tags_schema.nil?),
+      natives_schema: (JsonSchema.new(T.must(@settings.natives_schema)) if !@settings.natives_schema.nil?),
       i18n: @settings.i18n,
     )
   end

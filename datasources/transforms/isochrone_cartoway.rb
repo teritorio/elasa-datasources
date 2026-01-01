@@ -22,12 +22,12 @@ class IsochroneCartowayTransformer < Transformer
 
   sig { params(data: Source::SchemaRow).returns(T.nilable(Source::SchemaRow)) }
   def process_schema(data)
-    data.deep_merge_array({
-      'natives_schema' => {
+    data.deep_merge_array(Source::SchemaRow.from_hash({
+      'natives_schema' => JsonSchema.new({
         'properties' => {
           'isochrones_thresolds' => { 'type' => 'integer' }
         },
-      },
+      }),
       'i18n' => {
         'isochrones_thresolds' => {
           '@default' => {
@@ -35,7 +35,7 @@ class IsochroneCartowayTransformer < Transformer
           }
         },
       },
-    })
+    }))
   end
 
   sig { params(coord_x: Float, coord_y: Float).returns(T.untyped) }

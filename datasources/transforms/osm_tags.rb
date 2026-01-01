@@ -59,7 +59,6 @@ class OsmTags < Transformer
         key = key.to_s
         type = tags_schema.dig('properties', key, 'type')
         if !type.nil? && type != 'object'
-          puts "delete #{key} from schema"
           tags_schema['properties'].delete(key)
           i18n&.delete(key)
         end
@@ -67,7 +66,6 @@ class OsmTags < Transformer
       data = data.with(tags_schema: tags_schema, i18n: i18n)
     end
 
-    # puts data.inspect
     data
   end
 
@@ -254,8 +252,8 @@ class OsmTags < Transformer
       k = remove_contact_prefix(tags, k, has_flat_addr)
 
       # Split multi-values fields
-      [k, @multiple.include?(k) ? v.split(';').collect(&:strip) : v]
-    }.select{ |k, _v| !k.nil? }.to_h
+      [k, @multiple.include?(k) ? v.split(';').collect(&:strip).compact_blank : v]
+    }.select{ |k, _v| !k.nil? }.to_h.compact
 
     tags = tags_to_url(tags)
     tags = process_tags_name_description(tags)

@@ -53,7 +53,7 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
 
   sig { returns(SchemaRow) }
   def schema
-    super.deep_merge_array({
+    super.deep_merge_array(SchemaRow.from_hash({
       'i18n' => {
         'route' => {
           'values' => TourinsoftSirtaquiMixin::PRACTICES.compact.to_a.to_h(&:reverse).transform_values{ |v| { '@default:full' => { 'fr-FR' => v } } }
@@ -67,7 +67,7 @@ class TourinsoftV3SirtaquiSource < TourinsoftV3Source
           }
         }
       )
-      })
+    }))
   end
 
   def map_geometry(feat)

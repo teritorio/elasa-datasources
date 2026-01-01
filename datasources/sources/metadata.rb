@@ -34,23 +34,13 @@ class MetadataSource < Source
     })]
   end
 
-  sig { params(schemas: T::Array[T::Hash[String, T.untyped]]).returns(T::Hash[String, T.untyped]) }
-  def schema_merge(schemas)
-    {
-      'required' => schemas.collect{ |s| s['required'] || [] }.inject([], &:intersection).compact_blank,
-      'additionalProperties' => schemas.collect{ |s| s['additionalProperties'] || true }.any?,
-      'properties' => schemas.collect{ |s| s['properties'] }.compact.inject({}, &:deep_merge_array).compact_blank,
-      '$defs' => schemas.collect{ |s| s['$defs'] }.compact.inject({}, &:deep_merge_array).compact_blank,
-    }.compact
-  end
-
   sig { returns(SchemaRow) }
   def schema
-    super.deep_merge_array({
-      'tags_schema' => schema_merge(load(@settings.tags_schema_file)&.compact || []),
-      'natives_schema' => schema_merge(load(@settings.natives_schema_file)&.compact || []),
+    super.deep_merge_array(SchemaRow.from_hash(
+      'tags_schema' => load(@settings.tags_schema_file)&.compact&.collect{ |h| JsonSchema.new(h) }&.inject(&:deep_merge_array),
+      'natives_schema' => load(@settings.natives_schema_file)&.compact&.collect{ |h| JsonSchema.new(h) }&.inject(&:deep_merge_array),
       'i18n' => load(@settings.i18n_file)&.inject({}, &:deep_merge_array),
-    })
+    ))
   end
 
   sig { returns(OsmTagsRow) }
