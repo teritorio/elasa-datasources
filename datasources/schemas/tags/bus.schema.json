@@ -3,11 +3,6 @@
     "required": [],
     "additionalProperties": false,
     "properties": {
-        "route": {
-            "enum": [
-                "bus"
-            ]
-        },
         "colour": {
             "type": "string",
             "contentMediaType": "text/vnd.osm.html-color"
