@@ -300,8 +300,8 @@ class TourinsoftSirtaquiSource < TourinsoftSource
 
   sig { returns(SchemaRow) }
   def schema
-    super.deep_merge_array({
-      'natives_schema' => NATIVES_SCHEMA,
+    super.deep_merge_array(SchemaRow.from_hash({
+      'natives_schema' => JsonSchema.new(NATIVES_SCHEMA),
       'i18n' => {
         'route' => {
           'values' => TourinsoftSirtaquiMixin::PRACTICES.compact.to_a.to_h(&:reverse).transform_values{ |v| { '@default:full' => { 'fr-FR' => v } } }
@@ -315,7 +315,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
           }
         }
       ).merge(NATIVE_I18N)
-    })
+    }))
   end
 
   def select?(feat)
