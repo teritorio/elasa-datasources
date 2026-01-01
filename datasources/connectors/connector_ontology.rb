@@ -86,13 +86,19 @@ class ConnectorOntology < Connector
     }
 
     properties_extra_schema = properties_extra.values.inject(&:deep_merge_array).transform_values{ |values|
-      if values['values'].nil?
-        { 'type' => 'string' }
-      elsif values['is_array']
-        { 'type' => 'array', 'items' => { 'enum' => values['values'].pluck('value') } }
-      else
-        { 'enum' => values['values'].pluck('value') }
+      t = (
+        if values['values'].nil?
+          { 'type' => 'string' }
+        else
+          { 'enum' => values['values'].pluck('value') }
+        end
+      )
+
+      if values['is_array']
+        t = { 'type' => 'array', 'items' => t }
       end
+
+      t
     }
 
     schema.deep_merge_array(properties_extra_schema)
