@@ -9,6 +9,7 @@
             ]
         },
         "stars": {
+            "type": "string",
             "enum": [
                 "1",
                 "1S",
