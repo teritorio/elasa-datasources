@@ -36,7 +36,7 @@ class Destination
 
   sig { params(data: Source::SchemaRow).void }
   def write_schema(data)
-    @destinations_schema[data.destination_id] = T.must(@destinations_schema[data.destination_id]).deep_merge_array(data.serialize.except(:destination_id))
+    @destinations_schema[data.destination_id] = T.must(@destinations_schema[data.destination_id]).deep_merge_array(data)
   end
 
   sig { params(data: Source::OsmTagsRow).void }
