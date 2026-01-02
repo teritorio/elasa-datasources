@@ -70,7 +70,7 @@ class TourinsoftV3Source < Source
   end
 
   def map_native_properties(feat, properties)
-    properties.transform_values{ |path|
+    (properties || {}).transform_values{ |path|
       jp(feat, path)
     }.compact_blank
   end

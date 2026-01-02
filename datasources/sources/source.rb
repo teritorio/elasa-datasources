@@ -238,7 +238,7 @@ class Source
     end
 
     begin
-      native_properties = map_native_properties(row, @settings.native_properties || {})
+      native_properties = map_native_properties(row, @settings.native_properties)
     rescue RuntimeError
       one_error('Error mapping native properties', row)
       return [nil, bad]
