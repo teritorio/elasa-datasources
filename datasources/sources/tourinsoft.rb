@@ -74,7 +74,7 @@ class TourinsoftSource < Source
   end
 
   def map_native_properties(feat, properties)
-    feat.last.slice(*properties.keys).compact.to_h{ |k, v|
+    feat.last.slice(*(properties || {}).keys).compact.to_h{ |k, v|
       v = split(v, 0) if properties.dig(k, 'split')
       k = properties[k]['rename'] || k
       [k, v]
