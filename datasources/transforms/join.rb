@@ -59,8 +59,14 @@ class JoinTransformer < Transformer
     if key.present?
       if @rows.key?(key)
         @rows[key][:properties][:tags] = process_tags(
-          @rows[key][:properties][:tags],
-          row[:properties][:tags],
+          @rows[key][:properties][:tags] || {},
+          row[:properties][:tags] || {},
+          @rows[key][:properties][:sources],
+          row[:properties][:sources],
+        )
+        @rows[key][:properties][:natives] = process_tags(
+          @rows[key][:properties][:natives] || {},
+          row[:properties][:natives] || {},
           @rows[key][:properties][:sources],
           row[:properties][:sources],
         )
