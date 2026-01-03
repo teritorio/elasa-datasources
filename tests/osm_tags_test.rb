@@ -33,6 +33,7 @@ class TestOsmTags < Test::Unit::TestCase
 
   def test_name
     assert_equal({ name: { 'fr-FR' => 'a' } }, map({ 'name' => 'a' }))
+    assert_equal({ name: { 'fr-FR' => 'a', 'oc' => 'r' } }, map({ 'name' => 'a', 'name:oc' => 'r', 'name:wiki' => 'b' }))
     assert_equal({ name: { 'fr-FR' => 'a' } }, map({ 'name:fr-FR' => 'a' }))
   end
 
