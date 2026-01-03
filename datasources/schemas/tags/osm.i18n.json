@@ -130,9 +130,29 @@
             "fr-FR": "religion"
         },
         "values": {
+            "buddhist": {
+                "@default:full": {
+                    "fr-FR": "bouddhiste"
+                }
+            },
             "christian": {
                 "@default:full": {
                     "fr-FR": "chrétien"
+                }
+            },
+            "hindu": {
+                "@default:full": {
+                    "fr-FR": "hindou"
+                }
+            },
+            "muslim": {
+                "@default:full": {
+                    "fr-FR": "musulman"
+                }
+            },
+            "taoist": {
+                "@default:full": {
+                    "fr-FR": "taoïste"
                 }
             }
         }
