@@ -10,6 +10,26 @@ class CinorTransformer < Transformer
 
   SettingsType = type_member{ { upper: Transformer::TransformerSettings } } # Generic param
 
+  sig { params(data: Source::SchemaRow).returns(T.nilable(Source::SchemaRow)) }
+  def process_schema(data)
+    data.deep_merge_array(Source::SchemaRow.from_hash({
+      'natives_schema' => JsonSchema.new({
+        'properties' => {
+          'en_ligne' => { 'type' => 'string' },
+          'zone' => { 'type' => 'string' },
+          'labels' => { 'type' => 'array', 'items' => { 'type' => 'string' } },
+          'recommandation_oti' => { 'type' => 'string' },
+        },
+      }),
+      'i18n' => {
+        'en_ligne' => { '@default' => { 'fr-FR' => 'en ligne' } },
+        'zone' => { '@default' => { 'fr-FR' => 'zone' } },
+        'labels' => { '@default' => { 'fr-FR' => 'labels' } },
+        'recommandation_oti' => { '@default' => { 'fr-FR' => 'recommandation OTI' } },
+      },
+    }))
+  end
+
   def map_id(feat)
     feat['cinor_id_sig']
   end
