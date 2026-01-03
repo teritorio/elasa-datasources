@@ -99,6 +99,7 @@ class CinorTransformer < Transformer
     # "nom_sous_categorie" : "Hôtel"
 
     row[:properties][:natives] = cinor.slice('en_ligne', 'zone', 'labels', 'recommandation_oti').compact_blank
+    row[:properties][:natives]['labels'] = cinor['labels'].split(';').map(&:strip) if !cinor['labels'].nil?
     row
   end
 end
