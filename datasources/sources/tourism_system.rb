@@ -295,7 +295,9 @@ class TourismSystemSource < Source
   def self.lang(trans)
     return if trans.nil?
 
-    trans.transform_keys{ |k| @@lang[k] }
+    trans.to_h{ |k, v|
+      [@@lang[k], k == 'fr' || v != trans['fr'] ? v : nil]
+    }.compact_blank
   end
 
   # @@tags = {
