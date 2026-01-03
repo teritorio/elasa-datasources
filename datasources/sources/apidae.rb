@@ -96,6 +96,7 @@ class ApidaeSource < Source
     [month, day].join(' ')
   end
 
+  @@days_ordered = %w[Mo Tu We Th Fr Sa Su]
   @@days = {
     'LUNDI' => 'Mo',
     'MARDI' => 'Tu',
@@ -173,7 +174,7 @@ class ApidaeSource < Source
       days = (
         case po['type']
         when 'OUVERTURE_TOUS_LES_JOURS' then nil
-        when 'OUVERTURE_SAUF' then (@@days.values - openning_days(po['ouverturesJournalieres'])).join(',')
+        when 'OUVERTURE_SAUF' then (@@days_ordered - openning_days(po['ouverturesJournalieres'])).join(',')
         when 'OUVERTURE_SEMAINE' then openning_days(po['ouverturesJournalieres']).join(',')
         when 'OUVERTURE_MOIS' then openning_days(po['ouverturesJourDuMois']).join(',')
         else raise po['type']
