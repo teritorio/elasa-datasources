@@ -66,4 +66,9 @@ class GeoJsonTagsNativesSource < Source
     natives = natives.slice(*properties) if !natives.nil? && !properties.nil?
     natives
   end
+
+  sig { params(feat: T.untyped).returns(T.nilable(T::Array[T.any(Integer, String)])) }
+  def map_refs(feat)
+    feat['properties']['refs']
+  end
 end
