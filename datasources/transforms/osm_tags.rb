@@ -141,6 +141,8 @@ class OsmTags < Transformer
       next if value.nil?
 
       if (@@names + %i[description]).include?(key)
+        tags[key]&.delete_if{ |k, _v| !/^[a-z]{2}(?:-[A-Z]{2})?$/.match(k) }
+
         if !tags.dig(key, 'fr-FR')
           tags[key] = (tags[key] || {}).merge({ 'fr-FR' => value })
         end
