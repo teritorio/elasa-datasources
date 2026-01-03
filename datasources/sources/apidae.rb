@@ -74,10 +74,10 @@ class ApidaeSource < Source
     return if tr.nil?
 
     {
-      'en-US': tr['en'],
-      'es-ES': tr['es'],
+      'en-US': tr['fr'] == tr['en'] ? nil : tr['en'],
+      'es-ES': tr['fr'] == tr['es'] ? nil : tr['es'],
       'fr-FR': tr['fr'],
-      'de-DE': tr['de'],
+      'de-DE': tr['fr'] == tr['de'] ? nil : tr['de'],
     }.compact_blank
   end
 
