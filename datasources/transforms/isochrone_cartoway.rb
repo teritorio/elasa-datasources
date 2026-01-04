@@ -24,6 +24,7 @@ class IsochroneCartowayTransformer < Transformer
   def process_schema(data)
     data.deep_merge_array(Source::SchemaRow.from_hash({
       'natives_schema' => JsonSchema.new({
+        'type' => 'object',
         'properties' => {
           'isochrones_thresolds' => { 'type' => 'integer' }
         },

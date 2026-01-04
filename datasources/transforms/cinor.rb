@@ -14,6 +14,7 @@ class CinorTransformer < Transformer
   def process_schema(data)
     data.deep_merge_array(Source::SchemaRow.from_hash({
       'natives_schema' => JsonSchema.new({
+        'type' => 'object',
         'properties' => {
           'en_ligne' => { 'type' => 'string' },
           'zone' => { 'type' => 'string' },

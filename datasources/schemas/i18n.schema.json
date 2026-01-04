@@ -11,6 +11,7 @@
                 "$ref": "#/$defs/multilingual"
             },
             "values": {
+                "type": "object",
                 "additionalProperties": {
                     "type": "object",
                     "minProperties": 1,
