@@ -108,6 +108,7 @@ module OpenAgendaMixin
   }.freeze
 
   NATIVES_SCHEMA = {
+    'type' => 'object',
     'properties' => {
       'cognitive_impairment' => {
         'type' => 'string',

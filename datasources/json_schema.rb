@@ -9,7 +9,7 @@ class JsonSchema
 
   sig { params(hash_: T::Hash[String, T.untyped]).void }
   def initialize(hash_ = {})
-    @hash = hash_
+    @hash = hash_.compact_blank
   end
 
   delegate :key?, to: :@hash
