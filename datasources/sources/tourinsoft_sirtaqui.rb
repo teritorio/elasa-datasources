@@ -171,7 +171,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       '@long' => { 'fr-FR' => 'label "Tourisme & Handicap"' },
     },
     'tis_QUALIFICATIONCDT' => {
-      '@default' => { 'fr-FR' => 'tourisme gourmand' },
+      '@default' => { 'fr-FR' => 'réseau "Tourisme Gourmand"' },
     },
     'tis_RESATYPE' => {
       '@default' => { 'fr-FR' => 'type' },
