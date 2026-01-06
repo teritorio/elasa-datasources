@@ -46,7 +46,7 @@ class DuckdbSource < Source
   end
 
   def map_id(feat)
-    @settings.id.collect{ |id| feat[id] }.join(',')
+    @settings.id.collect{ |id| feat[id] || '' }.join(',')
   end
 
   def map_updated_at(feat)
