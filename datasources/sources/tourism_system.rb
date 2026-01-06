@@ -97,6 +97,8 @@ class TourismSystemSource < Source
   @@month = %w[Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec]
 
   def self.date(date)
+    return if date.nil?
+
     month = @@month[date[5..6].to_i - 1]
     day = date[8..9]
     [month, day].join(' ')
@@ -134,12 +136,12 @@ class TourismSystemSource < Source
 
       ['09.01.01', '09.01.05', '09.01.06', '09.01.07'].include?(p['type']) # Accueil, Manifestation, Ouverture, Réservation
     }.collect{ |p|
-      min_date_on = [min_date_on, p['startDate'][0..9]].compact.min
-      max_date_off = [max_date_off, p['endDate'][0..9]].compact.max
+      min_date_on = [min_date_on, p['startDate']&.[](0..9)].compact.min
+      max_date_off = [max_date_off, p['endDate']&.[](0..9)].compact.max
 
       start_date = date(p['startDate'])
       end_date = date(p['endDate'])
-      end_date = nil if start_date == end_date
+      end_date = nil if !start_date.nil? && start_date == end_date
       date = [start_date, end_date].compact.join('-')
 
       day_by_types = (p['days'] || []).group_by{ |day|
