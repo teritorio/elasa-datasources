@@ -411,6 +411,6 @@ class TourismSystemSource < Source
       "#{nature}-#{segmentation}".parameterize
     }
 
-    results.merge(r)
+    results.merge(r).compact_blank
   end
 end
