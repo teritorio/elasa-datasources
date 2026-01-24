@@ -83,7 +83,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     'properties' => {
       'tis_CLAS' => {
         'type' => 'string',
-        'enum' => ['1 étoile', '2 étoiles', '3 étoiles', '4 étoiles', '5 étoiles', 'Non classé'],
+        'enum' => ['1 étoile', '2 étoiles', '3 étoiles', '4 étoiles', '5 étoiles', 'Non classé', 'Aire naturelle', 'Parc résidentiel de loisirs classé'],
       },
       'tis_CATRES' => {
         'type' => 'array',
@@ -135,6 +135,8 @@ class TourinsoftSirtaquiSource < TourinsoftSource
         '4 étoiles' => { '@default:full'  => { 'fr-FR' => '4 étoiles' } },
         '5 étoiles' => { '@default:full'  => { 'fr-FR' => '5 étoiles' } },
         'Non classé' => { '@default:full' => { 'fr-FR' => 'non classé' } },
+        'Aire naturelle' => { '@default:full' => { 'fr-FR' => 'aire naturelle' } },
+        'Parc résidentiel de loisirs classé' => { '@default:full' => { 'fr-FR' => 'parc résidentiel de loisirs classé' } },
       }
     },
     'tis_CATRES' => {
@@ -163,15 +165,14 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       '@default' => { 'fr-FR' => 'type d\'activité' },
     },
     'tis_LABELS' => {
-      '@default' => { 'fr-FR' => 'accueil vélo' },
-      '@long' => { 'fr-FR' => 'tourisme et Accueil vélo' },
+      '@default' => { 'fr-FR' => 'labels' },
     },
     'tis_HANDICAPLABEL' => {
-      '@default' => { 'fr-FR' => 'tourisme et Handicap' },
+      '@default' => { 'fr-FR' => 'Tourisme et Handicap' },
       '@long' => { 'fr-FR' => 'label "Tourisme & Handicap"' },
     },
     'tis_QUALIFICATIONCDT' => {
-      '@default' => { 'fr-FR' => 'réseau "Tourisme Gourmand"' },
+      '@default' => { 'fr-FR' => 'qualification CDT' },
     },
     'tis_RESATYPE' => {
       '@default' => { 'fr-FR' => 'type' },
@@ -186,7 +187,7 @@ class TourinsoftSirtaquiSource < TourinsoftSource
       '@default' => { 'fr-FR' => 'type d\'activité' },
     },
     'tis_CATFMA' => {
-      '@default' => { 'fr-FR' => 'Type d\'activité' },
+      '@default' => { 'fr-FR' => 'type d\'activité' },
     },
     'tis_MONUMTYPE' => {
       '@default' => { 'fr-FR' => 'type' },
