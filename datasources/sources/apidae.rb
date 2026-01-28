@@ -414,11 +414,7 @@ class ApidaeSource < Source
       opening_hours: osm_openning_hours,
       start_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_on : nil,
       end_date: r['type'] == 'FETE_ET_MANIFESTATION' ? date_off : nil,
-      stars: self.class.classs(
-        r.dig('informationsHotellerie', 'classement', 'ordre') ||
-        r.dig('informationsHebergementLocatif', 'classementPrefectoral', 'ordre') ||
-        r.dig('informationsHotelleriePleinAir', 'classement', 'ordre')
-      ),
+      stars: self.class.classs(r.dig('informationsHotellerie', 'classement', 'ordre')),
       # event: r.dig('informationsFeteEtManifestation', 'typesManifestation').nil? ? nil : self.class.event(r.dig('informationsFeteEtManifestation', 'typesManifestation'))
     }.merge(capacity(r))
   end
