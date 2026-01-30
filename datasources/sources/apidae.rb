@@ -269,6 +269,7 @@ class ApidaeSource < Source
     'Sports cyclistes' => nil, # Generic for bicycle and mtb
     'Itinéraire cyclo' => 'bicycle',
     'Itinéraire de VTT à Assistance Électrique' => 'bicycle',
+    'Itinéraire gravel bike' => 'bicycle',
     'Véloroute et voie verte' => 'bicycle',
     'Itinéraire de Vélo à Assistance Electrique' => 'bicycle',
     'Voie verte' => 'bicycle',
@@ -276,6 +277,8 @@ class ApidaeSource < Source
     # mtb
     'Itinéraire VTT' => 'mtb',
     'Espace VTT' => 'mtb',
+    'Piste de descente VTT' => 'mtb',
+    'Itinéraire enduro' => 'mtb',
     # horse
     'Sports équestres' => 'horse', # Generic
     'Itinéraire de randonnée équestre' => 'horse',
@@ -292,6 +295,13 @@ class ApidaeSource < Source
     # water
     'Sports d\'eau' => nil,
     'Itinéraire en canoë / en kayak' => 'canoe',
+    # Ski
+    'Ski' => 'skiing', # Generic
+    'Itinéraire de ski de randonnée alpin' => 'skiing',
+    'Itinéraire de ski de randonnée nordique' => 'skiing',
+    'Piste de ski de fond' => 'skiing',
+    'Itinéraire raquettes' => nil,
+    'Espace raquette à neige' => nil,
     # other random data
     'Parcours santé/obstacles' => 'fitness_trail',
     'Loisirs récréatifs' => nil,
@@ -303,6 +313,7 @@ class ApidaeSource < Source
     'Golf 18 trous' => nil,
     'Laser game / Laser Tag' => nil,
     'Salle de jeux d\'arcade' => nil,
+    'Sports d\'hiver' => nil,
     'Sports divers' => nil,
   }]
 
