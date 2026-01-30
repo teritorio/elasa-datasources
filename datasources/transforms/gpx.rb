@@ -24,7 +24,13 @@ class GpxTransformer < Transformer
 
   sig { params(gpx: String).returns(T.nilable(Hash)) }
   def gpx2geojson(gpx)
-    doc = Nokogiri::XML(gpx)
+    doc = begin
+      Nokogiri::XML(gpx)
+    rescue StandardError
+      nil
+    end
+    return if doc.nil?
+
     doc.remove_namespaces!
 
     coordinates = T.let(doc.xpath('/gpx/rte').collect{ |rte|
@@ -81,19 +87,19 @@ class GpxTransformer < Transformer
 
       trace_geojson = gpx2geojson(gpx_data)
       if trace_geojson.nil?
-        logger.info("    !     #{row[:properties][:id]} Empty or invalid GPX. Ignore")
+        logger.info("    !     #{row[:properties][:id]} Empty or invalid GPX. Ignore.    #{gpx_trace}")
         return row
       end
       trace_geos = RGeo::GeoJSON.decode(trace_geojson.to_json)
       if trace_geos.dimension != 1
-        logger.info("    !     #{row[:properties][:id]} GPX not a LineString. Ignore")
+        logger.info("    !     #{row[:properties][:id]} GPX not a LineString. Ignore.    #{gpx_trace}")
         return row
       end
 
       point = RGeo::GeoJSON.decode(row[:geometry].to_json)
       dist = trace_geos.distance(point)
       if dist > 0.02
-        logger.info("    !     #{row[:properties][:id]} Point too far away from GPX trace start (#{dist.round(3)} degrees)")
+        logger.info("    !     #{row[:properties][:id]} Point too far away from GPX trace start (#{dist.round(3)} degrees).    #{gpx_trace}")
       end
 
       row[:geometry] = trace_geojson
