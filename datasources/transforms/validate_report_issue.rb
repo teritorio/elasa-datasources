@@ -32,7 +32,7 @@ class ValidateReportIssueTransformer < Transformer
         s.reverse.split(':')[0]&.reverse
       }.compact.collect{ |s|
         s.split(',')
-      }.flatten.compact.uniq
+      }.flatten.compact.uniq.sort
       value_extractors_keys = (value_extractors&.keys || []).sort
 
       # Ensure all placeholders have value extractors
