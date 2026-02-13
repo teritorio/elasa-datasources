@@ -315,6 +315,11 @@ class ApidaeSource < Source
     'Salle de jeux d\'arcade' => nil,
     'Sports d\'hiver' => nil,
     'Sports divers' => nil,
+    'Transports touristiques' => nil,
+    'Vélorail' => nil,
+    'Sports mécaniques' => nil,
+    'Circuit automobile / kart / moto' => nil,
+    'Parc animalier / Zoo' => nil,
   }]
 
   def self.practices(activites)
