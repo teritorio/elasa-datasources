@@ -46,7 +46,7 @@ class CsvSource < Source
       header = T.let(nil, T.nilable(T::Array[T.nilable(String)]))
       reader.each{ |line|
         line = line.force_encoding('utf-8')
-        a = CSV.parse_line(line, col_sep: col_sep, quote_char: quote_char, nil_value: nil_value)
+        a = CSV.parse_line(line, col_sep: col_sep, quote_char: quote_char).collect{ |v| v == nil_value ? nil : v }
         if header.nil?
           header = a
         elsif !a.nil?
