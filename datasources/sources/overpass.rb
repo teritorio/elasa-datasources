@@ -116,6 +116,15 @@ class OverpassSource < Source
           coordinates: feat['geometry'].collect{ |g| [g['lon'], g['lat']] },
         }
       end
+    elsif feat['type'] == 'relation'
+      {
+        type: 'MultiLineString',
+        coordinates: feat['members'].select{ |member|
+          member['type'] == 'way' && member['geometry'].is_a?(Array)
+        }.collect { |member|
+          member['geometry'].collect{ |g| [g['lon'], g['lat']] }
+        }
+      }
     end
   end
 
