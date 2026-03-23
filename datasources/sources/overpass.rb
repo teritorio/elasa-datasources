@@ -94,30 +94,45 @@ class OverpassSource < Source
       }
     end
 
-    return if feat['geometry'].nil?
+    if !feat['geometry'].nil?
+      if feat['geometry'].is_a?(Hash) && feat['geometry']['type'] == 'GeometryCollection'
+        if feat['type'] == 'relation'
+          linestrings = feat['geometry']['geometries'].select{ |g|
+            g['type'] == 'LineString'
+          }.collect{ |ls|
+            ls['coordinates']
+          }
 
-    if feat['geometry'].is_a?(Hash) && feat['geometry']['type'] == 'GeometryCollection'
-      if feat['type'] == 'relation'
-        linestrings = feat['geometry']['geometries'].select{ |g|
-          g['type'] == 'LineString'
-        }.collect{ |ls|
-          ls['coordinates']
-        }
-
+          {
+            type: 'MultiLineString',
+            coordinates: linestrings
+          }
+        end
+      else
         {
-          type: 'MultiLineString',
-          coordinates: linestrings
+          type: 'LineString',
+          coordinates: feat['geometry'].collect{ |g| [g['lon'], g['lat']] },
         }
       end
-    else
+
+    elsif feat['type'] == 'relation'
       {
-        type: 'LineString',
-        coordinates: feat['geometry'].collect{ |g| [g['lon'], g['lat']] },
+        type: 'MultiLineString',
+        coordinates: feat['members'].select{ |member|
+          member['type'] == 'way' && member['geometry'].is_a?(Array)
+        }.collect { |member|
+          member['geometry'].collect{ |g| [g['lon'], g['lat']] }
+        }
       }
     end
   end
 
   def map_tags(feat)
-    feat['tags'].except('timestamp', 'lon', 'lat')
+    feat['tags'].except('timestamp', 'lon', 'lat', 'refs')
+  end
+
+  sig { params(feat: T.untyped).returns(T.nilable(T::Array[T.any(Integer, String)])) }
+  def map_refs(feat)
+    feat.dig('tags', 'refs')&.split(';')&.map(&:strip)
   end
 end
