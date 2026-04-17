@@ -72,10 +72,10 @@ module TourinsoftSirtaquiMixin
     'à cheval' => 'horse',
     'à pied' => 'hiking',
     'en course à pied' => 'running',
-    'à vélo' => 'bicycle',
     'à VAE' => 'bicycle',
     'à VTT' => 'mtb',
     'en gravel' => 'bicycle',
+    'à vélo' => 'bicycle',
     'en voiture' => 'car',
   }]
 
@@ -83,8 +83,8 @@ module TourinsoftSirtaquiMixin
     'Très facile' => 'easy',
     'Facile' => 'easy',
     'Moyenne' => 'normal',
-    'Difficile' => 'hard',
     'Très difficile' => 'hard',
+    'Difficile' => 'hard',
     nil => nil,
   }]
 
