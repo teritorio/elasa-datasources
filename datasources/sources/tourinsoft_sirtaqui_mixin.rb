@@ -73,9 +73,9 @@ module TourinsoftSirtaquiMixin
     'à pied' => 'hiking',
     'en course à pied' => 'running',
     'à vélo' => 'bicycle',
-    'à VAE' => 'bicycle',
+    'à VAE' => 'bicycle:electric',
     'à VTT' => 'mtb',
-    'en gravel' => 'bicycle',
+    'en gravel' => 'bicycle:gravel',
     'en voiture' => 'car',
   }]
 
