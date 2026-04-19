@@ -33,6 +33,16 @@
                 "@default:full": {
                     "fr-FR": "à cheval"
                 }
+            },
+            "bicycle:electric": {
+                "@default:full": {
+                    "fr-FR": "à VAE"
+                }
+            },
+            "bicycle:gravel": {
+                "@default:full": {
+                    "fr-FR": "en gravel"
+                }
             }
         }
     },
@@ -211,6 +221,50 @@
             }
         }
     },
+    "route:bicycle:electric:difficulty": {
+        "@default": {
+            "fr-FR": "difficulté"
+        },
+        "values": {
+            "easy": {
+                "@default:full": {
+                    "fr-FR": "facile"
+                }
+            },
+            "normal": {
+                "@default:full": {
+                    "fr-FR": "normal"
+                }
+            },
+            "hard": {
+                "@default:full": {
+                    "fr-FR": "difficile"
+                }
+            }
+        }
+    },
+    "route:bicycle:gravel:difficulty": {
+        "@default": {
+            "fr-FR": "difficulté"
+        },
+        "values": {
+            "easy": {
+                "@default:full": {
+                    "fr-FR": "facile"
+                }
+            },
+            "normal": {
+                "@default:full": {
+                    "fr-FR": "normal"
+                }
+            },
+            "hard": {
+                "@default:full": {
+                    "fr-FR": "difficile"
+                }
+            }
+        }
+    },
     "route:hiking:duration": {
         "@default": {
             "fr-FR": "durée"
@@ -236,6 +290,16 @@
             "fr-FR": "durée"
         }
     },
+    "route:bicycle:electric:duration": {
+        "@default": {
+            "fr-FR": "durée"
+        }
+    },
+    "route:bicycle:gravel:duration": {
+        "@default": {
+            "fr-FR": "durée"
+        }
+    },
     "route:hiking:length": {
         "@default": {
             "fr-FR": "distance"
@@ -257,6 +321,16 @@
         }
     },
     "route:canoe:length": {
+        "@default": {
+            "fr-FR": "distance"
+        }
+    },
+    "route:bicycle:electric:length": {
+        "@default": {
+            "fr-FR": "distance"
+        }
+    },
+    "route:bicycle:gravel:length": {
         "@default": {
             "fr-FR": "distance"
         }
