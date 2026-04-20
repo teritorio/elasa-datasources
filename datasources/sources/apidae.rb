@@ -268,10 +268,10 @@ class ApidaeSource < Source
     # bicycle
     'Sports cyclistes' => nil, # Generic for bicycle and mtb
     'Itinéraire cyclo' => 'bicycle',
-    'Itinéraire de VTT à Assistance Électrique' => 'bicycle',
-    'Itinéraire gravel bike' => 'bicycle',
+    'Itinéraire de VTT à Assistance Électrique' => 'bicycle:electric',
+    'Itinéraire gravel bike' => 'bicycle:gravel',
     'Véloroute et voie verte' => 'bicycle',
-    'Itinéraire de Vélo à Assistance Electrique' => 'bicycle',
+    'Itinéraire de Vélo à Assistance Electrique' => 'bicycle:electric',
     'Voie verte' => 'bicycle',
     'Véloroute' => 'bicycle',
     # mtb
