@@ -65,6 +65,7 @@ module TourinsoftSirtaquiMixin
     '5 étoiles' => '5',
     'Aire naturelle' => nil,
     'Parc résidentiel de loisirs classé' => nil,
+    'Non Classé' => nil,
   }]
 
   PRACTICES = HashExcep[{

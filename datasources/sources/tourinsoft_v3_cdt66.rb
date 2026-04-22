@@ -1,0 +1,150 @@
+# frozen_string_literal: true
+# typed: true
+
+require 'json'
+require 'http'
+require 'active_support/all'
+
+require 'sorbet-runtime'
+require_relative 'tourinsoft_v3'
+
+
+class TourinsoftV3Cdt66Source < TourinsoftV3Source
+  extend T::Sig
+  include TourinsoftSirtaquiMixin
+
+  class Settings < TourinsoftV3Source::Settings
+  end
+
+  extend T::Generic
+
+  SettingsType = type_member{ { upper: Settings } } # Generic param
+
+  def valid_url(id, tag, url)
+    return if url.blank?
+
+    valid = url =~ URI::DEFAULT_PARSER.make_regexp && url.start_with?('https://') && url.split('/')[2].include?('.') && !url.split('/')[2].include?(' ')
+    if !valid
+      logger.info("Invalid URL for #{id}: #{tag}=#{url}")
+    end
+    valid ? url : nil
+  end
+
+  @@practices = HashExcep[{
+    'Pédestre' => 'hiking',
+    "Parcours d'orientation" => 'hiking',
+    'Cyclotouriste' => 'bicycle',
+    'VTT' => 'mtb',
+    nil => nil,
+  }]
+
+  @@difficulties = HashExcep[{
+    'Très facile' => 'easy',
+    'Facile' => 'easy',
+    'Moyen' => 'normal',
+    'Difficile' => 'hard',
+    'Très difficile' => 'hard',
+    nil => nil,
+  }]
+
+  def route_duration(duration)
+    duration.split(':').map(&:to_i).yield_self { |h, m, s| h * 60 + m }
+  end
+
+  def route(r)
+    practice = r['Type'] && r['Type']['ThesLibelle']
+    duration = r['Duree']
+    distance = r['Distance']
+    # distance = distance.gsub(',', '.').to_f
+    difficulty = r['Difficulte'] && r['Difficulte']['ThesLibelle']
+
+    practice_slug = @@practices[practice]
+
+    duration &&= route_duration(duration)
+
+    {
+      "#{practice_slug}": {
+        difficulty: @@difficulties[difficulty],
+        duration: duration,
+        length: distance,
+      }.compact_blank
+    }.compact_blank
+  end
+
+  # sig { returns(SchemaRow) }
+  # def schema
+  #   super.deep_merge_array(SchemaRow.from_hash({
+  #     'i18n' => {
+  #       'route' => {
+  #         'values' => TourinsoftSirtaquiMixin::PRACTICES.compact.to_a.to_h(&:reverse).transform_values{ |v| { '@default:full' => { 'fr-FR' => v } } }
+  #       }
+  #     }.merge(
+  #       *TourinsoftSirtaquiMixin::PRACTICES.values.collect { |practice|
+  #         {
+  #           "route:#{practice}:difficulty" => {
+  #             'values' => TourinsoftSirtaquiMixin::DIFFICULTIES.compact.to_a.to_h(&:reverse).transform_values{ |v| { '@default:full' => { 'fr-FR' => v } } }
+  #           }
+  #         }
+  #       }
+  #     )
+  #   }))
+  # end
+
+  def map_geometry(feat)
+    {
+      type: 'Point',
+      coordinates: [
+        feat['GmapLongitude'].to_f,
+        feat['GmapLatitude'].to_f
+      ]
+    }
+  end
+
+  def addr(feat)
+    return nil if feat.dig('Adresses', 0).nil?
+
+    {
+      street: [feat['Adresses'][0]['Adresse1'], feat['Adresses'][0]['Adresse1Suite'], feat['Adresses'][0]['Adresse2'], feat['Adresses'][0]['Adresse3']].compact_blank.join(', '),
+      postcode: feat['Adresses'][0]['CodePostal'] || feat['Adresses'][0]['Codepostal'],
+      city: feat['Adresses'][0]['Commune'],
+    }.compact_blank
+  end
+
+  def map_tags(feat)
+    r = feat
+
+    id = map_id(r)
+    {
+      ref: {
+        'FR:CRTA': id,
+      },
+      name: { 'fr-FR' => r['SyndicObjectName'] }.compact_blank,
+      # description: { 'fr-FR' => jp_first(r, '.DescriptionsCommercialess[*].Descriptioncommerciale') }.compact_blank,
+      website: jp(r, '.Contacts[*][?(@.TypedaccesTelecom.ThesLibelle=="Site web")]')&.pluck('CoordonneesTelecom')&.collect{ |url| valid_url(id, :website, url) }&.compact_blank,
+      'website:details': { 'fr-FR' => valid_url(id, :'website:details', @settings.website_details_url&.gsub('{{id}}', r['SyndicObjectID'])) }.compact_blank,
+      phone: jp(r, '.Contacts[*][?(@.TypedaccesTelecom.ThesLibelle=="Téléphone fixe" || @.TypedaccesTelecom.ThesLibelle=="Portable")]')&.pluck('CoordonneesTelecom')&.compact_blank,
+      email: jp(r, '.Contacts[*][?(@.TypedaccesTelecom.ThesLibelle=="Mail")]')&.pluck('CoordonneesTelecom')&.compact_blank,
+      facebook: valid_url(id, :facebook, jp_first(r, '.Contacts[*][?(@.TypedaccesTelecom.ThesLibelle=="URL Facebook")].CoordonneesTelecom')),
+      twitter: valid_url(id, :twitter, jp_first(r, '.Contacts[*][?(@.TypedaccesTelecom.ThesLibelle=="URL Twitter")].CoordonneesTelecom')),
+      instagram: valid_url(id, :instagram, jp_first(r, '.Contacts[*][?(@.TypedaccesTelecom.ThesLibelle=="URL Instagram")].CoordonneesTelecom')),
+      # youtube: jp_first(r, '.Contacts[*][?(@.TypedaccesTelecom.ThesLibelle=="Chaine Youtube")].CoordonneesTelecom'),
+      # tiktok: jp_first(r, '.Contacts[*][?(@.TypedaccesTelecom.ThesLibelle=="Url TikTok")].CoordonneesTelecom'),
+      # tripadvisor: jp_first(r, '.Contacts[*][?(@.TypedaccesTelecom.ThesLibelle=="URL TripAdvisor")].CoordonneesTelecom'),
+      # googleavis: jp_first(r, '.Contacts[*][?(@.TypedaccesTelecom.ThesLibelle=="URL Google Avis")].CoordonneesTelecom'),
+      image: jp(r, '.Photos[*].Photo.Url'),
+      addr: addr(r),
+      route: r['ObjectTypeName'] == 'Itinéraires touristiques' && route(r)&.compact_blank,
+      # opening_hours: osm_openning_hours,
+      stars: ['Hébergements locatifs', 'Hôtellerie', 'Hôtellerie de plein air', 'Résidences'].include?(r['ObjectTypeName']) ? TourinsoftSirtaquiMixin::CLASS[r.dig('Classement', 'ThesLibelle')] : nil,
+      internet_access: jp(r, '.Servicess[*][?(@.ThesLibelle=="Wifi")]').any? ? 'wlan' : nil,
+    }.merge(
+        r['ObjectTypeName'] == 'Fêtes et manifestations' && {
+          # start_date: date_on,
+          # end_date: date_off,
+          event: jp(r, '.Types[*].ThesLibelle').collect{ |t| TourinsoftSirtaquiMixin::EVENT_TYPE[t] }.uniq,
+        } || {},
+        # r['ObjectTypeName'] == 'Restauration' ? cuisines(jp(r, '.ClassificationTypeCuisines[*].ThesLibelle')) : {},
+        r['ObjectTypeName'] == 'Hôtellerie' ? { tourism: 'hotel' } : {},
+      )
+  end
+end

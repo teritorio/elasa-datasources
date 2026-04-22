@@ -40,6 +40,7 @@ require './datasources/transforms/sanitize_tags'
 require './datasources/transforms/validate'
 require './datasources/transforms/validate_attribution'
 require './datasources/transforms/validate_report_issue'
+require './datasources/connectors/tourinsoft_v3_cdt66'
 
 
 class Job
