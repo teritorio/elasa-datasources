@@ -17,6 +17,7 @@ require './datasources/connectors/overpass_select'
 require './datasources/connectors/teritorio_ontology'
 require './datasources/connectors/tourinsoft_cdt50'
 require './datasources/connectors/tourinsoft_sirtaqui'
+require './datasources/connectors/tourinsoft_v3_cdt66'
 require './datasources/connectors/tourinsoft_v3_sirtaqui'
 require './datasources/connectors/tourism_system'
 require './datasources/sources/geojson'
@@ -40,7 +41,6 @@ require './datasources/transforms/sanitize_tags'
 require './datasources/transforms/validate'
 require './datasources/transforms/validate_attribution'
 require './datasources/transforms/validate_report_issue'
-require './datasources/connectors/tourinsoft_v3_cdt66'
 
 
 class Job
