@@ -11,7 +11,6 @@ require_relative 'tourinsoft_v3'
 
 class TourinsoftV3Cdt66Source < TourinsoftV3Source
   extend T::Sig
-  include TourinsoftSirtaquiMixin
 
   class Settings < TourinsoftV3Source::Settings
   end
@@ -30,6 +29,17 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
     valid ? url : nil
   end
 
+  @@stars = HashExcep[{
+    nil => nil,
+    'Non classé' => nil,
+    'Non Classé' => nil,
+    '1 étoile' => '1',
+    '2 étoiles' => '2',
+    '3 étoiles' => '3',
+    '4 étoiles' => '4',
+    '5 étoiles' => '5',
+  }]
+
   @@practices = HashExcep[{
     'Pédestre' => 'hiking',
     "Parcours d'orientation" => 'hiking',
@@ -46,6 +56,69 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
     'Très difficile' => 'hard',
     nil => nil,
   }]
+
+    # https://www.datatourisme.fr/ontology/core/#EntertainmentAndEvent
+  @@event_type = {
+    # SaleEvent
+    # '' => 'SaleEvent',
+    # '' => 'BricABrac',
+    'Braderie' => 'FairOrShow',
+    'Foire' => 'FairOrShow',
+    'Marché' => 'Market',
+    'Portes ouvertes' => 'OpenDay',
+    'Vide-grenier' => 'GarageSale',
+    # BusinessEvent
+    'Stage / Atelier' => 'TrainingWorkshop',
+    # '' => 'ExecutiveBoardMeeting',
+    # '' => 'Congress',
+    # '' => 'BoardMeeting',
+    # '' => 'WorkMeeting',
+    # '' => 'Seminar',
+    # SocialEvent
+    'Action citoyenne' => 'SocialEvent', # Generic
+    'Bal' => 'LocalAnimation',
+    # '' => 'Carnival',
+    'Défilé Cortège Parade' => 'Parade',
+    # '' => 'TraditionalCelebration',
+    # '' => 'PilgrimageAndProcession',
+    # '' => 'ReligiousEvent',
+    # CulturalEvent
+    'Aplec' => 'CulturalEvent', # Generic
+    'Commémoration' => 'Commemoration',
+    'Concert' => 'Concert',
+    'Débat / Conférence' => 'Conference',
+    # '' => 'ArtistSigning',
+    # '' => 'ChildrensEvent',
+    'Exposition' => 'Exhibition',
+    'Festival' => 'Festival',
+    # '' => 'Reading',
+    # '' => 'Opera',
+    'Théâtre' => 'TheaterEvent',
+    'Projection, cinéma' => 'ScreeningEvent',
+    # '' => 'Recital',
+    'Feux d\'artifice' => 'VisualArtsEvent',
+    'Repas spectacle' => 'ShowEvent',
+    'Spectacle' => 'ShowEvent',
+    # '' => 'CircusEvent',
+    # '' => 'DanceEvent', # Danse
+    # '' => 'Harvest',
+    # SportsEvent
+    'Manifestation sportive' => 'SportsEvent', # Generic
+    'Pratique sportive encadrée' => 'SportsEvent', # Generic
+    'Compétition' => 'SportsCompetition',
+    'Trail' => 'SportsCompetition',
+    # '' => 'SportsDemonstration',
+    'Concours' => 'Game',
+    'Jeux' => 'Game',
+    'Rifles' => 'Game',
+    'Rallye' => 'Rally',
+    'Randonnée, balade' => 'Rambling',
+
+    # Other. Not part of datatourisme ontology
+    'Rassemblement / réunion' => 'Other', # FIXME
+    'Thé dansants' => 'Other', # FIXME
+    'Visite guidée' => 'Other', # FIXME
+  }
 
   def route_duration(duration)
     duration.split(':').map(&:to_i).yield_self { |h, m, s| h * 60 + m }
@@ -70,25 +143,6 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
       }.compact_blank
     }.compact_blank
   end
-
-  # sig { returns(SchemaRow) }
-  # def schema
-  #   super.deep_merge_array(SchemaRow.from_hash({
-  #     'i18n' => {
-  #       'route' => {
-  #         'values' => TourinsoftSirtaquiMixin::PRACTICES.compact.to_a.to_h(&:reverse).transform_values{ |v| { '@default:full' => { 'fr-FR' => v } } }
-  #       }
-  #     }.merge(
-  #       *TourinsoftSirtaquiMixin::PRACTICES.values.collect { |practice|
-  #         {
-  #           "route:#{practice}:difficulty" => {
-  #             'values' => TourinsoftSirtaquiMixin::DIFFICULTIES.compact.to_a.to_h(&:reverse).transform_values{ |v| { '@default:full' => { 'fr-FR' => v } } }
-  #           }
-  #         }
-  #       }
-  #     )
-  #   }))
-  # end
 
   def map_geometry(feat)
     {
@@ -135,13 +189,13 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
       addr: addr(r),
       route: r['ObjectTypeName'] == 'Itinéraires touristiques' && route(r)&.compact_blank,
       # opening_hours: osm_openning_hours,
-      stars: ['Hébergements locatifs', 'Hôtellerie', 'Hôtellerie de plein air', 'Résidences'].include?(r['ObjectTypeName']) ? TourinsoftSirtaquiMixin::CLASS[r.dig('Classement', 'ThesLibelle')] : nil,
+      stars: ['Hébergements locatifs', 'Hôtellerie', 'Hôtellerie de plein air', 'Résidences'].include?(r['ObjectTypeName']) ? @@stars[r.dig('Classement', 'ThesLibelle')] : nil,
       internet_access: jp(r, '.Servicess[*][?(@.ThesLibelle=="Wifi")]').any? ? 'wlan' : nil,
     }.merge(
         r['ObjectTypeName'] == 'Fêtes et manifestations' && {
           # start_date: date_on,
           # end_date: date_off,
-          event: jp(r, '.Types[*].ThesLibelle').collect{ |t| TourinsoftSirtaquiMixin::EVENT_TYPE[t] }.uniq,
+          event: jp(r, '.Types[*].ThesLibelle').collect{ |t| @@event_type[t] }.uniq,
         } || {},
         # r['ObjectTypeName'] == 'Restauration' ? cuisines(jp(r, '.ClassificationTypeCuisines[*].ThesLibelle')) : {},
         r['ObjectTypeName'] == 'Hôtellerie' ? { tourism: 'hotel' } : {},
