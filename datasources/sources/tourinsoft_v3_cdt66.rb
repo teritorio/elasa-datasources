@@ -146,13 +146,30 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
   end
 
   def map_geometry(feat)
-    {
-      type: 'Point',
-      coordinates: [
-        feat['GmapLongitude'].to_f,
-        feat['GmapLatitude'].to_f
-      ]
-    }
+    if feat['ObjectTypeName'] == 'Itinéraires touristiques' && !feat.dig('Traces', 0, 'Itinerairegooglemap').nil?
+      trace = JSON.parse(feat.dig('Traces', 0, 'Itinerairegooglemap'))
+      paths = trace['lignes'].map { |l| l['path'] }
+
+      if paths.size == 1
+        {
+          type: 'LineString',
+          coordinates: paths.first
+        }
+      else
+        {
+          type: 'MultiLineString',
+          coordinates: paths
+        }
+      end
+    else
+      {
+        type: 'Point',
+        coordinates: [
+          feat['GmapLongitude'].to_f,
+          feat['GmapLatitude'].to_f
+        ]
+      }
+    end
   end
 
   def addr(feat)
