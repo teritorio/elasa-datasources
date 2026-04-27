@@ -57,7 +57,7 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
     nil => nil,
   }]
 
-    # https://www.datatourisme.fr/ontology/core/#EntertainmentAndEvent
+  # https://www.datatourisme.fr/ontology/core/#EntertainmentAndEvent
   @@event_type = {
     # SaleEvent
     # '' => 'SaleEvent',
@@ -121,10 +121,11 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
   }
 
   def route_duration(duration)
-    duration.split(':').map(&:to_i).yield_self { |h, m, s| h * 60 + m }
+    duration.split(':').map(&:to_i).then { |h, m, _s| h * 60 + m }
   end
 
-  def route(r)
+  def route(feat)
+    r = feat
     practice = r['Type'] && r['Type']['ThesLibelle']
     duration = r['Duree']
     distance = r['Distance']
