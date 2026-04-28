@@ -182,8 +182,25 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
     }.compact_blank
   end
 
+  def openning(dates)
+    return nil if dates.blank? || !dates.is_a?(Array)
+
+    valid_dates = dates.select do |d|
+      d.is_a?(Hash) && d['Datedebut'] && d['Datefin']
+    end
+
+    return nil if valid_dates.blank?
+
+    date_on = valid_dates.map { |d| d['Datedebut'][0, 10] }.min
+    date_off = valid_dates.map { |d| d['Datefin'][0, 10] }.max
+
+    [date_on, date_off]
+  end
+
   def map_tags(feat)
     r = feat
+
+    date_on, date_off = openning(r['Dates'])
 
     id = map_id(r)
     {
@@ -211,8 +228,8 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
       internet_access: jp(r, '.Servicess[*][?(@.ThesLibelle=="Wifi")]').any? ? 'wlan' : nil,
     }.merge(
         r['ObjectTypeName'] == 'Fêtes et manifestations' && {
-          # start_date: date_on,
-          # end_date: date_off,
+          start_date: date_on,
+          end_date: date_off,
           event: jp(r, '.Types[*].ThesLibelle').collect{ |t| @@event_type[t] }.uniq,
         } || {},
         # r['ObjectTypeName'] == 'Restauration' ? cuisines(jp(r, '.ClassificationTypeCuisines[*].ThesLibelle')) : {},
