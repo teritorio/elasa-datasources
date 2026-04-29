@@ -146,7 +146,7 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
   def map_geometry(feat)
     if feat['ObjectTypeName'] == 'Itinéraires touristiques' && !feat.dig('Traces', 0, 'Itinerairegooglemap').nil?
       trace = JSON.parse(feat.dig('Traces', 0, 'Itinerairegooglemap'))
-      paths = trace['lignes'].map { |l| l['path'] }
+      paths = trace['lignes'].map { |l| l['path'] }.flatten(1).inject([]) { |acc, x| acc.last == x ? acc : acc << x }
 
       if paths.size == 1
         {
