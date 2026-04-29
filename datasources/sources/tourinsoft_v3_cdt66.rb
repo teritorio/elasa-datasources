@@ -180,7 +180,7 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
       d.is_a?(Hash) && d['Datedebut'] && d['Datefin']
     }
 
-    return nil if valid_dates.blank?
+    return nil if valid_dates.empty?
 
     date_on = valid_dates.map { |d| d['Datedebut'][0, 10] }.min
     date_off = valid_dates.map { |d| d['Datefin'][0, 10] }.max
