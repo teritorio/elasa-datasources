@@ -129,7 +129,6 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
     practice = r['Type'] && r['Type']['ThesLibelle']
     duration = r['Duree']
     distance = r['Distance']
-    # distance = distance.gsub(',', '.').to_f
     difficulty = r['Difficulte'] && r['Difficulte']['ThesLibelle']
 
     practice_slug = @@practices[practice]
