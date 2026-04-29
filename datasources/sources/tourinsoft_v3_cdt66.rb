@@ -132,7 +132,6 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
     difficulty = r['Difficulte'] && r['Difficulte']['ThesLibelle']
 
     practice_slug = @@practices[practice]
-
     duration = route_duration(duration) if !duration.nil?
 
     {
