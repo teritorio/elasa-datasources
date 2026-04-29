@@ -148,17 +148,10 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
       trace = JSON.parse(feat.dig('Traces', 0, 'Itinerairegooglemap'))
       paths = trace['lignes'].map { |l| l['path'] }.flatten(1).inject([]) { |acc, x| acc.last == x ? acc : acc << x }
 
-      if paths.size == 1
-        {
-          type: 'LineString',
-          coordinates: paths.first
-        }
-      else
-        {
-          type: 'MultiLineString',
-          coordinates: paths
-        }
-      end
+      {
+        type: 'LineString',
+        coordinates: paths.first
+      }
     else
       {
         type: 'Point',
