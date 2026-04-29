@@ -133,7 +133,7 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
 
     practice_slug = @@practices[practice]
 
-    duration &&= route_duration(duration)
+    duration = route_duration(duration) if !duration.nil?
 
     {
       "#{practice_slug}": {
