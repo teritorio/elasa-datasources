@@ -176,9 +176,9 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
   def openning(dates)
     return nil if dates.blank? || !dates.is_a?(Array)
 
-    valid_dates = dates.select do |d|
+    valid_dates = dates.select { |d|
       d.is_a?(Hash) && d['Datedebut'] && d['Datefin']
-    end
+    }
 
     return nil if valid_dates.blank?
 
