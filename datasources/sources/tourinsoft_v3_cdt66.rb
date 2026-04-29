@@ -150,7 +150,7 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
 
       {
         type: 'LineString',
-        coordinates: paths.first
+        coordinates: path
       }
     else
       {
