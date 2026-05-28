@@ -3,6 +3,7 @@
 
 require 'json'
 require 'http'
+require 'uri'
 require 'active_support/all'
 
 require 'sorbet-runtime'
@@ -15,6 +16,7 @@ class GristSource < Source
     const :api_url, String
     const :doc_id, String
     const :table_id, String
+    const :filter, T.nilable(String)
     const :lat, String
     const :lon, String
   end
@@ -58,10 +60,12 @@ class GristSource < Source
       api_url: String,
       doc_id: String,
       table_id: String,
+      filter: T.nilable(String),
     ).returns(T::Array[T::Hash[String, T.untyped]])
   }
-  def fetch_records(api_url, doc_id, table_id)
+  def fetch_records(api_url, doc_id, table_id, filter = nil)
     url = "#{api_url}/docs/#{doc_id}/tables/#{table_id}/records"
+    url += "?filter=#{URI.encode_www_form_component(filter)}" if filter.present?
     T.must(fetch(url)['records'])
   end
 
