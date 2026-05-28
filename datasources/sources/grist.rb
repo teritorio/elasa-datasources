@@ -43,31 +43,8 @@ class GristSource < Source
     JSON.parse(body)
   end
 
-  sig {
-    params(
-      api_url: String,
-      doc_id: String,
-      table_id: String,
-    ).returns(T::Array[T::Hash[String, T.untyped]])
-  }
-  def fetch_column(api_url, doc_id, table_id)
-    url = "#{api_url}/docs/#{doc_id}/tables/#{table_id}/columns"
-    T.must(fetch(url)['columns'])
-  end
-
-  sig {
-    params(
-      api_url: String,
-      doc_id: String,
-      table_id: String,
-      filter: T.nilable(String),
-    ).returns(T::Array[T::Hash[String, T.untyped]])
-  }
-  def fetch_records(api_url, doc_id, table_id, filter = nil)
-    url = "#{api_url}/docs/#{doc_id}/tables/#{table_id}/records"
-    url += "?filter=#{URI.encode_www_form_component(filter)}" if filter.present?
-    T.must(fetch(url)['records'])
-  end
+  @schema = T.let(nil, T.nilable(SchemaRow))
+  @rows = T.let([], T::Array[T::Hash[String, T.untyped]])
 
   # JSON Schema types
   TYPE_MAP = {
@@ -78,18 +55,32 @@ class GristSource < Source
     'Boolean' => 'boolean',
   }.freeze
 
-  sig { returns(SchemaRow) }
-  def schema
+  sig {
+    params(
+      api_url: String,
+      doc_id: String,
+      table_id: String,
+      filter: T.nilable(String),
+    ).void
+  }
+  def fetch_all(api_url, doc_id, table_id, filter = nil)
+    return if !@schema.nil? && !@rows.nil?
+
+    url = "#{api_url}/docs/#{doc_id}/tables/#{table_id}/columns"
+    columns = T.must(fetch(url)['columns'])
     schema = {
       'type' => 'object',
       'properties' => {}
     }
     i18n = {}
-    fetch_column(@settings.api_url, @settings.doc_id, @settings.table_id).each{ |column|
+    columns.each{ |column|
       id = column.dig('fields', 'label') || column['id']
+      type = TYPE_MAP[column['fields']['type']] || 'string'
+      type = { 'type' => 'array', 'items' => { 'type' => type } } if column['fields']['type'] == 'ChoiceList'
+      format = column['fields']['type'] == 'Date' ? 'date' : (column['fields']['type'] == 'DateTime' ? 'date-time' : nil)
       schema['properties'][id] = {
-        'type' => TYPE_MAP[column['fields']['type']] || 'string',
-        'format' => column['fields']['type'] == 'Date' ? 'date' : (column['fields']['type'] == 'DateTime' ? 'date-time' : nil),
+        'type' => type,
+        'format' => format,
       }
       i18n[id] = {
         '@default' => {
@@ -97,15 +88,27 @@ class GristSource < Source
         }.compact_blank,
       }
     }
-    SchemaRow.new(
+    @schema = SchemaRow.new(
       destination_id: @destination_id,
       natives_schema: JsonSchema.new(schema),
       i18n: i18n,
     )
+
+    url = "#{api_url}/docs/#{doc_id}/tables/#{table_id}/records"
+    url += "?filter=#{URI.encode_www_form_component(filter)}" if filter.present?
+    @rows = T.must(fetch(url)['records'])
+  end
+
+  sig { returns(SchemaRow) }
+  def schema
+    fetch_all(@settings.api_url, @settings.doc_id, @settings.table_id, @settings.filter)
+    @schema
   end
 
   def each(&block)
-    loop(ENV['NO_DATA'] ? [] : fetch_records(@settings.api_url, @settings.doc_id, @settings.table_id), &block)
+    fetch_all(@settings.api_url, @settings.doc_id, @settings.table_id, @settings.filter)
+
+    loop(ENV['NO_DATA'] ? [] : @rows, &block)
   end
 
   def map_id(feat)
@@ -129,8 +132,8 @@ class GristSource < Source
   end
 
   def map_native_properties(feat, _properties)
-    f = feat['fields'].except(@settings.lat, @settings.lon).compact_blank
-    puts f.inspect
-    f
+    feat['fields'].except(@settings.lat, @settings.lon).compact_blank.to_h{ |key, value|
+      [key, @schema.natives_schema.dig('properties', key, 'type') == 'string' ? value.to_s : value]
+    }.to_h
   end
 end
