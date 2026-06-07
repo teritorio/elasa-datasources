@@ -32,6 +32,19 @@ jobs:
           ruby-version: '3.2'
           bundler-cache: true
 
+      # - name: Setup Tapioca cache
+      #   id: cache-tapioca
+      #   uses: actions/cache@v5
+      #   with:
+      #     path: sorbet
+      #     key: ${{ runner.os }}-${{ hashFiles('Gemfile.lock') }}
+
+      # - name: Init Tapioca
+      #   if: steps.cache-tapioca.outputs.cache-hit != 'true'
+      #   run: |
+      #     bundle exec tapioca init && \
+      #     bundle exec srb rbi suggest-typed
+
       - name: Install httpfs extension for DuckDB
         run: |
           bundle exec ruby -e "require 'duckdb'; DuckDB::Database.open.connect.query('INSTALL httpfs');"
@@ -41,7 +54,6 @@ jobs:
 
       # - name: Run typecheck
       #   run: |
-      #     bundle exec tapioca init && \
       #     bundle exec rake rails_rbi:routes && \
       #     bundle exec tapioca dsl && \
       #     bundle exec srb typecheck -q
