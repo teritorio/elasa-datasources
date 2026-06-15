@@ -109,6 +109,8 @@ class OverpassSource < Source
           coordinates: linestrings
         }
       end
+    elsif %w[LineString MultiLineString].include?(feat['geometry']['type'])
+      feat['geometry']
     else
       {
         type: 'LineString',
