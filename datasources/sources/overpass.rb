@@ -109,7 +109,7 @@ class OverpassSource < Source
           coordinates: linestrings
         }
       end
-    elsif %w[LineString MultiLineString].include?(feat['geometry']['type'])
+    elsif feat['geometry'].is_a?(Hash) && %w[LineString MultiLineString].include?(feat['geometry']['type'])
       feat['geometry']
     else
       {
