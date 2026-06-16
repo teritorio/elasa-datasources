@@ -97,6 +97,10 @@ class GpxTransformer < Transformer
       end
 
       point = RGeo::GeoJSON.decode(row[:geometry].to_json)
+      if point.nil?
+        logger.info("    !     #{row[:properties][:id]} Empty or invalid geometry. Ignore.")
+        return row
+      end
       dist = trace_geos.distance(point)
       if dist > 0.02
         logger.info("    !     #{row[:properties][:id]} Point too far away from GPX trace start (#{dist.round(3)} degrees).    #{gpx_trace}")
