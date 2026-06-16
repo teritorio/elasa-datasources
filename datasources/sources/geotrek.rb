@@ -153,6 +153,7 @@ class GeotrekSource < Source
     type, feat = type_feat
     if type == :trek
       return if feat['departure_geom'].blank?
+
       {
         type: 'Point',
         coordinates: feat['departure_geom'],
