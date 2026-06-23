@@ -4,11 +4,11 @@
 require 'sorbet-runtime'
 
 require_relative 'tourinsoft'
-require_relative '../sources/tourinsoft_v3_sirtaqui'
+require_relative '../sources/tourinsoft_v3_cdt87'
 
 
-class TourinsoftV3Sirtaqui < Tourinsoft
+class TourinsoftV3Cdt87 < Tourinsoft
   def self.source_class
-    TourinsoftV3SirtaquiSource
+    TourinsoftV3Cdt87Source
   end
 end
