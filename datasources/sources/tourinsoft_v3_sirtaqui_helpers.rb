@@ -103,6 +103,8 @@ module TourinsoftSirtaquiHelpers
     [periode_ouverture, date_on, date_off]
   end
 
+  module_function :date_on_off
+
   def openning(periode_ouvertures)
     return nil if periode_ouvertures.blank?
 
@@ -143,4 +145,6 @@ module TourinsoftSirtaquiHelpers
 
     [date_on, date_off, [dates, hours].compact.join(' ')]
   end
+
+  module_function :openning
 end
