@@ -10,6 +10,15 @@ require 'sorbet-runtime'
 module TourinsoftSirtaquiHelpers
   include TourinsoftSirtaquiMixin
 
+  def jp_first_present(object, *paths)
+    paths.each do |path|
+      value = jp_first(object, path)
+      return value if value.present?
+    end
+
+    nil
+  end
+
   def valid_url(id, tag, url)
     return if url.blank?
 
@@ -55,7 +64,7 @@ module TourinsoftSirtaquiHelpers
     return nil if address.nil?
 
     {
-      street: [address['Adresse1'], address['Adresse2'], address['Adresse3']].compact_blank.join(', '),
+      street: [address['Adresse1'], address['Adresse1suite'], address['Adresse2'], address['Adresse3']].compact_blank.join(', '),
       postcode: address['CodePostal'],
       city: address['Commune'],
     }.compact_blank
