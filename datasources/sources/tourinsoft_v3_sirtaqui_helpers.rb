@@ -11,13 +11,14 @@ module TourinsoftSirtaquiHelpers
   include TourinsoftSirtaquiMixin
 
   def jp_first_present(object, *paths)
-    paths.each do |path|
-      value = jp_first(object, path)
-      return value if value.present?
-    end
-
-    nil
+    paths.lazy.map { |path| jp_first(object, path) }.find(&:present?)
   end
+
+  def first_present(hash, *keys)
+    keys.lazy.map { |k| hash[k] }.find(&:itself)
+  end
+
+  module_function :first_present
 
   def valid_url(id, tag, url)
     return if url.blank?
@@ -156,8 +157,8 @@ module TourinsoftSirtaquiHelpers
         end
       )
 
-      date_on = periode_ouverture['Datedebut']&.[](0..9)
-      date_off = periode_ouverture['Datefin']&.[](0..9)
+      date_on = first_present(periode_ouverture, 'Datedebut', 'Datededebut')&.[](0..9)
+      date_off = first_present(periode_ouverture, 'Datefin', 'Datedefin')&.[](0..9)
 
       date_ons << date_on
       date_offs << date_off
