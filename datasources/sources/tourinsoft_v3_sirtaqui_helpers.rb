@@ -117,42 +117,56 @@ module TourinsoftSirtaquiHelpers
   def openning(periode_ouvertures)
     return nil if periode_ouvertures.blank?
 
-    periode_ouverture, date_on, date_off = date_on_off(periode_ouvertures)
-
-    return nil if periode_ouverture.nil?
-
     # close_days = convert(periode_ouvertures['Joursdefermeture']) ## TODO
 
-    hours = (
-      if periode_ouverture.key?('Heuredouverture1')
-        %w[Heuredouverture1 Heuredefermeture1 Heuredouverture2 Heuredefermeture2].collect{ |h| periode_ouverture[h] }.map{ |h|
-          h.nil? ? nil : h[..-4]
-        }.each_slice(2).collect { |open, close|
-          open.nil? ? nil : open + (close.nil? ? '+' : "-#{close}")
-        }.compact.join('; ')
-      else
-        %w[lundi mardi mercredi jeudi vendredi samedi dimanche].collect{ |d|
-          [%w[heuredebut1 heurefin1 heuredebut2 heurefin2].collect{ |h| periode_ouverture["#{d}#{h}"] }.map{ |h|
+    date_ons = []
+    date_offs = []
+
+    result = periode_ouvertures.collect { |periode_ouverture|
+      hours = (
+        if periode_ouverture.key?('Heuredouverture1')
+          %w[Heuredouverture1 Heuredefermeture1 Heuredouverture2 Heuredefermeture2].collect{ |h| periode_ouverture[h] }.map{ |h|
             h.nil? ? nil : h[..-4]
-          }, @@days[d]]
-        }.group_by(&:first).transform_values{ |hours_days|
-          hours_days.collect(&:last)
-        }.collect{ |hours, days|
-          if hours[1].nil? && hours[2].nil? && !hours[3].nil?
-            hours[1] = hours[3]
-            hours[3] = nil
-          end
-          hours.each_slice(2).collect { |open, close|
+          }.each_slice(2).collect { |open, close|
+            open.nil? ? nil : open + (close.nil? ? '+' : "-#{close}")
+          }.compact.join('; ')
+        else
+          %w[lundi mardi mercredi jeudi vendredi samedi dimanche].collect{ |d|
+            [%w[heuredebut1 heurefin1 heuredebut2 heurefin2].collect{ |h| periode_ouverture["#{d}#{h}"] }.map{ |h|
+              h.nil? ? nil : h[..-4]
+            }, @@days[d]]
+          }.group_by(&:first).transform_values{ |hours_days|
+            hours_days.collect(&:last)
+          }.collect{ |hours, days|
+            if hours[1].nil? && hours[2].nil? && !hours[3].nil?
+              hours[1] = hours[3]
+              hours[3] = nil
+            end
+
             dayss = days.size == 7 ? '' : "#{days.join(',')} "
-            open.nil? ? nil : (dayss + open + (close.nil? ? '+' : "-#{close}"))
-          }
-        }.flatten.compact.join('; ')
-      end
-    )
 
-    dates = TourinsoftSirtaquiMixin::FORMAT_MONTH_RANGE.call(date_on, date_off)
+            days_hours = hours.each_slice(2).collect { |open, close|
+              open.nil? ? nil : (open + (close.nil? ? '+' : "-#{close}"))
+            }.compact_blank
 
-    [date_on, date_off, [dates, hours].compact.join(' ')]
+            next if days_hours.empty?
+
+            dayss + days_hours.join(',')
+          }.flatten.compact.join('; ')
+        end
+      )
+
+      date_on = periode_ouverture['Datedebut']&.[](0..9)
+      date_off = periode_ouverture['Datefin']&.[](0..9)
+
+      date_ons << date_on
+      date_offs << date_off
+
+      dates = TourinsoftSirtaquiMixin::FORMAT_MONTH_RANGE.call(date_on, date_off)
+
+      [dates, hours].compact.join(' ')
+    }.compact_blank.join(';').presence
+    [date_ons.compact.min, date_offs.compact.max, result]
   end
 
   module_function :openning
