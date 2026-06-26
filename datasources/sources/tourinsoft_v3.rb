@@ -20,7 +20,7 @@ class TourinsoftV3Source < Source
     const :client, String
     const :syndication, String
     const :website_details_url, T.nilable(String)
-    const :steps_key, T.nilable(String)
+    const :has_steps, T::Boolean, default: true
   end
 
   extend T::Generic
@@ -58,7 +58,7 @@ class TourinsoftV3Source < Source
     JSON.parse(resp.body)['value']
   end
 
-  sig { params(feature: T.untyped).returns(T::Array[T.untyped]) }
+  sig { params(_feature: T.untyped).returns(T::Array[T.untyped]) }
   def extract_steps_from_feature(_feature)
     []
   end
@@ -70,8 +70,7 @@ class TourinsoftV3Source < Source
 
   sig { returns(T::Array[MetadataRow]) }
   def metadatas
-    has_steps = @settings.steps_key.present? && features.first&.last&.key?(@settings.steps_key)
-    super + (has_steps ? [
+    super + (@settings.has_steps ? [
       MetadataRow.new({
         data: {
           "#{@destination_id}-steps" => Metadata.from_hash({
@@ -105,7 +104,7 @@ class TourinsoftV3Source < Source
   def each(&block)
     if ENV['NO_DATA']
       loop([], &block)
-    elsif @settings.steps_key.present?
+    elsif @settings.has_steps
       features_steps = features.collect { |feature|
         feature_steps = extract_steps_from_feature(feature.last)
         feature.last['step_ids'] = feature_steps.pluck('SyndicObjectID')
