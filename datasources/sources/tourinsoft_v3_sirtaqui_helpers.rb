@@ -55,8 +55,8 @@ module TourinsoftSirtaquiHelpers
     {
       type: 'Point',
       coordinates: [
-        feat['GmapLongitude'].to_f,
-        feat['GmapLatitude'].to_f
+        feat.last['GmapLongitude'].to_f,
+        feat.last['GmapLatitude'].to_f
       ]
     }
   end

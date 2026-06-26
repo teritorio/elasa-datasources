@@ -20,6 +20,7 @@ class TourinsoftV3Source < Source
     const :client, String
     const :syndication, String
     const :website_details_url, T.nilable(String)
+    const :steps_key, T.nilable(String)
   end
 
   extend T::Generic
@@ -57,21 +58,85 @@ class TourinsoftV3Source < Source
     JSON.parse(resp.body)['value']
   end
 
+  sig { params(feature: T.untyped).returns(T::Array[T.untyped]) }
+  def extract_steps_from_feature(_feature)
+    []
+  end
+
+  def features
+    @features_cache ||= self.class.fetch(@settings.client, @settings.syndication).collect{ |feat| [:feature, feat] }
+    @features_cache
+  end
+
+  sig { returns(T::Array[MetadataRow]) }
+  def metadatas
+    has_steps = @settings.steps_key.present? && features.first&.last&.key?(@settings.steps_key)
+    super + (has_steps ? [
+      MetadataRow.new({
+        data: {
+          "#{@destination_id}-steps" => Metadata.from_hash({
+            'name' => { 'en-US' => "#{@destination_id}-steps" },
+            'attribution' => @settings.attribution,
+            'report_issue' => @settings.report_issue&.serialize,
+          })
+        }.compact_blank
+      })
+    ] : [])
+  end
+
+  def map_destination_id(type_feat)
+    type, _feat = type_feat
+    if type == :step
+      "#{@destination_id}-steps"
+    else
+      @destination_id
+    end
+  end
+
+  def loop(raw = [], &block)
+    super(ENV['NO_DATA'] ?
+      [] :
+      raw.empty? ? self.class.fetch(@settings.client, @settings.syndication).collect{ |feat| [:feature, feat] } :
+        raw,
+      &block
+    )
+  end
+
   def each(&block)
-    loop(ENV['NO_DATA'] ? [] : self.class.fetch(@settings.client, @settings.syndication), &block)
+    if ENV['NO_DATA']
+      loop([], &block)
+    elsif @settings.steps_key.present?
+      features_steps = features.collect { |feature|
+        feature_steps = extract_steps_from_feature(feature.last)
+        feature.last['step_ids'] = feature_steps.pluck('SyndicObjectID')
+        [feature] + feature_steps.collect{ |feat| [:step, feat] }
+      }.flatten(1)
+      loop(features_steps, &block)
+    else
+      features = self.class.fetch(@settings.client, @settings.syndication).collect{ |feat| [:feature, feat] }
+      loop(features, &block)
+    end
   end
 
   def map_id(feat)
-    feat['SyndicObjectID']
+    feat.last['SyndicObjectID']
   end
 
   def map_updated_at(feat)
-    feat['Updated']
+    feat.last['Updated']
   end
 
   def map_native_properties(feat, properties)
     (properties || {}).transform_values{ |path|
-      jp(feat, path)
+      jp(feat.last, path)
     }.compact_blank
   end
+
+  def map_tags(type_feat)
+    type, feat = type_feat
+    type == :feature ? map_feature_tags(feat) : nil
+  end
+
+  sig { params(feat: T.untyped).returns(T.untyped) }
+  def map_feature_tags(feat); end
 end
