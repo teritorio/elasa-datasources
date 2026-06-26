@@ -105,10 +105,10 @@ class TourinsoftV3Source < Source
     if ENV['NO_DATA']
       loop([], &block)
     elsif @settings.has_steps
-      features_steps = features.collect { |feature|
-        feature_steps = extract_steps_from_feature(feature.last)
-        feature.last['step_ids'] = feature_steps.pluck('SyndicObjectID')
-        [feature] + feature_steps.collect{ |feat| [:step, feat] }
+      features_steps = features.collect { |type, feature|
+        feature_steps = extract_steps_from_feature(feature)
+        feature['step_ids'] = feature_steps.pluck('SyndicObjectID')
+        [[type, feature]] + feature_steps.collect{ |feat| [:step, feat] }
       }.flatten(1)
       loop(features_steps, &block)
     else
@@ -117,17 +117,20 @@ class TourinsoftV3Source < Source
     end
   end
 
-  def map_id(feat)
-    feat.last['SyndicObjectID']
+  def map_id(type_feat)
+    _type, feat = type_feat
+    feat['SyndicObjectID']
   end
 
-  def map_updated_at(feat)
-    feat.last['Updated']
+  def map_updated_at(type_feat)
+    _type, feat = type_feat
+    feat['Updated']
   end
 
-  def map_native_properties(feat, properties)
+  def map_native_properties(type_feat, properties)
+    _type, feat = type_feat
     (properties || {}).transform_values{ |path|
-      jp(feat.last, path)
+      jp(feat, path)
     }.compact_blank
   end
 
