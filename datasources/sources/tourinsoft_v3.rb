@@ -95,8 +95,7 @@ class TourinsoftV3Source < Source
   def loop(raw = [], &block)
     super(ENV['NO_DATA'] ?
       [] :
-      raw.empty? ? self.class.fetch(@settings.client, @settings.syndication).collect{ |feat| [:feature, feat] } :
-        raw,
+      raw.empty? ? features : raw,
       &block
     )
   end
@@ -112,7 +111,6 @@ class TourinsoftV3Source < Source
       }.flatten(1)
       loop(features_steps, &block)
     else
-      features = self.class.fetch(@settings.client, @settings.syndication).collect{ |feat| [:feature, feat] }
       loop(features, &block)
     end
   end
@@ -139,6 +137,5 @@ class TourinsoftV3Source < Source
     type == :feature ? map_feature_tags(feat) : nil
   end
 
-  sig { params(feat: T.untyped).returns(T.untyped) }
   def map_feature_tags(feat); end
 end
