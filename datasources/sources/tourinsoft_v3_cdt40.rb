@@ -76,8 +76,8 @@ class TourinsoftV3Cdt40Source < TourinsoftV3Source
       ref: {
         'FR:CRTA.step': id,
       },
-      name: { 'fr-FR' => r['name'] }.compact_blank,
-      description: { 'fr-FR' => r['description'] }.compact_blank,
+      name: { 'fr-FR': r['name'] }.compact_blank,
+      description: { 'fr-FR': r['description'] }.compact_blank,
       image: [r['image']].compact,
       # image_description
       # image_source
