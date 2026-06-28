@@ -143,9 +143,10 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
     }.compact_blank
   end
 
-  def map_geometry(feat)
-    if feat.last['ObjectTypeName'] == 'Itinéraires touristiques' && !feat.last.dig('Traces', 0, 'Itinerairegooglemap').nil?
-      trace = JSON.parse(feat.last.dig('Traces', 0, 'Itinerairegooglemap'))
+  def map_geometry(type_feat)
+    _type, feat = type_feat
+    if feat['ObjectTypeName'] == 'Itinéraires touristiques' && !feat.dig('Traces', 0, 'Itinerairegooglemap').nil?
+      trace = JSON.parse(feat.dig('Traces', 0, 'Itinerairegooglemap'))
       path = trace['lignes'].map { |l| l['path'] }.flatten(1).map { |lat, lon, *_|
         [lon, lat]
       }.inject([]) { |acc, x|
@@ -160,8 +161,8 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
       {
         type: 'Point',
         coordinates: [
-          feat.last['GmapLongitude'].to_f,
-          feat.last['GmapLatitude'].to_f
+          feat['GmapLongitude'].to_f,
+          feat['GmapLatitude'].to_f
         ]
       }
     end

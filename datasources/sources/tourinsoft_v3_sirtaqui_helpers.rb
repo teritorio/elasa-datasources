@@ -51,12 +51,13 @@ module TourinsoftSirtaquiHelpers
     }
   end
 
-  def map_geometry(feat)
+  def map_geometry(type_feat)
+    _type, feat = type_feat
     {
       type: 'Point',
       coordinates: [
-        feat.last['GmapLongitude'].to_f,
-        feat.last['GmapLatitude'].to_f
+        feat['GmapLongitude'].to_f,
+        feat['GmapLatitude'].to_f
       ]
     }
   end
