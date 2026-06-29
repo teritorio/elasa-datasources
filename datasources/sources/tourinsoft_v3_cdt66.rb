@@ -134,13 +134,15 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
     practice_slug = @@practices[practice]
     duration = route_duration(duration) if !duration.nil?
 
-    {
-      "#{practice_slug}": {
-        difficulty: @@difficulties[difficulty],
-        duration: duration,
-        length: distance,
+    [
+      {
+        "#{practice_slug}": {
+          difficulty: @@difficulties[difficulty],
+          duration: duration,
+          length: distance,
+        }.compact_blank
       }.compact_blank
-    }.compact_blank
+    ]
   end
 
   def map_geometry(type_feat)
@@ -193,6 +195,12 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
     [date_on, date_off]
   end
 
+  def pdfs(pdf)
+    {
+      'fr-FR' => pdf,
+    }.compact_blank.presence
+  end
+
   def map_feature_tags(feat)
     r = feat
 
@@ -218,7 +226,9 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
       # googleavis: jp_first(r, '.Contacts[*][?(@.TypedaccesTelecom.ThesLibelle=="URL Google Avis")].CoordonneesTelecom'),
       image: jp(r, '.Photos[*].Photo.Url'),
       addr: addr(r),
-      route: r['ObjectTypeName'] == 'Itinéraires touristiques' && route(r)&.compact_blank,
+      route: r['ObjectTypeName'] == 'Itinéraires touristiques' && route(r)&.inject({
+        pdf: pdfs(jp_first(r, '.Documents[*].Document.Url')),
+      }, :merge)&.compact_blank,
       # opening_hours: osm_openning_hours,
       stars: ['Hébergements locatifs', 'Hôtellerie', 'Hôtellerie de plein air', 'Résidences'].include?(r['ObjectTypeName']) ? @@stars[r.dig('Classement', 'ThesLibelle')] : nil,
       internet_access: jp(r, '.Servicess[*][?(@.ThesLibelle=="Wifi")]').any? ? 'wlan' : nil,
