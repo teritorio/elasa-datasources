@@ -143,7 +143,8 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
     }.compact_blank
   end
 
-  def map_geometry(feat)
+  def map_geometry(type_feat)
+    _type, feat = type_feat
     if feat['ObjectTypeName'] == 'Itinéraires touristiques' && !feat.dig('Traces', 0, 'Itinerairegooglemap').nil?
       trace = JSON.parse(feat.dig('Traces', 0, 'Itinerairegooglemap'))
       path = trace['lignes'].map { |l| l['path'] }.flatten(1).map { |lat, lon, *_|
@@ -192,12 +193,12 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
     [date_on, date_off]
   end
 
-  def map_tags(feat)
+  def map_feature_tags(feat)
     r = feat
 
     date_on, date_off = openning(r['Dates'])
 
-    id = map_id(r)
+    id = map_id([nil, r])
     {
       ref: {
         'FR:CRTA': id,

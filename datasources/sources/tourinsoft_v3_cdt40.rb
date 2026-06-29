@@ -41,12 +41,58 @@ class TourinsoftV3Cdt40Source < TourinsoftV3Source
     }))
   end
 
-  def map_tags(feat)
+  def extract_steps_from_feature(feature)
+    feature['ETAPESs']&.collect{ |step|
+      {
+        'name' => step['NomEtape']&.presence,
+        'description' => step['Descriptif']&.presence,
+        'GmapLongitude' => step['Longitudedecimalegooglemap']&.presence,
+        'GmapLatitude' => step['Latitudedecimalegooglemap']&.presence,
+        'image' => step.dig('Photo', 'Url')&.presence,
+      }
+    }&.select{ |step| !step['GmapLongitude'].nil? && !step['GmapLatitude'].nil? }&.each_with_index&.collect{ |step, index|
+      step['SyndicObjectID'] = "#{map_id([nil, feature])}.#{@destination_id}.#{index}"
+      step['name'] = [step['id'], step['name']].compact.join(' - ') if !step['id'].nil? && !step['name'].nil?
+      step['GmapLongitude'] = step['GmapLongitude']&.to_f
+      step['GmapLatitude'] = step['GmapLatitude']&.to_f
+      step['Updated'] = feature['Updated']
+      step['waypoint:type'] = 'waypoint'
+      step.compact
+    } || []
+  end
+
+  def map_tags(type_feat)
+    r = super
+    return r if !r.nil?
+
+    type, feat = type_feat
+    type == :step ? map_step_tags(feat) : nil
+  end
+
+  def map_step_tags(feat)
+    r = feat
+    id = map_id([nil, r])
+    {
+      ref: {
+        'FR:CRTA.step': id,
+      },
+      name: { 'fr-FR': r['name'] }.compact_blank,
+      description: { 'fr-FR': r['description'] }.compact_blank,
+      image: [r['image']].compact,
+      # image_description
+      # image_source
+      route: {
+        'waypoint:type': r['waypoint:type'],
+      },
+    }
+  end
+
+  def map_feature_tags(feat)
     r = feat
 
     date_on, date_off, osm_openning_hours = openning(r['OUVERTUREs'])
 
-    id = map_id(r)
+    id = map_id([nil, r])
     {
       ref: {
         'FR:CRTA': id,
@@ -85,5 +131,10 @@ class TourinsoftV3Cdt40Source < TourinsoftV3Source
         r['ObjectTypeName'] == 'Restauration' ? cuisines(jp(r, '.SPECIALITESs[0].Specialitesculinaires[*].ThesLibelle')) : {},
         r['ObjectTypeName'] == 'Hôtels' ? { tourism: 'hotel' } : {},
       )
+  end
+
+  def map_refs(type_feat)
+    type, feat = type_feat
+    type == :feature ? feat['step_ids'] : nil
   end
 end

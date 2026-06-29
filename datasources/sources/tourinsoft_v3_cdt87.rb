@@ -41,12 +41,12 @@ class TourinsoftV3Cdt87Source < TourinsoftV3Source
     }))
   end
 
-  def map_tags(feat)
+  def map_feature_tags(feat)
     r = feat
 
     date_on, date_off, osm_openning_hours = openning(r['PeriodeOuvertures'])
 
-    id = map_id(r)
+    id = map_id([nil, r])
     {
       ref: {
         'FR:CRTA': id,

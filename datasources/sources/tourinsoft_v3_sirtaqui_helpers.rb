@@ -51,7 +51,8 @@ module TourinsoftSirtaquiHelpers
     }
   end
 
-  def map_geometry(feat)
+  def map_geometry(type_feat)
+    _type, feat = type_feat
     {
       type: 'Point',
       coordinates: [
