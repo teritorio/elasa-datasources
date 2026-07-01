@@ -43,6 +43,7 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
   @@practices = HashExcep[{
     'Pédestre' => 'hiking',
     "Parcours d'orientation" => 'hiking',
+    'Randonnée pédestre' => 'hiking',
     'Cyclotouriste' => 'bicycle',
     'VTT' => 'mtb',
     nil => nil,
