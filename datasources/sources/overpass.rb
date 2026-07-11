@@ -129,6 +129,11 @@ class OverpassSource < Source
   end
 
   def map_tags(feat)
-    feat['tags'].except('timestamp', 'lon', 'lat')
+    feat['tags'].except('timestamp', 'lon', 'lat', 'refs')
+  end
+
+  sig { params(feat: T.untyped).returns(T.nilable(T::Array[T.any(Integer, String)])) }
+  def map_refs(feat)
+    feat.dig('tags', 'refs')&.split(';')&.map(&:strip)
   end
 end
