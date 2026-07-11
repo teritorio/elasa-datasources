@@ -94,28 +94,28 @@ class OverpassSource < Source
       }
     end
 
-    return if feat['geometry'].nil?
+    if !feat['geometry'].nil?
+      if feat['geometry'].is_a?(Hash) && feat['geometry']['type'] == 'GeometryCollection'
+        if feat['type'] == 'relation'
+          linestrings = feat['geometry']['geometries'].select{ |g|
+            g['type'] == 'LineString'
+          }.collect{ |ls|
+            ls['coordinates']
+          }
 
-    if feat['geometry'].is_a?(Hash) && feat['geometry']['type'] == 'GeometryCollection'
-      if feat['type'] == 'relation'
-        linestrings = feat['geometry']['geometries'].select{ |g|
-          g['type'] == 'LineString'
-        }.collect{ |ls|
-          ls['coordinates']
-        }
-
+          {
+            type: 'MultiLineString',
+            coordinates: linestrings
+          }
+        end
+      elsif feat['geometry'].is_a?(Hash) && %w[LineString MultiLineString].include?(feat['geometry']['type'])
+        feat['geometry']
+      else
         {
-          type: 'MultiLineString',
-          coordinates: linestrings
+          type: 'LineString',
+          coordinates: feat['geometry'].collect{ |g| [g['lon'], g['lat']] },
         }
       end
-    elsif feat['geometry'].is_a?(Hash) && %w[LineString MultiLineString].include?(feat['geometry']['type'])
-      feat['geometry']
-    else
-      {
-        type: 'LineString',
-        coordinates: feat['geometry'].collect{ |g| [g['lon'], g['lat']] },
-      }
     end
   end
 
