@@ -271,9 +271,11 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
       route: r['ObjectTypeName'] == 'Itinéraires touristiques' && route(r)&.inject({
         pdf: pdfs(jp_first(r, '.Documents[*].Document.Url')),
       }, :merge)&.compact_blank,
+      'capacity:pitches': r['Emplacement']&.to_i,
       # opening_hours: osm_openning_hours,
       stars: ['Hébergements locatifs', 'Hôtellerie', 'Hôtellerie de plein air', 'Résidences'].include?(r['ObjectTypeName']) ? @@stars[r.dig('Classement', 'ThesLibelle')] : nil,
       internet_access: jp(r, '.Servicess[*][?(@.ThesLibelle=="Wifi")]').any? ? 'wlan' : nil,
+      pets: { true => 'yes', false => 'no' }[r['Animaux']]
     }.merge(
         r['ObjectTypeName'] == 'Fêtes et manifestations' && {
           start_date: date_on,
