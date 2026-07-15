@@ -121,6 +121,47 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
     'Visite guidée' => 'Other', # FIXME
   }
 
+  @@cuisines = HashExcep[{
+    # Cuisine
+    'Cuisine africaine' => { amenity: 'restaurant', cuisine: ['african'] },
+    'Cuisine asiatique' => { amenity: 'restaurant', cuisine: ['asian'] },
+    'Cuisine catalane' => { amenity: 'restaurant', cuisine: ['catalan'] },
+    'Cuisine gastronomique' => { amenity: 'restaurant', cuisine: ['fine_dining'] },
+    'Cuisine grillades' => { amenity: 'restaurant', cuisine: ['barbecue'] },
+    'Cuisine indienne' => { amenity: 'restaurant', cuisine: ['indian'] },
+    'Cuisine méditerranéenne' => { amenity: 'restaurant', cuisine: ['mediterranean'] },
+    'Cuisine nord-américaine' => { amenity: 'restaurant', cuisine: ['american'] },
+    'Cuisine orientale' => { amenity: 'restaurant', cuisine: ['oriental'] },
+    'Cuisine sud-américaine' => { amenity: 'restaurant', cuisine: ['south_american'] },
+    'Cuisine traditionnelle' => { amenity: 'restaurant' }, # FIXME: add specific tags
+    'Régionales françaises' => { amenity: 'restaurant', cuisine: %w[regional french] },
+    'Spécialités Locales' => { amenity: 'restaurant', cuisine: ['local'] },
+    # Diet
+    'Cuisine bio' => { amenity: 'restaurant', organic: 'only' },
+    'Cuisine diététique' => { amenity: 'restaurant' }, # FIXME: diet:*
+    'Cuisine hallal' => { amenity: 'restaurant', 'diet:halal': 'only' },
+    'Cuisine sans gluten' => { amenity: 'restaurant', 'diet:gluten_free': 'only' },
+    'Cuisine vegan' => { amenity: 'restaurant', 'diet:vegan': 'only' },
+    'Cuisine végétarienne' => { amenity: 'restaurant', 'diet:vegetarian': 'only' },
+    'Cuisine casher' => { amenity: 'restaurant', 'diet:kosher': 'only' },
+    # Food
+    'Cuisine créole' => { amenity: 'restaurant', cuisine: [''] },
+    'Cuisine poissons' => { amenity: 'restaurant', cuisine: %w[fish seafood] },
+    'Fruits de mer' => { amenity: 'restaurant', cuisine: ['seafood'] },
+    'Nouvelle cuisine française' => { amenity: 'restaurant', cuisine: ['new_french'] },
+    'Pizzas' => { amenity: 'restaurant', cuisine: ['pizza'] },
+    'Pâtes fraîches' => { amenity: 'fast_food', cuisine: ['pasta'] },
+    'Tapas' => { amenity: 'restaurant', cuisine: ['tapas'] },
+    # Non Restaurant
+    'Fromage' => { shop: 'cheese' },
+  }]
+
+  def cuisines(cuisines)
+    cuisines.collect{ |cuisine|
+      @@cuisines[cuisine]
+    }.compact.inject(:deep_merge_array) || {}
+  end
+
   def route_duration(duration)
     duration.split(':').map(&:to_i).then { |h, m, _s| h * 60 + m }
   end
@@ -239,7 +280,7 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
           end_date: date_off,
           event: jp(r, '.Types[*].ThesLibelle').collect{ |t| @@event_type[t] }.uniq,
         } || {},
-        # r['ObjectTypeName'] == 'Restauration' ? cuisines(jp(r, '.ClassificationTypeCuisines[*].ThesLibelle')) : {},
+        r['ObjectTypeName'] == 'Restauration' ? cuisines(jp(r, '.Typecuisines[*].ThesLibelle')) : {},
         r['ObjectTypeName'] == 'Hôtellerie' ? { tourism: 'hotel' } : {},
       )
   end

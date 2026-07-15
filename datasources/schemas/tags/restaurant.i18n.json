@@ -493,6 +493,11 @@
                 "@default:full": {
                     "fr-FR": "gâteau"
                 }
+            },
+            "catalan": {
+                "@default:full": {
+                    "fr-FR": "cuisine catalane"
+                }
             }
         }
     }
