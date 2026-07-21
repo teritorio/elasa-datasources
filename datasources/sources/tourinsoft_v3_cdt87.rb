@@ -7,11 +7,13 @@ require 'active_support/all'
 
 require 'sorbet-runtime'
 require_relative 'tourinsoft_v3'
+require_relative 'tourinsoft_v3_helpers'
 require_relative 'tourinsoft_v3_sirtaqui_helpers'
 
 
 class TourinsoftV3Cdt87Source < TourinsoftV3Source
   extend T::Sig
+  include TourinsoftV3Helpers
   include TourinsoftSirtaquiHelpers
   include TourinsoftSirtaquiMixin
 
