@@ -7,10 +7,12 @@ require 'active_support/all'
 
 require 'sorbet-runtime'
 require_relative 'tourinsoft_v3'
+require_relative 'tourinsoft_v3_helpers'
 
 
 class TourinsoftV3Cdt66Source < TourinsoftV3Source
   extend T::Sig
+  include TourinsoftV3Helpers
 
   class Settings < TourinsoftV3Source::Settings
   end
@@ -222,21 +224,6 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
     }.compact_blank
   end
 
-  def openning(dates)
-    return nil if dates.blank? || !dates.is_a?(Array)
-
-    valid_dates = dates.select { |d|
-      d.is_a?(Hash) && d['Datedebut'] && d['Datefin']
-    }
-
-    return nil if valid_dates.empty?
-
-    date_on = valid_dates.map { |d| d['Datedebut'][0, 10] }.min
-    date_off = valid_dates.map { |d| d['Datefin'][0, 10] }.max
-
-    [date_on, date_off]
-  end
-
   def pdfs(pdf)
     {
       'fr-FR' => pdf,
@@ -246,7 +233,7 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
   def map_feature_tags(feat)
     r = feat
 
-    date_on, date_off = openning(r['Dates'])
+    date_on, date_off, osm_openning_hours = openning(r['Dates'])
 
     id = map_id([nil, r])
     {
@@ -272,7 +259,7 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
         pdf: pdfs(jp_first(r, '.Documents[*].Document.Url')),
       }, :merge)&.compact_blank,
       'capacity:pitches': r['Emplacement']&.to_i,
-      # opening_hours: osm_openning_hours,
+      opening_hours: osm_openning_hours,
       stars: ['Hébergements locatifs', 'Hôtellerie', 'Hôtellerie de plein air', 'Résidences'].include?(r['ObjectTypeName']) ? @@stars[r.dig('Classement', 'ThesLibelle')] : nil,
       internet_access: jp(r, '.Servicess[*][?(@.ThesLibelle=="Wifi")]').any? ? 'wlan' : nil,
       pets: { true => 'yes', false => 'no' }[r['Animaux']]
