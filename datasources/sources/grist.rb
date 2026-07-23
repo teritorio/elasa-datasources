@@ -81,7 +81,7 @@ class GristSource < Source
       schema['properties'][id] = {
         'type' => type,
         'format' => format,
-      }
+      }.compact_blank
       i18n[id] = {
         '@default' => {
           'en-US' => id
