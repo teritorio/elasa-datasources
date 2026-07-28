@@ -78,10 +78,11 @@ class GristSource < Source
       type = TYPE_MAP[column['fields']['type']] || 'string'
       type = { 'type' => 'array', 'items' => { 'type' => type } } if column['fields']['type'] == 'ChoiceList'
       format = column['fields']['type'] == 'Date' ? 'date' : (column['fields']['type'] == 'DateTime' ? 'date-time' : nil)
-      schema['properties'][id] = {
-        'type' => type,
+      schema['properties'][id] = (
+        type.is_a?(Hash) ? type : { 'type' => type }
+      ).merge(
         'format' => format,
-      }.compact_blank
+      ).compact_blank
       i18n[id] = {
         '@default' => {
           'en-US' => id
