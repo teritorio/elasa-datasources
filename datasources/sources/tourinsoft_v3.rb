@@ -19,6 +19,7 @@ class TourinsoftV3Source < Source
   class Settings < Source::SourceSettings
     const :client, String
     const :syndication, String
+    const :select_config, { 'type' => T.nilable(String), 'select' => T::Hash[String, T.any(String, T::Array[String])] }
     const :website_details_url, T.nilable(String)
     const :has_steps, T::Boolean, default: true
   end
@@ -70,25 +71,46 @@ class TourinsoftV3Source < Source
 
   sig { returns(T::Array[MetadataRow]) }
   def metadatas
-    super + (@settings.has_steps ? [
-      MetadataRow.new({
-        data: {
-          "#{@destination_id}-steps" => Metadata.from_hash({
-            'name' => { 'en-US' => "#{@destination_id}-steps" },
-            'attribution' => @settings.attribution,
-            'report_issue' => @settings.report_issue&.serialize,
+    super + (@settings.has_steps ? @settings.select_config['select'].keys.collect{ |destination_id|
+      [
+          MetadataRow.new({
+            data: {
+              "#{destination_id}-steps" => Metadata.from_hash({
+                'name' => { 'en-US' => "#{destination_id}-steps" },
+                'attribution' => @settings.attribution,
+                'report_issue' => @settings.report_issue&.serialize,
+              })
+            }.compact_blank
           })
-        }.compact_blank
-      })
-    ] : [])
+        ]
+    } : [])
   end
 
   def map_destination_id(type_feat)
-    type, _feat = type_feat
+    type, feat = type_feat
+
+    type_key = @settings.select_config['type']
+    destination_id, = (
+      if type_key.nil?
+        @settings.select_config['select'].first
+      else
+        type_key_value = feat[type_key]
+        @settings.select_config['select'].find { |_destination_id, values|
+          next true if type_key_value.nil?
+
+          if !values.is_a?(Array)
+            values = [values]
+          end
+
+          values.include?(type_key_value)
+        }
+      end
+    )
+
     if type == :step
-      "#{@destination_id}-steps"
+      "#{destination_id}-steps"
     else
-      @destination_id
+      destination_id
     end
   end
 
