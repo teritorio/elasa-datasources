@@ -15,6 +15,7 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
   include TourinsoftV3Helpers
 
   class Settings < TourinsoftV3Source::Settings
+    const :gpx_trace_url, T.nilable(String)
   end
 
   extend T::Generic
@@ -256,6 +257,7 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
       image: jp(r, '.Photos[*].Photo.Url'),
       addr: addr(r),
       route: r['ObjectTypeName'] == 'Itinéraires touristiques' && route(r)&.inject({
+        gpx_trace: @settings.gpx_trace_url&.gsub('{{id}}', r['SyndicObjectID']),
         pdf: pdfs(jp_first(r, '.Documents[*].Document.Url')),
       }, :merge)&.compact_blank,
       'capacity:pitches': r['Emplacement']&.to_i,
