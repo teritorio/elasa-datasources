@@ -89,17 +89,25 @@ class TourinsoftV3Cdt40Source < TourinsoftV3Source
     }
   end
 
+  def ouverture(feat)
+    openning(feat['OUVERTUREs'] || feat['DATESs'])
+  end
+
+  def event_type(feat)
+    jp(feat, '.TYPE2s[*].Categorie[*].ThesLibelle').collect{ |t| TourinsoftSirtaquiMixin::EVENT_TYPE[t] }.uniq
+  end
+
   def map_feature_tags(feat)
     r = feat
 
-    date_on, date_off, osm_openning_hours = openning(r['OUVERTUREs'])
+    date_on, date_off, osm_openning_hours = ouverture(r)
 
     id = map_id([nil, r])
     {
       ref: {
         'FR:CRTA': id,
       },
-      name: { 'fr-FR' => jp_first(r, '.NOMOFFREs[*].Raisonsociale') }.compact_blank,
+      name: { 'fr-FR' => jp_first_present(r, '.NOMOFFREs[*].Raisonsociale', '.NOMOFFREs[*].Nomdelamanifestation') }.compact_blank,
       description: { 'fr-FR' => jp_first_present(r, '.DESCRIPTIFSs[*].Descriptioncommerciale', '.DESCRIPTIFs[*].Description', '.DESCRIPTIFs[*].Descriptif', '.DESCRIPTIFs[*].Descriptifcommercial') }.compact_blank,
       website: jp(r['MOYENSCOMs'] || r['MOYENCOMs'], '[*][?(@.TypedaccesTelecom.ThesLibelle=="Site web (URL)")]')&.pluck('CoordonneesTelecom')&.collect{ |url| valid_url(id, :website, url) }&.compact_blank,
       'website:details': { 'fr-FR' => valid_url(id, :'website:details', @settings.website_details_url&.gsub('{{id}}', r['SyndicObjectID'])) }.compact_blank,
@@ -128,7 +136,7 @@ class TourinsoftV3Cdt40Source < TourinsoftV3Source
         r['ObjectTypeName'] == 'Fêtes et manifestations' && {
           start_date: date_on,
           end_date: date_off,
-          # event: jp(r, '.ClassificationCategoriesFMAs[*].ThesLibelle').collect{ |t| TourinsoftSirtaquiMixin::EVENT_TYPE[t] }.uniq,
+          event: event_type(r),
         } || {},
         r['ObjectTypeName'] == 'Restauration' ? cuisines(jp(r, '.SPECIALITESs[0].Specialitesculinaires[*].ThesLibelle')) : {},
         r['ObjectTypeName'] == 'Hôtels' ? { tourism: 'hotel' } : {},
