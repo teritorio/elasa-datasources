@@ -48,11 +48,11 @@ class GristSource < Source
 
   # JSON Schema types
   TYPE_MAP = {
-    'Text' => 'string',
-    'Numeric' => 'number',
-    'Date' => 'string',
-    'DateTime' => 'string',
-    'Boolean' => 'boolean',
+    'Text' => { 'type' => 'string' },
+    'Numeric' => { 'type' => 'number' },
+    'Date' => { 'type' => 'string', 'format' => 'date' },
+    'DateTime' => { 'type' => 'string', 'format' => 'date-time' },
+    'Boolean' => { 'type' => 'boolean' },
   }.freeze
 
   sig {
@@ -75,13 +75,9 @@ class GristSource < Source
     i18n = {}
     columns.each{ |column|
       id = column.dig('fields', 'label') || column['id']
-      type = TYPE_MAP[column['fields']['type']] || 'string'
-      type = { 'type' => 'array', 'items' => { 'type' => type } } if column['fields']['type'] == 'ChoiceList'
-      format = column['fields']['type'] == 'Date' ? 'date' : (column['fields']['type'] == 'DateTime' ? 'date-time' : nil)
-      schema['properties'][id] = {
-        'type' => type,
-        'format' => format,
-      }.compact_blank
+      type = TYPE_MAP[column['fields']['type']] || { 'type' => 'string' }
+      type = { 'type' => 'array', 'items' => type } if column['fields']['type'] == 'ChoiceList'
+      schema['properties'][id] = type
       i18n[id] = {
         '@default' => {
           'en-US' => id
