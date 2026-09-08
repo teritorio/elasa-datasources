@@ -2,6 +2,9 @@
     "type": "array",
     "items": {
         "type": "object",
+        "required": [
+            "select"
+        ],
         "additionalProperties": false,
         "properties": {
             "name": {
@@ -22,6 +25,21 @@
             "interest": {
                 "type": "object",
                 "additionalProperties": true
+            },
+            "validation": {
+                "type": "object",
+                "properties": {
+                    "geom_change_euclidian_distance": {
+                        "type": "number",
+                        "default": 2,
+                        "comment": "Min change distance to raise a request for review on gemetry. In meters."
+                    },
+                    "geom_neighborhood_radius": {
+                        "type": "number",
+                        "default": 100,
+                        "comment": "The size of the surround neighborhood for spatial coherence validation. It is immediate coherence, not large distance, keep it small. In meters."
+                    }
+                }
             },
             "sources": {
                 "type": "array",
