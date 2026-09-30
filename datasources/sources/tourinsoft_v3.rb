@@ -94,7 +94,7 @@ class TourinsoftV3Source < Source
       if type_key.nil?
         @settings.select_config['select'].first
       else
-        type_key_value = feat[type_key]
+        type_key_value = jp_first(feat, type_key)
         @settings.select_config['select'].find { |_destination_id, values|
           next true if type_key_value.nil?
 
