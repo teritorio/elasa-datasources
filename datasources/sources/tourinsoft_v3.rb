@@ -105,7 +105,7 @@ class TourinsoftV3Source < Source
           values.include?(type_key_value)
         }
       end
-    )
+    ) || @settings.select_config['select'].first
 
     if type == :step
       "#{destination_id}-steps"
