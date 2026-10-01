@@ -54,6 +54,12 @@ class DatatourismeSource < Source
     'PointOfView' => { tourism: 'viewpoint' },
     'PicnicArea' => { amenity: 'picnic_site' },
     'WineCellar' => { tourism: 'wine cellar' },
+    'Castle' => { historic: 'castle' },
+    'EntertainmentAndEvent' => {},
+    'FastFoodRestaurant' => { amenity: 'fast_food' },
+    'Hotel' => { tourism: 'hotel' },
+    'CyclingTour' => {},
+    'WalkingTour' => {},
   }]
 
   TYPE_NAME = HashExcep[{
@@ -66,6 +72,12 @@ class DatatourismeSource < Source
     'PointOfView' => { 'fr-FR' => 'Point de vue' },
     'PicnicArea' => { 'fr-FR' => 'Aire de pique-nique' },
     'WineCellar' => { 'fr-FR' => 'Cave à vin' },
+    'Castle' => { 'fr-FR' => 'Châteaux' },
+    'EntertainmentAndEvent' => { 'fr-FR' => 'Fête et manifestation' },
+    'FastFoodRestaurant' => { 'fr-FR' => 'Restauration rapide' },
+    'Hotel' => { 'fr-FR' => 'hôtel' },
+    'CyclingTour' => { 'fr-FR' => 'Itinéraire cyclable' },
+    'WalkingTour' => { 'fr-FR' => 'Itinéraire pédestre' },
   }]
 
   sig { returns(T::Array[MetadataRow]) }
