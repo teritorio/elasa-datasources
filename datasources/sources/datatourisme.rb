@@ -179,79 +179,122 @@ end
 
 # SPARQL query
 _sparql = <<~SPARQL
+
   PREFIX : <https://www.datatourisme.fr/ontology/core#>
   PREFIX dc: <http://purl.org/dc/elements/1.1/>
   PREFIX schema: <http://schema.org/>
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-  PREFIX ebucore: <http://www.ebu.ch/metadata/ontologies/ebucore/ebucore#>
+  PREFIX ebucore: <http://www.ebu.ch/metadata/ontologies/ebucore#>
   PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
-  SELECT ?identifier ?type ?label
-      ?email ?full_name ?Latitude ?Longitude
-      ?street_address ?postalcode_address ?city_address ?updated_at
-      ?publisher_name ?contact_phone
-      ?contact_email ?wheelchair ?image ?contact_website ?description
+  SELECT
+    ?identifier
+    ?type
+    ?label
+    ?Latitude
+    ?Longitude
+    ?street_address
+    ?postalcode_address
+    ?city_address
+    ?updated_at
+    ?publisher_name
+
+    (SAMPLE(?phone) AS ?contact_phone)
+    (SAMPLE(?email) AS ?contact_email)
+    (SAMPLE(?website) AS ?contact_website)
+    (SAMPLE(?images) AS ?image)
+    (SAMPLE(?wheelchairs) AS ?wheelchair)
+    (SAMPLE(?descriptions) AS ?description)
+
   WHERE {
     ?elem rdf:type ?type;
       dc:identifier ?identifier;
       rdfs:label ?label;
       :isLocatedAt ?location;
-      :lastUpdate ?updated_at;
+      :lastUpdate ?updated_at.
+
     FILTER (?type IN (
-      :Place,
       :Camping,
-      :Church,
-      :Restaurant,
+      :Castle,
+      :CyclingTour,
+      :FastFoodRestaurant,
+      :Hotel,
       :LocalTouristOffice,
       :Museum,
-      :PointOfView,
-      :PicnicArea,
-      :WineCellar
+      :Restaurant,
+      :SportsEvent,
+      :WalkingTour
     )).
+
     ?location schema:geo ?geo.
+
     ?geo schema:latitude ?Latitude;
-        schema:longitude ?Longitude.
+      schema:longitude ?Longitude.
+
     ?location schema:address ?address.
+
     ?address schema:streetAddress ?street_address;
-        schema:postalCode ?postalcode_address;
-        schema:addressLocality ?city_address.
+      schema:postalCode ?postalcode_address;
+      schema:addressLocality ?city_address.
+
+    FILTER(STRSTARTS(STR(?postalcode_address), "33")).
+
     OPTIONAL {
-        ?elem :hasBeenPublishedBy ?publisher.
-        ?publisher schema:legalName ?publisher_name.
-    }
-    OPTIONAL {
-        ?elem :hasContact ?agent_contact.
-        ?agent_contact schema:telephone ?phone.
+      ?elem :hasBeenPublishedBy ?publisher.
+      ?publisher schema:legalName ?publisher_name.
     }
 
-    # Get only one data for phone, email and image instead of multiple (array of data)
     OPTIONAL {
-        ?elem :hasBookingContact ?agent_contact.
-        ?agent_contact schema:telephone ?phone.
+      ?elem :hasContact ?contact.
+      ?contact schema:telephone ?phone.
     }
+
     OPTIONAL {
-        ?elem :hasContact ?agent_contact.
-        ?agent_contact schema:email ?email.
+      ?elem :hasBookingContact ?booking_contact.
+      ?booking_contact schema:telephone ?phone.
     }
+
     OPTIONAL {
-        ?elem :hasBookingContact ?agent_contact.
-        ?agent_contact schema:email ?email.
+      ?elem :hasContact ?contact.
+      ?contact schema:email ?email.
     }
+
     OPTIONAL {
-        ?elem :hasBookingContact ?agent_contact.
-        ?agent_contact foaf:homepage ?contact_website.
+      ?elem :hasBookingContact ?booking_contact.
+      ?booking_contact schema:email ?email.
     }
+
     OPTIONAL {
-        ?elem :shortDescription ?description.
+      ?elem :hasBookingContact ?booking_contact.
+      ?booking_contact foaf:homepage ?website.
     }
+
     OPTIONAL {
-      ?elem :reducedMobilityAccess ?wheelchair.
+      ?elem :shortDescription ?descriptions.
     }
+
+    OPTIONAL {
+      ?elem :reducedMobilityAccess ?wheelchairs.
+    }
+
     OPTIONAL {
       ?elem :hasRepresentation ?representation.
       ?representation ebucore:hasRelatedResource ?relatedResource.
-      ?relatedResource ebucore:locator ?image.
+      ?relatedResource ebucore:locator ?images.
     }
   }
+
+  GROUP BY
+      ?identifier
+      ?type
+      ?label
+      ?Latitude
+      ?Longitude
+      ?street_address
+      ?postalcode_address
+      ?city_address
+      ?updated_at
+      ?publisher_name
+
 SPARQL
