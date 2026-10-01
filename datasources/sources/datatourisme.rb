@@ -44,6 +44,55 @@ class DatatourismeSource < Source
     feat.dig('updated_at', 'value')
   end
 
+  # https://www.datatourisme.fr/ontology/core/#EntertainmentAndEvent
+  EVENT = HashExcep[{
+    # SaleEvent
+    'SaleEvent' => { 'fr-FR' => 'Évènement commercial' }, # Generic
+    'BricABrac' => { 'fr-FR' => 'Brocante' },
+    'FairOrShow' => { 'fr-FR' => 'Foire ou salon' },
+    'Market' => { 'fr-FR' => 'Marché' },
+    'OpenDay' => { 'fr-FR' => 'Portes ouvertes' },
+    'GarageSale' => { 'fr-FR' => 'Vide-grenier' },
+    # BusinessEvent
+    'BusinessEvent' => { 'fr-FR' => 'Évènement professionnel d\'entreprise' }, # Generic
+    'Congress' => { 'fr-FR' => 'Congrès et séminaire' },
+    'TrainingWorkshop' => { 'fr-FR' => 'Atelier de formation' }, # Not on the current page
+    # SocialEvent
+    'SocialEvent' => { 'fr-FR' => 'Évènement social' }, # Generic
+    'LocalAnimation' => { 'fr-FR' => 'Animation locale' },
+    'Carnival' => { 'fr-FR' => 'Carnaval' },
+    'Parade' => { 'fr-FR' => 'Défilé Cortège Parade Pèlerinage' },
+    'TraditionalCelebration' => { 'fr-FR' => 'Fête traditionnelle' },
+    'ReligiousEvent' => { 'fr-FR' => 'Évènement religieux' },
+    'PilgrimageAndProcession' => { 'fr-FR' => 'Pèlerinage et procession' }, # Not on the current page
+    # CulturalEvent
+    'CulturalEvent' => { 'fr-FR' => 'Évènement culturel' }, # Generic
+    'Commemoration' => { 'fr-FR' => 'Commémoration' },
+    'Concert' => { 'fr-FR' => 'Concert' },
+    'Conference' => { 'fr-FR' => 'Conférence' },
+    'ArtistSigning' => { 'fr-FR' => 'Dédicace et rencontre d\'artiste' },
+    'ChildrensEvent' => { 'fr-FR' => 'Évènement jeune public' },
+    'Exhibition' => { 'fr-FR' => 'Exposition' },
+    'Festival' => { 'fr-FR' => 'Festival' },
+    'Reading' => { 'fr-FR' => 'Lecture' },
+    'Opera' => { 'fr-FR' => 'Opéra (spectacle)' },
+    'TheaterEvent' => { 'fr-FR' => 'Pièce de théâtre' },
+    'ScreeningEvent' => { 'fr-FR' => 'Projection, cinéma' },
+    'VisualArtsEvent' => { 'fr-FR' => 'Son et lumière, feu d\'artifice' },
+    'ShowEvent' => { 'fr-FR' => 'Spectacle' },
+    'Harvest' => { 'fr-FR' => 'Vendange, récolte' },
+    'Recital' => { 'fr-FR' => 'Récital' }, # Not on the current page
+    'CircusEvent' => { 'fr-FR' => 'Spectacle de cirque' }, # Not on the current page
+    'DanceEvent' => { 'fr-FR' => 'Spectacle de danse' }, # Not on the current page
+    # SportsEvent
+    'SportsEvent' => { 'fr-FR' => 'Évènement sports et loisirs' }, # Generic
+    'SportsCompetition' => { 'fr-FR' => 'Compétition, démonstration sportive' },
+    'Game' => { 'fr-FR' => 'Jeu, concours' },
+    'Rally' => { 'fr-FR' => 'Rallye' },
+    'Rambling' => { 'fr-FR' => 'Randonnée, balade' },
+    'SportsDemonstration' => { 'fr-FR' => 'Démonstration sportive' }, # Not on the current page
+  }]
+
   TYPE = HashExcep[{
     # 'Place' => {},
     'Camping' => { amenity: 'camping' },
@@ -59,12 +108,7 @@ class DatatourismeSource < Source
     'Hotel' => { tourism: 'hotel' },
     'CyclingTour' => {},
     'WalkingTour' => {},
-    'SaleEvent' => {},
-    'BusinessEvent' => {},
-    'SocialEvent' => {},
-    'CulturalEvent' => {},
-    'SportsEvent' => {},
-  }]
+  }.merge(EVENT.keys.to_h { |event| [event, { event: event }] })]
 
   TYPE_NAME = HashExcep[{
     'Place' => { 'fr-FR' => 'Lieu' },
@@ -81,12 +125,7 @@ class DatatourismeSource < Source
     'Hotel' => { 'fr-FR' => 'hôtel' },
     'CyclingTour' => { 'fr-FR' => 'Itinéraire cyclable' },
     'WalkingTour' => { 'fr-FR' => 'Itinéraire pédestre' },
-    'SaleEvent' => { 'fr-FR' => 'Évènement commercial' },
-    'BusinessEvent' => { 'fr-FR' => 'Évènement professionnel d\'entreprise' },
-    'SocialEvent' => { 'fr-FR' => 'Évènement social' },
-    'CulturalEvent' => { 'fr-FR' => 'Évènement culturel' },
-    'SportsEvent' => { 'fr-FR' => 'Évènement sports et loisirs' },
-  }]
+  }.merge(EVENT)]
 
   sig { returns(T::Array[MetadataRow]) }
   def metadatas
