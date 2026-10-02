@@ -4,10 +4,10 @@
 require 'sorbet-runtime'
 
 require_relative 'connector'
-require_relative '../sources/tourinsoft'
+require_relative '../sources/tourinsoft_v3'
 
 
-class Tourinsoft < Connector
+class TourinsoftV3 < Connector
   def setup(kiba)
     kiba.source(MetadataSource, @job_id, nil, nil, MetadataSource::Settings.from_hash({
       'tags_schema_file' => [
@@ -26,18 +26,19 @@ class Tourinsoft < Connector
       ]
     }))
 
-    @settings['syndications'].select{ |name, _syndication|
-      @source_filter.nil? || name.start_with?(@source_filter)
-    }.each{ |name, syndication|
+    @settings['syndications'].select{ |_syndication, select_config|
+      @source_filter.nil? || select_config.keys.any?{ |name| name.start_with?(@source_filter) }
+    }.each{ |syndication, select_config|
       # Empty medatadata to force output empty destination
       kiba.source(MockSource, @job_id, nil, nil, MockSource::Settings.from_hash({}))
 
+      name = select_config['select'].keys.sort.join('+')
       kiba.source(
         self.class.source_class,
         @job_id,
         name,
         { 'fr-FR' => name },
-        self.class.source_class.const_get(:Settings).from_hash(@settings.merge({ 'syndication' => syndication })),
+        self.class.source_class.const_get(:Settings).from_hash(@settings.merge({ 'syndication' => syndication, 'select_config' => select_config })),
       )
     }
   end

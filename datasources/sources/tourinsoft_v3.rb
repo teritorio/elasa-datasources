@@ -71,19 +71,37 @@ class TourinsoftV3Source < Source
 
   sig { returns(T::Array[MetadataRow]) }
   def metadatas
-    super + (@settings.has_steps ? @settings.select_config['select'].keys.collect{ |destination_id|
-      [
-          MetadataRow.new({
-            data: {
-              "#{destination_id}-steps" => Metadata.from_hash({
-                'name' => { 'en-US' => "#{destination_id}-steps" },
-                'attribution' => @settings.attribution,
-                'report_issue' => @settings.report_issue&.serialize,
-              })
-            }.compact_blank
+    metadata_rows = super
+
+    existing_destinations = metadata_rows.flat_map { |row| row.data.keys }
+
+    destinations = @settings.select_config['select'].keys.reject { |destination_id| existing_destinations.include?(destination_id) }
+
+    metadata_rows += (@settings.has_steps ? @settings.select_config['select'].keys.collect{ |destination_id|
+      MetadataRow.new({
+        data: {
+          "#{destination_id}-steps" => Metadata.from_hash({
+            'name' => { 'en-US' => "#{destination_id}-steps" },
+            'attribution' => @settings.attribution,
+            'report_issue' => @settings.report_issue&.serialize,
           })
-        ]
+        }.compact_blank
+      })
     } : [])
+
+    metadata_rows += destinations.map { |destination_id|
+      MetadataRow.new({
+        data: {
+          destination_id => Metadata.from_hash({
+            'name' => { 'en-US' => destination_id },
+            'attribution' => @settings.attribution,
+            'report_issue' => @settings.report_issue&.serialize,
+          })
+        }.compact_blank
+      })
+    }
+
+    metadata_rows
   end
 
   def map_destination_id(type_feat)
@@ -94,7 +112,7 @@ class TourinsoftV3Source < Source
       if type_key.nil?
         @settings.select_config['select'].first
       else
-        type_key_value = feat[type_key]
+        type_key_value = jp_first(feat, type_key)
         @settings.select_config['select'].find { |_destination_id, values|
           next true if type_key_value.nil?
 
@@ -105,7 +123,7 @@ class TourinsoftV3Source < Source
           values.include?(type_key_value)
         }
       end
-    )
+    ) || @settings.select_config['select'].first
 
     if type == :step
       "#{destination_id}-steps"
