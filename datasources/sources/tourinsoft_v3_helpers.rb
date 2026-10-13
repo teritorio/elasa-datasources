@@ -10,6 +10,16 @@ require 'sorbet-runtime'
 module TourinsoftV3Helpers
   include TourinsoftSirtaquiMixin
 
+  def valid_url(id, tag, url)
+    return if url.blank?
+
+    valid = url =~ URI::DEFAULT_PARSER.make_regexp && url.start_with?('https://') && url.split('/')[2].include?('.') && !url.split('/')[2].include?(' ')
+    if !valid
+      logger.info("Invalid URL for #{id}: #{tag}=#{url}")
+    end
+    valid ? url : nil
+  end
+
   def jp_first_present(object, *paths)
     paths.lazy.map { |path| jp_first(object, path) }.find(&:present?)
   end

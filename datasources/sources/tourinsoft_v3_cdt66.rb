@@ -22,16 +22,6 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
 
   SettingsType = type_member{ { upper: Settings } } # Generic param
 
-  def valid_url(id, tag, url)
-    return if url.blank?
-
-    valid = url =~ URI::DEFAULT_PARSER.make_regexp && url.start_with?('https://') && url.split('/')[2].include?('.') && !url.split('/')[2].include?(' ')
-    if !valid
-      logger.info("Invalid URL for #{id}: #{tag}=#{url}")
-    end
-    valid ? url : nil
-  end
-
   @@stars = HashExcep[{
     nil => nil,
     'Non classé' => nil,
