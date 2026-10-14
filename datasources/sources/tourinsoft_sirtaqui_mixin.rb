@@ -7,33 +7,48 @@ require 'uri'
 module TourinsoftSirtaquiMixin
   CUISINES = HashExcep[{
     # Cuisine
-    'Burger' => { amenity: 'restaurant', cuisine: ['burger'] },
     'Brunch' => { amenity: 'restaurant', cuisine: ['brunch'] },
+    'Burger' => { amenity: 'restaurant', cuisine: ['burger'] },
     'Cuisine africaine' => { amenity: 'restaurant', cuisine: ['african'] },
     'Cuisine asiatique' => { amenity: 'restaurant', cuisine: ['asian'] },
     'Cuisine bistronomique' => { amenity: 'restaurant', cuisine: ['bistronomique'] },
+    'Cuisine catalane' => { amenity: 'restaurant', cuisine: ['catalan'] },
+    'Cuisine créole' => { amenity: 'restaurant', cuisine: ['regional'] },
     'Cuisine des Iles' => { amenity: 'restaurant', cuisine: ['caribbean'] },
     'Cuisine européenne' => { amenity: 'restaurant', cuisine: ['european'] },
     'Cuisine gastronomique' => { amenity: 'restaurant', cuisine: ['fine_dining'] },
+    'Cuisine grillades' => { amenity: 'restaurant', cuisine: ['barbecue'] },
     'Cuisine indienne' => { amenity: 'restaurant', cuisine: ['indian'] },
+    'Cuisine internationale' => { amenity: 'restaurant', cuisine: ['international'] },
     'Cuisine japonaise/sushi' => { amenity: 'restaurant', cuisine: %w[japanese sushi] },
     'Cuisine locavore' => { amenity: 'restaurant', cuisine: ['local'] },
     'Cuisine méditerranéenne' => { amenity: 'restaurant', cuisine: ['mediterranean'] },
     'Cuisine nord-américaine' => { amenity: 'restaurant', cuisine: ['american'] },
+    'Cuisine orientale' => { amenity: 'restaurant', cuisine: ['oriental'] },
+    'Cuisine rapide' => { amenity: 'restaurant' }, # FIXME: add specific tags
     'Cuisine régionale française' => { amenity: 'restaurant', cuisine: %w[regional french] },
     'Cuisine sud-américaine' => { amenity: 'restaurant', cuisine: ['south_american'] },
     'Cuisine traditionnelle' => { amenity: 'restaurant' }, # FIXME: add specific tags
+    'Divers' => { amenity: 'restaurant' }, # FIXME: add specific tags
+    'Régionales françaises' => { amenity: 'restaurant', cuisine: %w[regional french] },
+    'Spécialités Locales' => { amenity: 'restaurant', cuisine: ['local'] },
     # Diet
     'Cuisine bio' => { amenity: 'restaurant', organic: 'only' },
     'Cuisine casher' => { amenity: 'restaurant', 'diet:kosher': 'only' },
     'Cuisine diététique' => { amenity: 'restaurant' }, # FIXME: diet:*
+    'Cuisine hallal' => { amenity: 'restaurant', 'diet:halal': 'only' },
+    'Cuisine sans gluten' => { amenity: 'restaurant', 'diet:gluten_free': 'only' },
     'Cuisine vegan' => { amenity: 'restaurant', 'diet:vegan': 'only' },
     'Cuisine végétarienne' => { amenity: 'restaurant', 'diet:vegetarian': 'only' },
-    'Cuisine sans gluten' => { amenity: 'restaurant', 'diet:gluten_free': 'only' },
     # Food
+    'Crustacés' => { amenity: 'restaurant', cuisine: ['seafood'] },
+    'Cuisine poissons' => { amenity: 'restaurant', cuisine: %w[fish seafood] },
+    'Fruits de mer' => { amenity: 'restaurant', cuisine: ['seafood'] },
     'Nouvelle cuisine française' => { amenity: 'restaurant', cuisine: ['new_french'] },
+    'Pâtes fraîches' => { amenity: 'fast_food', cuisine: ['pasta'] },
     'Pizzas' => { amenity: 'restaurant', cuisine: ['pizza'] },
     'Poisson / fruits de mer' => { amenity: 'restaurant', cuisine: %w[fish seafood] },
+    'Poisson' => { amenity: 'restaurant', cuisine: ['fish'] },
     'Salades' => { amenity: 'fast_food', cuisine: ['salad'] },
     'Sandwichs' => { amenity: 'fast_food', cuisine: ['sandwich'] },
     'Tapas' => { amenity: 'restaurant', cuisine: ['tapas'] },
@@ -41,11 +56,11 @@ module TourinsoftSirtaquiMixin
     'Tartines' => { amenity: 'restaurant' }, # FIXME: add specific tags
     'Triperies' => { amenity: 'restaurant' }, # FIXME: add specific tags
     'Viandes' => { amenity: 'restaurant', cuisine: ['meat'] },
-    'Crustacés' => { amenity: 'restaurant', cuisine: ['seafood'] },
     # Non Restaurant
+    'Fromage' => { shop: 'cheese' },
+    'Fromagerie' => { shop: 'cheese' },
     'Glaces' => { amenity: 'ice_cream', cuisine: ['ice_cream'] },
     'Pâtisseries' => { shop: 'pastry' },
-    'Fromagerie' => { shop: 'cheese' },
   }]
 
   def cuisines(cuisines)
