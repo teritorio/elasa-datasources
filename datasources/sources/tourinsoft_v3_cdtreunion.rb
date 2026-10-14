@@ -33,61 +33,6 @@ class TourinsoftV3CdtreunionSource < TourinsoftV3Source
     '5 étoiles' => '5',
   }]
 
-  @@cuisines = HashExcep[{
-    # Cuisine
-    'Burger' => { amenity: 'restaurant', cuisine: ['burger'] },
-    'Brunch' => { amenity: 'restaurant', cuisine: ['brunch'] },
-    'Cuisine africaine' => { amenity: 'restaurant', cuisine: ['african'] },
-    'Cuisine asiatique' => { amenity: 'restaurant', cuisine: ['asian'] },
-    'Cuisine bistronomique' => { amenity: 'restaurant', cuisine: ['bistronomique'] },
-    'Cuisine des Iles' => { amenity: 'restaurant', cuisine: ['caribbean'] },
-    'Cuisine européenne' => { amenity: 'restaurant', cuisine: ['european'] },
-    'Cuisine gastronomique' => { amenity: 'restaurant', cuisine: ['fine_dining'] },
-    'Cuisine indienne' => { amenity: 'restaurant', cuisine: ['indian'] },
-    'Cuisine japonaise/sushi' => { amenity: 'restaurant', cuisine: %w[japanese sushi] },
-    'Cuisine locavore' => { amenity: 'restaurant', cuisine: ['local'] },
-    'Cuisine méditerranéenne' => { amenity: 'restaurant', cuisine: ['mediterranean'] },
-    'Cuisine nord-américaine' => { amenity: 'restaurant', cuisine: ['american'] },
-    'Cuisine régionale française' => { amenity: 'restaurant', cuisine: %w[regional french] },
-    'Cuisine créole' => { amenity: 'restaurant', cuisine: ['regional'] },
-    'Cuisine sud-américaine' => { amenity: 'restaurant', cuisine: ['south_american'] },
-    'Cuisine internationale' => { amenity: 'restaurant', cuisine: ['international'] },
-    'Cuisine orientale' => { amenity: 'restaurant', cuisine: ['oriental'] },
-    'Cuisine traditionnelle' => { amenity: 'restaurant' }, # FIXME: add specific tags
-    'Cuisine rapide' => { amenity: 'restaurant' }, # FIXME: add specific tags
-    'Divers' => { amenity: 'restaurant' }, # FIXME: add specific tags
-    # Diet
-    'Cuisine bio' => { amenity: 'restaurant', organic: 'only' },
-    'Cuisine casher' => { amenity: 'restaurant', 'diet:kosher': 'only' },
-    'Cuisine diététique' => { amenity: 'restaurant' }, # FIXME: diet:*
-    'Cuisine vegan' => { amenity: 'restaurant', 'diet:vegan': 'only' },
-    'Cuisine végétarienne' => { amenity: 'restaurant', 'diet:vegetarian': 'only' },
-    'Cuisine sans gluten' => { amenity: 'restaurant', 'diet:gluten_free': 'only' },
-    # Food
-    'Nouvelle cuisine française' => { amenity: 'restaurant', cuisine: ['new_french'] },
-    'Pizzas' => { amenity: 'restaurant', cuisine: ['pizza'] },
-    'Poisson / fruits de mer' => { amenity: 'restaurant', cuisine: %w[fish seafood] },
-    'Poisson' => { amenity: 'restaurant', cuisine: ['fish'] },
-    'Salades' => { amenity: 'fast_food', cuisine: ['salad'] },
-    'Sandwichs' => { amenity: 'fast_food', cuisine: ['sandwich'] },
-    'Tapas' => { amenity: 'restaurant', cuisine: ['tapas'] },
-    'Tartes' => { amenity: 'restaurant', cuisine: ['pie'] },
-    'Tartines' => { amenity: 'restaurant' }, # FIXME: add specific tags
-    'Triperies' => { amenity: 'restaurant' }, # FIXME: add specific tags
-    'Viandes' => { amenity: 'restaurant', cuisine: ['meat'] },
-    'Crustacés' => { amenity: 'restaurant', cuisine: ['seafood'] },
-    # Non Restaurant
-    'Glaces' => { amenity: 'ice_cream', cuisine: ['ice_cream'] },
-    'Pâtisseries' => { shop: 'pastry' },
-    'Fromagerie' => { shop: 'cheese' },
-  }]
-
-  def cuisines(cuisines)
-    cuisines.collect{ |cuisine|
-      @@cuisines[cuisine]
-    }.compact.inject(:deep_merge_array) || {}
-  end
-
   def map_geometry(type_feat)
     _type, feat = type_feat
     {
