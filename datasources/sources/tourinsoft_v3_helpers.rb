@@ -122,4 +122,14 @@ module TourinsoftV3Helpers
   end
 
   module_function :openning
+
+  def addr(address)
+    return nil if address.nil?
+
+    {
+      street: [address['Adresse1'], address['Adresse1suite'] || address['Adresse1Suite'], address['Adresse2'], address['Adresse3']].compact_blank.join(', '),
+      postcode: address['CodePostal'] || address['Codepostal'],
+      city: address['Commune'],
+    }.compact_blank
+  end
 end

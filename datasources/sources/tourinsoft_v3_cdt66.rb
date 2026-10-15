@@ -153,16 +153,6 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
     end
   end
 
-  def addr(feat)
-    return nil if feat.dig('Adresses', 0).nil?
-
-    {
-      street: [feat['Adresses'][0]['Adresse1'], feat['Adresses'][0]['Adresse1Suite'], feat['Adresses'][0]['Adresse2'], feat['Adresses'][0]['Adresse3']].compact_blank.join(', '),
-      postcode: feat['Adresses'][0]['CodePostal'] || feat['Adresses'][0]['Codepostal'],
-      city: feat['Adresses'][0]['Commune'],
-    }.compact_blank
-  end
-
   def pdfs(pdf)
     {
       'fr-FR' => pdf,
@@ -193,7 +183,7 @@ class TourinsoftV3Cdt66Source < TourinsoftV3Source
       # tripadvisor: jp_first(r, '.Contacts[*][?(@.TypedaccesTelecom.ThesLibelle=="URL TripAdvisor")].CoordonneesTelecom'),
       # googleavis: jp_first(r, '.Contacts[*][?(@.TypedaccesTelecom.ThesLibelle=="URL Google Avis")].CoordonneesTelecom'),
       image: jp(r, '.Photos[*].Photo.Url'),
-      addr: addr(r),
+      addr: addr(jp_first(r, '.Adresses[*]')),
       route: r['ObjectTypeName'] == 'Itinéraires touristiques' && route(r)&.inject({
         gpx_trace: @settings.gpx_trace_url&.gsub('{{id}}', r['SyndicObjectID']),
         pdf: pdfs(jp_first(r, '.Documents[*].Document.Url')),
