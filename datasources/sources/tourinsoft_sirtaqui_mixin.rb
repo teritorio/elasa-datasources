@@ -72,6 +72,7 @@ module TourinsoftSirtaquiMixin
   CLASS = HashExcep[{
     nil => nil,
     'Non classé' => nil,
+    'Non Classé' => nil,
     'En cours de classement' => nil,
     '1 étoile' => '1',
     '2 étoiles' => '2',

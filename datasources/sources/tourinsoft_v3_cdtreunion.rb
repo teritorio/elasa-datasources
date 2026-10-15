@@ -22,17 +22,6 @@ class TourinsoftV3CdtreunionSource < TourinsoftV3Source
 
   SettingsType = type_member{ { upper: Settings } } # Generic param
 
-  @@stars = HashExcep[{
-    nil => nil,
-    'Non classé' => nil,
-    'Non Classé' => nil,
-    '1 étoile' => '1',
-    '2 étoiles' => '2',
-    '3 étoiles' => '3',
-    '4 étoiles' => '4',
-    '5 étoiles' => '5',
-  }]
-
   def map_geometry(type_feat)
     _type, feat = type_feat
     {
@@ -81,7 +70,7 @@ class TourinsoftV3CdtreunionSource < TourinsoftV3Source
       'capacity:rooms': jp_first(r, '.Capacites[*].Nombretotaldechambres')&.to_i,
       'capacity:persons': jp_first(r, '.Capacites[*].Capacitetotalenombredepersonnes')&.to_i,
       opening_hours: osm_openning_hours,
-      stars: ['Hébergements locatifs', 'Hôtellerie', 'Hôtellerie de plein air', 'Résidences'].include?(r['ObjectTypeName']) ? @@stars[r['ClassementPrefectoral']] : nil,
+      stars: ['Hébergements locatifs', 'Hôtellerie', 'Hôtellerie de plein air', 'Résidences'].include?(r['ObjectTypeName']) ? TourinsoftSirtaquiMixin::CLASS[r['ClassementPrefectoral']] : nil,
       # internet_access: jp(r, '.Servicess[*][?(@.ThesLibelle=="Wifi")]').any? ? 'wlan' : nil,
       # pets: { true => 'yes', false => 'no' }[r['Animaux']]
     }.merge(
