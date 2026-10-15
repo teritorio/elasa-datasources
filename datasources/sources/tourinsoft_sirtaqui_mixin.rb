@@ -25,7 +25,7 @@ module TourinsoftSirtaquiMixin
     'Cuisine méditerranéenne' => { amenity: 'restaurant', cuisine: ['mediterranean'] },
     'Cuisine nord-américaine' => { amenity: 'restaurant', cuisine: ['american'] },
     'Cuisine orientale' => { amenity: 'restaurant', cuisine: ['oriental'] },
-    'Cuisine rapide' => { amenity: 'restaurant' }, # FIXME: add specific tags
+    'Cuisine rapide' => { amenity: 'fast_food' }, # FIXME: add specific tags
     'Cuisine régionale française' => { amenity: 'restaurant', cuisine: %w[regional french] },
     'Cuisine sud-américaine' => { amenity: 'restaurant', cuisine: ['south_american'] },
     'Cuisine traditionnelle' => { amenity: 'restaurant' }, # FIXME: add specific tags
@@ -45,7 +45,7 @@ module TourinsoftSirtaquiMixin
     'Cuisine poissons' => { amenity: 'restaurant', cuisine: %w[fish seafood] },
     'Fruits de mer' => { amenity: 'restaurant', cuisine: ['seafood'] },
     'Nouvelle cuisine française' => { amenity: 'restaurant', cuisine: ['new_french'] },
-    'Pâtes fraîches' => { amenity: 'fast_food', cuisine: ['pasta'] },
+    'Pâtes fraîches' => { amenity: 'restaurant', cuisine: ['pasta'] },
     'Pizzas' => { amenity: 'restaurant', cuisine: ['pizza'] },
     'Poisson / fruits de mer' => { amenity: 'restaurant', cuisine: %w[fish seafood] },
     'Poisson' => { amenity: 'restaurant', cuisine: ['fish'] },
