@@ -33,16 +33,6 @@ class TourinsoftV3CdtreunionSource < TourinsoftV3Source
     }
   end
 
-  def addr(feat)
-    # return nil if feat.dig('Adresses', 0).nil?
-
-    {
-      street: [feat['Adresse1'], feat['Adresse1Suite'], feat['Adresse2'], feat['Adresse3']].compact_blank.join(', '),
-      postcode: feat['CodePostal'] || feat['Codepostal'],
-      city: feat['Commune'],
-    }.compact_blank
-  end
-
   def map_feature_tags(feat)
     r = feat
 

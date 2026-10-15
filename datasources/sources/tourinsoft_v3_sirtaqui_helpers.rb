@@ -42,16 +42,6 @@ module TourinsoftSirtaquiHelpers
     }
   end
 
-  def addr(address)
-    return nil if address.nil?
-
-    {
-      street: [address['Adresse1'], address['Adresse1suite'], address['Adresse2'], address['Adresse3']].compact_blank.join(', '),
-      postcode: address['CodePostal'],
-      city: address['Commune'],
-    }.compact_blank
-  end
-
   def pdfs(pdf)
     {
       'en-US' => jp(pdf, '.FichePDFGB.Url')&.first,
