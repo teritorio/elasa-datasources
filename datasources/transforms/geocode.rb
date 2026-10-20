@@ -13,7 +13,13 @@ class GeocoderTransformer < Transformer
   extend T::Sig
   extend T::Generic
 
-  SettingsType = type_member{ { upper: Transformer::TransformerSettings } } # Generic param
+  class Settings < Transformer::TransformerSettings
+    const :min_score, Float, default: 0.7
+  end
+
+  extend T::Generic
+
+  SettingsType = type_member{ { upper: Settings } } # Generic param
 
   sig { params(settings: SettingsType).void }
   def initialize(settings)
@@ -58,7 +64,7 @@ class GeocoderTransformer < Transformer
       elsif !%w[locality street housenumber].include?(addr['result_type'])
         reject << [:bad_level_of_detail, addr.to_h.compact, f]
         @geocode_errors[:bad_level_of_detail] += 1
-      elsif !(addr['result_score']&.to_f&.>= 0.7)
+      elsif !(addr['result_score']&.to_f&.>= @settings.min_score)
         reject << [:low_score, addr.to_h.compact, f]
         @geocode_errors[:low_score] += 1
       else
