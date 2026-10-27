@@ -91,14 +91,14 @@ class OpenAgendaSource < Source
   def openning(periode)
     return nil if periode.blank?
 
-    date_start = jp_first(periode, 'firstTiming.begin')&.[](0..9)
-    date_end = jp_first(periode, 'firstTiming.end')&.[](0..9)
-    hour_start = jp_first(periode, 'firstTiming.begin')&.[](11..15)
-    hour_end = jp_first(periode, 'firstTiming.end')&.[](11..15)
+    date_start = jp_first(periode, 'nextTiming.begin')&.[](0..9)
+    date_end = jp_first(periode, 'nextTiming.end')&.[](0..9)
+    hour_start = jp_first(periode, 'nextTiming.begin')&.[](11..15)
+    hour_end = jp_first(periode, 'nextTiming.end')&.[](11..15)
 
     opening_hours = [hour_start, hour_end].compact.join(' - ')
 
-    if date_start && date_start == date_end && hour_start && hour_end
+    if date_start && hour_start && hour_end
       start_date = Date.parse(date_start)
       opening_hours = "#{start_date.strftime('%Y %b %d')} #{hour_start}-#{hour_end}"
     end
