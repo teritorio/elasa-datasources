@@ -96,7 +96,14 @@ class OpenAgendaSource < Source
     hour_start = jp_first(periode, 'firstTiming.begin')&.[](11..15)
     hour_end = jp_first(periode, 'firstTiming.end')&.[](11..15)
 
-    [date_start, date_end, [hour_start, hour_end].compact.join(' - ')]
+    opening_hours = [hour_start, hour_end].compact.join(' - ')
+
+    if date_start && date_start == date_end && hour_start && hour_end
+      start_date = Date.parse(date_start)
+      opening_hours = "#{start_date.strftime('%Y %b %d')} #{hour_start}-#{hour_end}"
+    end
+
+    [date_start, date_end, opening_hours]
   end
 
   def map_id(feat)
