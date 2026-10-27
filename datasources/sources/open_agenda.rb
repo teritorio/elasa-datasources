@@ -99,8 +99,8 @@ class OpenAgendaSource < Source
     opening_hours = [hour_start, hour_end].compact.join(' - ')
 
     if date_start && hour_start && hour_end
-      start_date = Date.parse(date_start)
-      opening_hours = "#{start_date.strftime('%Y %b %d')} #{hour_start}-#{hour_end}"
+      dates = [date_start, date_end].compact.uniq.collect{ |date| Date.parse(date).strftime('%Y %b %d') }.join('-')
+      opening_hours = "#{dates} #{hour_start}-#{hour_end}"
     end
 
     [date_start, date_end, opening_hours]
