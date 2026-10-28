@@ -91,12 +91,19 @@ class OpenAgendaSource < Source
   def openning(periode)
     return nil if periode.blank?
 
-    date_start = jp_first(periode, 'firstTiming.begin')&.[](0..9)
-    date_end = jp_first(periode, 'firstTiming.end')&.[](0..9)
-    hour_start = jp_first(periode, 'firstTiming.begin')&.[](11..15)
-    hour_end = jp_first(periode, 'firstTiming.end')&.[](11..15)
+    date_start = jp_first(periode, 'nextTiming.begin')&.[](0..9)
+    date_end = jp_first(periode, 'nextTiming.end')&.[](0..9)
+    hour_start = jp_first(periode, 'nextTiming.begin')&.[](11..15)
+    hour_end = jp_first(periode, 'nextTiming.end')&.[](11..15)
 
-    [date_start, date_end, [hour_start, hour_end].compact.join(' - ')]
+    opening_hours = [hour_start, hour_end].compact.join(' - ')
+
+    if date_start && hour_start && hour_end
+      dates = [date_start, date_end].compact.uniq.collect{ |date| Date.parse(date).strftime('%Y %b %d') }.join('-')
+      opening_hours = "#{dates} #{hour_start}-#{hour_end}"
+    end
+
+    [date_start, date_end, opening_hours]
   end
 
   def map_id(feat)
