@@ -32,7 +32,7 @@ class TourinsoftV3 < Connector
       # Empty medatadata to force output empty destination
       kiba.source(MockSource, @job_id, nil, nil, MockSource::Settings.from_hash({}))
 
-      name = select_config['select'].keys.sort.join('+')
+      name = select_config['select'].keys.sort.join('+')[0, 128]
       kiba.source(
         self.class.source_class,
         @job_id,
