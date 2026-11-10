@@ -306,7 +306,11 @@ class Source # rubocop:disable Style/OneClassPerFile
       raw_count += 1
       properties, bad = one(row, bad)
       if !properties.nil?
-        yield [:data, properties]
+        d_ids = Array(properties[:destination_id])
+        d_ids = [nil] if d_ids.empty?
+        Array(d_ids).each{ |destination_id|
+          yield [:data, properties.merge(destination_id: destination_id)]
+        }
       end
     }
 
