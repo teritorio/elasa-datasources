@@ -107,28 +107,30 @@ class TourinsoftV3Source < Source
   def map_destination_id(type_feat)
     type, feat = type_feat
 
+    select_config = @settings.select_config['select']
     type_key = @settings.select_config['type']
-    destination_id, = (
+    default_ids = select_config.keys.first
+    destination_ids =
       if type_key.nil?
-        @settings.select_config['select'].first
+        default_ids
       else
-        type_key_value = jp_first(feat, type_key)
-        @settings.select_config['select'].find { |_destination_id, values|
-          next true if type_key_value.nil?
+        type_key_values = Array(jp(feat, type_key))
 
-          if !values.is_a?(Array)
-            values = [values]
-          end
+        if type_key_values.empty?
+          default_ids
+        else
+          matched = select_config.select { |_destination_id, values|
+            Array(values).intersect?(type_key_values)
+          }.keys
 
-          values.include?(type_key_value)
-        }
+          matched.empty? ? default_ids : matched
+        end
       end
-    ) || @settings.select_config['select'].first
 
     if type == :step
-      "#{destination_id}-steps"
+      destination_ids.map { |destination_id| "#{destination_id}-steps" }
     else
-      destination_id
+      destination_ids
     end
   end
 
