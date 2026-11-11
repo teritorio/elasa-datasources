@@ -41,7 +41,7 @@ class OverpassSelectSource < OverpassSource
           area = (
 
             area_ids = T.must(settings.relation_ids).collect{ |id| 3_600_000_000 + id }
-            area_ids_join = area_ids.collect(&:to_s).join(',')
+            area_ids_join = area_ids.join(',')
             "
 area(id:#{area_ids_join})->.a;
 .a out center meta;

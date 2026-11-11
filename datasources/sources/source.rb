@@ -13,7 +13,7 @@ class HashExcep < Hash
   end
 end
 
-class Source
+class Source # rubocop:disable Style/OneClassPerFile
   extend T::Sig
   extend T::Helpers
 

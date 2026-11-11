@@ -100,9 +100,7 @@ class OverpassSource < Source
       if feat['type'] == 'relation'
         linestrings = feat['geometry']['geometries'].select{ |g|
           g['type'] == 'LineString'
-        }.collect{ |ls|
-          ls['coordinates']
-        }
+        }.pluck('coordinates')
 
         {
           type: 'MultiLineString',

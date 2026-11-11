@@ -55,8 +55,8 @@ class TourismSystem < Connector
   def parse_thesaurus(thesaurus)
     thesaurus.collect{ |sub|
       [[sub['key'], sub['label']]] + (
-         sub.key?('children') ? parse_thesaurus(sub['children']) : []
-       )
+        sub.key?('children') ? parse_thesaurus(sub['children']) : []
+      )
     }.flatten(1)
   end
 end
