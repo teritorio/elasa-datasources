@@ -109,7 +109,7 @@ class TourinsoftV3Source < Source
 
     select_config = @settings.select_config['select']
     type_key = @settings.select_config['type']
-    default_ids = select_config.keys.first
+    default_ids = [select_config.keys.first]
     destination_ids =
       if type_key.nil?
         default_ids
@@ -128,9 +128,9 @@ class TourinsoftV3Source < Source
       end
 
     if type == :step
-      destination_ids.map { |destination_id| "#{destination_id}-steps" }
+      Array(destination_ids).map { |destination_id| "#{destination_id}-steps" }
     else
-      destination_ids
+      Array(destination_ids)
     end
   end
 
