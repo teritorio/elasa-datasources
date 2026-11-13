@@ -211,7 +211,7 @@ class TourinsoftV3Cdt50Source < TourinsoftV3Source
         r['ObjectTypeName'] == 'Fêtes et manifestations' && {
           start_date: date_on,
           end_date: date_off,
-          event: jp(r, '.Types[*].ThesLibelle').collect{ |t| @@event_type[t] }.uniq,
+          event: jp(r, '.TypeFMAs[*].ThesLibelle').collect{ |t| @@event_type[t] }.uniq,
         } || {},
         r['ObjectTypeName'] == 'Restauration' ? self.class.cuisines(jp(r, '.TypeRESs[*].Categorie.ThesLibelle')) : {},
         r['ObjectTypeName'] == 'Hôtellerie' ? { tourism: 'hotel' } : {},
