@@ -382,12 +382,12 @@ class TourinsoftSirtaquiSource < TourinsoftSource
     ] : [])
   end
 
-  def map_destination_id(type_feat)
+  def map_destination_ids(type_feat)
     type, _feat = type_feat
     if type == :step
-      "#{@destination_id}-steps"
+      ["#{@destination_id}-steps"]
     else
-      @destination_id
+      [@destination_id]
     end
   end
 

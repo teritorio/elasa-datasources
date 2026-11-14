@@ -125,12 +125,12 @@ class GeotrekSource < Source
     ]
   end
 
-  def map_destination_id(type_feat)
+  def map_destination_ids(type_feat)
     type, feat = type_feat
     if type == :trek
-      practice_slug(feat['practice'])
+      [practice_slug(feat['practice'])]
     else
-      'geotrek-poi'
+      ['geotrek-poi']
     end
   end
 

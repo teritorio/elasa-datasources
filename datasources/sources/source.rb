@@ -112,7 +112,7 @@ class Source # rubocop:disable Style/OneClassPerFile
   sig { params(job_id: T.nilable(String), destination_id: T.nilable(String), name: T.nilable(T::Hash[String, String]), settings: SettingsType).void }
   def initialize(job_id, destination_id, name, settings)
     @job_id = job_id
-    @destination_id = settings.destination_id || destination_id
+    @destination_id = T.let(settings.destination_id || destination_id, T.nilable(String))
     @name = name
     T.assert_type!(settings, SourceSettings) # FIXME: Manually assert type, because type is not asserted automatically, because of genereics ? (why?)
     @settings = settings
@@ -166,9 +166,9 @@ class Source # rubocop:disable Style/OneClassPerFile
   sig { params(feat: T.untyped).returns(T.untyped) }
   def map_tags(feat); end
 
-  sig { params(_feat: T.untyped).returns(T.nilable(String)) }
-  def map_destination_id(_feat)
-    @destination_id
+  sig { params(_feat: T.untyped).returns(T::Array[String]) }
+  def map_destination_ids(_feat)
+    @destination_id.nil? ? [] : [@destination_id]
   end
 
   sig { params(_feat: T.untyped).returns(T.nilable(String)) }
@@ -250,7 +250,7 @@ class Source # rubocop:disable Style/OneClassPerFile
     end
 
     properties = {
-      destination_id: map_destination_id(row),
+      destination_ids: map_destination_ids(row),
       type: 'Feature',
       geometry: geometry,
       properties: { tags: {} }.merge({
@@ -306,11 +306,14 @@ class Source # rubocop:disable Style/OneClassPerFile
       raw_count += 1
       properties, bad = one(row, bad)
       if !properties.nil?
-        d_ids = Array(properties[:destination_id])
-        d_ids = [nil] if d_ids.empty?
-        Array(d_ids).each{ |destination_id|
-          yield [:data, properties.merge(destination_id: destination_id)]
-        }
+        destination_ids = properties.delete(:destination_ids)
+        if destination_ids.empty?
+          yield [:data, properties]
+        else
+          destination_ids.each{ |destination_id|
+            yield [:data, properties.merge(destination_id: destination_id)]
+          }
+        end
       end
     }
 
