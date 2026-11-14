@@ -104,23 +104,29 @@ class TourinsoftV3Source < Source
     metadata_rows
   end
 
-  def map_destination_id(type_feat)
+  sig {
+    params(
+      type_feat: T.untyped
+    ).returns(T::Array[String])
+  }
+  def map_destination_ids(type_feat)
     type, feat = type_feat
 
-    select_config = @settings.select_config['select']
+    select_config = T.let(@settings.select_config['select'], T::Hash[String, T::Array[String]])
     type_key = @settings.select_config['type']
-    default_ids = [select_config.keys.first]
+    default_id = select_config.keys.first
+    default_ids = default_id.nil? ? [] : [default_id]
     destination_ids =
       if type_key.nil?
         default_ids
       else
-        type_key_values = Array(jp(feat, type_key))
+        type_key_values = jp(feat, type_key)
 
         if type_key_values.empty?
           default_ids
         else
           matched = select_config.select { |_destination_id, values|
-            Array(values).intersect?(type_key_values)
+            values.intersect?(type_key_values)
           }.keys
 
           matched.empty? ? default_ids : matched
@@ -128,9 +134,9 @@ class TourinsoftV3Source < Source
       end
 
     if type == :step
-      Array(destination_ids).map { |destination_id| "#{destination_id}-steps" }
+      destination_ids.map { |destination_id| "#{destination_id}-steps" }
     else
-      Array(destination_ids)
+      destination_ids
     end
   end
 
