@@ -141,8 +141,8 @@ class DatatourismeSource < Source
     }
   end
 
-  def map_destination_id(feat)
-    feat.dig('type', 'value').split('#').last
+  def map_destination_ids(feat)
+    [feat.dig('type', 'value').split('#').last]
   end
 
   def map_geometry(feat)
